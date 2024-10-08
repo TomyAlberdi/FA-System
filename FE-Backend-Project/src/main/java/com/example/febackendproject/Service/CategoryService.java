@@ -1,6 +1,5 @@
 package com.example.febackendproject.Service;
 
-import com.example.febackendproject.DTO.CategoryDTO;
 import com.example.febackendproject.Entity.Category;
 import com.example.febackendproject.Repository.CategoryRepository;
 import lombok.AllArgsConstructor;
