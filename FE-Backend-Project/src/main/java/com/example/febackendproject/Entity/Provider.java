@@ -20,7 +20,7 @@ public class Provider {
     private Long id;
     
     @NotBlank
-    @Column(name = "name")
+    @Column(unique = true)
     private String name;
     
     @Column(name = "products_amount")
