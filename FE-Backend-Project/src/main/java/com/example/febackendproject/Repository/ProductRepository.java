@@ -1,5 +1,6 @@
 package com.example.febackendproject.Repository;
 
+import com.example.febackendproject.DTO.CompleteProductDTO;
 import com.example.febackendproject.DTO.MeasureDTO;
 import com.example.febackendproject.DTO.PricesDTO;
 import com.example.febackendproject.Entity.Product;

@@ -46,17 +46,9 @@ public class ProductController {
         return ResponseEntity.ok().body(productService.getPaginatedPartialProducts(page, size));
     }
     
-    @GetMapping("/filterList")
-    public ResponseEntity<Page<PartialProductDTO>> getPartialProducts(
-            FilterDTO filterDTO,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "9") int size) {
-        return ResponseEntity.ok(productService.getFilteredPartialProducts(filterDTO, page, size));
-    }
-    
-    @GetMapping("/search")
+    @GetMapping("/search/{keyword}")
     public ResponseEntity<Page<PartialProductDTO>> searchProductByKeyword(
-            @RequestParam String keyword,
+            @PathVariable String keyword,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "9") int size) {
         if (keyword.length() < 4) {
@@ -69,35 +61,15 @@ public class ProductController {
     public ResponseEntity<?> getById(@PathVariable Long id) {
         Optional<CompleteProductDTO> product = productService.getById(id);
         return product.isPresent()
-                ? notFound("ID", id.toString())
-                : ResponseEntity.ok(product);
-    }
-    
-    @GetMapping("/measures")
-    public ResponseEntity<?> getMeasures() {
-        return ResponseEntity.ok(productService.getMeasure());
-    }
-    
-    @GetMapping("/prices")
-    public ResponseEntity<?> getPrices() {
-        return ResponseEntity.ok(productService.getPrices());
+                ? ResponseEntity.ok(product)
+                : notFound("ID", id.toString());
     }
     
     @PostMapping()
+    // @PreAuthorize("hasAuthority('ROLE_admin')")
     public ResponseEntity<?> save(@Valid @RequestBody Product product) {
         Product newProduct = productService.add(product);
         return ResponseEntity.status(HttpStatus.CREATED).body(newProduct);
-    }
-    
-    @PostMapping("/addList")
-    // @PreAuthorize("hasAuthority('ROLE_admin')")
-    public ResponseEntity<?> addList(@Valid @RequestBody List<Product> products) {
-        for (Product product : products) {
-            if (productService.searchKeys(product.getCategoryId(), product.getProviderId())) {
-                productService.add(product);
-            }
-        }
-        return ResponseEntity.status(HttpStatus.CREATED).body("Products with existing providers and categories created.");
     }
     
     @DeleteMapping("/{id}")
@@ -129,5 +101,15 @@ public class ProductController {
         productService.updateProduct(product);
         return ResponseEntity.ok("Product updated.");
     }
+    
+    /*
+    @GetMapping("/filterList")
+    public ResponseEntity<Page<PartialProductDTO>> getPartialProducts(
+            FilterDTO filterDTO,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "9") int size) {
+        return ResponseEntity.ok(productService.getFilteredPartialProducts(filterDTO, page, size));
+    }
+    */
     
 }

@@ -86,4 +86,26 @@ public class Product {
     @Column(name = "discounted_price")
     private Double discountedPrice;
     
+    @Override
+    public String toString() {
+        return "Product {" +
+                "\n  id=" + id +
+                ",\n  providerId=" + providerId +
+                ",\n  categoryId=" + categoryId +
+                ",\n  tags=" + tags +
+                ",\n  images=" + images +
+                ",\n  name='" + name + '\'' +
+                ",\n  description='" + description + '\'' +
+                ",\n  price=" + price +
+                ",\n  measures='" + measures + '\'' +
+                ",\n  saleUnit='" + saleUnit + '\'' +
+                ",\n  priceSaleUnit=" + priceSaleUnit +
+                ",\n  unitPerBox=" + unitPerBox +
+                ",\n  quality='" + quality + '\'' +
+                ",\n  discountPercentage=" + discountPercentage +
+                ",\n  discountedPrice=" + discountedPrice +
+                "\n}";
+    }
+
+    
 }

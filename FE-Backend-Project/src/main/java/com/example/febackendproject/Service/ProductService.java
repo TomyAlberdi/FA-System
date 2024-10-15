@@ -4,7 +4,6 @@ import com.example.febackendproject.DTO.*;
 import com.example.febackendproject.Entity.Category;
 import com.example.febackendproject.Entity.Product;
 import com.example.febackendproject.Entity.Provider;
-import com.example.febackendproject.Hooks.ProductSpecifications;
 import com.example.febackendproject.Repository.CategoryRepository;
 import com.example.febackendproject.Repository.ProductPaginationRepository;
 import com.example.febackendproject.Repository.ProductRepository;
@@ -14,9 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -119,33 +115,6 @@ public class ProductService {
         return new PageImpl<>(PartialProductDTOList, pageable, partialProductDTOPage.getTotalElements());
     }
     
-    public Page<PartialProductDTO> getFilteredPartialProducts(FilterDTO filterDTO, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        
-        Specification<Product> spec = Specification.where(ProductSpecifications.hasCategory(filterDTO.getCategoryId()))
-                .and(ProductSpecifications.hasProvider(filterDTO.getProviderId()))
-                .and(ProductSpecifications.hasMeasure(filterDTO.getMeasure()))
-                .and(ProductSpecifications.priceBetween(filterDTO.getMinPrice(), filterDTO.getMaxPrice()))
-                .and(ProductSpecifications.hasDiscount(filterDTO.getDiscount()));
-        
-        
-        return productPaginationRepository.findAll(spec, pageable).map(product -> {
-            List<String> images = product.getImages();
-            String firstImage = (images != null && !images.isEmpty()) ? images.get(0) : null;
-            
-            return new PartialProductDTO(
-                    product.getId(),
-                    product.getName(),
-                    product.getPrice(),
-                    product.getSaleUnit(),
-                    product.getPriceSaleUnit(),
-                    product.getDiscountPercentage(),
-                    product.getDiscountedPrice(),
-                    firstImage
-            );
-        });
-    }
-    
     public Page<PartialProductDTO> searchProductsByKeyword(String keyword, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<PartialProductDTO> partialProductDTOPage = productPaginationRepository.getPartialProductsByKeyword(keyword, pageable);
@@ -159,7 +128,29 @@ public class ProductService {
     
     public Optional<CompleteProductDTO> getById(Long id) {
         Optional<Product> product = productRepository.findById(id);
-        return Optional.of(convertDTO(product.get()));
+        CompleteProductDTO returnProduct = new CompleteProductDTO();
+        if (product.isPresent()) {
+            returnProduct.setId(product.get().getId());
+            returnProduct.setName(product.get().getName());
+            returnProduct.setDescription(product.get().getDescription());
+            returnProduct.setPrice(product.get().getPrice());
+            returnProduct.setMeasures(product.get().getMeasures());
+            returnProduct.setSaleUnit(product.get().getSaleUnit());
+            returnProduct.setPriceSaleUnit(product.get().getPriceSaleUnit());
+            returnProduct.setUnitPerBox(product.get().getUnitPerBox());
+            returnProduct.setQuality(product.get().getQuality());
+            returnProduct.setDiscountPercentage(product.get().getDiscountPercentage());
+            returnProduct.setDiscountedPrice(product.get().getDiscountedPrice());
+            returnProduct.setImages(product.get().getImages());
+            returnProduct.setTags(product.get().getTags());
+            
+            String category = categoryRepository.findById(product.get().getCategoryId()).get().getName();
+            returnProduct.setCategory(category);
+            
+            String provider = providerRepository.findById(product.get().getProviderId()).get().getName();
+            returnProduct.setProvider(provider);
+        }
+        return Optional.of(returnProduct);
     }
     
     public Optional<List<Long>> getIdByCategory(Long categoryId) {
@@ -194,12 +185,31 @@ public class ProductService {
         return productRepository.findById(productId).map(Product::getImages);
     }
     
-    public List<MeasureDTO> getMeasure() {
-        return productRepository.getMeasures();
+    /*
+    public Page<PartialProductDTO> getFilteredPartialProducts(FilterDTO filterDTO, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        
+        Specification<Product> spec = Specification.where(ProductSpecifications.hasCategory(filterDTO.getCategoryId()))
+                .and(ProductSpecifications.hasProvider(filterDTO.getProviderId()))
+                .and(ProductSpecifications.hasMeasure(filterDTO.getMeasure()))
+                .and(ProductSpecifications.priceBetween(filterDTO.getMinPrice(), filterDTO.getMaxPrice()))
+                .and(ProductSpecifications.hasDiscount(filterDTO.getDiscount()));
+        
+        return productPaginationRepository.findAll(spec, pageable).map(product -> {
+            List<String> images = product.getImages();
+            String firstImage = (images != null && !images.isEmpty()) ? images.get(0) : null;
+            
+            return new PartialProductDTO(
+                    product.getId(),
+                    product.getName(),
+                    product.getPrice(),
+                    product.getSaleUnit(),
+                    product.getPriceSaleUnit(),
+                    product.getDiscountPercentage(),
+                    product.getDiscountedPrice(),
+                    firstImage
+            );
+        });
     }
-    
-    public PricesDTO getPrices() {
-        return productRepository.getPrices();
-    }
-    
+    */
 }
