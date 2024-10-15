@@ -2,6 +2,7 @@ package com.example.febackendproject.Service;
 
 import com.example.febackendproject.Entity.Category;
 import com.example.febackendproject.Repository.CategoryRepository;
+import com.example.febackendproject.Repository.ProductRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,23 +14,36 @@ import java.util.Optional;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final ProductRepository productRepository;
     
     public List<Category> list() {
-        return categoryRepository.findAll();
+        List<Category> categories = categoryRepository.findAll();
+        for (Category category : categories) {
+            category.setProductsAmount(productRepository.getProductAmountByCategory(category.getId()));
+        }
+        return categories;
     }
     
     public Optional<Category> findById(Long id) {
-        return categoryRepository.findById(id);
+        Optional<Category> category = categoryRepository.findById(id);
+        category.ifPresent(value -> value.setProductsAmount(productRepository.getProductAmountByCategory(id)));
+        return category;
     }
     
     public Optional<Category> findByName(String name) {
-        return categoryRepository.findByName(name);
+        Optional<Category> category = categoryRepository.findByName(name);
+        category.ifPresent(value -> value.setProductsAmount(productRepository.getProductAmountByCategory(category.get().getId())));
+        return category;
     }
     
     public Category save(String name) {
         Category newCategory = new Category();
         newCategory.setName(name);
         return categoryRepository.save(newCategory);
+    }
+    
+    public List<Long> getIdByCategory(Long categoryId) {
+        return productRepository.getIdByCategory(categoryId);
     }
     
     public void deleteById(Long id) {

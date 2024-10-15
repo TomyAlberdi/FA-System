@@ -68,6 +68,13 @@ public class ProductController {
     @PostMapping()
     // @PreAuthorize("hasAuthority('ROLE_admin')")
     public ResponseEntity<?> save(@Valid @RequestBody Product product) {
+        Optional<Category> category = categoryService.findById(product.getCategoryId());
+        Optional<Provider> provider = providerService.findById(product.getProviderId());
+        if (!category.isPresent()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Category with id " + product.getCategoryId() + " not found");
+        } else if (!provider.isPresent()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Provider with id " + product.getProviderId() + " not found");
+        }
         Product newProduct = productService.add(product);
         return ResponseEntity.status(HttpStatus.CREATED).body(newProduct);
     }

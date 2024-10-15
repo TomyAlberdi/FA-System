@@ -1,6 +1,7 @@
 package com.example.febackendproject.Controller;
 
 import com.example.febackendproject.Entity.Provider;
+import com.example.febackendproject.Service.ProductService;
 import com.example.febackendproject.Service.ProviderService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -18,6 +20,7 @@ import java.util.Optional;
 public class ProviderController {
     
     private final ProviderService providerService;
+    private final ProductService productService;
     
     public ResponseEntity<?> notFound(String dataType, String data) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Provider with " + dataType + " " + data + " not found");
@@ -62,8 +65,26 @@ public class ProviderController {
     public ResponseEntity<?> delete(@PathVariable Long id) {
         Optional<Provider> provider = providerService.findById(id);
         if (provider.isPresent()) {
+            List<Long> productIds = providerService.getIdByProvider(id);
+            if (productIds.isEmpty()) {
+                providerService.deleteById(id);
+                return ResponseEntity.ok("Provider " + provider.get().getName() + " deleted successfully");
+            }
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("The provider " + provider.get().getName() + " has " + productIds.size() + " products associated to it. To delete all products and the provider refer to /provider/force/{id}.");
+        }
+        return notFound("ID", Long.toString(id));
+    }
+    
+    @DeleteMapping("/force/{id}")
+    public ResponseEntity<?> forceDelete(@PathVariable Long id) {
+        Optional<Provider> provider = providerService.findById(id);
+        if (provider.isPresent()) {
+            List<Long> productIds = providerService.getIdByProvider(id);
+            if (!productIds.isEmpty()) {
+                productService.deleteProductByProviderId(id);
+            }
             providerService.deleteById(id);
-            return ResponseEntity.ok("Provider with ID " + id + " deleted successfully");
+            return ResponseEntity.ok("Provider " + provider.get().getName() + " and its products deleted successfully");
         }
         return notFound("ID", Long.toString(id));
     }

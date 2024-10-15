@@ -153,14 +153,6 @@ public class ProductService {
         return Optional.of(returnProduct);
     }
     
-    public Optional<List<Long>> getIdByCategory(Long categoryId) {
-        return productRepository.getIdByCategory(categoryId);
-    }
-    
-    public Optional<List<Long>> getIdByProvider(Long providerId) {
-        return productRepository.getIdByProvider(providerId);
-    }
-    
     public void deleteById(Long id) {
         productRepository.deleteById(id);
     }
@@ -183,6 +175,20 @@ public class ProductService {
     
     public Optional<List<String>> getProductImages(Long productId) {
         return productRepository.findById(productId).map(Product::getImages);
+    }
+    
+    public void deleteProductByCategoryId(Long categoryId) {
+        List<Long> listProductsByCategory = productRepository.getIdByCategory(categoryId);
+        for (Long id : listProductsByCategory) {
+            productRepository.deleteById(id);
+        }
+    }
+    
+    public void deleteProductByProviderId(Long providerId) {
+        List<Long> listProductsByProvider = productRepository.getIdByProvider(providerId);
+        for (Long id : listProductsByProvider) {
+            productRepository.deleteById(id);
+        }
     }
     
     /*

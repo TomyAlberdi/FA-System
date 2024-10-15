@@ -1,6 +1,7 @@
 package com.example.febackendproject.Service;
 
 import com.example.febackendproject.Entity.Provider;
+import com.example.febackendproject.Repository.ProductRepository;
 import com.example.febackendproject.Repository.ProviderRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,23 +14,36 @@ import java.util.Optional;
 public class ProviderService {
     
     private final ProviderRepository providerRepository;
+    private final ProductRepository productRepository;
     
     public List<Provider> list() {
-        return providerRepository.findAll();
+        List<Provider> providers = providerRepository.findAll();
+        for (Provider provider : providers) {
+            provider.setProductsAmount(productRepository.getProductAmountByProvider(provider.getId()));
+        }
+        return providers;
     }
     
     public Optional<Provider> findById(Long id) {
-        return providerRepository.findById(id);
+        Optional<Provider> provider = providerRepository.findById(id);
+        provider.ifPresent(value -> value.setProductsAmount(productRepository.getProductAmountByProvider(id)));
+        return provider;
     }
     
     public Optional<Provider> findByName(String name) {
-        return providerRepository.findByName(name);
+        Optional<Provider> provider = providerRepository.findByName(name);
+        provider.ifPresent(value -> value.setProductsAmount(productRepository.getProductAmountByProvider(provider.get().getId())));
+        return provider;
     }
     
     public Provider save(String name) {
         Provider provider = new Provider();
         provider.setName(name);
         return providerRepository.save(provider);
+    }
+    
+    public List<Long> getIdByProvider(Long providerId) {
+        return productRepository.getIdByProvider(providerId);
     }
     
     public void deleteById(Long id) {
