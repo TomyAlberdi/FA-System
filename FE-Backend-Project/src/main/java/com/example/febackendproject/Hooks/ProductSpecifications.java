@@ -32,15 +32,7 @@ public class ProductSpecifications {
     }
     
     public static Specification<Product> hasDiscount(Boolean discount) {
-        return (root, query, builder) -> {
-            if (discount == null) {
-                return builder.conjunction();
-            } else if (discount) {
-                return builder.isNotNull(root.get("discountPercentage"));
-            } else {
-                return builder.isNull(root.get("discountPercentage"));
-            }
-        };
+        return (root, query, builder) -> discount == null ? builder.conjunction() : builder.equal(root.get("discountPercentage"), discount ? 1 : 0);
     }
     
 }

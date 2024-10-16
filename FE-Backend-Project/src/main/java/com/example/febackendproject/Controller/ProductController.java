@@ -65,6 +65,15 @@ public class ProductController {
                 : notFound("ID", id.toString());
     }
     
+    @GetMapping("/search")
+    public ResponseEntity<Page<PartialProductDTO>> getFilteredPartialProducts(
+            @RequestBody FilterDTO filter,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "9") int size
+    ) {
+        return ResponseEntity.ok(productService.getFilteredPartialProducts(filter, page, size));
+    }
+    
     @PostMapping()
     // @PreAuthorize("hasAuthority('ROLE_admin')")
     public ResponseEntity<?> save(@Valid @RequestBody Product product) {
@@ -109,14 +118,6 @@ public class ProductController {
         return ResponseEntity.ok("Product updated.");
     }
     
-    /*
-    @GetMapping("/filterList")
-    public ResponseEntity<Page<PartialProductDTO>> getPartialProducts(
-            FilterDTO filterDTO,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "9") int size) {
-        return ResponseEntity.ok(productService.getFilteredPartialProducts(filterDTO, page, size));
-    }
-    */
+    
     
 }

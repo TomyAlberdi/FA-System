@@ -4,6 +4,7 @@ import com.example.febackendproject.DTO.*;
 import com.example.febackendproject.Entity.Category;
 import com.example.febackendproject.Entity.Product;
 import com.example.febackendproject.Entity.Provider;
+import com.example.febackendproject.Hooks.ProductSpecifications;
 import com.example.febackendproject.Repository.CategoryRepository;
 import com.example.febackendproject.Repository.ProductPaginationRepository;
 import com.example.febackendproject.Repository.ProductRepository;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -191,31 +193,20 @@ public class ProductService {
         }
     }
     
-    /*
     public Page<PartialProductDTO> getFilteredPartialProducts(FilterDTO filterDTO, int page, int size) {
+        
         Pageable pageable = PageRequest.of(page, size);
         
-        Specification<Product> spec = Specification.where(ProductSpecifications.hasCategory(filterDTO.getCategoryId()))
-                .and(ProductSpecifications.hasProvider(filterDTO.getProviderId()))
-                .and(ProductSpecifications.hasMeasure(filterDTO.getMeasure()))
-                .and(ProductSpecifications.priceBetween(filterDTO.getMinPrice(), filterDTO.getMaxPrice()))
-                .and(ProductSpecifications.hasDiscount(filterDTO.getDiscount()));
+        Specification<Product> spec = Specification.where(ProductSpecifications.hasCategory(filterDTO.getCategoryId())
+                        .and(ProductSpecifications.hasProvider(filterDTO.getProviderId()))
+                        .and(ProductSpecifications.hasMeasure(filterDTO.getMeasure()))
+                        .and(ProductSpecifications.priceBetween(filterDTO.getMinPrice(), filterDTO.getMaxPrice()))
+                        .and(ProductSpecifications.hasDiscount(filterDTO.getDiscount())));
         
         return productPaginationRepository.findAll(spec, pageable).map(product -> {
-            List<String> images = product.getImages();
-            String firstImage = (images != null && !images.isEmpty()) ? images.get(0) : null;
-            
-            return new PartialProductDTO(
-                    product.getId(),
-                    product.getName(),
-                    product.getPrice(),
-                    product.getSaleUnit(),
-                    product.getPriceSaleUnit(),
-                    product.getDiscountPercentage(),
-                    product.getDiscountedPrice(),
-                    firstImage
-            );
+                String image = !product.getImages().isEmpty() ? product.getImages().get(0) : null;
+                return new PartialProductDTO(product.getId(), product.getName(), product.getPrice(), product.getSaleUnit(), product.getPriceSaleUnit(), product.getDiscountPercentage(), product.getDiscountedPrice(), image);
         });
     }
-    */
+    
 }
