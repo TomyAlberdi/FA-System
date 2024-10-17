@@ -6,9 +6,11 @@ import com.example.febackendproject.DTO.PartialProductDTO;
 import com.example.febackendproject.Entity.Category;
 import com.example.febackendproject.Entity.Product;
 import com.example.febackendproject.Entity.Provider;
+import com.example.febackendproject.Entity.Stock;
 import com.example.febackendproject.Service.CategoryService;
 import com.example.febackendproject.Service.ProductService;
 import com.example.febackendproject.Service.ProviderService;
+import com.example.febackendproject.Service.StockService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -30,6 +32,7 @@ public class ProductController {
     private final ProductService productService;
     private final ProviderService providerService;
     private final CategoryService categoryService;
+    private final StockService stockService;
     
     public ResponseEntity<?> notFound(String dataType, String data) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product with " + dataType + " " + data + " not found");
@@ -79,12 +82,15 @@ public class ProductController {
     public ResponseEntity<?> save(@Valid @RequestBody Product product) {
         Optional<Category> category = categoryService.findById(product.getCategoryId());
         Optional<Provider> provider = providerService.findById(product.getProviderId());
-        if (!category.isPresent()) {
+        if (productService.existByName(product.getName())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Product with id " + product.getId() + " already exists");
+        } else if (category.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Category with id " + product.getCategoryId() + " not found");
-        } else if (!provider.isPresent()) {
+        } else if (provider.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Provider with id " + product.getProviderId() + " not found");
         }
         Product newProduct = productService.add(product);
+        Stock newStock = stockService.save(newProduct.getId(), newProduct.getName());
         return ResponseEntity.status(HttpStatus.CREATED).body(newProduct);
     }
     
@@ -94,6 +100,7 @@ public class ProductController {
         Optional<CompleteProductDTO> product = productService.getById(id);
         if (product.isPresent()) {
             productService.deleteById(id);
+            stockService.deleteStockByProductId(id);
             return ResponseEntity.ok("Product with id " + id + " deleted.");
         }
         return notFound("ID", id.toString());
@@ -117,7 +124,5 @@ public class ProductController {
         productService.updateProduct(product);
         return ResponseEntity.ok("Product updated.");
     }
-    
-    
     
 }

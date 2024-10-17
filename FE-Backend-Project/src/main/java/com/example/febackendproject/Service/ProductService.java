@@ -4,11 +4,9 @@ import com.example.febackendproject.DTO.*;
 import com.example.febackendproject.Entity.Category;
 import com.example.febackendproject.Entity.Product;
 import com.example.febackendproject.Entity.Provider;
+import com.example.febackendproject.Entity.Stock;
 import com.example.febackendproject.Hooks.ProductSpecifications;
-import com.example.febackendproject.Repository.CategoryRepository;
-import com.example.febackendproject.Repository.ProductPaginationRepository;
-import com.example.febackendproject.Repository.ProductRepository;
-import com.example.febackendproject.Repository.ProviderRepository;
+import com.example.febackendproject.Repository.*;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -28,56 +26,7 @@ public class ProductService {
     private final ProductPaginationRepository productPaginationRepository;
     private final CategoryRepository categoryRepository;
     private final ProviderRepository providerRepository;
-    
-    private CompleteProductDTO convertDTO(Product product) {
-        CompleteProductDTO completeProductDTO = new CompleteProductDTO();
-        completeProductDTO.setId(product.getId());
-        completeProductDTO.setName(product.getName());
-        completeProductDTO.setDescription(product.getDescription());
-        completeProductDTO.setPrice(product.getPrice());
-        completeProductDTO.setMeasures(product.getMeasures());
-        completeProductDTO.setPriceSaleUnit(product.getPriceSaleUnit());
-        completeProductDTO.setUnitPerBox(product.getUnitPerBox());
-        completeProductDTO.setQuality(product.getQuality());
-        completeProductDTO.setDiscountPercentage(product.getDiscountPercentage());
-        completeProductDTO.setDiscountedPrice(product.getDiscountedPrice());
-        
-        Optional<Category> category = categoryRepository.findById(product.getCategoryId());
-        if (category.isPresent()) {
-            completeProductDTO.setCategory(category.get().getName());
-        } else {
-            completeProductDTO.setCategory(null);
-        }
-        
-        Optional<Provider> provider = providerRepository.findById(product.getProviderId());
-        if (provider.isPresent()) {
-            completeProductDTO.setProvider(provider.get().getName());
-        } else {
-            completeProductDTO.setProvider(null);
-        }
-        
-        /*
-        Optional<List<String>> images = this.getProductImages(product.getId());
-        if (images.isPresent()) {
-            completeProductDTO.setImages(images.get());
-        } else {
-            completeProductDTO.setImages(null);
-        }
-        */
-        completeProductDTO.setImages(product.getImages());
-        
-        /*
-        Optional<List<String>> tags = this.getProductTags(product.getId());
-        if (tags.isPresent()) {
-            completeProductDTO.setTags(tags.get());
-        } else {
-            completeProductDTO.setTags(null);
-        }
-        */
-        completeProductDTO.setTags(product.getTags());
-        return completeProductDTO;
-        
-    }
+    private final StockRepository stockRepository;
     
     private PartialProductDTO convertPartialDTO(Product product) {
         PartialProductDTO partialProductDTO = new PartialProductDTO();
@@ -151,8 +100,20 @@ public class ProductService {
             
             String provider = providerRepository.findById(product.get().getProviderId()).get().getName();
             returnProduct.setProvider(provider);
+            
+            Integer stock = stockRepository.getQuantityByProductId(product.get().getId());
+            returnProduct.setStock(stock);
         }
         return Optional.of(returnProduct);
+    }
+    
+    public Boolean existByName(String name) {
+        Optional<Product> searchProduct = productRepository.findProductByName(name);
+        return searchProduct.isPresent();
+    }
+    
+    public Boolean existById(Long id) {
+        return productRepository.existsById(id);
     }
     
     public void deleteById(Long id) {
@@ -183,12 +144,14 @@ public class ProductService {
         List<Long> listProductsByCategory = productRepository.getIdByCategory(categoryId);
         for (Long id : listProductsByCategory) {
             productRepository.deleteById(id);
+            stockRepository.deleteByProductId(id);
         }
     }
     
     public void deleteProductByProviderId(Long providerId) {
         List<Long> listProductsByProvider = productRepository.getIdByProvider(providerId);
         for (Long id : listProductsByProvider) {
+            stockRepository.deleteByProductId(id);
             productRepository.deleteById(id);
         }
     }

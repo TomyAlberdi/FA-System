@@ -1,6 +1,5 @@
 package com.example.febackendproject.Repository;
 
-import com.example.febackendproject.DTO.CompleteProductDTO;
 import com.example.febackendproject.DTO.MeasureDTO;
 import com.example.febackendproject.DTO.PricesDTO;
 import com.example.febackendproject.Entity.Product;
@@ -15,6 +14,9 @@ import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
+    
+    @Query("SELECT p FROM Product p WHERE p.name = ?1")
+    Optional<Product> findProductByName(String name);
     
     @Query("SELECT p.id FROM Product p WHERE p.categoryId = ?1")
     List<Long> getIdByCategory(Long id);

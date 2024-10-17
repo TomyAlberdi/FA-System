@@ -31,6 +31,8 @@ public class CompleteProductDTO {
     private String category;
     private String provider;
     
+    private Integer stock;
+    
     @Override
     public String toString() {
         return "Product {" +
