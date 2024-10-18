@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -28,5 +30,9 @@ public class Stock {
     
     @Column
     private Integer quantity = 0;
+    
+    @ElementCollection
+    @CollectionTable(name = "stock_records", joinColumns = @JoinColumn(name = "stock_id"))
+    private List<StockRecord> stockRecords;
     
 }

@@ -20,16 +20,6 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
     
     @Modifying
     @Transactional
-    @Query("UPDATE Stock SET quantity = quantity + ?2 WHERE productId = ?1")
-    void increaseStock(Long productId, Integer quantity);
-    
-    @Modifying
-    @Transactional
-    @Query("UPDATE Stock SET quantity = quantity - ?2 WHERE productId = ?1")
-    void reduceStock(Long productId, Integer quantity);
-    
-    @Modifying
-    @Transactional
     @Query("DELETE FROM Stock WHERE productId = ?1")
     void deleteByProductId(Long productId);
     

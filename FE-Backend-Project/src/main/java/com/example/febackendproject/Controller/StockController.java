@@ -1,6 +1,7 @@
 package com.example.febackendproject.Controller;
 
 import com.example.febackendproject.Entity.Product;
+import com.example.febackendproject.Entity.Stock;
 import com.example.febackendproject.Service.ProductService;
 import com.example.febackendproject.Service.StockService;
 import lombok.AllArgsConstructor;
@@ -32,12 +33,15 @@ public class StockController {
     
     @PatchMapping("/increase")
     public ResponseEntity<?> increaseStock(@RequestParam Long productId, @RequestParam Integer quantity) {
+        Optional<Stock> stock = stockService.getByProductId(productId);
         if (productService.existById(productId)) {
-            stockService.increaseStockById(productId, quantity);
-            return ResponseEntity.ok().body("Stock updated");
-        } else {
-            return notFound("ID", productId.toString());
+            if (stock.isPresent() && stock.get().getQuantity() >= quantity) {
+                stockService.increaseStockById(productId, quantity);
+                return ResponseEntity.ok().body("Stock updated");
+            }
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Requested Stock is greater than current Stock.");
         }
+        return notFound("ID", productId.toString());
     }
     
     @PatchMapping("/reduce")
