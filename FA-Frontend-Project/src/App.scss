@@ -1,10 +1,13 @@
 @use "@/var";
 @use "@/Pages/Home/Home";
 @use "@/Pages/User/User";
+@use "@/components/sidebar";
 
 div.App {
-  div.Layout {
-    border: 1px solid green;
+  div.Welcome {
     min-height: 100vh;
+    min-width: 100vw;
+    @include var.flex-container(row, center, center);
+    background-color: var.$foreground;
   }
 }

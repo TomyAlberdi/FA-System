@@ -1,21 +1,21 @@
 import "@/App.css";
 import "@/App.scss";
 import CustomRouter from "@/routes";
-import { KindeProvider } from "@kinde-oss/kinde-auth-react";
+import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import { Welcome } from "@/Pages/Welcome/Welcome";
+import { useEffect } from "react";
 
 function App() {
+  const { isAuthenticated } = useKindeAuth();
+
+  useEffect(() => {
+    console.log(isAuthenticated);
+  }, [isAuthenticated]);
+
   return (
-    <KindeProvider
-      clientId="3ca097572fbe4ab29308c9f21c78b1c5"
-      domain="https://fasa.kinde.com"
-      redirectUri="http://localhost:5173"
-      logoutUri="http://localhost:5173"
-      audience="fa-backend-api"
-    >
-      <div className="App">
-        <CustomRouter />
-      </div>
-    </KindeProvider>
+    <div className="App">
+      {isAuthenticated ? <CustomRouter /> : <Welcome />}
+    </div>
   );
 }
 
