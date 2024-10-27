@@ -1,17 +1,28 @@
 import { Navigate, useRoutes } from "react-router-dom"
-import Layout from "@/Layouts/Layout"
+import Page from "@/app/dashboard/page"
 import Home from "@/Pages/Home/Home"
+import User from "@/Pages/User/User"
 
 const CustomRouter = () => {
   return useRoutes([
     {
       path: "/",
-      element: <Layout />,
+      element: <Page />,
       children: [
         {
           index: true,
           element: <Home />
-        },
+        }
+      ]
+    },
+    {
+      path: "/user",
+      element: <Page />,
+      children: [
+        {
+          index: true,
+          element: <User />
+        }
       ]
     },
     {
