@@ -35,6 +35,7 @@ $sidebar-ring: #3ea8d1;
 $shadow-1: 3px 7px 13px -7.5px rgba(0,0,0,0.3);
 $shadow-2: 0 40px 90px 0 rgba(51, 51, 51, 0.3);
 $shadow-3: 0px 0px 15px 0px rgba(0,0,0,0.5);
+$shadow-4:  0px 1px 3px 1px rgba(0,0,0,0.3);
 
 @mixin flex-container($direction, $space, $items) {
   display: flex;

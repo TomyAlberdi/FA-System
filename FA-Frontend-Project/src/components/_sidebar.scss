@@ -1,0 +1,6 @@
+@use "@/var";
+
+div.sidebar-user-menu {
+  @include var.flex-container(row,center,center);
+  box-shadow: var.$shadow-4;
+}
