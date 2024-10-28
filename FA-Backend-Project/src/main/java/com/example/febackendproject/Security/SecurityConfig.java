@@ -28,25 +28,16 @@ public class SecurityConfig {
     @Value("${kinde.jwks.url}")
     private String jwksUrl;
     
-    //@Value("${kinde.issuer}")
-    @Value("${jwt.issuer}")
+    @Value("${kinde.issuer}")
     private String issuer;
     
-    //@Value("${kinde.audience}")
-    @Value("${jwt.audience}")
+    @Value("${kinde.audience}")
     private String audience;
     
     @Bean
     public JWTVerifier jwtVerifier() throws Exception {
-        /*
         JwksService jwksService = new JwksService(jwksUrl);
         Algorithm algorithm = Algorithm.RSA256(jwksService);
-        return JWT.require(algorithm)
-                .withIssuer(issuer)
-                .withAudience(audience)
-                .build();
-        */
-        Algorithm algorithm = Algorithm.HMAC256("my-test-secret");
         return JWT.require(algorithm)
                 .withIssuer(issuer)
                 .withAudience(audience)
@@ -69,7 +60,7 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(Arrays.asList("http://localhost:5173/\", \"http://192.168.0.183:5173/"));
+        config.setAllowedOrigins(Arrays.asList("http://localhost:5173/", "http://192.168.0.183:5173/"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Cache-Control"));
         source.registerCorsConfiguration("/**", config);
