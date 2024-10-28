@@ -4,6 +4,7 @@ import App from "./App.tsx";
 import { BrowserRouter } from "react-router-dom";
 import ScrollToHashElement from "@/hooks/ScrollToHasComponent.tsx";
 import { KindeProvider } from "@kinde-oss/kinde-auth-react";
+import CatalogContextComponent from "@/hooks/CatalogContextComponent.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -14,10 +15,12 @@ createRoot(document.getElementById("root")!).render(
       logoutUri="http://localhost:5173"
       audience="fa-backend-api"
     >
-      <BrowserRouter>
-        <ScrollToHashElement />
-        <App />
-      </BrowserRouter>
+      <CatalogContextComponent>
+        <BrowserRouter>
+          <ScrollToHashElement />
+          <App />
+        </BrowserRouter>
+      </CatalogContextComponent>
     </KindeProvider>
   </StrictMode>
 );
