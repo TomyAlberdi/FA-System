@@ -1,34 +1,18 @@
-import { Navigate, useRoutes } from "react-router-dom"
-import Page from "@/app/dashboard/page"
-import Home from "@/Pages/Home/Home"
-import User from "@/Pages/User/User"
+import { Navigate, useRoutes } from "react-router-dom";
+import Page from "@/app/dashboard/page";
+import { routesConfig } from "@/hooks/routesConfig";
 
 const CustomRouter = () => {
   return useRoutes([
     {
       path: "/",
       element: <Page />,
-      children: [
-        {
-          index: true,
-          element: <Home />
-        }
-      ]
-    },
-    {
-      path: "/user",
-      element: <Page />,
-      children: [
-        {
-          index: true,
-          element: <User />
-        }
-      ]
+      children: routesConfig,
     },
     {
       path: "*",
-      element: <Navigate to={"/"} />,
+      element: <Navigate to="/" />,
     },
-  ])
-}
-export default CustomRouter
+  ]);
+};
+export default CustomRouter;
