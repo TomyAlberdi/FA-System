@@ -2,6 +2,10 @@
 @use "@/Pages/Home/Home";
 @use "@/Pages/User/User";
 @use "@/components/sidebar";
+@use "@/Pages/Catalog/Catalog";
+@use "@/Pages/Products/Products";
+@use "@/Pages/Categories/Categories";
+@use "@/Pages/Providers/Providers";
 
 div.App {
   div.Welcome {
