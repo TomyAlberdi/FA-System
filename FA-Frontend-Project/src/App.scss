@@ -13,5 +13,14 @@ div.App {
     min-width: 100vw;
     @include var.flex-container(row, center, center);
     background-color: var.$foreground;
+    div.loading-welcome {
+      @include var.flex-container(column, center, center);
+      h1 {
+        font-size: 20px;
+        font-weight: bold;
+        color: var.$secondary;
+        padding-bottom: 20px;
+      }
+    }
   }
 }

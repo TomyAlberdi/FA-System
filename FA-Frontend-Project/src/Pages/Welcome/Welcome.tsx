@@ -8,23 +8,31 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Mail } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const Welcome = () => {
-  const { login } = useKindeAuth();
+  const { login, isLoading } = useKindeAuth();
 
   return (
     <div className="Welcome">
-      <Card>
-        <CardHeader>
-          <CardTitle>Falciglia & Alberdi S.A.</CardTitle>
-          <CardDescription>Administración</CardDescription>
-        </CardHeader>
-        <CardContent className="flex flex-col items-center justify-center">
-          <Button onClick={() => login()} size={"lg"}>
-            <Mail /> Iniciar Sesión
-          </Button>
-        </CardContent>
-      </Card>
+      {isLoading ? (
+        <div className="loading-welcome">
+          <h1>Loading...</h1>
+          <Skeleton className="h-4 w-[100px]" />
+        </div>
+      ) : (
+        <Card>
+          <CardHeader>
+            <CardTitle>Falciglia & Alberdi S.A.</CardTitle>
+            <CardDescription>Administración</CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col items-center justify-center">
+            <Button onClick={() => login()} size={"lg"}>
+              <Mail /> Iniciar Sesión
+            </Button>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };
