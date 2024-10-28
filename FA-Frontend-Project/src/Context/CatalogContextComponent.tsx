@@ -1,4 +1,4 @@
-import { CatalogContext } from "@/Context/CatalogContext";
+import { CatalogContext, CatalogContextType } from "@/Context/CatalogContext";
 import { ReactNode } from "react";
 
 interface CatalogContextComponentProps {
@@ -9,7 +9,7 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({ child
 
   const BASE_URL = "https://localhost:8443"
 
-  const exportData = {
+  const exportData: CatalogContextType = {
     BASE_URL,
   }
 

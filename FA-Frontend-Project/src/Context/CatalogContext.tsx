@@ -1,3 +1,7 @@
 import { createContext } from 'react';
 
-export const CatalogContext = createContext<unknown | null>(null);
+export interface CatalogContextType {
+  BASE_URL: string;
+}
+
+export const CatalogContext = createContext<CatalogContextType | null>(null);

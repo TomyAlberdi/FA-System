@@ -49,8 +49,6 @@ export default function Page() {
     })
     .filter(Boolean);
 
-  console.log(breadcrumbs);
-
   return (
     <SidebarProvider>
       <AppSidebar />
