@@ -17,7 +17,7 @@ export const Welcome = () => {
     <div className="Welcome">
       {isLoading ? (
         <div className="loading-welcome">
-          <h1>Loading...</h1>
+          <h1>Cargando...</h1>
           <Skeleton className="h-4 w-[100px]" />
         </div>
       ) : (

@@ -1,4 +1,4 @@
-import { CatalogContext } from "@/hooks/CatalogContext";
+import { CatalogContext } from "@/Context/CatalogContext";
 import { ReactNode } from "react";
 
 interface CatalogContextComponentProps {

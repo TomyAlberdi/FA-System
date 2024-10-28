@@ -4,7 +4,7 @@ import App from "./App.tsx";
 import { BrowserRouter } from "react-router-dom";
 import ScrollToHashElement from "@/hooks/ScrollToHasComponent.tsx";
 import { KindeProvider } from "@kinde-oss/kinde-auth-react";
-import CatalogContextComponent from "@/hooks/CatalogContextComponent.tsx";
+import CatalogContextComponent from "@/Context/CatalogContextComponent.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
