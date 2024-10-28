@@ -31,6 +31,9 @@ div.App {
     font-weight: 700;
     letter-spacing: -.025em;
   }
+  .listHeader {
+    @include var.flex-container(row, space-between, center);
+  }
   .listBody {
     @include var.flex-container(row, flex-start, flex-start);
     flex-wrap: wrap;
