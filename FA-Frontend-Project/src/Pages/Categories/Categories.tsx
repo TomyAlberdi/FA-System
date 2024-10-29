@@ -21,7 +21,7 @@ export const Categories = () => {
   const [Data, setData] = useState<Array<Category> | null>([]);
   const [Loading, setLoading] = useState<boolean>(true);
 
-  const [UpdateData, setUpdateData] = useState(false)
+  const [UpdateData, setUpdateData] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -69,17 +69,29 @@ export const Categories = () => {
         ) : (
           Data?.map((category: Category) => {
             return isDesktop ? (
-              <Button asChild key={category.id} className="buttonCard h-[150px] w-[19.2%] min-w-[300px] max-w-[400px]">
+              <Button
+                asChild
+                key={category.id}
+                className="buttonCard h-[150px] w-[19.2%] min-w-[300px] max-w-[400px]"
+              >
                 <Link to={`/catalog/categories/${category.id}`}>
                   <h1 className="text-2xl">{category.name}</h1>
-                  <h3 className="text-lg">Productos: {category.productsAmount}</h3>
+                  <h3 className="text-lg">
+                    Productos: {category.productsAmount}
+                  </h3>
                 </Link>
               </Button>
             ) : (
-              <Button asChild key={category.id} className="buttonCard h-[150px] w-full">
+              <Button
+                asChild
+                key={category.id}
+                className="buttonCard h-[150px] w-full"
+              >
                 <Link to={`/catalog/categories/${category.id}`}>
                   <h1 className="text-2xl">{category.name}</h1>
-                  <h3 className="text-lg">Productos: {category.productsAmount}</h3>
+                  <h3 className="text-lg">
+                    Productos: {category.productsAmount}
+                  </h3>
                 </Link>
               </Button>
             );

@@ -46,7 +46,7 @@ const Category = () => {
         </div>
       ) : Data ? (
         <section className="CatalogPageData h-full w-full">
-          
+          <h1>{Data.name}</h1>
         </section>
       ) : (
         <h1>Error</h1>
