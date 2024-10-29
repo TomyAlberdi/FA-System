@@ -22,6 +22,7 @@ import { Input } from "@/components/ui/input";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useState } from "react";
 import { useCatalogContext } from "@/Context/UseCatalogContext";
+import { useToast } from "@/hooks/use-toast"
 
 const formSchema = z.object({
   name: z.string().min(3, {
@@ -29,18 +30,21 @@ const formSchema = z.object({
   }),
 });
 
-interface Category {
-  id: number;
-  name: string;
-  productsAmount: number;
+interface CategoriesHeaderProps {
+  setUpdateData: (value: boolean) => void;
+  UpdateData: boolean;
 }
 
-export const CategoriesHeader = () => {
+export const CategoriesHeader: React.FC<CategoriesHeaderProps> = ({
+  setUpdateData,
+  UpdateData,
+}) => {
   const [open, setOpen] = useState(false);
 
   const { BASE_URL } = useCatalogContext();
-
   const { getToken } = useKindeAuth();
+
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -52,23 +56,35 @@ export const CategoriesHeader = () => {
   async function onSubmit(data: z.infer<typeof formSchema>) {
     if (typeof getToken === "function") {
       const token = await getToken();
-      console.log(token);
       try {
         const response = await fetch(`${BASE_URL}/category/${data.name}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${token}`
           },
         });
         if (!response.ok) {
           console.error("Error: ", response.statusText);
+          toast({
+            variant: "destructive",
+            title: `Error ${response.status}`,
+            description: `Ocurrió un error al crear la categoría.`,
+          });
           return;
         }
-        const result: Category = await response.json();
-        console.log(result);
+        toast({
+          title: "Categoría creada",
+          description: "La categoría ha sido creada con éxito",
+        });
+        setUpdateData(!UpdateData);
       } catch (error) {
         console.error("Error: ", error);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Ocurrió un error al crear la categoría",
+        });
       } finally {
         setOpen(false);
       }

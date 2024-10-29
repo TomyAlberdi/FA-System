@@ -21,10 +21,11 @@ export const Categories = () => {
   const [Data, setData] = useState<Array<Category> | null>([]);
   const [Loading, setLoading] = useState<boolean>(true);
 
+  const [UpdateData, setUpdateData] = useState(false)
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-
       try {
         const response = await fetch(`${BASE_URL}/category`);
         if (!response.ok) {
@@ -40,11 +41,11 @@ export const Categories = () => {
       }
     };
     fetchData();
-  }, [BASE_URL]);
+  }, [BASE_URL, UpdateData]);
 
   return (
     <div className="Categories">
-      <CategoriesHeader />
+      <CategoriesHeader setUpdateData={setUpdateData} UpdateData={UpdateData} />
       <section className="listBody">
         {Loading ? (
           Array.from({ length: 9 }, (_, i) => {
