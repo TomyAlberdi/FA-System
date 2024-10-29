@@ -1,5 +1,6 @@
 import { Catalog } from "@/Pages/Catalog/Catalog";
 import { Categories } from "@/Pages/Categories/Categories";
+import Category from "@/Pages/Category/Category";
 import Home from "@/Pages/Home/Home";
 import { Products } from "@/Pages/Products/Products";
 import { Providers } from "@/Pages/Providers/Providers";
@@ -12,6 +13,5 @@ export const routesConfig = [
   { path: "/catalog/products", element: <Products />, handle: "Productos" },
   { path: "/catalog/categories", element: <Categories />, handle: "Categorías" },
   { path: "/catalog/providers", element: <Providers />, handle: "Proveedores" },
-  { path: "/catalog/providers/test", element: <Providers />, handle: "Proveedores" },
-  { path: "/catalog/providers/test/super", element: <Providers />, handle: "Proveedores" },
+  { path: "/catalog/categories/:id", element: <Category />, handle: "Categoría" },
 ];

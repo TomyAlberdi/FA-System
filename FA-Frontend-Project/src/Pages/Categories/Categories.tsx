@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { AlertCircle } from "lucide-react";
 import { useCatalogContext } from "@/Context/UseCatalogContext";
 import { CategoriesHeader } from "@/Pages/Categories/CategoriesHeader";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 interface Category {
   id: number;
   name: string;
@@ -17,7 +19,7 @@ export const Categories = () => {
   const { BASE_URL } = useCatalogContext();
 
   const [Data, setData] = useState<Array<Category> | null>([]);
-  const [Loading, setLoading] = useState<boolean>(false);
+  const [Loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -63,7 +65,25 @@ export const Categories = () => {
               No se encontraron categorías.
             </AlertDescription>
           </Alert>
-        ) : null}
+        ) : (
+          Data?.map((category: Category) => {
+            return isDesktop ? (
+              <Button asChild key={category.id} className="buttonCard h-[150px] w-[19.2%] min-w-[300px] max-w-[400px]">
+                <Link to={`/catalog/categories/${category.id}`}>
+                  <h1 className="text-2xl">{category.name}</h1>
+                  <h3 className="text-lg">Productos: {category.productsAmount}</h3>
+                </Link>
+              </Button>
+            ) : (
+              <Button asChild key={category.id} className="buttonCard h-[150px] w-full">
+                <Link to={`/catalog/categories/${category.id}`}>
+                  <h1 className="text-2xl">{category.name}</h1>
+                  <h3 className="text-lg">Productos: {category.productsAmount}</h3>
+                </Link>
+              </Button>
+            );
+          })
+        )}
       </section>
     </div>
   );

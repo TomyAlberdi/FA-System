@@ -4,8 +4,8 @@
 @use "@/components/sidebar";
 @use "@/Pages/Catalog/Catalog";
 @use "@/Pages/Products/Products";
-@use "@/Pages/Categories/Categories";
 @use "@/Pages/Providers/Providers";
+@use "@/Pages/Category/Category";
 
 @import url("https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@200;300;400;500;700&display=swap");
 
@@ -39,8 +39,26 @@ div.App {
     flex-wrap: wrap;
     gap: 1%;
     padding-top: 1rem;
-    article, .skeletonCard {
+    .buttonCard, .skeletonCard {
       margin-bottom: 1%;
+      @include var.flex-container(column, center, center);
     }
+  }
+  .loading {
+    @include var.flex-container(column, center, center);
+    background-color: var.$card-foreground;
+    border-radius: 0.75rem;
+    box-shadow: var.$shadow-3;
+    h1 {
+      color: var.$secondary;
+      font-weight: bold;
+      padding-bottom: 20px;
+    }
+  }
+  .pageBody {
+    min-height: calc(100svh - 5rem);
+  }
+  .CatalogPage {
+    @include var.flex-container(column, center, center);
   }
 }
