@@ -7,7 +7,7 @@ interface CatalogContextComponentProps {
 
 const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({ children }) => {
 
-  const BASE_URL = "https://localhost:8443"
+  const BASE_URL = "http://localhost:8080"
 
   const exportData: CatalogContextType = {
     BASE_URL,

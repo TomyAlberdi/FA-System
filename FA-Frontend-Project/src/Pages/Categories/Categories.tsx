@@ -3,7 +3,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useEffect, useState } from "react";
 import { AlertCircle } from "lucide-react";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useCatalogContext } from "@/Context/UseCatalogContext";
 import { CategoriesHeader } from "@/Pages/Categories/CategoriesHeader";
 interface Category {
@@ -16,7 +15,6 @@ export const Categories = () => {
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
   const { BASE_URL } = useCatalogContext();
-  const token = useKindeAuth().getToken;
 
   const [Data, setData] = useState<Array<Category> | null>([]);
   const [Loading, setLoading] = useState<boolean>(false);
@@ -40,7 +38,7 @@ export const Categories = () => {
       }
     };
     fetchData();
-  }, [token, BASE_URL]);
+  }, [BASE_URL]);
 
   return (
     <div className="Categories">
