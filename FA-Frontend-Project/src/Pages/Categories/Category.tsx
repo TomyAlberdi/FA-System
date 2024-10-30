@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useCatalogContext } from "@/Context/UseCatalogContext";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -20,6 +20,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
+import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 
 interface Category {
   id: number;
@@ -29,9 +32,10 @@ interface Category {
 
 const Category = () => {
   const { id } = useParams();
-
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const { BASE_URL } = useCatalogContext();
-
+  const { getToken } = useKindeAuth();
   const [Category, setCategory] = useState<Category | null>(null);
   const [Loading, setLoading] = useState(true);
 
@@ -54,6 +58,59 @@ const Category = () => {
     };
     fetchCategory();
   }, [id, BASE_URL]);
+
+  const onDeletePres = () => {
+    if (Category && Category?.productsAmount > 0) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "La categoría tiene productos asociados.",
+      });
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Confirmación",
+        description: "¿Desea eliminar la categoría?",
+        action: <ToastAction altText="Eliminar" onClick={deleteCategory}>Eliminar</ToastAction>
+      })
+    }
+  }
+
+  const deleteCategory = async () => {
+    if (typeof getToken === "function") {
+      const token = await getToken();
+      try {
+        const response = await fetch(`${BASE_URL}/category/${id}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+        });
+        if (!response.ok) {
+          console.error("Error: ", response.statusText);
+          toast({
+            variant: "destructive",
+            title: `Error ${response.status}`,
+            description: `Ocurrió un error al eliminar la categoría.`,
+          });
+          return;
+        }
+        toast({
+          title: "Categoría eliminada",
+          description: "La categoría ha sido eliminada con éxito",
+        });
+        navigate("/catalog/categories");
+      } catch (error) {
+        console.error("Error: ", error);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Ocurrió un error al eliminar la categoría",
+        });
+      }
+    } else return;
+  }
 
   return (
     <div className="CatalogPage CategoryPage h-full">
@@ -79,7 +136,7 @@ const Category = () => {
                 <Button className="w-full mb-2">
                   Editar
                 </Button>
-                <Button variant="destructive" className="w-full">
+                <Button variant="destructive" className="w-full" onClick={onDeletePres}>
                   Eliminar
                 </Button>
               </CardContent>

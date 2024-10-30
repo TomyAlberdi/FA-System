@@ -10,7 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useCatalogContext } from "@/Context/UseCatalogContext";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -20,6 +20,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useToast } from "@/hooks/use-toast";
+import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import { ToastAction } from "@/components/ui/toast";
 
 interface Provider {
   id: number;
@@ -32,6 +35,9 @@ export const Provider = () => {
   const { BASE_URL } = useCatalogContext();
   const [Provider, setProvider] = useState<Provider | null>(null);
   const [Loading, setLoading] = useState(true);
+  const { toast } = useToast();
+  const { getToken } = useKindeAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProvider = async () => {
@@ -52,6 +58,59 @@ export const Provider = () => {
     };
     fetchProvider();
   }, [id, BASE_URL]);
+
+  const onDeletePres = () => {
+    if (Provider && Provider?.productsAmount > 0) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "El proveedor tiene productos asociados.",
+      });
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Confirmación",
+        description: "¿Desea eliminar el proveedor?",
+        action: <ToastAction altText="Eliminar" onClick={deleteProvider}>Eliminar</ToastAction>
+      })
+    }
+  }
+
+  const deleteProvider = async () => {
+    if (typeof getToken === "function") {
+      const token = await getToken();
+      try {
+        const response = await fetch(`${BASE_URL}/provider/${id}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+        });
+        if (!response.ok) {
+          console.error("Error: ", response.statusText);
+          toast({
+            variant: "destructive",
+            title: `Error ${response.status}`,
+            description: `Ocurrió un error al eliminar el proveedor.`,
+          });
+          return;
+        }
+        toast({
+          title: "Proveedor eliminado",
+          description: "El proveedor ha sido eliminado con éxito",
+        });
+        navigate("/catalog/providers");
+      } catch (error) {
+        console.error("Error: ", error);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Ocurrió un error al eliminar el proveedor",
+        });
+      }
+    } else return;
+  }
 
   return (
     <div className="CatalogPage ProviderPage h-full">
@@ -75,7 +134,7 @@ export const Provider = () => {
               </CardContent>
               <CardContent>
                 <Button className="w-full mb-2">Editar</Button>
-                <Button variant="destructive" className="w-full">
+                <Button variant="destructive" className="w-full" onClick={onDeletePres}>
                   Eliminar
                 </Button>
               </CardContent>
