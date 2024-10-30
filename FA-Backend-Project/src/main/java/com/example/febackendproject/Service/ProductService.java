@@ -107,6 +107,28 @@ public class ProductService {
         return Optional.of(returnProduct);
     }
     
+    public List<PartialProductStockDTO> getPartialProductStockByCategory(Long categoryId) {
+        List<PartialProductStockDTO> noStockList = productRepository.getPartialProductStockByCategory(categoryId);
+        if (noStockList.isEmpty()) {
+            return noStockList;
+        }
+        noStockList.forEach((prod) -> {
+            prod.setStock(stockRepository.getQuantityByProductId(prod.getId()));
+        });
+        return noStockList;
+    }
+    
+    public List<PartialProductStockDTO> getPartialProductStockByProvider(Long providerId) {
+        List<PartialProductStockDTO> noStockList = productRepository.getPartialProductStockByProvider(providerId);
+        if (noStockList.isEmpty()) {
+            return noStockList;
+        }
+        noStockList.forEach((prod) -> {
+            prod.setStock(stockRepository.getQuantityByProductId(prod.getId()));
+        });
+        return noStockList;
+    }
+    
     public Boolean existByName(String name) {
         Optional<Product> searchProduct = productRepository.findProductByName(name);
         return searchProduct.isPresent();

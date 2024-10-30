@@ -3,6 +3,7 @@ package com.example.febackendproject.Controller;
 import com.example.febackendproject.DTO.CompleteProductDTO;
 import com.example.febackendproject.DTO.FilterDTO;
 import com.example.febackendproject.DTO.PartialProductDTO;
+import com.example.febackendproject.DTO.PartialProductStockDTO;
 import com.example.febackendproject.Entity.Category;
 import com.example.febackendproject.Entity.Product;
 import com.example.febackendproject.Entity.Provider;
@@ -123,6 +124,16 @@ public class ProductController {
         }
         productService.updateProduct(product);
         return ResponseEntity.ok("Product updated.");
+    }
+    
+    @GetMapping("/getPartialByCategory")
+    public ResponseEntity<List<PartialProductStockDTO>> getPartialByCategory(Long categoryId) {
+        return ResponseEntity.ok(productService.getPartialProductStockByCategory(categoryId));
+    }
+    
+    @GetMapping("/getPartialByProvider")
+    public ResponseEntity<List<PartialProductStockDTO>> getPartialByProvider(Long providerId) {
+        return ResponseEntity.ok(productService.getPartialProductStockByProvider(providerId));
     }
     
 }

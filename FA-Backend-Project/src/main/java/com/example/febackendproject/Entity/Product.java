@@ -56,22 +56,26 @@ public class Product {
     
     @Column
     @NotNull
-    // 13cm x 13cm
+    // Medidas
+    // Ej: 13cm x 13cm
     private String measures;
     
     @NotNull
     @Column(name = "sale_unit")
-    // M2
+    // Unidad
+    // Ej: M2
     private String saleUnit;
     
     @NotNull
     @Column(name = "price_sale_unit")
-    // 100$ x M2
+    // Precio por unidad
+    // Ej: 100$ x M2
     private Double priceSaleUnit;
     
     @NotNull
     @Column(name = "unit_per_box")
-    // 10 M2 per box
+    // Unidad de medida por caja
+    // Ej: 10 M2 per box
     private Double unitPerBox;
     
     @NotNull

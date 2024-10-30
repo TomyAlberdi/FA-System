@@ -1,6 +1,7 @@
 package com.example.febackendproject.Repository;
 
 import com.example.febackendproject.DTO.MeasureDTO;
+import com.example.febackendproject.DTO.PartialProductStockDTO;
 import com.example.febackendproject.DTO.PricesDTO;
 import com.example.febackendproject.Entity.Product;
 import jakarta.transaction.Transactional;
@@ -17,24 +18,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     
     @Query("SELECT p FROM Product p WHERE p.name = ?1")
     Optional<Product> findProductByName(String name);
-    
-    @Query("SELECT p.id FROM Product p WHERE p.categoryId = ?1")
-    List<Long> getIdByCategory(Long id);
-    
-    @Query("SELECT COUNT(p) AS amount FROM Product p WHERE p.categoryId = ?1")
-    Integer getProductAmountByCategory(Long id);
-    
-    @Query("SELECT p.id FROM Product p WHERE p.providerId = ?1")
-    List<Long> getIdByProvider(Long id);
-    
-    @Query("SELECT COUNT(p) AS amount FROM Product p WHERE p.providerId = ?1")
-    Integer getProductAmountByProvider(Long id);
-    
-    @Query("SELECT new com.example.febackendproject.DTO.MeasureDTO(p.measures, COUNT(p)) FROM Product p GROUP BY p.measures ORDER BY COUNT(p) DESC")
-    List<MeasureDTO> getMeasures();
-    
-    @Query("SELECT new com.example.febackendproject.DTO.PricesDTO(MIN(p.price), MAX(p.price)) FROM Product p")
-    PricesDTO getPrices();
     
     @Modifying
     @Transactional
@@ -53,8 +36,38 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "quality = ?12 " +
             "WHERE id = ?13")
     void updateById(String name, String description, Long categoryId, Long providerId, Integer discount_percentage,
-                      Double discount_new_price, String measures, Double m2PerBox, Double priceUnit,
-                      String salesUnit, Double price, String quality, Long id);
+                    Double discount_new_price, String measures, Double m2PerBox, Double priceUnit,
+                    String salesUnit, Double price, String quality, Long id);
+    
+    /////// SEARCHES BY CATEGORY
+    
+    @Query("SELECT p.id FROM Product p WHERE p.categoryId = ?1")
+    List<Long> getIdByCategory(Long id);
+    
+    @Query("SELECT COUNT(p) AS amount FROM Product p WHERE p.categoryId = ?1")
+    Integer getProductAmountByCategory(Long id);
+    
+    @Query("SELECT new com.example.febackendproject.DTO.PartialProductStockDTO(p.id, p.name, 0, p.saleUnit, p.price) FROM Product p WHERE p.categoryId = ?1")
+    List<PartialProductStockDTO> getPartialProductStockByCategory(Long id);
+    
+    /////// SEARCHES BY PROVIDER
+    
+    @Query("SELECT p.id FROM Product p WHERE p.providerId = ?1")
+    List<Long> getIdByProvider(Long id);
+    
+    @Query("SELECT COUNT(p) AS amount FROM Product p WHERE p.providerId = ?1")
+    Integer getProductAmountByProvider(Long id);
+    
+    @Query("SELECT new com.example.febackendproject.DTO.PartialProductStockDTO(p.id, p.name, 0, p.saleUnit, p.price) FROM Product p WHERE p.providerId = ?1")
+    List<PartialProductStockDTO> getPartialProductStockByProvider(Long id);
+    
+    /////// UTILS
+    
+    @Query("SELECT new com.example.febackendproject.DTO.MeasureDTO(p.measures, COUNT(p)) FROM Product p GROUP BY p.measures ORDER BY COUNT(p) DESC")
+    List<MeasureDTO> getMeasures();
+    
+    @Query("SELECT new com.example.febackendproject.DTO.PricesDTO(MIN(p.price), MAX(p.price)) FROM Product p")
+    PricesDTO getPrices();
     
     @Modifying
     @Transactional
