@@ -49,11 +49,11 @@ export const Providers = () => {
           Array.from({ length: 9 }, (_, i) => {
             return isDesktop ? (
               <Skeleton
-                className="skeletonCard h-[150px] w-[19.2%] min-w-[300px] max-w-[400px]"
+                className="skeletonCard h-[100px] w-[19.2%] min-w-[300px] max-w-[400px]"
                 key={i}
               />
             ) : (
-              <Skeleton className="skeletonCard h-[150px] w-full" key={i} />
+              <Skeleton className="skeletonCard h-[100px] w-full" key={i} />
             );
           })
         ) : Data?.length == 0 ? (
@@ -70,11 +70,11 @@ export const Providers = () => {
               <Button
                 asChild
                 key={provider.id}
-                className="buttonCard h-[150px] w-[19.2%] min-w-[300px] max-w-[400px]"
+                className="buttonCard h-[100px] w-[19.2%] min-w-[300px] max-w-[400px]"
               >
                 <Link to={`/catalog/providers/${provider.id}`}>
                   <h1 className="text-2xl">{provider.name}</h1>
-                  <h3 className="text-lg">
+                  <h3 className="text-lg font-light">
                     Productos: {provider.productsAmount}
                   </h3>
                 </Link>
@@ -83,11 +83,11 @@ export const Providers = () => {
               <Button
                 asChild
                 key={provider.id}
-                className="buttonCard h-[150px] w-full"
+                className="buttonCard h-[100px] w-full"
               >
                 <Link to={`/catalog/providers/${provider.id}`}>
                   <h1 className="text-2xl">{provider.name}</h1>
-                  <h3 className="text-lg">
+                  <h3 className="text-lg font-light">
                     Productos: {provider.productsAmount}
                   </h3>
                 </Link>

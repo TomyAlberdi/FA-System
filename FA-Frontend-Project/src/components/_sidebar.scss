@@ -2,5 +2,5 @@
 
 div.sidebar-user-menu {
   @include var.flex-container(row,center,center);
-  box-shadow: var.$shadow-4;
+  box-shadow: var.$shadow-2;
 }

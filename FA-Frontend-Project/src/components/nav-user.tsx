@@ -39,8 +39,8 @@ export function NavUser() {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <div className="sidebar-user-menu h-8 w-8 rounded-lg avatar-icon">
-                <User />
+              <div className="sidebar-user-menu h-8 w-8 rounded-lg avatar-icon bg-sidebar-primary">
+                <User color="#fff" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
