@@ -52,8 +52,8 @@ public class CategoryController {
         }
     }
     
-    @GetMapping("/getPartialByCategory")
-    public ResponseEntity<List<PartialProductStockDTO>> getPartialByCategory(Long categoryId) {
+    @GetMapping("/{categoryId}/products")
+    public ResponseEntity<List<PartialProductStockDTO>> getPartialByCategory(@PathVariable Long categoryId) {
         return ResponseEntity.ok(productService.getPartialProductStockByCategory(categoryId));
     }
     

@@ -15,6 +15,7 @@ public class PartialProductStockDTO {
     private String name;
     private Integer Stock;
     private String saleUnit;
+    private Double unitPerBox;
     private Double price;
 
 }

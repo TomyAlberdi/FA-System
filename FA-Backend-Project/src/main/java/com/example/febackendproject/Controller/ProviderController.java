@@ -52,8 +52,8 @@ public class ProviderController {
         }
     }
     
-    @GetMapping("/getPartialByProvider")
-    public ResponseEntity<List<PartialProductStockDTO>> getPartialByProvider(Long providerId) {
+    @GetMapping("/{providerId}/products")
+    public ResponseEntity<List<PartialProductStockDTO>> getPartialByProvider(@PathVariable Long providerId) {
         return ResponseEntity.ok(productService.getPartialProductStockByProvider(providerId));
     }
     

@@ -47,7 +47,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT COUNT(p) AS amount FROM Product p WHERE p.categoryId = ?1")
     Integer getProductAmountByCategory(Long id);
     
-    @Query("SELECT new com.example.febackendproject.DTO.PartialProductStockDTO(p.id, p.name, 0, p.saleUnit, p.price) FROM Product p WHERE p.categoryId = ?1")
+    @Query("SELECT new com.example.febackendproject.DTO.PartialProductStockDTO(p.id, p.name, 0, p.saleUnit, p.unitPerBox, p.price) FROM Product p WHERE p.categoryId = ?1")
     List<PartialProductStockDTO> getPartialProductStockByCategory(Long id);
     
     /////// SEARCHES BY PROVIDER
@@ -58,7 +58,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT COUNT(p) AS amount FROM Product p WHERE p.providerId = ?1")
     Integer getProductAmountByProvider(Long id);
     
-    @Query("SELECT new com.example.febackendproject.DTO.PartialProductStockDTO(p.id, p.name, 0, p.saleUnit, p.price) FROM Product p WHERE p.providerId = ?1")
+    @Query("SELECT new com.example.febackendproject.DTO.PartialProductStockDTO(p.id, p.name, 0, p.saleUnit, p.unitPerBox, p.price) FROM Product p WHERE p.providerId = ?1")
     List<PartialProductStockDTO> getPartialProductStockByProvider(Long id);
     
     /////// UTILS
