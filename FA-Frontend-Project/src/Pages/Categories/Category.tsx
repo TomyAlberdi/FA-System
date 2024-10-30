@@ -23,7 +23,17 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
+interface Product {
+  id: number;
+  name: string;
+  stock: number;
+  saleUnit: string;
+  unitPerBox: number;
+  price: number;
+}
 interface Category {
   id: number;
   name: string;
@@ -37,6 +47,7 @@ const Category = () => {
   const { BASE_URL } = useCatalogContext();
   const { getToken } = useKindeAuth();
   const [Category, setCategory] = useState<Category | null>(null);
+  const [Products, setProducts] = useState<Array<Product> | null>([]);
   const [Loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -56,7 +67,27 @@ const Category = () => {
         setLoading(false);
       }
     };
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch(`${BASE_URL}/category/${id}/products`);
+        if (!response.ok) {
+          console.error("Error fetching Category: ", response.statusText);
+          toast({
+            variant: "destructive",
+            title: `Error ${response.status}`,
+            description: `Ocurrió un error al obtener los productos de la categoría.`,
+          });
+          return;
+        }
+        const result: Array<Product> = await response.json();
+        setProducts(result);
+      } catch (error) {
+        console.error("Error fetching Provider: ", error);
+      }
+    };
     fetchCategory();
+    fetchProducts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, BASE_URL]);
 
   const onDeletePres = () => {
@@ -71,10 +102,14 @@ const Category = () => {
         variant: "destructive",
         title: "Confirmación",
         description: "¿Desea eliminar la categoría?",
-        action: <ToastAction altText="Eliminar" onClick={deleteCategory}>Eliminar</ToastAction>
-      })
+        action: (
+          <ToastAction altText="Eliminar" onClick={deleteCategory}>
+            Eliminar
+          </ToastAction>
+        ),
+      });
     }
-  }
+  };
 
   const deleteCategory = async () => {
     if (typeof getToken === "function") {
@@ -84,7 +119,7 @@ const Category = () => {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
           },
         });
         if (!response.ok) {
@@ -110,7 +145,7 @@ const Category = () => {
         });
       }
     } else return;
-  }
+  };
 
   return (
     <div className="CatalogPage CategoryPage h-full">
@@ -133,10 +168,12 @@ const Category = () => {
                 </CardDescription>
               </CardContent>
               <CardContent>
-                <Button className="w-full mb-2">
-                  Editar
-                </Button>
-                <Button variant="destructive" className="w-full" onClick={onDeletePres}>
+                <Button className="w-full mb-2">Editar</Button>
+                <Button
+                  variant="destructive"
+                  className="w-full"
+                  onClick={onDeletePres}
+                >
                   Eliminar
                 </Button>
               </CardContent>
@@ -146,29 +183,45 @@ const Category = () => {
             <h2 className="text-xl text-muted-foreground text-left pb-5">
               Lista de productos
             </h2>
-            <Table>
-              <TableCaption>Lista de productos</TableCaption>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-1/12">ID</TableHead>
-                  <TableHead className="w-1/3">Nombre</TableHead>
-                  <TableHead className="w-1/3">Stock</TableHead>
-                  <TableHead>Precio</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {Array.from({ length: 5 }, (_, i) => {
-                  return (
-                    <TableRow key={i}>
-                      <TableCell className="font-medium">123</TableCell>
-                      <TableCell>Producto</TableCell>
-                      <TableCell>10 Cajas (100m2)</TableCell>
-                      <TableCell>$100</TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
+            {Products && Products?.length > 0 ? (
+              <Table>
+                <TableCaption>Lista de productos</TableCaption>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-1/12">ID</TableHead>
+                    <TableHead className="w-1/3">Nombre</TableHead>
+                    <TableHead className="w-1/3">Stock</TableHead>
+                    <TableHead>Precio</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {Products?.map((product: Product, i: number) => {
+                    return (
+                      <TableRow key={i}>
+                        <TableCell className="font-medium">
+                          {product.id}
+                        </TableCell>
+                        <TableCell>{product.name}</TableCell>
+                        <TableCell>
+                          {product.stock} Cajas (
+                          {product.stock * product.unitPerBox}{" "}
+                          {product.saleUnit})
+                        </TableCell>
+                        <TableCell>${product.price}</TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            ) : (
+              <Alert variant="destructive" className="w-auto">
+                <AlertCircle className="w-5 pt-1" />
+                <AlertTitle className="text-xl">Error</AlertTitle>
+                <AlertDescription className="text-lg">
+                  La categoría no tiene productos asociados.
+                </AlertDescription>
+              </Alert>
+            )}
           </ScrollArea>
         </section>
       ) : null}

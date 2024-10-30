@@ -23,6 +23,17 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { ToastAction } from "@/components/ui/toast";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
+
+interface Product {
+  id: number;
+  name: string;
+  stock: number;
+  saleUnit: string;
+  unitPerBox: number;
+  price: number;
+}
 
 interface Provider {
   id: number;
@@ -34,6 +45,7 @@ export const Provider = () => {
   const { id } = useParams();
   const { BASE_URL } = useCatalogContext();
   const [Provider, setProvider] = useState<Provider | null>(null);
+  const [Products, setProducts] = useState<Array<Product> | null>([]);
   const [Loading, setLoading] = useState(true);
   const { toast } = useToast();
   const { getToken } = useKindeAuth();
@@ -46,6 +58,11 @@ export const Provider = () => {
         const response = await fetch(`${BASE_URL}/provider/${id}`);
         if (!response.ok) {
           console.error("Error fetching Provider: ", response.statusText);
+          toast({
+            variant: "destructive",
+            title: `Error ${response.status}`,
+            description: `Ocurrió un error al obtener el proveedor.`,
+          });
           return;
         }
         const result: Provider = await response.json();
@@ -56,7 +73,27 @@ export const Provider = () => {
         setLoading(false);
       }
     };
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch(`${BASE_URL}/provider/${id}/products`);
+        if (!response.ok) {
+          console.error("Error fetching Provider products: ", response.statusText);
+          toast({
+            variant: "destructive",
+            title: `Error ${response.status}`,
+            description: `Ocurrió un error al obtener los productos del proveedor.`,
+          });
+          return;
+        }
+        const result: Array<Product> = await response.json();
+        setProducts(result);
+      } catch (error) {
+        console.error("Error fetching Provider products: ", error);
+      }
+    };
     fetchProvider();
+    fetchProducts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, BASE_URL]);
 
   const onDeletePres = () => {
@@ -71,10 +108,14 @@ export const Provider = () => {
         variant: "destructive",
         title: "Confirmación",
         description: "¿Desea eliminar el proveedor?",
-        action: <ToastAction altText="Eliminar" onClick={deleteProvider}>Eliminar</ToastAction>
-      })
+        action: (
+          <ToastAction altText="Eliminar" onClick={deleteProvider}>
+            Eliminar
+          </ToastAction>
+        ),
+      });
     }
-  }
+  };
 
   const deleteProvider = async () => {
     if (typeof getToken === "function") {
@@ -84,7 +125,7 @@ export const Provider = () => {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
           },
         });
         if (!response.ok) {
@@ -110,7 +151,7 @@ export const Provider = () => {
         });
       }
     } else return;
-  }
+  };
 
   return (
     <div className="CatalogPage ProviderPage h-full">
@@ -134,7 +175,11 @@ export const Provider = () => {
               </CardContent>
               <CardContent>
                 <Button className="w-full mb-2">Editar</Button>
-                <Button variant="destructive" className="w-full" onClick={onDeletePres}>
+                <Button
+                  variant="destructive"
+                  className="w-full"
+                  onClick={onDeletePres}
+                >
                   Eliminar
                 </Button>
               </CardContent>
@@ -144,29 +189,45 @@ export const Provider = () => {
             <h1 className="text-xl text-muted-foreground text-left pb-5">
               Lista de productos
             </h1>
-            <Table>
-              <TableCaption>Lista de productos</TableCaption>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-1/12">ID</TableHead>
-                  <TableHead className="w-1/3">Nombre</TableHead>
-                  <TableHead className="w-1/3">Stock</TableHead>
-                  <TableHead>Precio</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {Array.from({ length: 5 }, (_, i) => {
-                  return (
-                    <TableRow key={i}>
-                      <TableCell className="font-medium">123</TableCell>
-                      <TableCell>Producto</TableCell>
-                      <TableCell>10 Cajas (100m2)</TableCell>
-                      <TableCell>$100</TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
+            {Products && Products?.length > 0 ? (
+              <Table>
+                <TableCaption>Lista de productos</TableCaption>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-1/12">ID</TableHead>
+                    <TableHead className="w-1/3">Nombre</TableHead>
+                    <TableHead className="w-1/3">Stock</TableHead>
+                    <TableHead>Precio</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {Products?.map((product: Product, i: number) => {
+                    return (
+                      <TableRow key={i}>
+                        <TableCell className="font-medium">
+                          {product.id}
+                        </TableCell>
+                        <TableCell>{product.name}</TableCell>
+                        <TableCell>
+                          {product.stock} Cajas (
+                          {product.stock * product.unitPerBox}{" "}
+                          {product.saleUnit})
+                        </TableCell>
+                        <TableCell>${product.price}</TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            ) : (
+              <Alert variant="destructive" className="w-auto">
+                <AlertCircle className="w-5 pt-1" />
+                <AlertTitle className="text-xl">Error</AlertTitle>
+                <AlertDescription className="text-lg">
+                  El proveedor no tiene productos asociados.
+                </AlertDescription>
+              </Alert>
+            )}
           </ScrollArea>
         </section>
       ) : null}
