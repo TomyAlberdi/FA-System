@@ -1,5 +1,6 @@
 package com.example.febackendproject.Controller;
 
+import com.example.febackendproject.DTO.PartialProductStockDTO;
 import com.example.febackendproject.Entity.Provider;
 import com.example.febackendproject.Service.ProductService;
 import com.example.febackendproject.Service.ProviderService;
@@ -50,6 +51,12 @@ public class ProviderController {
                     : ResponseEntity.ok(provider.get());
         }
     }
+    
+    @GetMapping("/getPartialByProvider")
+    public ResponseEntity<List<PartialProductStockDTO>> getPartialByProvider(Long providerId) {
+        return ResponseEntity.ok(productService.getPartialProductStockByProvider(providerId));
+    }
+    
     
     @PostMapping("/{name}")
     public ResponseEntity<?> save(@PathVariable String name) {

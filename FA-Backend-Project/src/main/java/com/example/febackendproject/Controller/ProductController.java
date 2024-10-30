@@ -126,14 +126,4 @@ public class ProductController {
         return ResponseEntity.ok("Product updated.");
     }
     
-    @GetMapping("/getPartialByCategory")
-    public ResponseEntity<List<PartialProductStockDTO>> getPartialByCategory(Long categoryId) {
-        return ResponseEntity.ok(productService.getPartialProductStockByCategory(categoryId));
-    }
-    
-    @GetMapping("/getPartialByProvider")
-    public ResponseEntity<List<PartialProductStockDTO>> getPartialByProvider(Long providerId) {
-        return ResponseEntity.ok(productService.getPartialProductStockByProvider(providerId));
-    }
-    
 }

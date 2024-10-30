@@ -1,5 +1,6 @@
 package com.example.febackendproject.Controller;
 
+import com.example.febackendproject.DTO.PartialProductStockDTO;
 import com.example.febackendproject.Entity.Category;
 import com.example.febackendproject.Service.CategoryService;
 import com.example.febackendproject.Service.ProductService;
@@ -49,6 +50,11 @@ public class CategoryController {
                     ? notFound("Name", identifier)
                     : ResponseEntity.ok(category.get());
         }
+    }
+    
+    @GetMapping("/getPartialByCategory")
+    public ResponseEntity<List<PartialProductStockDTO>> getPartialByCategory(Long categoryId) {
+        return ResponseEntity.ok(productService.getPartialProductStockByCategory(categoryId));
     }
     
     @PostMapping("/{name}")
