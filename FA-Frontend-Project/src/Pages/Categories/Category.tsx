@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCatalogContext } from "@/Context/UseCatalogContext";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -25,6 +25,25 @@ import { ToastAction } from "@/components/ui/toast";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { DialogHeader } from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Input } from "@/components/ui/input";
 
 interface Product {
   id: number;
@@ -34,11 +53,18 @@ interface Product {
   unitPerBox: number;
   price: number;
 }
+
 interface Category {
   id: number;
   name: string;
   productsAmount: number;
 }
+
+const formSchema = z.object({
+  name: z.string().min(3, {
+    message: "El nombre debe contar con al menos 3 caracteres.",
+  }),
+});
 
 const Category = () => {
   const { id } = useParams();
@@ -49,6 +75,58 @@ const Category = () => {
   const [Category, setCategory] = useState<Category | null>(null);
   const [Products, setProducts] = useState<Array<Product> | null>([]);
   const [Loading, setLoading] = useState(true);
+  const [open, setOpen] = useState(false);
+
+  const updateCategory = useCallback(
+    async (data: z.infer<typeof formSchema>) => {
+      if (typeof getToken === "function") {
+        const token = await getToken();
+        try {
+          const response = await fetch(
+            `${BASE_URL}/category?name=${data.name}&id=${id}`,
+            {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          if (!response.ok) {
+            console.error("Error: ", response.statusText);
+            toast({
+              variant: "destructive",
+              title: `Error ${response.status}`,
+              description: `Ocurrió un error al actualizar la categoría.`,
+            });
+            return;
+          }
+          toast({
+            title: "Categoría actualizada",
+            description: "La categoría ha sido actualizada con éxito",
+          });
+        } catch (error) {
+          console.error("Error: ", error);
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Ocurrió un error al actualizar la categoría",
+          });
+        } finally {
+          setOpen(false);
+        }
+      } else return;
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+    },
+  });
 
   useEffect(() => {
     const fetchCategory = async () => {
@@ -88,7 +166,7 @@ const Category = () => {
     fetchCategory();
     fetchProducts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, BASE_URL]);
+  }, [id, BASE_URL, open]);
 
   const onDeletePres = () => {
     if (Category && Category?.productsAmount > 0) {
@@ -168,7 +246,45 @@ const Category = () => {
                 </CardDescription>
               </CardContent>
               <CardContent>
-                <Button className="w-full mb-2">Editar</Button>
+                <Dialog open={open} onOpenChange={setOpen}>
+                  <DialogTrigger asChild>
+                    <Button className="w-full mb-2">Editar</Button>
+                  </DialogTrigger>
+                  <DialogContent
+                    className="sm:max-w-[500px] w-full"
+                    aria-describedby={undefined}
+                  >
+                    <DialogHeader>
+                      <DialogTitle className="text-xl font-bold">
+                        Editar Categoría
+                      </DialogTitle>
+                    </DialogHeader>
+                    <Form {...form}>
+                      <form
+                        onSubmit={form.handleSubmit(updateCategory)}
+                        className="w-2/3 space-y-6"
+                      >
+                        <FormField
+                          control={form.control}
+                          name="name"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Nombre</FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder="Nombre de la categoría"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <Button type="submit">Guardar</Button>
+                      </form>
+                    </Form>
+                  </DialogContent>
+                </Dialog>
                 <Button
                   variant="destructive"
                   className="w-full"
