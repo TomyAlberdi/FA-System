@@ -1,7 +1,9 @@
 package com.example.febackendproject.Repository;
 
 import com.example.febackendproject.Entity.Category;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -12,5 +14,10 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     
     @Query("SELECT c FROM Category c WHERE c.name = ?1")
     Optional<Category> findByName(String name);
+    
+    @Modifying
+    @Transactional
+    @Query("UPDATE Category SET name=?1 WHERE id=?2")
+    void updateById(String name, Long id);
 
 }

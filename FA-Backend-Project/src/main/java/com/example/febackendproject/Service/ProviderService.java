@@ -36,6 +36,10 @@ public class ProviderService {
         return provider;
     }
     
+    public void updateById(String name, Long id) {
+        providerRepository.updateById(name, id);
+    }
+    
     public Provider save(String name) {
         Provider provider = new Provider();
         provider.setName(name);

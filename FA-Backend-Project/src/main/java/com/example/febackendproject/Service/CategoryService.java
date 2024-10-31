@@ -36,6 +36,10 @@ public class CategoryService {
         return category;
     }
     
+    public void update(String name, Long id) {
+        categoryRepository.updateById(name, id);
+    }
+    
     public Category save(String name) {
         Category newCategory = new Category();
         newCategory.setName(name);

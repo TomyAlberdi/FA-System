@@ -68,6 +68,16 @@ public class ProviderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newProvider);
     }
     
+    @PatchMapping()
+    public ResponseEntity<?> update(@RequestParam(value = "name") String name, @RequestParam(value = "id") Long id) {
+        Optional<Provider> provider = providerService.findById(id);
+        if (provider.isEmpty()) {
+            return notFound("ID", id.toString());
+        }
+        providerService.updateById(name, id);
+        return ResponseEntity.ok("Provider updated");
+    }
+    
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         Optional<Provider> provider = providerService.findById(id);

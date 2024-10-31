@@ -67,6 +67,16 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newCategory);
     }
     
+    @PatchMapping()
+    public ResponseEntity<?> update(@RequestParam(value = "name") String name, @RequestParam(value = "id") Long id) {
+        Optional<Category> category = categoryService.findById(id);
+        if (category.isEmpty()) {
+            return notFound("ID", id.toString());
+        }
+        categoryService.update(name, id);
+        return ResponseEntity.ok("Category updated");
+    }
+    
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         Optional<Category> category = categoryService.findById(id);
