@@ -264,7 +264,7 @@ export const Provider = () => {
                   >
                     <DialogHeader>
                       <DialogTitle className="text-xl font-bold">
-                        Editar Categoría
+                        Editar proveedor
                       </DialogTitle>
                     </DialogHeader>
                     <Form {...form}>
@@ -280,7 +280,7 @@ export const Provider = () => {
                               <FormLabel>Nombre</FormLabel>
                               <FormControl>
                                 <Input
-                                  placeholder="Nombre de la categoría"
+                                  placeholder="Nombre del proveedor"
                                   {...field}
                                 />
                               </FormControl>
