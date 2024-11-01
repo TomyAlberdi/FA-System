@@ -44,21 +44,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
-
-interface Product {
-  id: number;
-  name: string;
-  stock: number;
-  saleUnit: string;
-  unitPerBox: number;
-  price: number;
-}
-
-interface Provider {
-  id: number;
-  name: string;
-  productsAmount: number;
-}
+import { Provider as ProviderInterface, StockProduct } from "@/hooks/catalogInterfaces";
 
 const formSchema = z.object({
   name: z.string().min(3, {
@@ -70,8 +56,8 @@ export const Provider = () => {
   const { id } = useParams();
   const { BASE_URL, fetchProvider, fetchProviderProducts } =
     useCatalogContext();
-  const [Provider, setProvider] = useState<Provider | null>(null);
-  const [Products, setProducts] = useState<Array<Product> | null>([]);
+  const [Provider, setProvider] = useState<ProviderInterface | null>(null);
+  const [Products, setProducts] = useState<Array<StockProduct> | null>([]);
   const [Loading, setLoading] = useState(true);
   const { toast } = useToast();
   const { getToken } = useKindeAuth();
@@ -284,7 +270,7 @@ export const Provider = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {Products?.map((product: Product, i: number) => {
+                  {Products?.map((product: StockProduct, i: number) => {
                     return (
                       <TableRow key={i}>
                         <TableCell className="font-medium">
