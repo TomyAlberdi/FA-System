@@ -1,5 +1,21 @@
 @use "@/var";
 
 div.Products {
-  border: 1px solid red;
+  height: 89.8vh;
+  section {
+    &.ProductFilters {
+      .filterGroup {
+        border: 1px solid var.$secondary-foreground;
+        .checkboxLabel {
+          @include var.flex-container(row, space-between, center);
+          span {
+            color: var.$muted-foreground
+          }
+        }
+      }
+    }
+    &.ProductPagination {
+      border: 1px solid green;
+    }
+  }
 }

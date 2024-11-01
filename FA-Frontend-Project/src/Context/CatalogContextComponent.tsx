@@ -1,6 +1,6 @@
 import { CatalogContext, CatalogContextType } from "@/Context/CatalogContext";
 import { ReactNode } from "react";
-import { Category, Provider, CardProduct, StockProduct } from "@/hooks/catalogInterfaces";
+import { Category, Provider, StockProduct } from "@/hooks/catalogInterfaces";
 import { useToast } from "@/hooks/use-toast";
 
 interface CatalogContextComponentProps {
