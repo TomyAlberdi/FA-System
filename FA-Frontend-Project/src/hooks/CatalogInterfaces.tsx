@@ -29,3 +29,20 @@ export interface StockProduct {
   unitPerBox: number;
   price: number;
 }
+
+export interface FilterData {
+  type: string;
+  value: number;
+}
+
+export interface BasicFilterCheck {
+  id: number;
+  name: string;
+  productsAmount: number;
+  checked: boolean;
+}
+
+export interface BasicFilterProps {
+  Filter: Array<FilterData | null>;
+  setFilter: (value: Array<FilterData | null>) => void;
+}
