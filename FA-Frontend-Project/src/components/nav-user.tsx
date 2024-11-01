@@ -27,7 +27,6 @@ export function NavUser() {
   const { isMobile } = useSidebar();
   const { setTheme, theme } = useTheme();
   const { user, logout } = useKindeAuth();
-  console.log(theme)
 
   return (
     <SidebarMenu>
