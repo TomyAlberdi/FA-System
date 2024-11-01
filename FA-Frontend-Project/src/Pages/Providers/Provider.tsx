@@ -68,7 +68,8 @@ const formSchema = z.object({
 
 export const Provider = () => {
   const { id } = useParams();
-  const { BASE_URL } = useCatalogContext();
+  const { BASE_URL, fetchProvider, fetchProviderProducts } =
+    useCatalogContext();
   const [Provider, setProvider] = useState<Provider | null>(null);
   const [Products, setProducts] = useState<Array<Product> | null>([]);
   const [Loading, setLoading] = useState(true);
@@ -129,50 +130,14 @@ export const Provider = () => {
   });
 
   useEffect(() => {
-    const fetchProvider = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(`${BASE_URL}/provider/${id}`);
-        if (!response.ok) {
-          console.error("Error fetching Provider: ", response.statusText);
-          toast({
-            variant: "destructive",
-            title: `Error ${response.status}`,
-            description: `Ocurrió un error al obtener el proveedor.`,
-          });
-          return;
-        }
-        const result: Provider = await response.json();
-        setProvider(result);
-      } catch (error) {
-        console.error("Error fetching Provider: ", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch(`${BASE_URL}/provider/${id}/products`);
-        if (!response.ok) {
-          console.error(
-            "Error fetching Provider products: ",
-            response.statusText
-          );
-          toast({
-            variant: "destructive",
-            title: `Error ${response.status}`,
-            description: `Ocurrió un error al obtener los productos del proveedor.`,
-          });
-          return;
-        }
-        const result: Array<Product> = await response.json();
-        setProducts(result);
-      } catch (error) {
-        console.error("Error fetching Provider products: ", error);
-      }
-    };
-    fetchProvider();
-    fetchProducts();
+    if (id) {
+      fetchProvider(Number.parseInt(id))
+        .then((result) => setProvider(result ?? null))
+        .finally(() => setLoading(false));
+      fetchProviderProducts(Number.parseInt(id)).then((result) =>
+        setProducts(result ?? null)
+      );
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, BASE_URL, open]);
 

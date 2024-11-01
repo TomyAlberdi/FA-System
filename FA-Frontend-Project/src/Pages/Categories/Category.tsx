@@ -44,21 +44,10 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
-
-interface Product {
-  id: number;
-  name: string;
-  stock: number;
-  saleUnit: string;
-  unitPerBox: number;
-  price: number;
-}
-
-interface Category {
-  id: number;
-  name: string;
-  productsAmount: number;
-}
+import {
+  Category as CategoryInterface,
+  StockProduct,
+} from "@/hooks/catalogInterfaces";
 
 const formSchema = z.object({
   name: z.string().min(3, {
@@ -70,10 +59,11 @@ const Category = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { BASE_URL } = useCatalogContext();
+  const { BASE_URL, fetchCategory, fetchCategoryProducts } =
+    useCatalogContext();
   const { getToken } = useKindeAuth();
-  const [Category, setCategory] = useState<Category | null>(null);
-  const [Products, setProducts] = useState<Array<Product> | null>([]);
+  const [Category, setCategory] = useState<CategoryInterface | null>(null);
+  const [Products, setProducts] = useState<Array<StockProduct> | null>([]);
   const [Loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
 
@@ -129,42 +119,14 @@ const Category = () => {
   });
 
   useEffect(() => {
-    const fetchCategory = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(`${BASE_URL}/category/${id}`);
-        if (!response.ok) {
-          console.error("Error fetching Category: ", response.statusText);
-          return;
-        }
-        const result: Category = await response.json();
-        setCategory(result);
-      } catch (error) {
-        console.error("Error fetching Category: ", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch(`${BASE_URL}/category/${id}/products`);
-        if (!response.ok) {
-          console.error("Error fetching Category: ", response.statusText);
-          toast({
-            variant: "destructive",
-            title: `Error ${response.status}`,
-            description: `Ocurrió un error al obtener los productos de la categoría.`,
-          });
-          return;
-        }
-        const result: Array<Product> = await response.json();
-        setProducts(result);
-      } catch (error) {
-        console.error("Error fetching Provider: ", error);
-      }
-    };
-    fetchCategory();
-    fetchProducts();
+    if (id) {
+      fetchCategory(Number.parseInt(id))
+        .then((result) => setCategory(result ?? null))
+        .finally(() => setLoading(false));
+      fetchCategoryProducts(Number.parseInt(id)).then((result) =>
+        setProducts(result ?? null)
+      );
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, BASE_URL, open]);
 
@@ -311,7 +273,7 @@ const Category = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {Products?.map((product: Product, i: number) => {
+                  {Products?.map((product: StockProduct, i: number) => {
                     return (
                       <TableRow key={i}>
                         <TableCell className="font-medium">
