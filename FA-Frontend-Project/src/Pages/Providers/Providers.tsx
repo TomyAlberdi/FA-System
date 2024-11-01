@@ -16,30 +16,17 @@ interface Provider {
 
 export const Providers = () => {
   const isDesktop = useMediaQuery("(min-width: 768px)");
-  const { BASE_URL } = useCatalogContext();
+  const { fetchProviders } = useCatalogContext();
   const [Data, setData] = useState<Array<Provider> | null>([]);
   const [Loading, setLoading] = useState<boolean>(true);
   const [UpdateData, setUpdateData] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(`${BASE_URL}/provider`);
-        if (!response.ok) {
-          console.error("Error fetching data: ", response.statusText);
-          return;
-        }
-        const result: Array<Provider> = await response.json();
-        setData(result);
-      } catch (error) {
-        console.error("Error fetching data: ", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [BASE_URL, UpdateData]);
+    fetchProviders()
+      .then((result) => setData(result ?? null))
+      .finally(() => setLoading(false));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [UpdateData]);
 
   return (
     <div className="Providers">
