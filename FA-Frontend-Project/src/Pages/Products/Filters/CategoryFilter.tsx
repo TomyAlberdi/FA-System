@@ -58,7 +58,6 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
       });
       setData(checkedCategories ?? null)
     });
-    console.log(Data)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -66,7 +65,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
     return (
       <AccordionItem
         value="categoryFilter"
-        className="filterGroup w-full px-4 rounded-md"
+        className="filterGroup w-full px-4 rounded-md mb-4"
       >
         <AccordionTrigger>Categorías</AccordionTrigger>
         <AccordionContent>
