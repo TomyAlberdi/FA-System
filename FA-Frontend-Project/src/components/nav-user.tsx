@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  ChevronsUpDown,
-  LogOut,
-  User,
-  Cog
-} from "lucide-react";
+import { ChevronsUpDown, LogOut, User, Cog } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -24,11 +19,15 @@ import {
 } from "@/components/ui/sidebar";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { Link } from "react-router-dom";
+import { useTheme } from "@/Context/theme-provider";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
-
+  const { setTheme, theme } = useTheme();
   const { user, logout } = useKindeAuth();
+  console.log(theme)
 
   return (
     <SidebarMenu>
@@ -71,14 +70,26 @@ export function NavUser() {
               <Link to={"/user"}>
                 <DropdownMenuItem>
                   <Cog />
-                  Account
+                  Usuario
                 </DropdownMenuItem>
               </Link>
+            </DropdownMenuGroup>
+            <DropdownMenuGroup className="flex items-center gap-2 p-2">
+              <Switch
+                id="dark-mode"
+                checked={theme === "dark"}
+                onCheckedChange={() => {
+                  setTheme(theme === "dark" ? "light" : "dark");
+                }}
+              />
+              <Label htmlFor="dark-mode" className="text-sm">
+                Modo Oscuro
+              </Label>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => logout()}>
               <LogOut />
-              Log out
+              Cerrar Sesión
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
