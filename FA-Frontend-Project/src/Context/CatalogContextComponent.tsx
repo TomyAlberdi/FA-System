@@ -140,6 +140,10 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({ child
     }
   }
 
+  /// PRICES GET /////
+
+  
+
   /// FILTER LOGIC /////
 
   const exportData: CatalogContextType = {
