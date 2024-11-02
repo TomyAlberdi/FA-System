@@ -83,6 +83,7 @@ export const ProviderFilter: React.FC<ProviderFilterProps> = ({
                   className="mr-2"
                   checked={provider.checked}
                   onCheckedChange={() => handleCheckboxChange(provider.id)}
+                  disabled={provider.productsAmount === 0}
                 />
                 <Label
                   htmlFor={provider.name}

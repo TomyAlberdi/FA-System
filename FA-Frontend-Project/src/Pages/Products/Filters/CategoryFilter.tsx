@@ -79,6 +79,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
                   className="mr-2"
                   checked={category.checked}
                   onCheckedChange={() => handleCheckboxChange(category.id)}
+                  disabled={category.productsAmount === 0}
                 />
                 <Label htmlFor={category.name} className="checkboxLabel text-sm w-full">
                   {category.name}
