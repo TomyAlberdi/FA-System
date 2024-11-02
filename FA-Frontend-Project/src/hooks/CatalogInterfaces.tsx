@@ -10,6 +10,11 @@ export interface Provider {
   productsAmount: number;
 }
 
+export interface Measure {
+  measure: string;
+  productsAmount: number;
+}
+
 export interface CardProduct {
   id: number,
   name: string,
@@ -32,12 +37,19 @@ export interface StockProduct {
 
 export interface FilterData {
   type: string;
-  value: number;
+  value: number | string;
 }
 
 export interface BasicFilterCheck {
   id: number;
   name: string;
+  productsAmount: number;
+  checked: boolean;
+}
+
+export interface MeasureCheck {
+  id: number,
+  measure: string;
   productsAmount: number;
   checked: boolean;
 }

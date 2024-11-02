@@ -1,6 +1,6 @@
 import { CatalogContext, CatalogContextType } from "@/Context/CatalogContext";
 import { ReactNode } from "react";
-import { Category, Provider, StockProduct } from "@/hooks/catalogInterfaces";
+import { Category, Measure, Provider, StockProduct } from "@/hooks/catalogInterfaces";
 import { useToast } from "@/hooks/use-toast";
 
 interface CatalogContextComponentProps {
@@ -119,7 +119,26 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({ child
     }
   }
 
-  /// PRODUCT GET /////
+  /// MEASURE GET /////
+
+  const fetchMeasures = async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/filter/measures`);
+      if (!response.ok) {
+        console.error("Error fetching Measures: ", response.statusText);
+        toast({
+          variant: "destructive",
+          title: `Error ${response.status}`,
+          description: `Ocurrió un error al obtener los productos de la categoría.`,
+        });
+        return;
+      }
+      const result: Array<Measure> = await response.json();
+      return (result);
+    } catch (error) {
+      console.error("Error fetching Measures: ", error);
+    }
+  }
 
   /// FILTER LOGIC /////
 
@@ -131,6 +150,7 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({ child
     fetchProviders,
     fetchProvider,
     fetchProviderProducts,
+    fetchMeasures,
   }
 
   return (

@@ -7,23 +7,23 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useCatalogContext } from "@/Context/UseCatalogContext";
 import {
-  BasicFilterProps as ProviderFilterProps,
-  BasicFilterCheck as ProviderCheck,
-  Provider,
+  Measure,
+  MeasureCheck,
+  BasicFilterProps as MeasureFilterProps,
 } from "@/hooks/catalogInterfaces";
 import { useEffect, useState } from "react";
 
-export const ProviderFilter: React.FC<ProviderFilterProps> = ({
+export const MeasureFilter: React.FC<MeasureFilterProps> = ({
   Filter,
   setFilter,
 }) => {
-  const { fetchProviders } = useCatalogContext();
-  const [Data, setData] = useState<Array<ProviderCheck> | null>([]);
+  const { fetchMeasures } = useCatalogContext();
+  const [Data, setData] = useState<Array<MeasureCheck> | null>([]);
 
   const handleCheckboxChange = (id: number) => {
-    // Remove all filters with type "providerId"
+    // Remove all filters with type "measure"
     const newAppliedFilters = Filter?.filter(
-      (filter) => filter?.type !== "providerId"
+      (filter) => filter?.type !== "measure"
     );
 
     // Update the checked state of the checkbox
@@ -34,8 +34,8 @@ export const ProviderFilter: React.FC<ProviderFilterProps> = ({
         // If the checkbox is checked, add the filter to the appliedFilters array
         if (newChecked) {
           newAppliedFilters?.push({
-            type: "providerId",
-            value: item.id,
+            type: "measure",
+            value: item.measure,
           });
         }
         return { ...item, checked: newChecked };
@@ -49,18 +49,18 @@ export const ProviderFilter: React.FC<ProviderFilterProps> = ({
   };
 
   useEffect(() => {
-    fetchProviders().then((result) => {
-      const checkedProviders: Array<ProviderCheck> = [];
-      result?.forEach((provider: Provider) => {
-        const newItem: ProviderCheck = {
-          id: provider.id,
-          name: provider.name,
-          productsAmount: provider.productsAmount,
+    fetchMeasures().then((result) => {
+      const checkedMeasures: Array<MeasureCheck> = [];
+      result?.forEach((measure: Measure, i: number) => {
+        const newItem: MeasureCheck = {
+          id: i,
+          measure: measure.measure,
+          productsAmount: measure.productsAmount,
           checked: false,
         };
-        checkedProviders.push(newItem);
+        checkedMeasures.push(newItem);
       });
-      setData(checkedProviders ?? null);
+      setData(checkedMeasures ?? null);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -68,28 +68,28 @@ export const ProviderFilter: React.FC<ProviderFilterProps> = ({
   if (Data) {
     return (
       <AccordionItem
-        value="providerFilter"
+        value="measureFilter"
         className="filterGroup w-full px-4 rounded-md mb-4"
       >
-        <AccordionTrigger>Proveedores</AccordionTrigger>
+        <AccordionTrigger>Medidas</AccordionTrigger>
         <AccordionContent>
-          {Data?.map((provider: ProviderCheck) => {
+          {Data?.map((measure: MeasureCheck) => {
             return (
               <div
                 className="flex items-center w-full cursor-pointer px-4 py-2"
-                key={provider.id}
+                key={measure.id}
               >
                 <Checkbox
                   className="mr-2"
-                  checked={provider.checked}
-                  onCheckedChange={() => handleCheckboxChange(provider.id)}
+                  checked={measure.checked}
+                  onCheckedChange={() => handleCheckboxChange(measure.id)}
                 />
                 <Label
-                  htmlFor={provider.name}
+                  htmlFor={measure.measure}
                   className="checkboxLabel text-sm w-full"
                 >
-                  {provider.name}
-                  <span>{provider.productsAmount}</span>
+                  {measure.measure}
+                  <span>{measure.productsAmount}</span>
                 </Label>
               </div>
             );
