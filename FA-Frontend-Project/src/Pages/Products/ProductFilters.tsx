@@ -27,7 +27,7 @@ export const ProductFilters = () => {
 
   return (
     <section className="ProductFilters col-span-2">
-      <ScrollArea>
+      <ScrollArea className="filterScrollArea">
         <Accordion type="multiple" className="filterAccordion w-full">
           <CategoryFilter Filter={Filter} setFilter={setFilter} />
           <ProviderFilter Filter={Filter} setFilter={setFilter} />

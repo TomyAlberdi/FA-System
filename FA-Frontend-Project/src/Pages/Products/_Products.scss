@@ -1,9 +1,11 @@
 @use "@/var";
 
 div.Products {
-  height: 89.8vh;
   section {
     &.ProductFilters {
+      .filterScrollArea {
+        height: 86.8vh;
+      }
       .filterGroup {
         border: 1px solid var.$secondary-foreground;
         .checkboxLabel {
@@ -15,7 +17,6 @@ div.Products {
       }
     }
     &.ProductPagination {
-      border: 1px solid green;
     }
   }
 }
