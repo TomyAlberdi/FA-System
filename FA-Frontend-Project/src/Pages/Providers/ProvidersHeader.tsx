@@ -96,7 +96,7 @@ export const ProvidersHeader: React.FC<ProvidersHeaderProps> = ({
         <DialogTrigger asChild>
           <Button className="text-lg">
             <CirclePlus />
-            Añadir Proveedor
+            Nuevo Proveedor
           </Button>
         </DialogTrigger>
         <DialogContent

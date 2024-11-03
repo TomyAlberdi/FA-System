@@ -98,7 +98,7 @@ export const CategoriesHeader: React.FC<CategoriesHeaderProps> = ({
         <DialogTrigger asChild>
           <Button className="text-lg">
             <CirclePlus />
-            Añadir Categoría
+            Nueva Categoría
           </Button>
         </DialogTrigger>
         <DialogContent
