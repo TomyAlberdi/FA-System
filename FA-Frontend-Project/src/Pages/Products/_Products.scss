@@ -11,12 +11,15 @@ div.Products {
         .checkboxLabel {
           @include var.flex-container(row, space-between, center);
           span {
-            color: var.$muted-foreground
+            color: var.$muted-foreground;
           }
         }
       }
     }
     &.ProductPagination {
+          div.buttonDiv {
+            @include var.flex-container(row, center, center);
+          }
     }
   }
 }
