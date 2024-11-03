@@ -76,7 +76,7 @@ export const ProviderFilter: React.FC<ProviderFilterProps> = ({
           {Data?.map((provider: ProviderCheck) => {
             return (
               <div
-                className="flex items-center w-full cursor-pointer px-4 py-2"
+                className="flex items-center w-full cursor-pointer px-1 py-2"
                 key={provider.id}
               >
                 <Checkbox

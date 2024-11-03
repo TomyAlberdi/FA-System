@@ -76,7 +76,7 @@ export const MeasureFilter: React.FC<MeasureFilterProps> = ({
           {Data?.map((measure: MeasureCheck) => {
             return (
               <div
-                className="flex items-center w-full cursor-pointer px-4 py-2"
+                className="flex items-center w-full cursor-pointer px-1 py-2"
                 key={measure.id}
               >
                 <Checkbox

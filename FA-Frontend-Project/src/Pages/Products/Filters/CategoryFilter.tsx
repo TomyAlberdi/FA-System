@@ -72,7 +72,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
           {Data?.map((category: CategoryCheck) => {
             return (
               <div
-                className="flex items-center w-full cursor-pointer px-4 py-2"
+                className="flex items-center w-full cursor-pointer px-1 py-2"
                 key={category.id}
               >
                 <Checkbox
