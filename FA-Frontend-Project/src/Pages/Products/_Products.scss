@@ -17,9 +17,6 @@ div.Products {
       }
     }
     &.ProductPagination {
-          div.buttonDiv {
-            @include var.flex-container(row, center, center);
-          }
     }
   }
 }

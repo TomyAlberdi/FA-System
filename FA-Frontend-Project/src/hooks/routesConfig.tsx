@@ -6,6 +6,7 @@ import { Products } from "@/Pages/Products/Products";
 import { Providers } from "@/Pages/Providers/Providers";
 import { Provider } from "@/Pages/Providers/Provider";
 import User from "@/Pages/User/User";
+import { AddProduct } from "@/Pages/Products/AddProduct";
 
 export const routesConfig = [
   { index: true, element: <Home />, handle: "Inicio" },
@@ -16,4 +17,5 @@ export const routesConfig = [
   { path: "/catalog/providers", element: <Providers />, handle: "Proveedores" },
   { path: "/catalog/categories/:id", element: <Category /> },
   { path: "/catalog/providers/:id", element: <Provider /> },
+  { path: "/catalog/products/add", element: <AddProduct />, handle: "Añadir Producto" },
 ];

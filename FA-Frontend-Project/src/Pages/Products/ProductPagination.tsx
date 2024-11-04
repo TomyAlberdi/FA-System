@@ -1,13 +1,20 @@
-import { ProductsHeader } from "@/Pages/Products/ProductsHeader";
-import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { CirclePlus } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export const ProductPagination = () => {
 
-  const [UpdateData, setUpdateData] = useState(false);
-
   return (
     <section className="ProductPagination col-span-6">
-      <ProductsHeader setUpdateData={setUpdateData} UpdateData={UpdateData} />
+      <section className="listHeader">
+        <span></span>
+        <Link to={"/catalog/products/add"}>
+          <Button className="text-lg">
+            <CirclePlus />
+            Nuevo Producto
+          </Button>
+        </Link>
+      </section>
     </section>
   );
 };
