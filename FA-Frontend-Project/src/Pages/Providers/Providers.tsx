@@ -12,13 +12,13 @@ import { Provider } from "@/hooks/catalogInterfaces";
 export const Providers = () => {
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const { fetchProviders } = useCatalogContext();
-  const [Data, setData] = useState<Array<Provider> | null>([]);
+  const [Data, setData] = useState<Array<Provider>>([]);
   const [Loading, setLoading] = useState<boolean>(true);
   const [UpdateData, setUpdateData] = useState(false);
 
   useEffect(() => {
     fetchProviders()
-      .then((result) => setData(result ?? null))
+      .then((result) => setData(result ?? []))
       .finally(() => setLoading(false));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [UpdateData]);
@@ -38,7 +38,7 @@ export const Providers = () => {
               <Skeleton className="skeletonCard h-[100px] w-full" key={i} />
             );
           })
-        ) : Data?.length == 0 ? (
+        ) : !Loading && Data.length === 0 ? (
           <Alert variant="destructive" className="w-auto">
             <AlertCircle className="w-5 pt-1" />
             <AlertTitle className="text-xl">Error</AlertTitle>
