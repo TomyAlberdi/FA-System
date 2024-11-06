@@ -36,13 +36,11 @@ public class ProviderService {
         return provider;
     }
     
-    public void updateById(String name, Long id) {
-        providerRepository.updateById(name, id);
+    public void updateById(Provider provider) {
+        providerRepository.updateById(provider.getId(), provider.getName(), provider.getLocality(), provider.getAddress(), provider.getPhone(), provider.getEmail(), provider.getCuit());
     }
     
-    public Provider save(String name) {
-        Provider provider = new Provider();
-        provider.setName(name);
+    public Provider save(Provider provider) {
         return providerRepository.save(provider);
     }
     

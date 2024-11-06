@@ -17,7 +17,7 @@ public interface ProviderRepository extends JpaRepository<Provider, Long> {
     
     @Modifying
     @Transactional
-    @Query("UPDATE Provider SET name=?1 WHERE id=?2")
-    void updateById(String name, Long id);
+    @Query("UPDATE Provider SET name=?2, locality=?3, address=?4, phone=?5, email=?6, cuit=?7 WHERE id=?1")
+    void updateById(Long id, String name, String locality, String address, String phone, String email, String cuit);
     
 }

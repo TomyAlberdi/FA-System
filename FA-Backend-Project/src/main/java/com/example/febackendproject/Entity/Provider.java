@@ -23,6 +23,14 @@ public class Provider {
     @Column(unique = true)
     private String name;
     
+    @NotBlank
+    private String locality;
+    
+    private String address;
+    private String phone;
+    private String email;
+    private String cuit;
+    
     @Column(name = "products_amount")
     private int productsAmount = 0;
     
