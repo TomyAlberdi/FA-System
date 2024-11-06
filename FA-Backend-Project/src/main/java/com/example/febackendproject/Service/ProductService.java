@@ -25,21 +25,9 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductPaginationRepository productPaginationRepository;
     private final CategoryRepository categoryRepository;
+    private final SubcategoryRepository subcategoryRepository;
     private final ProviderRepository providerRepository;
     private final StockRepository stockRepository;
-    
-    private PartialProductDTO convertPartialDTO(Product product) {
-        PartialProductDTO partialProductDTO = new PartialProductDTO();
-        partialProductDTO.setId(product.getId());
-        partialProductDTO.setName(product.getName());
-        partialProductDTO.setPrice(product.getPrice());
-        partialProductDTO.setSalesUnit(product.getSaleUnit());
-        partialProductDTO.setPriceSaleUnit(product.getPriceSaleUnit());
-        partialProductDTO.setDiscountPercentage(product.getDiscountPercentage());
-        partialProductDTO.setDiscountedPrice(product.getDiscountedPrice());
-        partialProductDTO.setImage(product.getImages().get(0));
-        return partialProductDTO;
-    }
     
     public Boolean searchKeys(Long categoryId, Long providerId) {
         Optional<Category> category = categoryRepository.findById(categoryId);
@@ -84,19 +72,27 @@ public class ProductService {
             returnProduct.setId(product.get().getId());
             returnProduct.setName(product.get().getName());
             returnProduct.setDescription(product.get().getDescription());
-            returnProduct.setPrice(product.get().getPrice());
-            returnProduct.setMeasures(product.get().getMeasures());
-            returnProduct.setSaleUnit(product.get().getSaleUnit());
-            returnProduct.setPriceSaleUnit(product.get().getPriceSaleUnit());
-            returnProduct.setUnitPerBox(product.get().getUnitPerBox());
             returnProduct.setQuality(product.get().getQuality());
+            
+            returnProduct.setMeasureType(product.get().getMeasureType());
+            returnProduct.setMeasures(product.get().getMeasures());
+            returnProduct.setMeasurePrice(product.get().getMeasurePrice());
+            
+            returnProduct.setSaleUnit(product.get().getSaleUnit());
+            returnProduct.setSaleUnitPrice(product.get().getSaleUnitPrice());
+            returnProduct.setMeasurePerSaleUnit(product.get().getMeasurePerSaleUnit());
+            
             returnProduct.setDiscountPercentage(product.get().getDiscountPercentage());
             returnProduct.setDiscountedPrice(product.get().getDiscountedPrice());
+            
             returnProduct.setImages(product.get().getImages());
             returnProduct.setTags(product.get().getTags());
             
             String category = categoryRepository.findById(product.get().getCategoryId()).get().getName();
             returnProduct.setCategory(category);
+            
+            String subcategory = subcategoryRepository.findById(product.get().getSubcategoryId()).get().getName();
+            returnProduct.setSubcategory(subcategory);
             
             String provider = providerRepository.findById(product.get().getProviderId()).get().getName();
             returnProduct.setProvider(provider);
@@ -109,6 +105,17 @@ public class ProductService {
     
     public List<PartialProductStockDTO> getPartialProductStockByCategory(Long categoryId) {
         List<PartialProductStockDTO> noStockList = productRepository.getPartialProductStockByCategory(categoryId);
+        if (noStockList.isEmpty()) {
+            return noStockList;
+        }
+        noStockList.forEach((prod) -> {
+            prod.setStock(stockRepository.getQuantityByProductId(prod.getId()));
+        });
+        return noStockList;
+    }
+
+    public List<PartialProductStockDTO> getPartialProductStockBySubcategory(Long subcategoryId) {
+        List<PartialProductStockDTO> noStockList = productRepository.getPartialProductStockBySubcategory(subcategoryId);
         if (noStockList.isEmpty()) {
             return noStockList;
         }
@@ -145,7 +152,7 @@ public class ProductService {
     public void updateProduct(Product product) {
         productRepository.deleteImagesById(product.getId());
         productRepository.deleteTagsById(product.getId());
-        productRepository.updateById(product.getName(), product.getDescription(), product.getCategoryId(), product.getProviderId(), product.getDiscountPercentage(), product.getDiscountedPrice(), product.getMeasures(), product.getUnitPerBox(), product.getPriceSaleUnit(), product.getSaleUnit(), product.getPrice(), product.getQuality(), product.getId());
+        productRepository.updateById(product.getId(), product.getName(), product.getDescription(), product.getQuality(), product.getProviderId(), product.getCategoryId(), product.getSubcategoryId(), product.getMeasureType(), product.getMeasures(), product.getMeasurePrice(), product.getSaleUnit(), product.getSaleUnitPrice(), product.getMeasurePerSaleUnit(), product.getDiscountPercentage(), product.getDiscountedPrice());
         for (String tag : product.getTags()) {
             productRepository.insertTagById(tag, product.getId());
         }
@@ -190,7 +197,7 @@ public class ProductService {
         
         return productPaginationRepository.findAll(spec, pageable).map(product -> {
                 String image = !product.getImages().isEmpty() ? product.getImages().get(0) : null;
-                return new PartialProductDTO(product.getId(), product.getName(), product.getPrice(), product.getSaleUnit(), product.getPriceSaleUnit(), product.getDiscountPercentage(), product.getDiscountedPrice(), image);
+                return new PartialProductDTO(product.getId(), product.getName(), product.getMeasureType(), product.getMeasurePrice(), product.getDiscountPercentage(), product.getDiscountedPrice(), image);
         });
     }
     

@@ -18,18 +18,24 @@ import java.util.List;
 @NoArgsConstructor
 public class Product {
     
+    // Basic data
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
-    @Column(name = "provider_id")
-    @NotNull
-    private Long providerId;
+    @NotBlank
+    @Column(unique = true)
+    private String name;
     
-    @Column(name = "category_id")
     @NotNull
-    private Long categoryId;
+    @Column
+    private String description;
     
+    @NotNull
+    @Column
+    private String quality;
+    
+    // External Tables data
     @NotNull
     @ElementCollection
     @CollectionTable(name = "product_tags", joinColumns = @JoinColumn(name = "product_id"))
@@ -42,46 +48,44 @@ public class Product {
     @Column
     private List<String> images;
     
-    @NotBlank
-    @Column(unique = true)
-    private String name;
-    
+    @Column(name = "provider_id")
     @NotNull
-    @Column
-    private String description;
+    private Long providerId;
     
+    @Column(name = "category_id")
+    @NotNull
+    private Long categoryId;
+    
+    @Column(name = "subcategory_id")
+    @NotNull
+    private Long subcategoryId;
+
+    // Measure data
     @Column
     @NotNull
-    private Double price;
+    private String measureType;
     
     @Column
-    @NotNull
-    // Medidas
-    // Ej: 13cm x 13cm
     private String measures;
     
+    @Column
+    @NotNull
+    private Double measurePrice;
+    
+    // Sale unit data
     @NotNull
     @Column(name = "sale_unit")
-    // Unidad
-    // Ej: M2
     private String saleUnit;
     
     @NotNull
-    @Column(name = "price_sale_unit")
-    // Precio por unidad
-    // Ej: 100$ x M2
-    private Double priceSaleUnit;
+    @Column(name = "sale_unit_price")
+    private Double saleUnitPrice;
     
     @NotNull
-    @Column(name = "unit_per_box")
-    // Unidad de medida por caja
-    // Ej: 10 M2 per box
-    private Double unitPerBox;
+    @Column(name = "measure_per_sale_unit")
+    private Integer measurePerSaleUnit;
     
-    @NotNull
-    @Column
-    private String quality;
-    
+    // Discount data
     @NotNull
     @Column(name = "discount_percentage")
     private Integer discountPercentage;
@@ -90,7 +94,7 @@ public class Product {
     @Column(name = "discounted_price")
     private Double discountedPrice;
     
-    @Override
+    /*@Override
     public String toString() {
         return "Product {" +
                 "\n  id=" + id +
@@ -109,7 +113,6 @@ public class Product {
                 ",\n  discountPercentage=" + discountPercentage +
                 ",\n  discountedPrice=" + discountedPrice +
                 "\n}";
-    }
+    }*/
 
-    
 }

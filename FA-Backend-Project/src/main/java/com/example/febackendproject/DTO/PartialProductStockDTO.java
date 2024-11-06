@@ -14,8 +14,11 @@ public class PartialProductStockDTO {
     private Long id;
     private String name;
     private Integer Stock;
+    
+    private String measureType;
+    private Double measurePrice;
+    
     private String saleUnit;
-    private Double unitPerBox;
-    private Double price;
+    private Integer measurePerSaleUnit;
 
 }

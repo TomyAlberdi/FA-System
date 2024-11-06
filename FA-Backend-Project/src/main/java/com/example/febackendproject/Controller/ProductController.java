@@ -1,9 +1,6 @@
 package com.example.febackendproject.Controller;
 
-import com.example.febackendproject.DTO.CompleteProductDTO;
-import com.example.febackendproject.DTO.FilterDTO;
-import com.example.febackendproject.DTO.PartialProductDTO;
-import com.example.febackendproject.DTO.PartialProductStockDTO;
+import com.example.febackendproject.DTO.*;
 import com.example.febackendproject.Entity.Category;
 import com.example.febackendproject.Entity.Product;
 import com.example.febackendproject.Entity.Provider;
@@ -81,7 +78,7 @@ public class ProductController {
     @PostMapping()
     // @PreAuthorize("hasAuthority('ROLE_admin')")
     public ResponseEntity<?> save(@Valid @RequestBody Product product) {
-        Optional<Category> category = categoryService.findById(product.getCategoryId());
+        Optional<CompleteCategoryDTO> category = categoryService.findById(product.getCategoryId());
         Optional<Provider> provider = providerService.findById(product.getProviderId());
         if (productService.existByName(product.getName())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Product with id " + product.getId() + " already exists");
@@ -114,7 +111,7 @@ public class ProductController {
         if (newProduct.isEmpty()) {
             return notFound("ID", product.getId().toString());
         }
-        Optional<Category> category = categoryService.findById(product.getCategoryId());
+        Optional<CompleteCategoryDTO> category = categoryService.findById(product.getCategoryId());
         Optional<Provider> provider = providerService.findById(product.getProviderId());
         if (category.isEmpty()) {
             return notFound("Category ID", product.getCategoryId().toString());
