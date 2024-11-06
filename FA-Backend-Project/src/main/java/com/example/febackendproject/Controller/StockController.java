@@ -35,20 +35,27 @@ public class StockController {
     public ResponseEntity<?> increaseStock(@RequestParam Long productId, @RequestParam Integer quantity) {
         Optional<Stock> stock = stockService.getByProductId(productId);
         if (productService.existById(productId)) {
-            if (stock.isPresent() && stock.get().getQuantity() >= quantity) {
+            if (stock.isPresent()) {
                 stockService.increaseStockById(productId, quantity);
                 return ResponseEntity.ok().body("Stock updated");
             }
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Requested Stock is greater than current Stock.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Stock not found.");
         }
         return notFound("ID", productId.toString());
     }
     
     @PatchMapping("/reduce")
     public ResponseEntity<?> reduceStock(@RequestParam Long productId, @RequestParam Integer quantity) {
+        Optional<Stock> stock = stockService.getByProductId(productId);
         if (productService.existById(productId)) {
-            stockService.decreaseStockById(productId, quantity);
-            return ResponseEntity.ok().body("Stock updated");
+            if (stock.isPresent()) {
+                if (stock.get().getQuantity() >= quantity) {
+                    stockService.decreaseStockById(productId, quantity);
+                    return ResponseEntity.ok().body("Stock updated");
+                }
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Requested Stock is greater than current stock.");
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Stock not found.");
         } else {
             return notFound("ID", productId.toString());
         }

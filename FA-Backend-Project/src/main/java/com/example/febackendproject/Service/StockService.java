@@ -35,18 +35,16 @@ public class StockService {
     public void increaseStockById(Long productId, Integer quantity) {
         Optional<Stock> stock = stockRepository.findByProductId(productId);
         if (stock.isPresent()) {
-            if (stock.get().getQuantity() >= quantity) {
                 stock.get().setQuantity(stock.get().getQuantity() + quantity);
                 StockRecord record = new StockRecord("INCREASE", quantity, LocalDateTime.now());
                 addStockRecordToStock(stock.get(), record);
                 stockRepository.save(stock.get());
-            }
         }
     }
     
     public void decreaseStockById(Long productId, Integer quantity) {
         Optional<Stock> stock = stockRepository.findByProductId(productId);
-        if (stock.isPresent()) {
+        if (stock.isPresent() && stock.get().getQuantity() >= quantity) {
             stock.get().setQuantity(stock.get().getQuantity() - quantity);
             StockRecord record = new StockRecord("DECREASE", quantity, LocalDateTime.now());
             addStockRecordToStock(stock.get(), record);
