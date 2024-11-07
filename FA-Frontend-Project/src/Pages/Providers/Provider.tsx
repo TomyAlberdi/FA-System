@@ -81,6 +81,7 @@ export const Provider = () => {
 
   const updateCategory = useCallback(
     async (data: z.infer<typeof formSchema>) => {
+
       if (typeof getToken === "function") {
         const token = await getToken();
         try {
@@ -139,7 +140,17 @@ export const Provider = () => {
   useEffect(() => {
     if (id) {
       fetchProvider(Number.parseInt(id))
-        .then((result) => setProvider(result ?? null))
+        .then((result) => {
+          setProvider(result ?? null)
+          form.reset({
+            name: result?.name ?? "",
+            locality: result?.locality ?? "",
+            address: result?.address ?? "",
+            phone: result?.phone ?? "",
+            email: result?.email ?? "",
+            cuit: result?.cuit ?? "",
+          })
+        })
         .finally(() => setLoading(false));
       fetchProviderProducts(Number.parseInt(id)).then((result) =>
         setProducts(result ?? null)
