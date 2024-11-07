@@ -7,7 +7,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Provider } from "@/hooks/catalogInterfaces";
+import { Provider } from "@/hooks/CatalogInterfaces";
 
 export const Providers = () => {
   const isDesktop = useMediaQuery("(min-width: 768px)");

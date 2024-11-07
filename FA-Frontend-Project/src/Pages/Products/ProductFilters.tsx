@@ -1,6 +1,6 @@
 import { Accordion } from "@/components/ui/accordion";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { FilterData } from "@/hooks/catalogInterfaces";
+import { FilterData } from "@/hooks/CatalogInterfaces";
 import { CategoryFilter } from "@/Pages/Products/Filters/CategoryFilter";
 import { useEffect, useState } from "react";
 import { ProviderFilter } from "@/Pages/Products/Filters/ProviderFilter";

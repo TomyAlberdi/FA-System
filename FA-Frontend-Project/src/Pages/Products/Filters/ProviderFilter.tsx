@@ -10,7 +10,7 @@ import {
   BasicFilterProps as ProviderFilterProps,
   BasicFilterCheck as ProviderCheck,
   Provider,
-} from "@/hooks/catalogInterfaces";
+} from "@/hooks/CatalogInterfaces";
 import { useEffect, useState } from "react";
 
 export const ProviderFilter: React.FC<ProviderFilterProps> = ({

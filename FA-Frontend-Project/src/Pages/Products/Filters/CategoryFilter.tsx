@@ -7,7 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useCatalogContext } from "@/Context/UseCatalogContext";
 import { useEffect, useState } from "react";
-import { Category, BasicFilterCheck as CategoryCheck, BasicFilterProps as CategoryFilterProps } from "@/hooks/catalogInterfaces";
+import { Category, BasicFilterCheck as CategoryCheck, BasicFilterProps as CategoryFilterProps } from "@/hooks/CatalogInterfaces";
 
 export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   Filter,

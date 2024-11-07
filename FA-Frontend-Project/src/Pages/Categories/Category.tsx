@@ -47,7 +47,7 @@ import { Input } from "@/components/ui/input";
 import {
   Category as CategoryInterface,
   StockProduct,
-} from "@/hooks/catalogInterfaces";
+} from "@/hooks/CatalogInterfaces";
 
 const formSchema = z.object({
   name: z.string().min(3, {

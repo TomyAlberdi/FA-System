@@ -44,7 +44,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
-import { Provider as ProviderInterface, StockProduct } from "@/hooks/catalogInterfaces";
+import { Provider as ProviderInterface, StockProduct } from "@/hooks/CatalogInterfaces";
 
 const formSchema = z.object({
   name: z.string().min(3, {

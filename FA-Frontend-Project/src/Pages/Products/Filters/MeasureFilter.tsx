@@ -10,7 +10,7 @@ import {
   Measure,
   MeasureCheck,
   BasicFilterProps as MeasureFilterProps,
-} from "@/hooks/catalogInterfaces";
+} from "@/hooks/CatalogInterfaces";
 import { useEffect, useState } from "react";
 
 export const MeasureFilter: React.FC<MeasureFilterProps> = ({

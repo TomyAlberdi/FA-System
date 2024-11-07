@@ -7,7 +7,7 @@ import { useCatalogContext } from "@/Context/UseCatalogContext";
 import { CategoriesHeader } from "@/Pages/Categories/CategoriesHeader";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Category } from "@/hooks/catalogInterfaces";
+import { Category } from "@/hooks/CatalogInterfaces";
 
 export const Categories = () => {
   const isDesktop = useMediaQuery("(min-width: 768px)");
