@@ -120,6 +120,11 @@ public class CategoryController {
         }
     }
     
+    @GetMapping("/{id}/subcategories")
+    public ResponseEntity<?> getByCategoryId(@PathVariable Long id) {
+        return ResponseEntity.ok().body(categoryService.getByCategoryId(id));
+    }
+    
     @GetMapping("/subcategory/{subcategoryId}/products")
     public ResponseEntity<List<PartialProductStockDTO>> getPartialBySubcategory(@PathVariable Long subcategoryId) {
         return ResponseEntity.ok(productService.getPartialProductStockBySubcategory(subcategoryId));

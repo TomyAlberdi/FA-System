@@ -117,4 +117,8 @@ public class CategoryService {
         subcategoryRepository.deleteById(subcategoryId);
     }
     
+    public List<Subcategory> getByCategoryId(Long categoryId) {
+        return subcategoryRepository.findByCategoryId(categoryId);
+    }
+    
 }
