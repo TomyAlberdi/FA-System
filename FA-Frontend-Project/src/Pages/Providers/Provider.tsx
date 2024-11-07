@@ -273,13 +273,11 @@ export const Provider = () => {
                         <FormField
                           control={form.control}
                           name="name"
-                          defaultValue={Provider?.name}
                           render={({ field }) => (
                             <FormItem className="col-start-1 row-start-1">
                               <FormLabel>Nombre</FormLabel>
                               <FormControl>
                                 <Input
-                                  placeholder={Provider?.name}
                                   {...field}
                                 />
                               </FormControl>
@@ -290,13 +288,11 @@ export const Provider = () => {
                         <FormField
                           control={form.control}
                           name="locality"
-                          defaultValue={Provider?.locality}
                           render={({ field }) => (
                             <FormItem className="col-start-1 row-start-2">
                               <FormLabel>Localidad</FormLabel>
                               <FormControl>
                                 <Input
-                                  placeholder={Provider?.locality}
                                   {...field}
                                 />
                               </FormControl>
@@ -307,13 +303,11 @@ export const Provider = () => {
                         <FormField
                           control={form.control}
                           name="address"
-                          defaultValue={Provider?.address}
                           render={({ field }) => (
                             <FormItem className="col-start-1 row-start-3">
                               <FormLabel>Dirección</FormLabel>
                               <FormControl>
                                 <Input
-                                  placeholder={Provider?.address}
                                   {...field}
                                 />
                               </FormControl>
@@ -324,13 +318,11 @@ export const Provider = () => {
                         <FormField
                           control={form.control}
                           name="phone"
-                          defaultValue={Provider?.phone}
                           render={({ field }) => (
                             <FormItem className="col-start-2 row-start-1">
                               <FormLabel>Teléfono</FormLabel>
                               <FormControl>
                                 <Input
-                                  placeholder={Provider?.phone}
                                   {...field}
                                 />
                               </FormControl>
@@ -341,13 +333,11 @@ export const Provider = () => {
                         <FormField
                           control={form.control}
                           name="email"
-                          defaultValue={Provider?.email}
                           render={({ field }) => (
                             <FormItem className="col-start-2 row-start-2">
                               <FormLabel>Email</FormLabel>
                               <FormControl>
                                 <Input
-                                  placeholder={Provider?.email}
                                   {...field}
                                 />
                               </FormControl>
@@ -358,13 +348,11 @@ export const Provider = () => {
                         <FormField
                           control={form.control}
                           name="cuit"
-                          defaultValue={Provider?.cuit}
                           render={({ field }) => (
                             <FormItem className="col-start-2 row-start-3">
                               <FormLabel>CUIT</FormLabel>
                               <FormControl>
                                 <Input
-                                  placeholder={Provider?.cuit}
                                   {...field}
                                 />
                               </FormControl>
