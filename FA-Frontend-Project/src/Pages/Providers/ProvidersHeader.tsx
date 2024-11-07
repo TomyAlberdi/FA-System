@@ -17,7 +17,7 @@ import {
   DialogContent,
   DialogTitle,
   DialogTrigger,
-  DialogHeader
+  DialogHeader,
 } from "@/components/ui/dialog";
 import { CirclePlus } from "lucide-react";
 import { useState } from "react";
@@ -27,6 +27,21 @@ import { z } from "zod";
 const formSchema = z.object({
   name: z.string().min(3, {
     message: "El nombre debe contar con al menos 3 caracteres.",
+  }),
+  locality: z.string().min(3, {
+    message: "La localidad debe contar con al menos 3 caracteres.",
+  }),
+  address: z.string().min(3, {
+    message: "La dirección debe contar con al menos 3 caracteres.",
+  }),
+  phone: z.string().min(10, {
+    message: "El teléfono debe contar con al menos 10 caracteres.",
+  }),
+  email: z.string().email({
+    message: "El email no es válido.",
+  }),
+  cuit: z.string().length(11, {
+    message: "El CUIT debe contar con 11 caracteres.",
   }),
 });
 
@@ -48,6 +63,11 @@ export const ProvidersHeader: React.FC<ProvidersHeaderProps> = ({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
+      locality: "",
+      address: "",
+      phone: "",
+      email: "",
+      cuit: "",
     },
   });
 
@@ -55,12 +75,13 @@ export const ProvidersHeader: React.FC<ProvidersHeaderProps> = ({
     if (typeof getToken === "function") {
       const token = await getToken();
       try {
-        const response = await fetch(`${BASE_URL}/provider/${data.name}`, {
+        const response = await fetch(`${BASE_URL}/provider`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
+          body: JSON.stringify(data),
         });
         if (!response.ok) {
           console.error("Error: ", response.statusText);
@@ -111,13 +132,13 @@ export const ProvidersHeader: React.FC<ProvidersHeaderProps> = ({
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="w-2/3 space-y-6"
+              className="w-full grid grid-cols-2 grid-rows-4 gap-4"
             >
               <FormField
                 control={form.control}
                 name="name"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="col-start-1 row-start-1">
                     <FormLabel>Nombre</FormLabel>
                     <FormControl>
                       <Input placeholder="Nombre del proveedor" {...field} />
@@ -126,7 +147,76 @@ export const ProvidersHeader: React.FC<ProvidersHeaderProps> = ({
                   </FormItem>
                 )}
               />
-              <Button type="submit">Guardar</Button>
+              <FormField
+                control={form.control}
+                name="locality"
+                render={({ field }) => (
+                  <FormItem className="col-start-1 row-start-2">
+                    <FormLabel>Localidad</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Localidad del proveedor" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="address"
+                render={({ field }) => (
+                  <FormItem className="col-start-1 row-start-3">
+                    <FormLabel>Dirección</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Dirección del proveedor" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem className="col-start-2 row-start-1">
+                    <FormLabel>Teléfono</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Teléfono del proveedor" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem className="col-start-2 row-start-2">
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Email del proveedor" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="cuit"
+                render={({ field }) => (
+                  <FormItem className="col-start-2 row-start-3">
+                    <FormLabel>CUIT</FormLabel>
+                    <FormControl>
+                      <Input placeholder="CUIT del proveedor" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="col-span-2 col-start-1 flex justify-center items-center">
+                <Button type="submit" className="w-full">
+                  Guardar
+                </Button>
+              </div>
             </form>
           </Form>
         </DialogContent>

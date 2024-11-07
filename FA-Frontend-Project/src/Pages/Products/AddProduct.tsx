@@ -28,7 +28,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Provider } from "@/hooks/catalogInterfaces";
+import { Category, Provider, Subcategory } from "@/hooks/CatalogInterfaces";
 import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
 
@@ -55,8 +55,9 @@ const formSchema = z.object({
   discountPercentage: z.number() || null,
   discountedPrice: z.number() || null,
   // External data
-  providerId: z.string().length(1),
-  subcategoryId: z.string().length(1),
+  providerId: z.string(),
+  categoryId: z.string(),
+  subcategoryId: z.string() || null,
   images:
     z.array(z.string()).min(1, {
       message: "La imagen no puede estar vacía.",
@@ -68,19 +69,38 @@ const formSchema = z.object({
 });
 
 export const AddProduct = () => {
-  const { BASE_URL, fetchProviders } = useCatalogContext();
+  const {
+    BASE_URL,
+    fetchProviders,
+    fetchCategories,
+    fetchSubcategoriesByCategoryId,
+  } = useCatalogContext();
   const { getToken } = useKindeAuth();
   const { toast } = useToast();
 
   const [Providers, setProviders] = useState<Array<Provider>>([]);
+  const [Categories, setCategories] = useState<Array<Category>>([]);
+  const [Subcategories, setSubcategories] = useState<Array<Subcategory>>([]);
+
   useEffect(() => {
     fetchProviders().then((result) => setProviders(result ?? []));
+    fetchCategories().then((result) => setCategories(result ?? []));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
+
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
+  useEffect(() => {
+    if (selectedCategoryId) {
+      fetchSubcategoriesByCategoryId(parseInt(selectedCategoryId)).then(
+        (result) => setSubcategories(result ?? [])
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCategoryId]);
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
     if (typeof getToken === "function") {
@@ -124,8 +144,9 @@ export const AddProduct = () => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full grid grid-rows-7 grid-cols-2 gap-4"
+          className={"w-full grid grid-cols-2 gap-4 " + (Subcategories?.length > 0 ? "grid-rows-11" : "grid-rows-9")}
         >
+          {/* Basic data */}
           <FormField
             control={form.control}
             name="name"
@@ -165,11 +186,12 @@ export const AddProduct = () => {
               </FormItem>
             )}
           />
+          {/* Provider, Category and Subcategory data */}
           <FormField
             control={form.control}
             name="providerId"
             render={({ field }) => (
-              <FormItem className="col-span-1 row-span-1 row-start-4">
+              <FormItem className="col-span-1 row-span-1 row-start-4 row-end-5">
                 <FormLabel>Proveedor</FormLabel>
                 <FormControl>
                   <Select {...field} defaultValue="1">
@@ -193,25 +215,62 @@ export const AddProduct = () => {
               </FormItem>
             )}
           />
-          <section className="col-span-1 row-span-1 row-start-5 row-end-6"> 
-          <Label htmlFor="subcategoryId">Subcategoría</Label>
-          <Select defaultValue="1" name="subcategoryId">
-            <FormControl>
-              <SelectTrigger>
-                <SelectValue placeholder="1" />
-              </SelectTrigger>
-            </FormControl>
-            <SelectContent>
-              {Providers?.map((provider: Provider) => {
-                return (
-                  <SelectItem value={provider.id.toString()}>
-                    {provider.name}
-                  </SelectItem>
-                );
-              })}
-            </SelectContent>
-          </Select>
+          <section className="col-span-1 row-span-1 row-start-5 row-end-6">
+            <Label htmlFor="subcategoryId">Categoría</Label>
+            <Select
+              name="categoryId"
+              onValueChange={(value) => setSelectedCategoryId(value)}
+            >
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                {Categories?.map((category: Category) => {
+                  return (
+                    <SelectItem value={category.id.toString()}>
+                      {category.name}
+                    </SelectItem>
+                  );
+                })}
+              </SelectContent>
+            </Select>
           </section>
+          {Subcategories?.length > 0 && (
+            <section className="col-span-1 row-span-1 row-start-6 row-end-7">
+              <Label htmlFor="subcategoryId">Subcategoría</Label>
+              <Select name="subcategoryId">
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {Subcategories?.map((subcategory: Subcategory) => {
+                    return (
+                      <SelectItem value={subcategory.id.toString()}>
+                        {subcategory.name}
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
+            </section>
+          )}
+          <div
+            className={
+              "imageSection col-start-1 pg-4 bg-primary-foreground rounded " +
+              (Subcategories?.length > 0
+                ? "row-start-7 row-end-9"
+                : "row-start-6 row-end-8")
+            }
+          >
+            images
+          </div>
+          <div className={"tagSection col-start-1 pg-4 bg-primary-foreground rounded " + (Subcategories?.length > 0 ? "row-start-9 row-end-11" : "row-start-8 row-end-10")}>
+
+          </div>
           {/* Measures data */}
           <div className="measureSection row-span-3 row-start-1 row-end-4 col-start-2 p-4 bg-primary-foreground rounded">
             <FormField
@@ -358,7 +417,24 @@ export const AddProduct = () => {
               )}
             />
           </div>
-          <div className="buttonDiv col-span-2 w-full flex justify-center items-center row-start-7">
+          {/* Discount data */}
+          <div className="discountSection row-span-2 row-start-7 row-end-9 col-start-2 p-4 bg-primary-foreground rounded">
+            <FormField
+              control={form.control}
+              name="discountPercentage"
+              render={({ field }) => (
+                <FormItem className="col-start-2 row-start-1">
+                  <FormLabel>Porcentaje de descuento (Opcional)</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Ej: 10" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          {/* Submit button */}
+          <div className="buttonDiv col-span-2 w-full flex justify-center items-center row-start-11">
             <Button type="submit" className="w-1/3">
               Guardar
             </Button>

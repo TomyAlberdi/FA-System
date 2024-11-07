@@ -1,6 +1,6 @@
 import { CatalogContext, CatalogContextType } from "@/Context/CatalogContext";
 import { ReactNode } from "react";
-import { Category, Measure, Provider, StockProduct } from "@/hooks/catalogInterfaces";
+import { Category, Measure, Provider, StockProduct, Subcategory } from "@/hooks/CatalogInterfaces";
 import { useToast } from "@/hooks/use-toast";
 
 interface CatalogContextComponentProps {
@@ -11,7 +11,7 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({ child
 
   const { toast } = useToast();
 
-  const BASE_URL = "http://localhost:8080"
+  const BASE_URL = "http://localhost:8081"
 
   /// CATEGORY GET /////
 
@@ -56,6 +56,22 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({ child
         return;
       }
       const result: Array<StockProduct> = await response.json();
+      return (result);
+    } catch (error) {
+      console.error("Error fetching Provider: ", error);
+    }
+  }
+
+  /// SUBCATEGORY GET /////
+
+  const fetchSubcategoriesByCategoryId = async (id: number) => {
+    try {
+      const response = await fetch(`${BASE_URL}/category/${id}/subcategories`);
+      if (!response.ok) {
+        console.error("Error fetching data: ", response.statusText);
+        return;
+      }
+      const result: Array<Subcategory> = await response.json();
       return (result);
     } catch (error) {
       console.error("Error fetching Provider: ", error);
@@ -151,6 +167,7 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({ child
     fetchCategories,
     fetchCategory,
     fetchCategoryProducts,
+    fetchSubcategoriesByCategoryId,
     fetchProviders,
     fetchProvider,
     fetchProviderProducts,
