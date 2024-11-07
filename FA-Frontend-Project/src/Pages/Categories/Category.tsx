@@ -255,6 +255,38 @@ const Category = () => {
                   Eliminar
                 </Button>
               </CardContent>
+              {Category.subcategories.length > 0 && (
+                <CardContent>
+                  <CardTitle>Subcategorías</CardTitle>
+                  <ScrollArea className="max-h-20rem">
+                    <Table>
+                      <TableCaption>Subcategorías</TableCaption>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="w-1/12">ID</TableHead>
+                          <TableHead className="w-1/2">Nombre</TableHead>
+                          <TableHead className="w-1/10">
+                            № de productos
+                          </TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {Category.subcategories?.map((item, index) => {
+                          return (
+                            <TableRow key={index}>
+                              <TableCell className="font-medium">
+                                {item.id}
+                              </TableCell>
+                              <TableCell>{item.name}</TableCell>
+                              <TableCell>{item.productsAmount}</TableCell>
+                            </TableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  </ScrollArea>
+                </CardContent>
+              )}
             </Card>
           </div>
           <ScrollArea className="CatalogPageList w-2/3">
@@ -281,11 +313,15 @@ const Category = () => {
                         </TableCell>
                         <TableCell>{product.name}</TableCell>
                         <TableCell>
-                          {product.stock} Cajas (
-                          {product.stock * product.unitPerBox}{" "}
-                          {product.saleUnit})
+                          {product.stock} {product.saleUnit}s
+                          {product.saleUnit !== product.measureType &&
+                            ` (${product.measurePerSaleUnit * product.stock} ${
+                              product.measureType
+                            })`}
                         </TableCell>
-                        <TableCell>${product.price}</TableCell>
+                        <TableCell>
+                          ${product.measurePrice} / {product.measureType}
+                        </TableCell>
                       </TableRow>
                     );
                   })}

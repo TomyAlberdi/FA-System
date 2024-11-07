@@ -2,11 +2,24 @@ export interface Category {
   id: number;
   name: string;
   productsAmount: number;
+  subcategories: Array<Subcategory>;
+}
+
+export interface Subcategory {
+  id: number;
+  categoryId: number;
+  name: string;
+  productsAmount: number;
 }
 
 export interface Provider {
   id: number;
   name: string;
+  locality: string;
+  address: string;
+  phone: string;
+  email: string;
+  cuit: string;
   productsAmount: number;
 }
 
@@ -29,10 +42,11 @@ export interface CardProduct {
 export interface StockProduct {
   id: number;
   name: string;
+  measureType: string;
+  measurePrice: number;
   stock: number;
   saleUnit: string;
-  unitPerBox: number;
-  price: number;
+  measurePerSaleUnit: number;
 }
 
 export interface FilterData {

@@ -50,6 +50,21 @@ const formSchema = z.object({
   name: z.string().min(3, {
     message: "El nombre debe contar con al menos 3 caracteres.",
   }),
+  locality: z.string().min(3, {
+    message: "La localidad debe contar con al menos 3 caracteres.",
+  }),
+  address: z.string().min(3, {
+    message: "La dirección debe contar con al menos 3 caracteres.",
+  }),
+  phone: z.string().min(10, {
+    message: "El teléfono debe contar con al menos 10 caracteres.", 
+  }),
+  email: z.string().email({
+    message: "El email no es válido.",
+  }),
+  cuit: z.string().length(11, {
+    message: "El CUIT debe contar con 11 caracteres.",
+  }),
 });
 
 export const Provider = () => {
@@ -70,13 +85,14 @@ export const Provider = () => {
         const token = await getToken();
         try {
           const response = await fetch(
-            `${BASE_URL}/provider?name=${data.name}&id=${id}`,
+            `${BASE_URL}/provider/${id}`,
             {
               method: "PATCH",
               headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
               },
+              body: JSON.stringify(data)
             }
           );
           if (!response.ok) {
@@ -112,6 +128,11 @@ export const Provider = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
+      locality: "",
+      address: "",
+      phone: "",
+      email: "",
+      cuit: "",
     },
   });
 
@@ -201,7 +222,22 @@ export const Provider = () => {
               </CardHeader>
               <CardContent>
                 <CardDescription className="text-lg">
-                  Cantidad de productos: {Provider.productsAmount}
+                  Cantidad de productos: <span className="text-secondary-foreground">{Provider.productsAmount}</span>
+                </CardDescription>
+                <CardDescription className="text-lg">
+                  Localidad: <span className="text-secondary-foreground">{Provider.locality}</span>
+                </CardDescription>
+                <CardDescription className="text-lg">
+                  Dirección: <span className="text-secondary-foreground">{Provider.address}</span>
+                </CardDescription>
+                <CardDescription className="text-lg">
+                  Teléfono: <span className="text-secondary-foreground">{Provider.phone}</span>
+                </CardDescription>
+                <CardDescription className="text-lg">
+                  Email: <span className="text-secondary-foreground">{Provider.email}</span>
+                </CardDescription>
+                <CardDescription className="text-lg">
+                  CUIT: <span className="text-secondary-foreground">{Provider.cuit}</span>
                 </CardDescription>
               </CardContent>
               <CardContent>
@@ -221,17 +257,18 @@ export const Provider = () => {
                     <Form {...form}>
                       <form
                         onSubmit={form.handleSubmit(updateCategory)}
-                        className="w-2/3 space-y-6"
+                        className="w-full grid grid-cols-2 grid-rows-4 gap-4"
                       >
                         <FormField
                           control={form.control}
                           name="name"
+                          defaultValue={Provider?.name}
                           render={({ field }) => (
-                            <FormItem>
+                            <FormItem className="col-start-1 row-start-1">
                               <FormLabel>Nombre</FormLabel>
                               <FormControl>
                                 <Input
-                                  placeholder="Nombre del proveedor"
+                                  placeholder={Provider?.name}
                                   {...field}
                                 />
                               </FormControl>
@@ -239,7 +276,94 @@ export const Provider = () => {
                             </FormItem>
                           )}
                         />
-                        <Button type="submit">Guardar</Button>
+                        <FormField
+                          control={form.control}
+                          name="locality"
+                          defaultValue={Provider?.locality}
+                          render={({ field }) => (
+                            <FormItem className="col-start-1 row-start-2">
+                              <FormLabel>Localidad</FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder={Provider?.locality}
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="address"
+                          defaultValue={Provider?.address}
+                          render={({ field }) => (
+                            <FormItem className="col-start-1 row-start-3">
+                              <FormLabel>Dirección</FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder={Provider?.address}
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="phone"
+                          defaultValue={Provider?.phone}
+                          render={({ field }) => (
+                            <FormItem className="col-start-2 row-start-1">
+                              <FormLabel>Teléfono</FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder={Provider?.phone}
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="email"
+                          defaultValue={Provider?.email}
+                          render={({ field }) => (
+                            <FormItem className="col-start-2 row-start-2">
+                              <FormLabel>Email</FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder={Provider?.email}
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="cuit"
+                          defaultValue={Provider?.cuit}
+                          render={({ field }) => (
+                            <FormItem className="col-start-2 row-start-3">
+                              <FormLabel>CUIT</FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder={Provider?.cuit}
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <div className="col-span-2 col-start-1 flex justify-center items-center">
+                          <Button type="submit" className="w-full">Guardar</Button>
+                        </div>
                       </form>
                     </Form>
                   </DialogContent>
@@ -278,11 +402,15 @@ export const Provider = () => {
                         </TableCell>
                         <TableCell>{product.name}</TableCell>
                         <TableCell>
-                          {product.stock} Cajas (
-                          {product.stock * product.unitPerBox}{" "}
-                          {product.saleUnit})
+                          {product.stock} {product.saleUnit}s
+                          {product.saleUnit !== product.measureType &&
+                            ` (${product.measurePerSaleUnit * product.stock} ${
+                              product.measureType
+                            })`}
                         </TableCell>
-                        <TableCell>${product.price}</TableCell>
+                        <TableCell>
+                          ${product.measurePrice} / {product.measureType}
+                        </TableCell>
                       </TableRow>
                     );
                   })}
