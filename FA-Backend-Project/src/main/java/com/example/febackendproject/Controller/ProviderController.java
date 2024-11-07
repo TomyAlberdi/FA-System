@@ -67,12 +67,13 @@ public class ProviderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newProvider);
     }
     
-    @PatchMapping
-    public ResponseEntity<?> update(@RequestBody Provider provider) {
-        Optional<Provider> searchProvider = providerService.findById(provider.getId());
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> update(@RequestBody Provider provider, @PathVariable Long id) {
+        Optional<Provider> searchProvider = providerService.findById(id);
         if (searchProvider.isEmpty()) {
             return notFound("ID", provider.getId().toString());
         }
+        provider.setId(id);
         providerService.updateById(provider);
         return ResponseEntity.ok("Provider updated");
     }
