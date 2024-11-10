@@ -191,13 +191,13 @@ public class ProductService {
         
         Specification<Product> spec = Specification.where(ProductSpecifications.hasCategory(filterDTO.getCategoryId())
                         .and(ProductSpecifications.hasProvider(filterDTO.getProviderId()))
-                        .and(ProductSpecifications.hasMeasure(filterDTO.getMeasure()))
+                        .and(ProductSpecifications.hasMeasure(filterDTO.getMeasures()))
                         .and(ProductSpecifications.priceBetween(filterDTO.getMinPrice(), filterDTO.getMaxPrice()))
                         .and(ProductSpecifications.hasDiscount(filterDTO.getDiscount())));
         
         return productPaginationRepository.findAll(spec, pageable).map(product -> {
                 String image = !product.getImages().isEmpty() ? product.getImages().get(0) : null;
-                return new PartialProductDTO(product.getId(), product.getName(), product.getMeasureType(), product.getMeasurePrice(), product.getDiscountPercentage(), product.getDiscountedPrice(), image);
+                return new PartialProductDTO(product.getId(), product.getName(), product.getMeasures(), product.getMeasureType(), product.getMeasurePrice(), product.getDiscountPercentage(), product.getDiscountedPrice(), image);
         });
     }
     

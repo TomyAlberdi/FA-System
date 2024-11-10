@@ -14,7 +14,13 @@ public class ProductSpecifications {
     }
     
     public static Specification<Product> hasMeasure(String measure) {
-        return (root, query, builder) -> measure == null ? builder.conjunction() : builder.equal(root.get("measures"), measure);
+        return (root, query, builder) -> {
+            if (measure == null || measure.isEmpty()) {
+                return builder.conjunction();
+            }
+            // Trim and ignore case for a more resilient filter
+            return builder.equal(builder.lower(builder.trim(root.get("measures"))), measure.toLowerCase().trim());
+        };
     }
     
     public static Specification<Product> priceBetween(Double minPrice, Double maxPrice) {
@@ -22,11 +28,11 @@ public class ProductSpecifications {
             if (minPrice == null && maxPrice == null) {
                 return builder.conjunction();
             } else if (minPrice != null && maxPrice != null) {
-                return builder.between(root.get("price"), minPrice, maxPrice);
+                return builder.between(root.get("measurePrice"), minPrice, maxPrice);
             } else if (minPrice != null) {
-                return builder.greaterThanOrEqualTo(root.get("price"), minPrice);
+                return builder.greaterThanOrEqualTo(root.get("measurePrice"), minPrice);
             } else {
-                return builder.lessThanOrEqualTo(root.get("price"), maxPrice);
+                return builder.lessThanOrEqualTo(root.get("measurePrice"), maxPrice);
             }
         };
     }

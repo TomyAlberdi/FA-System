@@ -13,7 +13,7 @@ public class FilterDTO {
     
     private Long categoryId;
     private Long providerId;
-    private String measure;
+    private String measures;
     private Double minPrice;
     private Double maxPrice;
     private Boolean discount;

@@ -14,6 +14,7 @@ public class PartialProductDTO {
     private Long id;
     private String name;
     
+    private String measures;
     private String measureType;
     private Double measurePrice;
     
