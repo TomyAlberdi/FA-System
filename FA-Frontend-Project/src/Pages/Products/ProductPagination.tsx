@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 
 export const ProductPagination = () => {
 
+  
+
   return (
     <section className="ProductPagination col-span-6">
       <section className="listHeader">
@@ -14,6 +16,9 @@ export const ProductPagination = () => {
             Nuevo Producto
           </Button>
         </Link>
+      </section>
+      <section className="listBody border border-red-500">
+        
       </section>
     </section>
   );

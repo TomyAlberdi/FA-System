@@ -28,6 +28,11 @@ export interface Measure {
   products: number;
 }
 
+export interface Price {
+  "minPrice": number;
+  "maxPrice": number;
+}
+
 export interface CardProduct {
   id: number,
   name: string,
@@ -66,6 +71,11 @@ export interface MeasureCheck {
   measure: string;
   productsAmount: number;
   checked: boolean;
+}
+
+export interface PriceCheck {
+  minPrice: number;
+  maxPrice: number;
 }
 
 export interface BasicFilterProps {

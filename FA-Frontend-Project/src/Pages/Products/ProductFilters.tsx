@@ -5,6 +5,7 @@ import { CategoryFilter } from "@/Pages/Products/Filters/CategoryFilter";
 import { useEffect, useState } from "react";
 import { ProviderFilter } from "@/Pages/Products/Filters/ProviderFilter";
 import { MeasureFilter } from "@/Pages/Products/Filters/MeasureFilter";
+import { PricesFilter } from "@/Pages/Products/Filters/PricesFilter";
 
 export const ProductFilters = () => {
 
@@ -32,6 +33,7 @@ export const ProductFilters = () => {
           <CategoryFilter Filter={Filter} setFilter={setFilter} />
           <ProviderFilter Filter={Filter} setFilter={setFilter} />
           <MeasureFilter Filter={Filter} setFilter={setFilter} />
+          <PricesFilter Filter={Filter} setFilter={setFilter} />
         </Accordion>
       </ScrollArea>
     </section>

@@ -1,6 +1,6 @@
 import { CatalogContext, CatalogContextType } from "@/Context/CatalogContext";
 import { ReactNode } from "react";
-import { Category, Measure, Provider, StockProduct, Subcategory } from "@/hooks/CatalogInterfaces";
+import { Category, Measure, Price, Provider, StockProduct, Subcategory } from "@/hooks/CatalogInterfaces";
 import { useToast } from "@/hooks/use-toast";
 
 interface CatalogContextComponentProps {
@@ -158,7 +158,19 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({ child
 
   /// PRICES GET /////
 
-  
+  const fetchPrices = async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/filter/prices`);
+      if (!response.ok) {
+        console.error("Error fetching Prices: ", response.statusText);
+        return;
+      }
+      const result: Price = await response.json();
+      return (result);
+    } catch (error) {
+      console.error("Error fetching Prices: ", error);
+    }
+  }
 
   /// FILTER LOGIC /////
 
@@ -172,6 +184,7 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({ child
     fetchProvider,
     fetchProviderProducts,
     fetchMeasures,
+    fetchPrices,
   }
 
   return (
