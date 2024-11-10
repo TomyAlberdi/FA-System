@@ -52,13 +52,15 @@ export const MeasureFilter: React.FC<MeasureFilterProps> = ({
     fetchMeasures().then((result) => {
       const checkedMeasures: Array<MeasureCheck> = [];
       result?.forEach((measure: Measure, i: number) => {
-        const newItem: MeasureCheck = {
-          id: i,
-          measure: measure.measure,
-          productsAmount: measure.productsAmount,
-          checked: false,
-        };
-        checkedMeasures.push(newItem);
+        if (measure.measure !== null) {
+          const newItem: MeasureCheck = {
+            id: i,
+            measure: measure.measure,
+            productsAmount: measure.products,
+            checked: false,
+          };
+          checkedMeasures.push(newItem);
+        }
       });
       setData(checkedMeasures ?? null);
     });

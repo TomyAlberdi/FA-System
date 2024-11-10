@@ -25,7 +25,7 @@ export interface Provider {
 
 export interface Measure {
   measure: string;
-  productsAmount: number;
+  products: number;
 }
 
 export interface CardProduct {
