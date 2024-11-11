@@ -47,7 +47,7 @@ public class ProductService {
                 if (!strings.isEmpty()) {
                     PartialProductDTO.setImage(strings.get(0));
                 } else {
-                    PartialProductDTO.setImage(null);
+                    PartialProductDTO.setImage("");
                 }
             });
         }
@@ -197,7 +197,7 @@ public class ProductService {
         
         return productPaginationRepository.findAll(spec, pageable).map(product -> {
                 String image = !product.getImages().isEmpty() ? product.getImages().get(0) : null;
-                return new PartialProductDTO(product.getId(), product.getName(), product.getMeasures(), product.getMeasureType(), product.getMeasurePrice(), product.getDiscountPercentage(), product.getDiscountedPrice(), image);
+                return new PartialProductDTO(product.getId(), product.getName(), product.getMeasureType(), product.getSaleUnit(), product.getSaleUnitPrice(), product.getMeasurePerSaleUnit(), product.getDiscountPercentage(), product.getDiscountedPrice(), image);
         });
     }
     
