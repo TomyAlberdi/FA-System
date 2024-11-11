@@ -36,9 +36,10 @@ export interface Price {
 export interface CardProduct {
   id: number,
   name: string,
-  price: number,
-  salesUnit: string, 
-  priceSaleUnit: number,
+  measureType: string,
+  saleUnit: string, 
+  saleUnitPrice: number,
+  measurePerSaleUnit: number,
   discountPercentage: number, 
   discountedPrice: number,
   image: string,
@@ -85,4 +86,12 @@ export interface DiscountCheck {
 export interface BasicFilterProps {
   Filter: Array<FilterData | null>;
   setFilter: (value: Array<FilterData | null>) => void;
+}
+
+export interface PaginationInfo {
+  pageNumber: number;
+  totalPages: number;
+  totalElements: number;
+  first: boolean;
+  last: boolean;
 }
