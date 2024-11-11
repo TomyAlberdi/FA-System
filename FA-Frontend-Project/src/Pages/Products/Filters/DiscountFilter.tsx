@@ -6,7 +6,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { BasicFilterProps as DiscountFilterProps } from "@/hooks/CatalogInterfaces";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export const DiscountFilter: React.FC<DiscountFilterProps> = ({
   Filter,
@@ -14,18 +14,18 @@ export const DiscountFilter: React.FC<DiscountFilterProps> = ({
 }) => {
   const [Discount, setDiscount] = useState<boolean>(false);
 
-  useEffect(() => {
+  const handleCheckboxChange = (value: boolean) => {
     const newAppliedFilters = Filter?.filter(
       (filter) => filter?.type !== "discount"
     );
 
     newAppliedFilters?.push({
       type: "discount",
-      value: Discount,
+      value: value,
     });
-
+    setDiscount(value);
     setFilter(newAppliedFilters);
-  });
+  }
 
   return (
     <AccordionItem
@@ -34,11 +34,13 @@ export const DiscountFilter: React.FC<DiscountFilterProps> = ({
     >
       <AccordionTrigger>Productos en oferta</AccordionTrigger>
       <AccordionContent className="w-full">
-        <div className="flex items_center w-full cursor-pointer px-1 py-2" onClick={() => setDiscount(!Discount)}>
+        <div
+          className="flex items_center w-full cursor-pointer px-1 py-2"
+          onClick={() => handleCheckboxChange(!Discount)}
+        >
           <Label className="w-full cursor-pointer">Descuento</Label>
           <Checkbox
             checked={Discount}
-            onCheckedChange={() => setDiscount(!Discount)}
           />
         </div>
       </AccordionContent>

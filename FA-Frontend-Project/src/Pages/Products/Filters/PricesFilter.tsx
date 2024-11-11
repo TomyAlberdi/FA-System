@@ -27,7 +27,10 @@ export const PricesFilter: React.FC<PricesFilterProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
+  const handleSliderChange = (value: number[]) => {
+    setSelectedMinPrice(value[0]);
+    setSelectedMaxPrice(value[1]);
+
     const newAppliedFilters = Filter?.filter(
       (filter) => filter?.type !== "minPrice" && filter?.type !== "maxPrice"
     );
@@ -40,7 +43,7 @@ export const PricesFilter: React.FC<PricesFilterProps> = ({
       value: SelectedMaxPrice,
     });
     setFilter(newAppliedFilters);
-  }, [SelectedMinPrice, SelectedMaxPrice, Filter, setFilter])
+  }
 
   if (Data) {
     return (
@@ -59,8 +62,7 @@ export const PricesFilter: React.FC<PricesFilterProps> = ({
             step={1}
             defaultValue={[Data.minPrice, Data.maxPrice]}
             onValueChange={(value) => {
-              setSelectedMinPrice(value[0]);
-              setSelectedMaxPrice(value[1]);
+              handleSliderChange(value);
             }}
           />
         </AccordionContent>
