@@ -56,7 +56,7 @@ export interface StockProduct {
 
 export interface FilterData {
   type: string;
-  value: number | string;
+  value: number | string | boolean;
 }
 
 export interface BasicFilterCheck {
@@ -76,6 +76,10 @@ export interface MeasureCheck {
 export interface PriceCheck {
   minPrice: number;
   maxPrice: number;
+}
+
+export interface DiscountCheck {
+  discount: boolean;
 }
 
 export interface BasicFilterProps {
