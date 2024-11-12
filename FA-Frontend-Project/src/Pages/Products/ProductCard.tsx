@@ -7,13 +7,30 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { SquarePlus } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export const ProductCard = ({ product }: { product: CardProduct }) => {
   return (
-    <Card className="h-[400px] w-[24.25%] max-w-[400px] p-2 grid grid-cols-1 grid-rows-10 cursor-pointer">
-      <CardTitle className="row-span-1 truncate overflow-hidden whitespace-nowrap pt-1">
-        {product.name}
-      </CardTitle>
+    <Card className="ProductCard relative bg-primary-foreground h-[400px] w-[19.2%] max-w-[300px] p-2 grid grid-cols-1 grid-rows-9 cursor-pointer">
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <CardTitle className="row-span-1 truncate overflow-hidden whitespace-nowrap pt-1">
+            {product.name}
+          </CardTitle>
+        </TooltipTrigger>
+        <TooltipContent>{product.name}</TooltipContent>
+      </Tooltip>
+      {product.discountPercentage > 0 && (
+        <div className="discountTag absolute right-0 bg-destructive py-1 px-2 rounded-l-md text-lg font-medium shadow-md text-white">
+          - {product.discountPercentage}%
+        </div>
+      )}
       <div
         className="image w-full row-span-5 mb-1"
         style={
@@ -32,16 +49,44 @@ export const ProductCard = ({ product }: { product: CardProduct }) => {
               }
         }
       />
-      <CardTitle className="w-full row-span-1 text-center text-destructive">
-        $ {product.saleUnitPrice / product.measurePerSaleUnit} X {product.measureType}
-      </CardTitle>
-      {
-        product.measureType === "M2" ? (
-          <CardDescription className="w-full row-span-1 text-center text-xl">
-            $ {product.saleUnitPrice} X {product.saleUnit} ({product.measurePerSaleUnit} m2)
-          </CardDescription>
-        ) : null
-      }
+      {product.discountPercentage == 0 ? (
+        <CardTitle className="w-full text-destructive row-span-1 flex justify-center items-center overflow-hidden">
+          ${" "}
+          {Math.round(
+            (product.saleUnitPrice / product.measurePerSaleUnit) * 100
+          ) / 100}{" "}
+          X {product.measureType}
+        </CardTitle>
+      ) : (
+        <CardTitle className="w-full row-span-2 flex flex-col justify-center items-center overflow-hidden">
+          <span className="oldPrice line-through mr-1 text-xl text-muted-foreground">
+            ${" "}
+            {Math.round(
+              (product.saleUnitPrice / product.measurePerSaleUnit) * 100
+            ) / 100}
+          </span>
+          <span className="newPrice text-destructive overflow-hidden">
+            ${" "}
+            {Math.round(
+              (product.discountedPrice / product.measurePerSaleUnit) * 100
+            ) / 100}{" "}
+            X {product.measureType}
+          </span>
+        </CardTitle>
+      )}
+      {product.measureType === "M2" || product.measureType === "ML" && product.discountPercentage === 0 ? (
+        <CardDescription className="w-full row-span-1 text-center text-base overflow-hidden">
+          ${" "}
+          {product.discountPercentage > 0
+            ? product.discountedPrice
+            : product.saleUnitPrice}{" "}
+          X {product.saleUnit} ({product.measurePerSaleUnit} m2)
+        </CardDescription>
+      ) : null}
+      <Button className="w-full row-span-1 text-center row-start-9">
+        <SquarePlus />
+        Ver más
+      </Button>
     </Card>
   );
 };

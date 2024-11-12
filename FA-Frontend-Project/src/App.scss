@@ -41,6 +41,17 @@ div.App {
       margin-bottom: 1%;
       @include var.flex-container(column, center, center);
     }
+    .ProductCard {
+      margin-bottom: 1%;
+      transition: all 0.2s ease-in-out;
+      &:hover {
+        transform: scale(1.01);
+        transition: all 0.2s ease-in-out;
+      }
+      div.discountTag {
+        top: 15%;
+      }
+    }
   }
   .loading {
     @include var.flex-container(column, center, center);

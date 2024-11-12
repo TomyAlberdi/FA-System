@@ -76,7 +76,7 @@ export const MeasureFilter: React.FC<MeasureFilterProps> = ({
         <AccordionTrigger>Medidas</AccordionTrigger>
         <AccordionContent>
           {Data?.map((measure: MeasureCheck) => {
-            return (
+            return measure.measure && (
               <div
                 className="flex items-center w-full cursor-pointer px-1 py-2"
                 key={measure.id}

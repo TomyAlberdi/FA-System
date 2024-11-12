@@ -22,6 +22,7 @@ import { AlertCircle, CirclePlus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ProductCard } from "@/Pages/Products/ProductCard";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 export const ProductPagination = () => {
   /* Diseñar product card */
@@ -38,7 +39,7 @@ export const ProductPagination = () => {
     const fetchProducts = async () => {
       try {
         const response = await fetch(
-          `${BASE_URL}/product?page=${CurrentPage}&size=12`
+          `${BASE_URL}/product?page=${CurrentPage}&size=15`
         );
         if (!response.ok) {
           console.error("Error fetching data: ", response.statusText);
@@ -112,9 +113,11 @@ export const ProductPagination = () => {
           </Alert>
         ) : (
           <>
-            {Products?.map((product: CardProduct, i) => {
-              return <ProductCard key={i} product={product} />;
-            })}
+            <TooltipProvider>
+              {Products?.map((product: CardProduct, i) => {
+                return <ProductCard key={i} product={product} />;
+              })}
+            </TooltipProvider>
             <Pagination className="mt-5">
               <PaginationContent>
                 <PaginationItem
