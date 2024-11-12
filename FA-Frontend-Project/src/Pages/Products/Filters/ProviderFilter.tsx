@@ -75,24 +75,26 @@ export const ProviderFilter: React.FC<ProviderFilterProps> = ({
         <AccordionContent>
           {Data?.map((provider: ProviderCheck) => {
             return (
-              <div
-                className="flex items-center w-full cursor-pointer px-1 py-2"
-                key={provider.id}
-              >
-                <Checkbox
-                  className="mr-2"
-                  checked={provider.checked}
-                  onCheckedChange={() => handleCheckboxChange(provider.id)}
-                  disabled={provider.productsAmount === 0}
-                />
-                <Label
-                  htmlFor={provider.name}
-                  className="checkboxLabel text-sm w-full"
+              provider.productsAmount > 0 && (
+                <div
+                  className="flex items-center w-full cursor-pointer px-1 py-2"
+                  key={provider.id}
                 >
-                  {provider.name}
-                  <span>{provider.productsAmount}</span>
-                </Label>
-              </div>
+                  <Checkbox
+                    className="mr-2"
+                    checked={provider.checked}
+                    onCheckedChange={() => handleCheckboxChange(provider.id)}
+                    disabled={provider.productsAmount === 0}
+                  />
+                  <Label
+                    htmlFor={provider.name}
+                    className="checkboxLabel text-sm w-full"
+                  >
+                    {provider.name}
+                    <span>{provider.productsAmount}</span>
+                  </Label>
+                </div>
+              )
             );
           })}
         </AccordionContent>
