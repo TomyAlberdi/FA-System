@@ -39,7 +39,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "WHERE id = ?1")
     void updateById(Long id, String name, String description, String quality, Long providerId, Long categoryId, Long subcategoryId,
                     String measureType, String measures, Double measurePrice,
-                    String salesUnit, Double saleUnitPrice, Integer measurePerSaleUnit,
+                    String salesUnit, Double saleUnitPrice, Double measurePerSaleUnit,
                     Integer discount_percentage, Double discount_new_price);
     
     /////// SEARCHES BY CATEGORY

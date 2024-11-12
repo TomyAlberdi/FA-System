@@ -83,7 +83,7 @@ public class Product {
     
     @NotNull
     @Column(name = "measure_per_sale_unit")
-    private Integer measurePerSaleUnit;
+    private Double measurePerSaleUnit;
     
     // Discount data
     @NotNull

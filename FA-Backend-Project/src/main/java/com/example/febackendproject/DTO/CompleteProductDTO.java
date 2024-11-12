@@ -24,7 +24,7 @@ public class CompleteProductDTO {
     
     private String saleUnit;
     private Double saleUnitPrice;
-    private Integer measurePerSaleUnit;
+    private Double measurePerSaleUnit;
     
     private Integer discountPercentage;
     private Double discountedPrice;
