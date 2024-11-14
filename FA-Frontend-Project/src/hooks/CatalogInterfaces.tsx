@@ -53,6 +53,7 @@ export interface StockProduct {
   stock: number;
   saleUnit: string;
   measurePerSaleUnit: number;
+  saleUnitPrice: number;
 }
 
 export interface FilterData {

@@ -20,5 +20,6 @@ public class PartialProductStockDTO {
     
     private String saleUnit;
     private Double measurePerSaleUnit;
+    private Double saleUnitPrice;
 
 }

@@ -408,7 +408,7 @@ export const Provider = () => {
                             })`}
                         </TableCell>
                         <TableCell>
-                          ${product.measurePrice} / {product.measureType}
+                          ${product.saleUnitPrice} / {product.saleUnit}
                         </TableCell>
                       </TableRow>
                     );

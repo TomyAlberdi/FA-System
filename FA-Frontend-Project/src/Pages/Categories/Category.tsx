@@ -320,7 +320,7 @@ const Category = () => {
                             })`}
                         </TableCell>
                         <TableCell>
-                          ${product.measurePrice} / {product.measureType}
+                          ${product.saleUnitPrice} x {product.saleUnit}
                         </TableCell>
                       </TableRow>
                     );
