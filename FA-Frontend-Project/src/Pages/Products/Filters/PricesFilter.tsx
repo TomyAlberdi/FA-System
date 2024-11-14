@@ -18,14 +18,23 @@ export const PricesFilter: React.FC<PricesFilterProps> = ({
   const [SelectedMinPrice, setSelectedMinPrice] = useState<number>(0);
   const [SelectedMaxPrice, setSelectedMaxPrice] = useState<number>(0);
 
+  const [DisplaySelectedMinPrice, setDisplaySelectedMinPrice] = useState<number>(0);
+  const [DisplaySelectedMaxPrice, setDisplaySelectedMaxPrice] = useState<number>(0);
+
   useEffect(() => {
     fetchPrices().then((result) => {
+      if (Filter && Filter.length !== 0) {
+        setData(result ?? null);
+        return;
+      }
       setData(result ?? null);
       setSelectedMinPrice(result?.minPrice ?? 0);
       setSelectedMaxPrice(result?.maxPrice ?? 0);
+      setDisplaySelectedMinPrice(result?.minPrice ?? 0);
+      setDisplaySelectedMaxPrice(result?.maxPrice ?? 0);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [Filter]);
 
   useEffect(() => {
     const newAppliedFilters = Filter?.filter(
@@ -51,14 +60,19 @@ export const PricesFilter: React.FC<PricesFilterProps> = ({
         </AccordionTrigger>
         <AccordionContent className="pb-6 flex flex-col gap-5">
           <div className="pricesData w-full flex justify-between">
-            <span>{SelectedMinPrice}</span>
-            <span>{SelectedMaxPrice}</span>
+            <span>{DisplaySelectedMinPrice}</span>
+            <span>{DisplaySelectedMaxPrice}</span>
           </div>
           <Slider 
             min={Data.minPrice}
             max={Data.maxPrice}
             step={1}
             defaultValue={[Data.minPrice, Data.maxPrice]}
+            minStepsBetweenThumbs={10}
+            onValueChange={(value) => {
+              setDisplaySelectedMinPrice(value[0]);
+              setDisplaySelectedMaxPrice(value[1]);
+            }}
             onValueCommit={(value) => {
               setSelectedMinPrice(value[0]);
               setSelectedMaxPrice(value[1]);

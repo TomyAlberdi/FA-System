@@ -6,7 +6,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { BasicFilterProps as DiscountFilterProps } from "@/hooks/CatalogInterfaces";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const DiscountFilter: React.FC<DiscountFilterProps> = ({
   Filter,
@@ -29,6 +29,12 @@ export const DiscountFilter: React.FC<DiscountFilterProps> = ({
     setDiscount(value);
     setFilter(newAppliedFilters);
   }
+
+  useEffect(() => {
+    if (Filter && Filter.length === 0) {
+      setDiscount(false);
+    }
+  }, [Filter]);
 
   return (
     <AccordionItem

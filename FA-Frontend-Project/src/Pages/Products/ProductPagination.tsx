@@ -16,12 +16,13 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Skeleton } from "@/components/ui/skeleton";
-import { CardProduct, PaginationInfo } from "@/hooks/CatalogInterfaces";
+import { CardProduct, FilterData, PaginationInfo } from "@/hooks/CatalogInterfaces";
 import { AlertCircle, CirclePlus } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ProductCard } from "@/Pages/Products/ProductCard";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { RefreshCcw } from 'lucide-react';
 
 interface ProductPaginationProps {
   Products: Array<CardProduct>;
@@ -29,6 +30,7 @@ interface ProductPaginationProps {
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
   PaginationInfo: PaginationInfo;
   Loading: boolean;
+  setFilter: React.Dispatch<React.SetStateAction<Array<FilterData | null>>>;
 }
 
 export const ProductPagination: React.FC<ProductPaginationProps> = ({
@@ -37,6 +39,7 @@ export const ProductPagination: React.FC<ProductPaginationProps> = ({
   setCurrentPage,
   PaginationInfo,
   Loading,
+  setFilter,
 }) => {
   /* Diseñar product card */
   /* Implementar menú pagination */
@@ -62,10 +65,18 @@ export const ProductPagination: React.FC<ProductPaginationProps> = ({
     setCurrentPage(page);
   };
 
+  const handleRefresh = () => {
+    setCurrentPage(0);
+    setFilter([]);
+  };
+
   return (
     <section className="ProductPagination col-span-6">
       <section className="listHeader">
-        <span></span>
+        <Button onClick={handleRefresh} className="text-lg">
+          <RefreshCcw />
+          Recargar productos
+        </Button>
         <Link to={"/catalog/products/add"}>
           <Button className="text-lg">
             <CirclePlus />

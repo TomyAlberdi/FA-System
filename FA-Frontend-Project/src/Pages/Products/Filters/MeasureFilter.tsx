@@ -50,6 +50,9 @@ export const MeasureFilter: React.FC<MeasureFilterProps> = ({
 
   useEffect(() => {
     fetchMeasures().then((result) => {
+      if (Filter && Filter.length !== 0) {
+        return;
+      }
       const checkedMeasures: Array<MeasureCheck> = [];
       result?.forEach((measure: Measure, i: number) => {
         if (measure.measure !== null) {
@@ -65,7 +68,7 @@ export const MeasureFilter: React.FC<MeasureFilterProps> = ({
       setData(checkedMeasures ?? null);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [Filter]);
 
   if (Data) {
     return (

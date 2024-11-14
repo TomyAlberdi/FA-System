@@ -50,6 +50,9 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
 
   useEffect(() => {
     fetchSubcategories().then((result) => {
+      if (Filter && Filter.length !== 0) {
+        return;
+      }
       const checkedCategories: Array<CategoryCheck> = [];
       result?.forEach((category: Subcategory) => {
         const newItem: CategoryCheck = {
@@ -63,7 +66,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
       setData(checkedCategories ?? null);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [Filter]);
 
   if (Data) {
     return (

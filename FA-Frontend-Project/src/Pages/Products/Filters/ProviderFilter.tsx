@@ -50,6 +50,9 @@ export const ProviderFilter: React.FC<ProviderFilterProps> = ({
 
   useEffect(() => {
     fetchProviders().then((result) => {
+      if (Filter && Filter.length !== 0) {
+        return;
+      }
       const checkedProviders: Array<ProviderCheck> = [];
       result?.forEach((provider: Provider) => {
         const newItem: ProviderCheck = {
@@ -63,7 +66,7 @@ export const ProviderFilter: React.FC<ProviderFilterProps> = ({
       setData(checkedProviders ?? null);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [Filter]);
 
   if (Data) {
     return (
