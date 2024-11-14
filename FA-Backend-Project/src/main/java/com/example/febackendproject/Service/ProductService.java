@@ -189,7 +189,7 @@ public class ProductService {
         
         Pageable pageable = PageRequest.of(page, size);
         
-        Specification<Product> spec = Specification.where(ProductSpecifications.hasCategory(filterDTO.getCategoryId())
+        Specification<Product> spec = Specification.where(ProductSpecifications.hasSubcategory(filterDTO.getSubcategoryId())
                         .and(ProductSpecifications.hasProvider(filterDTO.getProviderId()))
                         .and(ProductSpecifications.hasMeasure(filterDTO.getMeasures()))
                         .and(ProductSpecifications.priceBetween(filterDTO.getMinPrice(), filterDTO.getMaxPrice()))

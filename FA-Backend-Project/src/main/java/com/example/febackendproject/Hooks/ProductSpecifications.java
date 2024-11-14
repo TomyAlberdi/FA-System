@@ -5,8 +5,8 @@ import org.springframework.data.jpa.domain.Specification;
 
 public class ProductSpecifications {
     
-    public static Specification<Product> hasCategory(Long categoryId) {
-        return (root, query, builder) -> categoryId == null ? builder.conjunction() : builder.equal(root.get("categoryId"), categoryId);
+    public static Specification<Product> hasSubcategory(Long subcategoryId) {
+        return (root, query, builder) -> subcategoryId == null ? builder.conjunction() : builder.equal(root.get("subcategoryId"), subcategoryId);
     }
     
     public static Specification<Product> hasProvider(Long providerId) {

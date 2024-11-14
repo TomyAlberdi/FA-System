@@ -7,6 +7,7 @@ export interface CatalogContextType {
   fetchCategories: () => Promise<Array<Category> | undefined>;
   fetchCategory: (id: number) => Promise<Category | undefined>;
   fetchCategoryProducts: (id: number) => Promise<Array<StockProduct> | undefined>;
+  fetchSubcategories: () => Promise<Array<Subcategory> | undefined >;
   fetchSubcategoriesByCategoryId: (id: number) => Promise<Array<Subcategory> | undefined>;
   // PROVIDER GET
   fetchProviders: () => Promise<Array<Provider> | undefined>;

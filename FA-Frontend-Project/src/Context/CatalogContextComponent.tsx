@@ -64,6 +64,19 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({ child
 
   /// SUBCATEGORY GET /////
 
+  const fetchSubcategories = async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/category/subcategory`);
+      if (!response.ok) {
+        console.error("Error fetching data: ", response.statusText);
+      }
+      const result: Array<Subcategory> = await response.json();
+      return (result);
+    } catch (error) {
+      console.error("Error fetching subcategories: ", error);
+    }
+  }
+
   const fetchSubcategoriesByCategoryId = async (id: number) => {
     try {
       const response = await fetch(`${BASE_URL}/category/${id}/subcategories`);
@@ -74,7 +87,7 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({ child
       const result: Array<Subcategory> = await response.json();
       return (result);
     } catch (error) {
-      console.error("Error fetching Provider: ", error);
+      console.error("Error fetching subcategories: ", error);
     }
   }
 
@@ -180,6 +193,7 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({ child
     fetchCategory,
     fetchCategoryProducts,
     fetchSubcategoriesByCategoryId,
+    fetchSubcategories,
     fetchProviders,
     fetchProvider,
     fetchProviderProducts,

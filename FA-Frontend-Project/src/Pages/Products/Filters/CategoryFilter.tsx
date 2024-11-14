@@ -8,22 +8,22 @@ import { Label } from "@/components/ui/label";
 import { useCatalogContext } from "@/Context/UseCatalogContext";
 import { useEffect, useState } from "react";
 import {
-  Category,
   BasicFilterCheck as CategoryCheck,
   BasicFilterProps as CategoryFilterProps,
+  Subcategory,
 } from "@/hooks/CatalogInterfaces";
 
 export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   Filter,
   setFilter,
 }) => {
-  const { fetchCategories } = useCatalogContext();
+  const { fetchSubcategories } = useCatalogContext();
   const [Data, setData] = useState<Array<CategoryCheck> | null>([]);
 
   const handleCheckboxChange = (id: number) => {
     // Remove all filters with type "categoryId"
     const newAppliedFilters = Filter?.filter(
-      (filter) => filter?.type !== "categoryId"
+      (filter) => filter?.type !== "subcategoryId"
     );
 
     // Update the checked state of the checkbox
@@ -34,7 +34,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
         // If the checkbox is checked, add the filter to the appliedFilters array
         if (newChecked) {
           newAppliedFilters?.push({
-            type: "categoryId",
+            type: "subcategoryId",
             value: item.id,
           });
         }
@@ -49,9 +49,9 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   };
 
   useEffect(() => {
-    fetchCategories().then((result) => {
+    fetchSubcategories().then((result) => {
       const checkedCategories: Array<CategoryCheck> = [];
-      result?.forEach((category: Category) => {
+      result?.forEach((category: Subcategory) => {
         const newItem: CategoryCheck = {
           id: category.id,
           name: category.name,
@@ -71,7 +71,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
         value="categoryFilter"
         className="filterGroup w-full px-4 rounded-md mb-4"
       >
-        <AccordionTrigger>Categorías</AccordionTrigger>
+        <AccordionTrigger>Subcategorías</AccordionTrigger>
         <AccordionContent>
           {Data?.map((category: CategoryCheck) => {
             return (
