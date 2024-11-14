@@ -1,22 +1,23 @@
 import { Accordion } from "@/components/ui/accordion";
-import { FilterData } from "@/hooks/CatalogInterfaces";
 import { CategoryFilter } from "@/Pages/Products/Filters/CategoryFilter";
-import { useEffect, useState } from "react";
 import { ProviderFilter } from "@/Pages/Products/Filters/ProviderFilter";
 import { MeasureFilter } from "@/Pages/Products/Filters/MeasureFilter";
 import { PricesFilter } from "@/Pages/Products/Filters/PricesFilter";
 import { DiscountFilter } from "@/Pages/Products/Filters/DiscountFilter";
+import { FilterData } from "@/hooks/CatalogInterfaces";
 
-export const ProductFilters = () => {
-  const [Filter, setFilter] = useState<Array<FilterData | null>>([]);
+interface ProductFiltersProps {
+  Filter: Array<FilterData | null>;
+  setFilter: (value: Array<FilterData | null>) => void;
+}
 
-  useEffect(() => {
-    console.log(Filter);
-  }, [Filter]);
-
+export const ProductFilters: React.FC<ProductFiltersProps> = ({
+  Filter,
+  setFilter,
+}) => {
   /* 
   {
-    categoryId: "",
+    subcategoryId: "",
     providerId: "",
     measure: "",
     minPrice: 0,

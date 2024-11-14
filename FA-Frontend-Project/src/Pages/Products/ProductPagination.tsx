@@ -16,52 +16,32 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useCatalogContext } from "@/Context/UseCatalogContext";
 import { CardProduct, PaginationInfo } from "@/hooks/CatalogInterfaces";
 import { AlertCircle, CirclePlus } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ProductCard } from "@/Pages/Products/ProductCard";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
-export const ProductPagination = () => {
+interface ProductPaginationProps {
+  Products: Array<CardProduct>;
+  CurrentPage: number;
+  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
+  PaginationInfo: PaginationInfo;
+  Loading: boolean;
+}
+
+export const ProductPagination: React.FC<ProductPaginationProps> = ({
+  Products,
+  CurrentPage,
+  setCurrentPage,
+  PaginationInfo,
+  Loading,
+}) => {
   /* Diseñar product card */
   /* Implementar menú pagination */
 
   const [PaginationDropdownOpen, setPaginationDropdownOpen] = useState(false);
-  const [CurrentPage, setCurrentPage] = useState(0);
-  const { BASE_URL } = useCatalogContext();
-  const [Loading, setLoading] = useState(true);
-  const [Products, setProducts] = useState<Array<CardProduct>>([]);
-  const [PaginationInfo, setPaginationInfo] = useState<PaginationInfo>();
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch(
-          `${BASE_URL}/product?page=${CurrentPage}&size=15`
-        );
-        if (!response.ok) {
-          console.error("Error fetching data: ", response.statusText);
-          return;
-        }
-        const result = await response.json();
-        setProducts(result.content);
-        setPaginationInfo({
-          pageNumber: result.pageable.pageNumber,
-          totalPages: result.totalPages,
-          totalElements: result.totalElements,
-          first: result.first,
-          last: result.last,
-        });
-      } catch (error) {
-        console.error("Error fetching data: ", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProducts();
-  }, [CurrentPage, BASE_URL]);
 
   const handlePrev = () => {
     if (CurrentPage > 0) {

@@ -68,7 +68,7 @@ public class ProductController {
     
     @GetMapping("/search")
     public ResponseEntity<Page<PartialProductDTO>> getFilteredPartialProducts(
-            @RequestBody FilterDTO filter,
+            FilterDTO filter,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "9") int size
     ) {
