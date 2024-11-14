@@ -41,10 +41,13 @@ export default function Page() {
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
   const pathSegments = location.pathname.split("/").filter(Boolean);
+  console.log(pathSegments)
   const breadcrumbs = pathSegments
     .map((_, index) => {
       const path = `/${pathSegments.slice(0, index + 1).join("/")}`;
+      console.log("Path: ", path);
       const route = routesConfig.find((route) => route.path === path);
+      console.log("Route: ", route);
       return route ? { label: route.handle, path } : null;
     })
     .filter(Boolean);
