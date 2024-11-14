@@ -15,14 +15,17 @@ export const DiscountFilter: React.FC<DiscountFilterProps> = ({
   const [Discount, setDiscount] = useState<boolean>(false);
 
   const handleCheckboxChange = (value: boolean) => {
+
     const newAppliedFilters = Filter?.filter(
       (filter) => filter?.type !== "discount"
     );
 
-    newAppliedFilters?.push({
-      type: "discount",
-      value: value,
-    });
+    if (value) {
+      newAppliedFilters?.push({
+        type: "discount",
+        value: true,
+      });
+    }
     setDiscount(value);
     setFilter(newAppliedFilters);
   }

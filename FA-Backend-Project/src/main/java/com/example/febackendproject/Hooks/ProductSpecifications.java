@@ -14,6 +14,7 @@ public class ProductSpecifications {
     }
     
     public static Specification<Product> hasMeasure(String measure) {
+        //return (root, query, builder) -> measure == null ? builder.conjunction() : builder.equal(root.get("measures"), measure);
         return (root, query, builder) -> {
             if (measure == null || measure.isEmpty()) {
                 return builder.conjunction();
@@ -38,7 +39,15 @@ public class ProductSpecifications {
     }
     
     public static Specification<Product> hasDiscount(Boolean discount) {
-        return (root, query, builder) -> discount == null ? builder.conjunction() : builder.equal(root.get("discountPercentage"), discount ? 1 : 0);
+        return (root, query, builder) -> {
+            if (discount == null) {
+                return builder.conjunction(); // No filtering if discount is null
+            } else if (discount) {
+                return builder.greaterThan(root.get("discountPercentage"), 0); // Filter where discountPercentage > 0
+            } else {
+                return builder.equal(root.get("discountPercentage"), 0); // Filter where discountPercentage == 0
+            }
+        };
     }
     
 }

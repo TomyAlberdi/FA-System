@@ -23,7 +23,7 @@ export const MeasureFilter: React.FC<MeasureFilterProps> = ({
   const handleCheckboxChange = (id: number) => {
     // Remove all filters with type "measure"
     const newAppliedFilters = Filter?.filter(
-      (filter) => filter?.type !== "measure"
+      (filter) => filter?.type !== "measures"
     );
 
     // Update the checked state of the checkbox
@@ -34,7 +34,7 @@ export const MeasureFilter: React.FC<MeasureFilterProps> = ({
         // If the checkbox is checked, add the filter to the appliedFilters array
         if (newChecked) {
           newAppliedFilters?.push({
-            type: "measure",
+            type: "measures",
             value: item.measure,
           });
         }

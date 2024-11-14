@@ -78,7 +78,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT new com.example.febackendproject.DTO.MeasureDTO(p.measures, COUNT(p)) FROM Product p GROUP BY p.measures ORDER BY COUNT(p) DESC")
     List<MeasureDTO> getMeasures();
     
-    @Query("SELECT new com.example.febackendproject.DTO.PricesDTO(MIN(p.saleUnitPrice), MAX(p.saleUnitPrice)) FROM Product p")
+    @Query("SELECT new com.example.febackendproject.DTO.PricesDTO(MIN(p.measurePrice), MAX(p.measurePrice)) FROM Product p")
     PricesDTO getPrices();
     
     @Modifying
