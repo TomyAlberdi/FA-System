@@ -77,18 +77,19 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
             return (
               category.productsAmount > 0 && (
                 <div
-                  className="flex items-center w-full cursor-pointer px-1 py-2"
+                  className="flex items-center w-full px-1 py-2"
                   key={category.id}
+                  onClick={() => handleCheckboxChange(category.id)}
                 >
                   <Checkbox
-                    className="mr-2"
+                    className="mr-2 cursor-pointer"
                     checked={category.checked}
                     onCheckedChange={() => handleCheckboxChange(category.id)}
                     disabled={category.productsAmount === 0}
                   />
                   <Label
                     htmlFor={category.name}
-                    className="checkboxLabel text-sm w-full"
+                    className="checkboxLabel text-sm w-full cursor-pointer"
                   >
                     {category.name}
                     <span>{category.productsAmount}</span>

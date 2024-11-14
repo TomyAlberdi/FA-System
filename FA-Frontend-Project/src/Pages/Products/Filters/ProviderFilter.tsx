@@ -77,18 +77,19 @@ export const ProviderFilter: React.FC<ProviderFilterProps> = ({
             return (
               provider.productsAmount > 0 && (
                 <div
-                  className="flex items-center w-full cursor-pointer px-1 py-2"
+                  className="flex items-center w-full px-1 py-2"
                   key={provider.id}
+                  onClick={() => handleCheckboxChange(provider.id)}
                 >
                   <Checkbox
-                    className="mr-2"
+                    className="mr-2 cursor-pointer"
                     checked={provider.checked}
                     onCheckedChange={() => handleCheckboxChange(provider.id)}
                     disabled={provider.productsAmount === 0}
                   />
                   <Label
                     htmlFor={provider.name}
-                    className="checkboxLabel text-sm w-full"
+                    className="checkboxLabel text-sm w-full cursor-pointer"
                   >
                     {provider.name}
                     <span>{provider.productsAmount}</span>

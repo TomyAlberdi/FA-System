@@ -76,24 +76,28 @@ export const MeasureFilter: React.FC<MeasureFilterProps> = ({
         <AccordionTrigger>Medidas</AccordionTrigger>
         <AccordionContent>
           {Data?.map((measure: MeasureCheck) => {
-            return measure.measure && (
-              <div
-                className="flex items-center w-full cursor-pointer px-1 py-2"
-                key={measure.id}
-              >
-                <Checkbox
-                  className="mr-2"
-                  checked={measure.checked}
-                  onCheckedChange={() => handleCheckboxChange(measure.id)}
-                />
-                <Label
-                  htmlFor={measure.measure}
-                  className="checkboxLabel text-sm w-full"
+            return (
+              measure.measure && (
+                <div
+                  className="flex items-center w-full px-1 py-2"
+                  key={measure.id}
+                  onClick={() => handleCheckboxChange(measure.id)}
                 >
-                  {measure.measure}
-                  <span>{measure.productsAmount}</span>
-                </Label>
-              </div>
+                  <Checkbox
+                    className="mr-2 cursor-pointer"
+                    checked={measure.checked}
+                    onCheckedChange={() => handleCheckboxChange(measure.id)}
+                    disabled={measure.productsAmount === 0}
+                  />
+                  <Label
+                    htmlFor={measure.measure}
+                    className="checkboxLabel text-sm w-full cursor-pointer"
+                  >
+                    {measure.measure}
+                    <span>{measure.productsAmount}</span>
+                  </Label>
+                </div>
+              )
             );
           })}
         </AccordionContent>
