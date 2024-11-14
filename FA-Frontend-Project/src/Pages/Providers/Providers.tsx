@@ -1,7 +1,7 @@
 import { useCatalogContext } from "@/Context/UseCatalogContext";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useEffect, useState } from "react";
-import { ProvidersHeader } from "./ProvidersHeader";
+import { ProvidersHeader } from "@/Pages/Providers/ProvidersHeader";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
