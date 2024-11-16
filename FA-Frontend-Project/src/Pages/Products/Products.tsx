@@ -46,11 +46,12 @@ export const Products = () => {
         setProducts(result.content);
         setPaginationInfo({
           pageNumber: result.pageable.pageNumber,
-          totalPages: result.pageable.totalPages,
-          totalElements: result.pageable.totalElements,
-          first: result.pageable.first,
-          last: result.pageable.last,
+          totalPages: result.totalPages,
+          totalElements: result.totalElements,
+          first: result.first,
+          last: result.last,
         });
+        window.scrollTo({ top: 0, behavior: "smooth" });
       } catch (error) {
         console.error("Error fetching products: ", error);
       } finally {
