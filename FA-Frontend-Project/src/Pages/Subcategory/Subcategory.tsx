@@ -62,9 +62,7 @@ export const Subcategory = () => {
   const { getToken } = useKindeAuth();
   const [Loading, setLoading] = useState(true);
   const { toast } = useToast();
-  const [Subcategory, setSubcategory] = useState<SubcategoryInterface | null>(
-    null
-  );
+  const [Subcategory, setSubcategory] = useState<SubcategoryInterface | null>(null);
   const [Open, setOpen] = useState(false);
   const [Products, setProducts] = useState<Array<StockProduct> | null>([]);
 
@@ -121,7 +119,6 @@ export const Subcategory = () => {
 
   useEffect(() => {
     if (id) {
-      setLoading(true);
       fetchSubcategoryById(Number.parseInt(id))
         .then((result) => setSubcategory(result ?? null))
         .finally(() => setLoading(false));
@@ -130,7 +127,7 @@ export const Subcategory = () => {
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [id, BASE_URL, Open]);
 
   const onDeletePres = () => {
     if (Subcategory && Subcategory?.productsAmount > 0) {
