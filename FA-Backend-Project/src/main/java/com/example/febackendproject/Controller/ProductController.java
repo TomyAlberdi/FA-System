@@ -123,4 +123,15 @@ public class ProductController {
         return ResponseEntity.ok("Product updated.");
     }
     
+    @PatchMapping()
+    public ResponseEntity<?> updateDisabled(@RequestParam(value = "productId") Long productId, @RequestParam(value = "disabled") Boolean disabled) {
+        Boolean productExists = productService.existById(productId);
+        if (productExists) {
+            Optional<Product> returnProduct = productService.updateDisabled(productId, disabled);
+            return ResponseEntity.ok(returnProduct);
+        } else {
+            return notFound("ID", productId.toString());
+        }
+    }
+    
 }

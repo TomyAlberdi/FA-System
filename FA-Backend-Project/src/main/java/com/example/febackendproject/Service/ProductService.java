@@ -185,6 +185,12 @@ public class ProductService {
         }
     }
     
+    public Optional<Product> updateDisabled(Long productId, Boolean disabled) {
+        Optional<Product> productOptional = productRepository.findById(productId);
+        productOptional.ifPresent(product -> product.setDisabled(disabled));
+        return productOptional;
+    }
+    
     public Page<PartialProductDTO> getFilteredPartialProducts(FilterDTO filterDTO, int page, int size) {
         
         Pageable pageable = PageRequest.of(page, size);
