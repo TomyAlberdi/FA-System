@@ -13,6 +13,7 @@ public class PartialProductStockDTO {
 
     private Long id;
     private String name;
+    private Boolean disabled = false;
     private Integer Stock;
     
     private String measureType;

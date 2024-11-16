@@ -13,6 +13,7 @@ public class PartialProductDTO {
     
     private Long id;
     private String name;
+    private Boolean disabled = false;
     
     private String measureType;
     

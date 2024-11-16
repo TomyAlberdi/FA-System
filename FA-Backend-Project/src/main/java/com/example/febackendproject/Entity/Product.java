@@ -29,6 +29,10 @@ public class Product {
     
     @NotNull
     @Column
+    private Boolean disabled = false;
+    
+    @NotNull
+    @Column
     private String description;
     
     @NotNull
