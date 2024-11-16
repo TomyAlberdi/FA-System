@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import { Category, Measure, Price, Provider, StockProduct, Subcategory } from "@/hooks/CatalogInterfaces";
+import { Category, CompleteProduct, Measure, Price, Provider, StockProduct, Subcategory } from "@/hooks/CatalogInterfaces";
 
 export interface CatalogContextType {
   BASE_URL: string;
@@ -20,6 +20,8 @@ export interface CatalogContextType {
   fetchMeasures: () => Promise<Array<Measure> | undefined>;
   // PRICE GET
   fetchPrices: () => Promise<Price | undefined>;
+  // PRODUCT GET
+  fetchProduct: (id: number) => Promise<CompleteProduct | undefined>;
 }
 
 export const CatalogContext = createContext<CatalogContextType | null>(null);

@@ -62,7 +62,9 @@ export const Subcategory = () => {
   const { getToken } = useKindeAuth();
   const [Loading, setLoading] = useState(true);
   const { toast } = useToast();
-  const [Subcategory, setSubcategory] = useState<SubcategoryInterface | null>(null);
+  const [Subcategory, setSubcategory] = useState<SubcategoryInterface | null>(
+    null
+  );
   const [Open, setOpen] = useState(false);
   const [Products, setProducts] = useState<Array<StockProduct> | null>([]);
 
@@ -174,7 +176,7 @@ export const Subcategory = () => {
           title: "Subcategoría eliminada",
           description: "La subcategoría ha sido eliminada con éxito",
         });
-        navigate("/catalog/categories");
+        navigate(`/catalog/categories/${Subcategory?.categoryId}`);
       } catch (error) {
         console.error("Error: ", error);
         toast({
@@ -276,7 +278,19 @@ export const Subcategory = () => {
                 <TableBody>
                   {Products?.map((product: StockProduct, i: number) => {
                     return (
-                      <TableRow key={i} className={product.disabled ? "cursor-pointer opacity-50 text-red-700" : "cursor-pointer"}>
+                      <TableRow
+                        key={i}
+                        className={
+                          product.disabled
+                            ? "cursor-pointer opacity-50 text-red-700"
+                            : "cursor-pointer"
+                        }
+                        onClick={() =>
+                          navigate(
+                            `/catalog/products/${product.id}`
+                          )
+                        }
+                      >
                         <TableCell className="font-medium">
                           {product.id}
                         </TableCell>

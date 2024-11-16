@@ -44,7 +44,10 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
-import { Provider as ProviderInterface, StockProduct } from "@/hooks/CatalogInterfaces";
+import {
+  Provider as ProviderInterface,
+  StockProduct,
+} from "@/hooks/CatalogInterfaces";
 
 const formSchema = z.object({
   name: z.string().min(3, {
@@ -57,7 +60,7 @@ const formSchema = z.object({
     message: "La dirección debe contar con al menos 3 caracteres.",
   }),
   phone: z.string().min(10, {
-    message: "El teléfono debe contar con al menos 10 caracteres.", 
+    message: "El teléfono debe contar con al menos 10 caracteres.",
   }),
   email: z.string().email({
     message: "El email no es válido.",
@@ -81,21 +84,17 @@ export const Provider = () => {
 
   const updateCategory = useCallback(
     async (data: z.infer<typeof formSchema>) => {
-
       if (typeof getToken === "function") {
         const token = await getToken();
         try {
-          const response = await fetch(
-            `${BASE_URL}/provider/${id}`,
-            {
-              method: "PATCH",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-              body: JSON.stringify(data)
-            }
-          );
+          const response = await fetch(`${BASE_URL}/provider/${id}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(data),
+          });
           if (!response.ok) {
             console.error("Error: ", response.statusText);
             toast({
@@ -141,7 +140,7 @@ export const Provider = () => {
     if (id) {
       fetchProvider(Number.parseInt(id))
         .then((result) => {
-          setProvider(result ?? null)
+          setProvider(result ?? null);
           form.reset({
             name: result?.name ?? "",
             locality: result?.locality ?? "",
@@ -149,7 +148,7 @@ export const Provider = () => {
             phone: result?.phone ?? "",
             email: result?.email ?? "",
             cuit: result?.cuit ?? "",
-          })
+          });
         })
         .finally(() => setLoading(false));
       fetchProviderProducts(Number.parseInt(id)).then((result) =>
@@ -233,22 +232,40 @@ export const Provider = () => {
               </CardHeader>
               <CardContent>
                 <CardDescription className="text-lg">
-                  Cantidad de productos: <span className="text-secondary-foreground">{Provider.productsAmount}</span>
+                  Cantidad de productos:{" "}
+                  <span className="text-secondary-foreground">
+                    {Provider.productsAmount}
+                  </span>
                 </CardDescription>
                 <CardDescription className="text-lg">
-                  Localidad: <span className="text-secondary-foreground">{Provider.locality}</span>
+                  Localidad:{" "}
+                  <span className="text-secondary-foreground">
+                    {Provider.locality}
+                  </span>
                 </CardDescription>
                 <CardDescription className="text-lg">
-                  Dirección: <span className="text-secondary-foreground">{Provider.address}</span>
+                  Dirección:{" "}
+                  <span className="text-secondary-foreground">
+                    {Provider.address}
+                  </span>
                 </CardDescription>
                 <CardDescription className="text-lg">
-                  Teléfono: <span className="text-secondary-foreground">{Provider.phone}</span>
+                  Teléfono:{" "}
+                  <span className="text-secondary-foreground">
+                    {Provider.phone}
+                  </span>
                 </CardDescription>
                 <CardDescription className="text-lg">
-                  Email: <span className="text-secondary-foreground">{Provider.email}</span>
+                  Email:{" "}
+                  <span className="text-secondary-foreground">
+                    {Provider.email}
+                  </span>
                 </CardDescription>
                 <CardDescription className="text-lg">
-                  CUIT: <span className="text-secondary-foreground">{Provider.cuit}</span>
+                  CUIT:{" "}
+                  <span className="text-secondary-foreground">
+                    {Provider.cuit}
+                  </span>
                 </CardDescription>
               </CardContent>
               <CardContent>
@@ -277,9 +294,7 @@ export const Provider = () => {
                             <FormItem className="col-start-1 row-start-1">
                               <FormLabel>Nombre</FormLabel>
                               <FormControl>
-                                <Input
-                                  {...field}
-                                />
+                                <Input {...field} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -292,9 +307,7 @@ export const Provider = () => {
                             <FormItem className="col-start-1 row-start-2">
                               <FormLabel>Localidad</FormLabel>
                               <FormControl>
-                                <Input
-                                  {...field}
-                                />
+                                <Input {...field} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -307,9 +320,7 @@ export const Provider = () => {
                             <FormItem className="col-start-1 row-start-3">
                               <FormLabel>Dirección</FormLabel>
                               <FormControl>
-                                <Input
-                                  {...field}
-                                />
+                                <Input {...field} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -322,9 +333,7 @@ export const Provider = () => {
                             <FormItem className="col-start-2 row-start-1">
                               <FormLabel>Teléfono</FormLabel>
                               <FormControl>
-                                <Input
-                                  {...field}
-                                />
+                                <Input {...field} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -337,9 +346,7 @@ export const Provider = () => {
                             <FormItem className="col-start-2 row-start-2">
                               <FormLabel>Email</FormLabel>
                               <FormControl>
-                                <Input
-                                  {...field}
-                                />
+                                <Input {...field} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -352,16 +359,16 @@ export const Provider = () => {
                             <FormItem className="col-start-2 row-start-3">
                               <FormLabel>CUIT</FormLabel>
                               <FormControl>
-                                <Input
-                                  {...field}
-                                />
+                                <Input {...field} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
                           )}
                         />
                         <div className="col-span-2 col-start-1 flex justify-center items-center">
-                          <Button type="submit" className="w-full">Guardar</Button>
+                          <Button type="submit" className="w-full">
+                            Guardar
+                          </Button>
                         </div>
                       </form>
                     </Form>
@@ -395,7 +402,17 @@ export const Provider = () => {
                 <TableBody>
                   {Products?.map((product: StockProduct, i: number) => {
                     return (
-                      <TableRow key={i} className={product.disabled ? "cursor-pointer opacity-50 text-red-700" : "cursor-pointer"}>
+                      <TableRow
+                        key={i}
+                        className={
+                          product.disabled
+                            ? "cursor-pointer opacity-50 text-red-700"
+                            : "cursor-pointer"
+                        }
+                        onClick={() =>
+                          navigate(`/catalog/products/${product.id}`)
+                        }
+                      >
                         <TableCell className="font-medium">
                           {product.id}
                         </TableCell>

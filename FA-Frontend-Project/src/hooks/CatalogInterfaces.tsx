@@ -58,6 +58,19 @@ export interface StockProduct {
   saleUnitPrice: number;
 }
 
+export interface CompleteProduct extends StockProduct {
+  description: string;
+  quality: string;
+  measures: string;
+  discountPercentage: number;
+  discountedPrice: number;
+  tags: Array<string>;
+  images: Array<string>;
+  category: string;
+  subcategory: string;
+  provider: string;
+}
+
 export interface FilterData {
   type: string;
   value: number | string | boolean;

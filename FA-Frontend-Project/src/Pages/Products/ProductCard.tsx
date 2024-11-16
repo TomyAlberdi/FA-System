@@ -1,9 +1,5 @@
 import { CardProduct } from "@/hooks/CatalogInterfaces";
-import {
-  Card,
-  CardDescription,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { SquarePlus } from "lucide-react";
 import {
@@ -11,10 +7,19 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useNavigate } from "react-router-dom";
 
 export const ProductCard = ({ product }: { product: CardProduct }) => {
+  const navigate = useNavigate();
+
   return (
-    <Card className={"ProductCard relative bg-primary-foreground h-[400px] w-[19.2%] max-w-[300px] p-2 grid grid-cols-1 grid-rows-9 cursor-pointer" + (product.disabled ? " opacity-50 border-red-700" : "")}>
+    <Card
+      onClick={() => navigate(`/catalog/products/${product.id}`)}
+      className={
+        "ProductCard relative bg-primary-foreground h-[400px] w-[19.2%] max-w-[300px] p-2 grid grid-cols-1 grid-rows-9 cursor-pointer" +
+        (product.disabled ? " opacity-50 border-red-700" : "")
+      }
+    >
       <Tooltip>
         <TooltipTrigger asChild>
           <CardTitle className="row-span-1 truncate overflow-hidden whitespace-nowrap pt-1">
@@ -71,7 +76,8 @@ export const ProductCard = ({ product }: { product: CardProduct }) => {
           </span>
         </CardTitle>
       )}
-      {product.measureType === "M2" || product.measureType === "ML" && product.discountPercentage === 0 ? (
+      {product.measureType === "M2" ||
+      (product.measureType === "ML" && product.discountPercentage === 0) ? (
         <CardDescription className="w-full row-span-1 text-center text-base overflow-hidden">
           ${" "}
           {product.discountPercentage > 0
@@ -80,7 +86,12 @@ export const ProductCard = ({ product }: { product: CardProduct }) => {
           X {product.saleUnit} ({product.measurePerSaleUnit} m2)
         </CardDescription>
       ) : null}
-      <Button className={"w-full row-span-1 text-center row-start-9" + (product.disabled ? " bg-red-700" : "")}>
+      <Button
+        className={
+          "w-full row-span-1 text-center row-start-9" +
+          (product.disabled ? " bg-red-700" : "")
+        }
+      >
         <SquarePlus />
         Ver más
       </Button>
