@@ -13,7 +13,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { routesConfig } from "@/hooks/routesConfig";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import {
@@ -34,11 +34,13 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
+import { ChevronLeft } from "lucide-react";
 
 export default function Page() {
   const location = useLocation();
   const [Open, setOpen] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
+  const navigate = useNavigate();
 
   const pathSegments = location.pathname.split("/").filter(Boolean);
   const breadcrumbs = pathSegments
@@ -53,7 +55,7 @@ export default function Page() {
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2">
+        <header className="flex h-16 shrink-0 items-center justify-between gap-2">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
@@ -159,6 +161,15 @@ export default function Page() {
                 )}
               </BreadcrumbList>
             </Breadcrumb>
+          </div>
+          <div className="backButtonContainer flex items-center justify-center px-4">
+            <Button
+              className="bg-primary text-white rounded-md text-lg w-full"
+              onClick={() => navigate(-1)}
+            >
+              <ChevronLeft size={30} />
+              Volver
+            </Button>
           </div>
         </header>
         <div className="pageBody gap-4 p-4 pt-0">
