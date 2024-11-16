@@ -8,7 +8,7 @@ import { Provider } from "@/Pages/Providers/Provider";
 import User from "@/Pages/User/User";
 import { AddProduct } from "@/Pages/Products/AddProduct";
 import { Subcategory } from "@/Pages/Subcategory/Subcategory";
-import { ProductPage } from "@/Pages/Products/ProductPage";
+import { ProductPage } from "@/Pages/Products/CompleteProductPage/ProductPage";
 
 export const routesConfig = [
   { index: true, element: <Home />, handle: "Inicio" },

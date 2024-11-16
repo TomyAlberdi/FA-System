@@ -85,7 +85,25 @@ export default {
   		animation: {
   			'accordion-down': 'accordion-down 0.2s ease-out',
   			'accordion-up': 'accordion-up 0.2s ease-out'
-  		}
+  		},
+			gridTemplateRows: {
+				'15': 'repeat(15, 1fr)',
+			},
+			gridTemplateColumns: {
+				'15': 'repeat(15, 1fr)',
+			},
+			gridRowEnd: {
+				'13': '13',
+				'14': '14',
+				'15': '15',
+				'16': '16',
+			},
+			gridColumnEnd: {
+				'13': '13',
+				'14': '14',
+				'15': '15',
+				'16': '16',
+			}
   	}
   },
   plugins: [require("tailwindcss-animate")],

@@ -79,4 +79,17 @@ div.App {
       }
     }
   }
+  .ProductPage {
+    display: grid;
+    grid-template-columns: repeat(15, 1fr);
+    grid-template-rows: repeat(15, 1fr);
+    grid-column-gap: 0.25rem;
+    grid-row-gap: 0.25rem;
+  }
+  .productGridItem {
+    border: 1px solid red;
+    .gridSubItem {
+      border: 1px solid blue;
+    }
+  }
 }
