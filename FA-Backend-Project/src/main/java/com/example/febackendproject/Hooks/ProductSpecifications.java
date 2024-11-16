@@ -50,4 +50,8 @@ public class ProductSpecifications {
         };
     }
     
+    public static Specification<Product> isDiscontinued(Boolean discontinued) {
+        return (root, query, builder) -> discontinued == null ? builder.conjunction() : builder.equal(root.get("disabled"), discontinued);
+    }
+    
 }

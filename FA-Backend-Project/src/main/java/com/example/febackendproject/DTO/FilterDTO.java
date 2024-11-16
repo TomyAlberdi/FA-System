@@ -17,5 +17,6 @@ public class FilterDTO {
     private Double minPrice;
     private Double maxPrice;
     private Boolean discount;
+    private Boolean discontinued;
     
 }

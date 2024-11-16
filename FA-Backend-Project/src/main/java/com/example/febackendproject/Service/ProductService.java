@@ -199,7 +199,8 @@ public class ProductService {
                         .and(ProductSpecifications.hasProvider(filterDTO.getProviderId()))
                         .and(ProductSpecifications.hasMeasure(filterDTO.getMeasures()))
                         .and(ProductSpecifications.priceBetween(filterDTO.getMinPrice(), filterDTO.getMaxPrice()))
-                        .and(ProductSpecifications.hasDiscount(filterDTO.getDiscount())));
+                        .and(ProductSpecifications.hasDiscount(filterDTO.getDiscount())))
+                        .and(ProductSpecifications.isDiscontinued(filterDTO.getDiscontinued()));
         
         return productPaginationRepository.findAll(spec, pageable).map(product -> {
                 String image = !product.getImages().isEmpty() ? product.getImages().get(0) : null;

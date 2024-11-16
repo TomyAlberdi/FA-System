@@ -82,10 +82,6 @@ export interface PriceCheck {
   maxPrice: number;
 }
 
-export interface DiscountCheck {
-  discount: boolean;
-}
-
 export interface BasicFilterProps {
   Filter: Array<FilterData | null>;
   setFilter: (value: Array<FilterData | null>) => void;
