@@ -71,6 +71,7 @@ public class ProductService {
         if (product.isPresent()) {
             returnProduct.setId(product.get().getId());
             returnProduct.setName(product.get().getName());
+            returnProduct.setDisabled(product.get().getDisabled());
             returnProduct.setDescription(product.get().getDescription());
             returnProduct.setQuality(product.get().getQuality());
             
@@ -152,7 +153,7 @@ public class ProductService {
     public void updateProduct(Product product) {
         productRepository.deleteImagesById(product.getId());
         productRepository.deleteTagsById(product.getId());
-        productRepository.updateById(product.getId(), product.getName(), product.getDescription(), product.getQuality(), product.getProviderId(), product.getCategoryId(), product.getSubcategoryId(), product.getMeasureType(), product.getMeasures(), product.getMeasurePrice(), product.getSaleUnit(), product.getSaleUnitPrice(), product.getMeasurePerSaleUnit(), product.getDiscountPercentage(), product.getDiscountedPrice());
+        productRepository.updateById(product.getId(), product.getName(), product.getDisabled(), product.getDescription(), product.getQuality(), product.getProviderId(), product.getCategoryId(), product.getSubcategoryId(), product.getMeasureType(), product.getMeasures(), product.getMeasurePrice(), product.getSaleUnit(), product.getSaleUnitPrice(), product.getMeasurePerSaleUnit(), product.getDiscountPercentage(), product.getDiscountedPrice());
         for (String tag : product.getTags()) {
             productRepository.insertTagById(tag, product.getId());
         }
@@ -186,9 +187,8 @@ public class ProductService {
     }
     
     public Optional<Product> updateDisabled(Long productId, Boolean disabled) {
-        Optional<Product> productOptional = productRepository.findById(productId);
-        productOptional.ifPresent(product -> product.setDisabled(disabled));
-        return productOptional;
+        productRepository.updateDisabled(productId, disabled);
+        return productRepository.findById(productId);
     }
     
     public Page<PartialProductDTO> getFilteredPartialProducts(FilterDTO filterDTO, int page, int size) {

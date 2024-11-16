@@ -14,7 +14,7 @@ import {
 
 export const ProductCard = ({ product }: { product: CardProduct }) => {
   return (
-    <Card className="ProductCard relative bg-primary-foreground h-[400px] w-[19.2%] max-w-[300px] p-2 grid grid-cols-1 grid-rows-9 cursor-pointer">
+    <Card className={"ProductCard relative bg-primary-foreground h-[400px] w-[19.2%] max-w-[300px] p-2 grid grid-cols-1 grid-rows-9 cursor-pointer" + (product.disabled ? " opacity-50 border-red-700" : "")}>
       <Tooltip>
         <TooltipTrigger asChild>
           <CardTitle className="row-span-1 truncate overflow-hidden whitespace-nowrap pt-1">
@@ -80,7 +80,7 @@ export const ProductCard = ({ product }: { product: CardProduct }) => {
           X {product.saleUnit} ({product.measurePerSaleUnit} m2)
         </CardDescription>
       ) : null}
-      <Button className="w-full row-span-1 text-center row-start-9">
+      <Button className={"w-full row-span-1 text-center row-start-9" + (product.disabled ? " bg-red-700" : "")}>
         <SquarePlus />
         Ver más
       </Button>

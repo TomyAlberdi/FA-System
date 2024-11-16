@@ -23,24 +23,30 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Transactional
     @Query("UPDATE Product SET " +
             "name = ?2, " +
-            "description = ?3, " +
-            "quality = ?4, " +
-            "providerId = ?5, " +
-            "categoryId = ?6, " +
-            "subcategoryId = ?7, " +
-            "measureType = ?8, " +
-            "measures = ?9, " +
-            "measurePrice = ?10, " +
-            "saleUnit = ?11, " +
-            "saleUnitPrice = ?12, " +
-            "measurePerSaleUnit = ?13, " +
-            "discountPercentage = ?14, " +
-            "discountedPrice = ?15 " +
+            "disabled = ?3, " +
+            "description = ?4, " +
+            "quality = ?5, " +
+            "providerId = ?6, " +
+            "categoryId = ?7, " +
+            "subcategoryId = ?8, " +
+            "measureType = ?9, " +
+            "measures = ?10, " +
+            "measurePrice = ?11, " +
+            "saleUnit = ?12, " +
+            "saleUnitPrice = ?13, " +
+            "measurePerSaleUnit = ?14, " +
+            "discountPercentage = ?15, " +
+            "discountedPrice = ?16 " +
             "WHERE id = ?1")
-    void updateById(Long id, String name, String description, String quality, Long providerId, Long categoryId, Long subcategoryId,
+    void updateById(Long id, String name, Boolean disabled, String description, String quality, Long providerId, Long categoryId, Long subcategoryId,
                     String measureType, String measures, Double measurePrice,
                     String salesUnit, Double saleUnitPrice, Double measurePerSaleUnit,
                     Integer discount_percentage, Double discount_new_price);
+    
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE Product SET disabled = ?2 WHERE id = ?1")
+    void updateDisabled(Long productId, Boolean disabled);
     
     /////// SEARCHES BY CATEGORY
     

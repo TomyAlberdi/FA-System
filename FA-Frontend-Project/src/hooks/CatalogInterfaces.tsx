@@ -36,6 +36,7 @@ export interface Price {
 export interface CardProduct {
   id: number,
   name: string,
+  disabled: boolean,
   measureType: string,
   saleUnit: string, 
   saleUnitPrice: number,
@@ -48,6 +49,7 @@ export interface CardProduct {
 export interface StockProduct {
   id: number;
   name: string;
+  disabled: boolean;
   measureType: string;
   measurePrice: number;
   stock: number;

@@ -395,7 +395,7 @@ export const Provider = () => {
                 <TableBody>
                   {Products?.map((product: StockProduct, i: number) => {
                     return (
-                      <TableRow key={i}>
+                      <TableRow key={i} className={product.disabled ? "cursor-pointer opacity-50 text-red-700" : "cursor-pointer"}>
                         <TableCell className="font-medium">
                           {product.id}
                         </TableCell>
