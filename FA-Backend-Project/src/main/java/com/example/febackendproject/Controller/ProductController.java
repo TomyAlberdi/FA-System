@@ -1,7 +1,9 @@
 package com.example.febackendproject.Controller;
 
-import com.example.febackendproject.DTO.*;
-import com.example.febackendproject.Entity.Category;
+import com.example.febackendproject.DTO.CompleteCategoryDTO;
+import com.example.febackendproject.DTO.CompleteProductDTO;
+import com.example.febackendproject.DTO.FilterDTO;
+import com.example.febackendproject.DTO.PartialProductDTO;
 import com.example.febackendproject.Entity.Product;
 import com.example.febackendproject.Entity.Provider;
 import com.example.febackendproject.Entity.Stock;
@@ -17,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @AllArgsConstructor

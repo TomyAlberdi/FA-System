@@ -1,10 +1,12 @@
 package com.example.febackendproject.Service;
 
-import com.example.febackendproject.DTO.*;
+import com.example.febackendproject.DTO.CompleteProductDTO;
+import com.example.febackendproject.DTO.FilterDTO;
+import com.example.febackendproject.DTO.PartialProductDTO;
+import com.example.febackendproject.DTO.PartialProductStockDTO;
 import com.example.febackendproject.Entity.Category;
 import com.example.febackendproject.Entity.Product;
 import com.example.febackendproject.Entity.Provider;
-import com.example.febackendproject.Entity.Stock;
 import com.example.febackendproject.Hooks.ProductSpecifications;
 import com.example.febackendproject.Repository.*;
 import lombok.AllArgsConstructor;
@@ -66,9 +68,9 @@ public class ProductService {
     }
     
     public Optional<CompleteProductDTO> getById(Long id) {
-        Optional<Product> product = productRepository.findById(id);
         CompleteProductDTO returnProduct = new CompleteProductDTO();
-        if (product.isPresent()) {
+        if (productRepository.existsById(id)) {
+            Optional<Product> product = productRepository.findById(id);
             returnProduct.setId(product.get().getId());
             returnProduct.setName(product.get().getName());
             returnProduct.setDisabled(product.get().getDisabled());
