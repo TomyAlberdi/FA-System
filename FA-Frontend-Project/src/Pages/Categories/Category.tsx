@@ -67,6 +67,8 @@ const Category = () => {
   const [Loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
 
+  const [openCreateSubcategory, setOpenCreateSubcategory] = useState(false);
+
   const updateCategory = useCallback(
     async (data: z.infer<typeof formSchema>) => {
       if (typeof getToken === "function") {
@@ -111,7 +113,58 @@ const Category = () => {
     []
   );
 
+	const createSubcategory = useCallback(
+    async (data: z.infer<typeof formSchema>) => {
+      if (typeof getToken === "function") {
+				const token = await getToken();
+				try {
+					const response = await fetch(
+						`${BASE_URL}/category/subcategory?name=${data.name}&categoryId=${id}`,
+						{
+							method: "POST",
+							headers: {
+								"Content-Type": "application/json",
+								Authorization: `Bearer ${token}`,
+							},
+						}
+					)
+					if (!response.ok) {
+						console.error("Error: ", response.statusText);
+						toast({
+							variant: "destructive",
+							title: `Error ${response.status}`,
+							description: `Ocurrió un error al crear la subcategoría.`,
+						});
+						return;
+					}
+					toast({
+						title: "Subcategoría creada",
+						description: "La subcategoría ha sido creada con éxito",
+					});
+				} catch (error) {
+					console.error("Error: ", error);
+					toast({
+						variant: "destructive",
+						title: "Error",
+						description: "Ocurrió un error al crear la subcategoría",
+					});
+				} finally {
+					setOpenCreateSubcategory(false);
+				}
+      }
+    },
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+
   const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+    },
+  });
+
+  const subcategoryForm = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
@@ -128,7 +181,7 @@ const Category = () => {
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, BASE_URL, open]);
+  }, [id, BASE_URL, open, openCreateSubcategory]);
 
   const onDeletePres = () => {
     if (Category && Category?.productsAmount > 0) {
@@ -249,11 +302,50 @@ const Category = () => {
                 </Dialog>
                 <Button
                   variant="destructive"
-                  className="w-full"
+                  className="w-full mb-2"
                   onClick={onDeletePres}
                 >
                   Eliminar
                 </Button>
+                <Dialog
+                  open={openCreateSubcategory}
+                  onOpenChange={setOpenCreateSubcategory}
+                >
+                  <DialogTrigger asChild>
+                    <Button className="w-full">Añadir subcategoría</Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle className="text-xl font-bold">
+                        Añadir subcategoría
+                      </DialogTitle>
+                    </DialogHeader>
+                    <Form {...subcategoryForm}>
+                      <form
+                        onSubmit={form.handleSubmit(createSubcategory)}
+                        className="w-2/3 space-y-6"
+                      >
+                        <FormField
+                          control={form.control}
+                          name="name"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Nombre</FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder="Nombre de la subcategoría"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <Button type="submit">Guardar</Button>
+                      </form>
+                    </Form>
+                  </DialogContent>
+                </Dialog>
               </CardContent>
               {Category.subcategories.length > 0 && (
                 <CardContent>
@@ -360,4 +452,5 @@ const Category = () => {
     </div>
   );
 };
+
 export default Category;
