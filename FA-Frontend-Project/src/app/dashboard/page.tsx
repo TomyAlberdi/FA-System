@@ -164,7 +164,7 @@ export default function Page() {
           </div>
           <div className="backButtonContainer flex items-center justify-center px-4">
             <Button
-              className="bg-primary text-white rounded-md text-lg w-full"
+              className="bg-primary rounded-md text-lg w-full"
               onClick={() => navigate(-1)}
             >
               <ChevronLeft size={30} />
