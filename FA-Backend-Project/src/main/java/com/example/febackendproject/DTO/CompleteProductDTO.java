@@ -34,8 +34,11 @@ public class CompleteProductDTO {
     private List<String> images;
     
     private String category;
+    private Long categoryId;
     private String subcategory;
+    private Long subcategoryId;
     private String provider;
+    private Long providerId;
     
     private Integer stock;
     

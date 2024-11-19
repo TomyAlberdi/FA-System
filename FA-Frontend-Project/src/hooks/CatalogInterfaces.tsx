@@ -67,8 +67,11 @@ export interface CompleteProduct extends StockProduct {
   tags: Array<string>;
   images: Array<string>;
   category: string;
+  categoryId: number;
   subcategory: string;
+  subcategoryId: number;
   provider: string;
+  providerId: number;
 }
 
 export interface FilterData {

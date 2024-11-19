@@ -91,12 +91,15 @@ public class ProductService {
             returnProduct.setImages(product.get().getImages());
             returnProduct.setTags(product.get().getTags());
             
+            returnProduct.setCategoryId(product.get().getCategoryId());
             String category = categoryRepository.findById(product.get().getCategoryId()).get().getName();
             returnProduct.setCategory(category);
             
+            returnProduct.setSubcategoryId(product.get().getSubcategoryId());
             String subcategory = subcategoryRepository.findById(product.get().getSubcategoryId()).get().getName();
             returnProduct.setSubcategory(subcategory);
             
+            returnProduct.setProviderId(product.get().getProviderId());
             String provider = providerRepository.findById(product.get().getProviderId()).get().getName();
             returnProduct.setProvider(provider);
             
