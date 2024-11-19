@@ -55,38 +55,28 @@ export const ProductCard = ({ product }: { product: CardProduct }) => {
         {product.discountPercentage > 0 ? (
           <>
             <span className="oldPrice line-through mr-1 text-xl text-muted-foreground">
-              ${" "}
-              {Math.round((product?.measurePrice + Number.EPSILON) * 100) / 100}
+              $ {product?.measurePrice}
             </span>
             <span className="newPrice text-destructive overflow-hidden">
-              ${" "}
-              {Math.round(
-                (product?.discountedMeasurePrice + Number.EPSILON) * 100
-              ) / 100}{" "}
-              X {product.measureType}
+              $ {product?.discountedMeasurePrice} X {product.measureType}
             </span>
           </>
         ) : (
           <>
-            $ {Math.round((product?.measurePrice + Number.EPSILON) * 100) / 100}{" "}
-            X {product.measureType}
+            $ {product?.measurePrice} X {product.measureType}
           </>
         )}
         {product?.measureType !== product?.saleUnit && (
           <CardDescription className="w-full text-center text-base overflow-hidden">
             {product.discountPercentage > 0 ? (
               <>
-                ${" "}
-                {Math.round((product?.discountedPrice + Number.EPSILON) * 100) /
-                  100}{" "}
-                X {product.saleUnit} ({product.measurePerSaleUnit} m2)
+                $ {product?.discountedPrice} X {product.saleUnit} (
+                {product.measurePerSaleUnit} m2)
               </>
             ) : (
               <>
-                ${" "}
-                {Math.round((product?.saleUnitPrice + Number.EPSILON) * 100) /
-                  100}{" "}
-                X {product.saleUnit} ({product.measurePerSaleUnit} m2)
+                $ {product?.saleUnitPrice} X {product.saleUnit} (
+                {product.measurePerSaleUnit} m2)
               </>
             )}
           </CardDescription>

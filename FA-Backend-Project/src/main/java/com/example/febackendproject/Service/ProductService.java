@@ -77,8 +77,8 @@ public class ProductService {
             double discountFactor = 1 - (product.getDiscountPercentage() / 100.0);
             double discountedPrice = product.getSaleUnitPrice() * discountFactor;
             double discountedMeasurePrice = product.getMeasurePrice() * discountFactor;
-            product.setDiscountedPrice(discountedPrice);
-            product.setDiscountedMeasurePrice(discountedMeasurePrice);
+            product.setDiscountedPrice(truncateToTwoDecimals(discountedPrice));
+            product.setDiscountedMeasurePrice(truncateToTwoDecimals(discountedMeasurePrice));
         } else {
             product.setDiscountedPrice(0.0);
             product.setDiscountedMeasurePrice(0.0);
