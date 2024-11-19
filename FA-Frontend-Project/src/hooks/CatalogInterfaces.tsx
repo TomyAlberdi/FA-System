@@ -77,6 +77,20 @@ export interface CompleteProduct extends StockProduct {
   providerId: number;
 }
 
+export interface StockRecord {
+  recordType: string;
+  stockChange: number;
+  recordDate: string;
+}
+
+export interface ProductStock {
+  id: number;
+  productId: number;
+  productName: string;
+  quantity: number;
+  stockRecords: Array<StockRecord>;
+}
+
 export interface FilterData {
   type: string;
   value: number | string | boolean;
