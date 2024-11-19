@@ -27,7 +27,6 @@ public class Product {
     @Column(unique = true)
     private String name;
     
-    @NotNull
     @Column
     private Boolean disabled = false;
     
@@ -73,7 +72,6 @@ public class Product {
     private String measures;
     
     @Column
-    @NotNull
     private Double measurePrice;
     
     // Sale unit data
@@ -85,7 +83,6 @@ public class Product {
     @Column(name = "sale_unit_price")
     private Double saleUnitPrice;
     
-    @NotNull
     @Column(name = "measure_per_sale_unit")
     private Double measurePerSaleUnit;
     
@@ -94,9 +91,11 @@ public class Product {
     @Column(name = "discount_percentage")
     private Integer discountPercentage;
     
-    @NotNull
     @Column(name = "discounted_price")
     private Double discountedPrice;
+    
+    @Column(name = "discounted_measure_price")
+    private Double discountedMeasurePrice;
     
     /*@Override
     public String toString() {

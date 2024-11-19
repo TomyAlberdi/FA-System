@@ -38,11 +38,13 @@ export interface CardProduct {
   name: string,
   disabled: boolean,
   measureType: string,
+  measurePrice: number,
   saleUnit: string, 
   saleUnitPrice: number,
   measurePerSaleUnit: number,
   discountPercentage: number, 
   discountedPrice: number,
+  discountedMeasurePrice: number,
   image: string,
 }
 
@@ -64,6 +66,7 @@ export interface CompleteProduct extends StockProduct {
   measures: string;
   discountPercentage: number;
   discountedPrice: number;
+  discountedMeasurePrice: number,
   tags: Array<string>;
   images: Array<string>;
   category: string;

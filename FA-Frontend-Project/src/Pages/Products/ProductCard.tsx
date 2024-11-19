@@ -51,41 +51,47 @@ export const ProductCard = ({ product }: { product: CardProduct }) => {
               }
         }
       />
-      {product.discountPercentage == 0 ? (
-        <CardTitle className="w-full text-destructive row-span-1 flex justify-center items-center overflow-hidden">
-          ${" "}
-          {Math.round(
-            (product.saleUnitPrice / product.measurePerSaleUnit) * 100
-          ) / 100}{" "}
-          X {product.measureType}
-        </CardTitle>
-      ) : (
-        <CardTitle className="w-full row-span-2 flex flex-col justify-center items-center overflow-hidden">
-          <span className="oldPrice line-through mr-1 text-xl text-muted-foreground">
-            ${" "}
-            {Math.round(
-              (product.saleUnitPrice / product.measurePerSaleUnit) * 100
-            ) / 100}
-          </span>
-          <span className="newPrice text-destructive overflow-hidden">
-            ${" "}
-            {Math.round(
-              (product.discountedPrice / product.measurePerSaleUnit) * 100
-            ) / 100}{" "}
+      <CardTitle className="w-full row-span-2 flex flex-col justify-center items-center overflow-hidden">
+        {product.discountPercentage > 0 ? (
+          <>
+            <span className="oldPrice line-through mr-1 text-xl text-muted-foreground">
+              ${" "}
+              {Math.round((product?.measurePrice + Number.EPSILON) * 100) / 100}
+            </span>
+            <span className="newPrice text-destructive overflow-hidden">
+              ${" "}
+              {Math.round(
+                (product?.discountedMeasurePrice + Number.EPSILON) * 100
+              ) / 100}{" "}
+              X {product.measureType}
+            </span>
+          </>
+        ) : (
+          <>
+            $ {Math.round((product?.measurePrice + Number.EPSILON) * 100) / 100}{" "}
             X {product.measureType}
-          </span>
-        </CardTitle>
-      )}
-      {product.measureType === "M2" ||
-      (product.measureType === "ML" && product.discountPercentage === 0) ? (
-        <CardDescription className="w-full row-span-1 text-center text-base overflow-hidden">
-          ${" "}
-          {product.discountPercentage > 0
-            ? product.discountedPrice
-            : product.saleUnitPrice}{" "}
-          X {product.saleUnit} ({product.measurePerSaleUnit} m2)
-        </CardDescription>
-      ) : null}
+          </>
+        )}
+        {product?.measureType !== product?.saleUnit && (
+          <CardDescription className="w-full text-center text-base overflow-hidden">
+            {product.discountPercentage > 0 ? (
+              <>
+                ${" "}
+                {Math.round((product?.discountedPrice + Number.EPSILON) * 100) /
+                  100}{" "}
+                X {product.saleUnit} ({product.measurePerSaleUnit} m2)
+              </>
+            ) : (
+              <>
+                ${" "}
+                {Math.round((product?.saleUnitPrice + Number.EPSILON) * 100) /
+                  100}{" "}
+                X {product.saleUnit} ({product.measurePerSaleUnit} m2)
+              </>
+            )}
+          </CardDescription>
+        )}
+      </CardTitle>
       <Button
         className={
           "w-full row-span-1 text-center row-start-9" +

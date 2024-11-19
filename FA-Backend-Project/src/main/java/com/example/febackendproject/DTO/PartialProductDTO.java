@@ -16,6 +16,7 @@ public class PartialProductDTO {
     private Boolean disabled = false;
     
     private String measureType;
+    private Double measurePrice;
     
     private String saleUnit;
     private Double saleUnitPrice;
@@ -23,6 +24,7 @@ public class PartialProductDTO {
     
     private Integer discountPercentage;
     private Double discountedPrice;
+    private Double discountedMeasurePrice;
     
     private String image;
     
