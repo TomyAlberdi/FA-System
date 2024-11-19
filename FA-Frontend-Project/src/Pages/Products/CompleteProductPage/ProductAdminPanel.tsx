@@ -6,7 +6,7 @@ import {
   ListX,
   Package,
   Pencil,
-  ReceiptText,
+  Download,
 } from "lucide-react";
 
 export const ProductPageAdminPanel = ({
@@ -40,7 +40,7 @@ export const ProductPageAdminPanel = ({
         Actualizar Stock
       </Button>
       <Button className="w-10/12 text-md">
-        <ReceiptText />
+        <Download />
         Imprimir Detalle
       </Button>
     </div>
