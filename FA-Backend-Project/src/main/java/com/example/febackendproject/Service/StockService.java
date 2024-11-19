@@ -60,7 +60,7 @@ public class StockService {
         if (stock.getStockRecords() == null) {
             stock.setStockRecords(new ArrayList<>());
         }
-        stock.getStockRecords().add(record);
+        stock.getStockRecords().add(0, record);
     }
     
 }

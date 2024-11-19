@@ -31,6 +31,15 @@ public class StockController {
         return ResponseEntity.status(HttpStatus.OK).body(stockService.findAll());
     }
     
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getStockByProductId(@PathVariable Long id) {
+        Optional<Stock> stock = stockService.getByProductId(id);
+        if (productService.existById(id)) {
+            return ResponseEntity.ok(stock);
+        }
+        return notFound("ID", id.toString());
+    }
+    
     @PatchMapping("/increase")
     public ResponseEntity<?> increaseStock(@RequestParam Long productId, @RequestParam Integer quantity) {
         Optional<Stock> stock = stockService.getByProductId(productId);
