@@ -27,7 +27,7 @@ export const ProductMainInfo = ({
         </Button>
       </div>
       <CardTitle className="px-4 pt-2 pb-4 text-6xl font-bold">
-        <h1>{Product?.name}</h1>
+        {Product?.name}
       </CardTitle>
       <Button variant={"ghost"}>
         <Link

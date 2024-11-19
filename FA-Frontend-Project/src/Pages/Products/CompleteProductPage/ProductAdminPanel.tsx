@@ -41,7 +41,7 @@ export const ProductPageAdminPanel = ({
       </Button>
       <Button className="w-10/12 text-md">
         <Download />
-        Imprimir Detalle
+        Descargar Detalle
       </Button>
     </div>
   );
