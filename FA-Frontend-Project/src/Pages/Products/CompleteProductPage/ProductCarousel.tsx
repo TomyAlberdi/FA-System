@@ -15,7 +15,7 @@ export const ProductCarousel = ({
   Product: CompleteProduct | null;
 }) => {
   return (
-    <div className="row-start-1 row-end-7 col-start-1 col-end-5 productGridItem flex justify-center items-center">
+    <div className="row-start-1 row-end-8 col-start-1 col-end-5 productGridItem flex justify-center items-center">
       <Carousel className="imageCarousel w-full h-full flex justify-center items-center">
         <CarouselContent className="w-full h-full">
           {Product?.images && Product?.images.length > 0 ? (
