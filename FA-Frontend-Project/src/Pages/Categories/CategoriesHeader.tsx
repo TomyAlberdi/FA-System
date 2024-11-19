@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { CirclePlus } from "lucide-react";
+import { CirclePlus, Loader2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -22,7 +22,7 @@ import { Input } from "@/components/ui/input";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useState } from "react";
 import { useCatalogContext } from "@/Context/UseCatalogContext";
-import { useToast } from "@/hooks/use-toast"
+import { useToast } from "@/hooks/use-toast";
 
 const formSchema = z.object({
   name: z.string().min(3, {
@@ -40,6 +40,7 @@ export const CategoriesHeader: React.FC<CategoriesHeaderProps> = ({
   UpdateData,
 }) => {
   const [open, setOpen] = useState(false);
+  const [LoadingRequest, setLoadingRequest] = useState(false);
 
   const { BASE_URL } = useCatalogContext();
   const { getToken } = useKindeAuth();
@@ -57,11 +58,12 @@ export const CategoriesHeader: React.FC<CategoriesHeaderProps> = ({
     if (typeof getToken === "function") {
       const token = await getToken();
       try {
+        setLoadingRequest(true);
         const response = await fetch(`${BASE_URL}/category/${data.name}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
           },
         });
         if (!response.ok) {
@@ -87,6 +89,7 @@ export const CategoriesHeader: React.FC<CategoriesHeaderProps> = ({
         });
       } finally {
         setOpen(false);
+        setLoadingRequest(false);
       }
     } else return;
   }
@@ -128,7 +131,10 @@ export const CategoriesHeader: React.FC<CategoriesHeaderProps> = ({
                   </FormItem>
                 )}
               />
-              <Button type="submit">Guardar</Button>
+              <Button type="submit" disabled={LoadingRequest}>
+                {LoadingRequest && <Loader2 className="animate-spin" />}
+                Guardar
+              </Button>
             </form>
           </Form>
         </DialogContent>

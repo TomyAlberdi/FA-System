@@ -42,7 +42,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Loader2 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
@@ -66,6 +66,7 @@ export const Subcategory = () => {
     null
   );
   const [Open, setOpen] = useState(false);
+  const [LoadingRequest, setLoadingRequest] = useState(false);
   const [Products, setProducts] = useState<Array<StockProduct> | null>([]);
 
   const updateSubcategory = useCallback(
@@ -73,6 +74,7 @@ export const Subcategory = () => {
       if (typeof getToken === "function") {
         const token = await getToken();
         try {
+          setLoadingRequest(true);
           const response = await fetch(
             `${BASE_URL}/category/subcategory?name=${data.name}&subcategoryId=${id}`,
             {
@@ -104,6 +106,7 @@ export const Subcategory = () => {
             description: "Ocurrió un error al actualizar la subcategoría",
           });
         } finally {
+          setLoadingRequest(false);
           setOpen(false);
         }
       } else return;
@@ -245,7 +248,10 @@ export const Subcategory = () => {
                             </FormItem>
                           )}
                         />
-                        <Button type="submit">Guardar</Button>
+                        <Button type="submit" disabled={LoadingRequest}>
+                          {LoadingRequest && <Loader2 className="animate-spin" />}
+                          Guardar
+                        </Button>
                       </form>
                     </Form>
                   </DialogContent>

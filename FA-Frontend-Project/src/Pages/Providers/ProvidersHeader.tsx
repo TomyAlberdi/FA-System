@@ -19,7 +19,7 @@ import {
   DialogTrigger,
   DialogHeader,
 } from "@/components/ui/dialog";
-import { CirclePlus } from "lucide-react";
+import { CirclePlus, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -55,6 +55,7 @@ export const ProvidersHeader: React.FC<ProvidersHeaderProps> = ({
   UpdateData,
 }) => {
   const [open, setOpen] = useState(false);
+  const [LoadingRequest, setLoadingRequest] = useState(false);
   const { BASE_URL } = useCatalogContext();
   const { getToken } = useKindeAuth();
   const { toast } = useToast();
@@ -75,6 +76,7 @@ export const ProvidersHeader: React.FC<ProvidersHeaderProps> = ({
     if (typeof getToken === "function") {
       const token = await getToken();
       try {
+        setLoadingRequest(true);
         const response = await fetch(`${BASE_URL}/provider`, {
           method: "POST",
           headers: {
@@ -105,6 +107,7 @@ export const ProvidersHeader: React.FC<ProvidersHeaderProps> = ({
           description: "Ocurrió un error al crear el proveedor",
         });
       } finally {
+        setLoadingRequest(false);
         setOpen(false);
       }
     } else return;
@@ -213,7 +216,8 @@ export const ProvidersHeader: React.FC<ProvidersHeaderProps> = ({
                 )}
               />
               <div className="col-span-2 col-start-1 flex justify-center items-center">
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full" disabled={LoadingRequest}>
+                  {LoadingRequest && <Loader2 className="animate-spin" />}
                   Guardar
                 </Button>
               </div>

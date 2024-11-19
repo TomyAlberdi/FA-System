@@ -24,7 +24,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { ToastAction } from "@/components/ui/toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Loader2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -77,6 +77,7 @@ export const Provider = () => {
   const [Provider, setProvider] = useState<ProviderInterface | null>(null);
   const [Products, setProducts] = useState<Array<StockProduct> | null>([]);
   const [Loading, setLoading] = useState(true);
+  const [LoadingRequest, setLoadingRequest] = useState(false);
   const { toast } = useToast();
   const { getToken } = useKindeAuth();
   const navigate = useNavigate();
@@ -86,6 +87,7 @@ export const Provider = () => {
     async (data: z.infer<typeof formSchema>) => {
       if (typeof getToken === "function") {
         const token = await getToken();
+        setLoadingRequest(true);
         try {
           const response = await fetch(`${BASE_URL}/provider/${id}`, {
             method: "PATCH",
@@ -116,6 +118,7 @@ export const Provider = () => {
             description: "Ocurrió un error al actualizar el proveedor",
           });
         } finally {
+          setLoadingRequest(false);
           setOpen(false);
         }
       } else return;
@@ -366,7 +369,8 @@ export const Provider = () => {
                           )}
                         />
                         <div className="col-span-2 col-start-1 flex justify-center items-center">
-                          <Button type="submit" className="w-full">
+                          <Button type="submit" className="w-full" disabled={LoadingRequest}>
+                            {LoadingRequest && <Loader2 className="animate-spin" />}
                             Guardar
                           </Button>
                         </div>

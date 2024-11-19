@@ -24,7 +24,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Loader2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -67,12 +67,15 @@ const Category = () => {
   const [Loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
 
+  const [LoadingRequest, setLoadingRequest] = useState(false);
+
   const [openCreateSubcategory, setOpenCreateSubcategory] = useState(false);
 
   const updateCategory = useCallback(
     async (data: z.infer<typeof formSchema>) => {
       if (typeof getToken === "function") {
         const token = await getToken();
+        setLoadingRequest(true);
         try {
           const response = await fetch(
             `${BASE_URL}/category?name=${data.name}&id=${id}`,
@@ -105,6 +108,7 @@ const Category = () => {
             description: "Ocurrió un error al actualizar la categoría",
           });
         } finally {
+          setLoadingRequest(false);
           setOpen(false);
         }
       } else return;
@@ -118,6 +122,7 @@ const Category = () => {
       if (typeof getToken === "function") {
 				const token = await getToken();
 				try {
+          setLoadingRequest(true);
 					const response = await fetch(
 						`${BASE_URL}/category/subcategory?name=${data.name}&categoryId=${id}`,
 						{
@@ -150,6 +155,7 @@ const Category = () => {
 					});
 				} finally {
 					setOpenCreateSubcategory(false);
+          setLoadingRequest(false);
 				}
       }
     },
@@ -295,7 +301,10 @@ const Category = () => {
                             </FormItem>
                           )}
                         />
-                        <Button type="submit">Guardar</Button>
+                        <Button type="submit" disabled={LoadingRequest}>
+                          {LoadingRequest && <Loader2 className="animate-spin" />}
+                          Guardar
+                        </Button>
                       </form>
                     </Form>
                   </DialogContent>
@@ -341,7 +350,10 @@ const Category = () => {
                             </FormItem>
                           )}
                         />
-                        <Button type="submit">Guardar</Button>
+                        <Button type="submit" disabled={LoadingRequest}>
+                          {LoadingRequest && <Loader2 className="animate-spin" />}
+                          Guardar
+                        </Button>
                       </form>
                     </Form>
                   </DialogContent>
