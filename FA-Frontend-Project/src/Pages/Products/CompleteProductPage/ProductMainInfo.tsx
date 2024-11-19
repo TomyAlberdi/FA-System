@@ -10,7 +10,7 @@ export const ProductMainInfo = ({
   Product: CompleteProduct | null;
 }) => {
   return (
-    <Card className="p-2 h-full flex flex-col justify-start items-start row-start-1 row-end-5 col-start-5 col-end-16 productGridItem">
+    <Card className="p-2 flex flex-col justify-start items-start row-start-1 row-end-5 col-start-5 col-end-16 productGridItem">
       <div className="categoryLinks flex flex-row justify-start items-center gap-2 font-semibold">
         <Button variant={"ghost"}>
           <Link to={`/catalog/categories/${Product?.categoryId}`}>
