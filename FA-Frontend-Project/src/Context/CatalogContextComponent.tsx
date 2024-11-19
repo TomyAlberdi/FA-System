@@ -1,6 +1,6 @@
 import { CatalogContext, CatalogContextType } from "@/Context/CatalogContext";
 import { ReactNode } from "react";
-import { Category, CompleteProduct, Measure, Price, Provider, StockProduct, Subcategory } from "@/hooks/CatalogInterfaces";
+import { Category, CompleteProduct, Measure, Price, ProductStock, Provider, StockProduct, Subcategory } from "@/hooks/CatalogInterfaces";
 import { useToast } from "@/hooks/use-toast";
 
 interface CatalogContextComponentProps {
@@ -229,6 +229,21 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({ child
     }
   }
 
+  /// STOCK GET /////
+
+  const fetchProductStock = async (id: number) => {
+    try {
+      const response = await fetch(`${BASE_URL}/stock/${id}`);
+      if (!response.ok) {
+        console.error("Error fetching Product Stock: ", response.statusText);
+        return;
+      }
+      const result: ProductStock = await response.json();
+      return (result);
+    } catch (error) {
+      console.error("Error fetching Product Stock: ", error);
+    }
+  }
 
   const exportData: CatalogContextType = {
     BASE_URL,
@@ -245,6 +260,7 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({ child
     fetchMeasures,
     fetchPrices,
     fetchProduct,
+    fetchProductStock,
   }
 
   return (
