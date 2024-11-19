@@ -24,7 +24,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { ToastAction } from "@/components/ui/toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle, Loader2 } from "lucide-react";
+import { AlertCircle, CircleX, Loader2, Pencil } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -274,7 +274,10 @@ export const Provider = () => {
               <CardContent>
                 <Dialog open={open} onOpenChange={setOpen}>
                   <DialogTrigger asChild>
-                    <Button className="w-full mb-2">Editar</Button>
+                    <Button className="w-full mb-2">
+                      <Pencil />
+                      Editar
+                    </Button>
                   </DialogTrigger>
                   <DialogContent
                     className="sm:max-w-[500px] w-full"
@@ -369,8 +372,14 @@ export const Provider = () => {
                           )}
                         />
                         <div className="col-span-2 col-start-1 flex justify-center items-center">
-                          <Button type="submit" className="w-full" disabled={LoadingRequest}>
-                            {LoadingRequest && <Loader2 className="animate-spin" />}
+                          <Button
+                            type="submit"
+                            className="w-full"
+                            disabled={LoadingRequest}
+                          >
+                            {LoadingRequest && (
+                              <Loader2 className="animate-spin" />
+                            )}
                             Guardar
                           </Button>
                         </div>
@@ -383,6 +392,7 @@ export const Provider = () => {
                   className="w-full"
                   onClick={onDeletePres}
                 >
+                  <CircleX />
                   Eliminar
                 </Button>
               </CardContent>

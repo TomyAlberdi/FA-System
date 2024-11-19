@@ -24,7 +24,13 @@ import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle, Loader2 } from "lucide-react";
+import {
+  AlertCircle,
+  CirclePlus,
+  CircleX,
+  Loader2,
+  Pencil,
+} from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -117,49 +123,49 @@ const Category = () => {
     []
   );
 
-	const createSubcategory = useCallback(
+  const createSubcategory = useCallback(
     async (data: z.infer<typeof formSchema>) => {
       if (typeof getToken === "function") {
-				const token = await getToken();
-				try {
+        const token = await getToken();
+        try {
           setLoadingRequest(true);
-					const response = await fetch(
-						`${BASE_URL}/category/subcategory?name=${data.name}&categoryId=${id}`,
-						{
-							method: "POST",
-							headers: {
-								"Content-Type": "application/json",
-								Authorization: `Bearer ${token}`,
-							},
-						}
-					)
-					if (!response.ok) {
-						console.error("Error: ", response.statusText);
-						toast({
-							variant: "destructive",
-							title: `Error ${response.status}`,
-							description: `Ocurrió un error al crear la subcategoría.`,
-						});
-						return;
-					}
-					toast({
-						title: "Subcategoría creada",
-						description: "La subcategoría ha sido creada con éxito",
-					});
-				} catch (error) {
-					console.error("Error: ", error);
-					toast({
-						variant: "destructive",
-						title: "Error",
-						description: "Ocurrió un error al crear la subcategoría",
-					});
-				} finally {
-					setOpenCreateSubcategory(false);
+          const response = await fetch(
+            `${BASE_URL}/category/subcategory?name=${data.name}&categoryId=${id}`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          if (!response.ok) {
+            console.error("Error: ", response.statusText);
+            toast({
+              variant: "destructive",
+              title: `Error ${response.status}`,
+              description: `Ocurrió un error al crear la subcategoría.`,
+            });
+            return;
+          }
+          toast({
+            title: "Subcategoría creada",
+            description: "La subcategoría ha sido creada con éxito",
+          });
+        } catch (error) {
+          console.error("Error: ", error);
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Ocurrió un error al crear la subcategoría",
+          });
+        } finally {
+          setOpenCreateSubcategory(false);
           setLoadingRequest(false);
-				}
+        }
       }
     },
-		// eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 
@@ -269,7 +275,10 @@ const Category = () => {
               <CardContent>
                 <Dialog open={open} onOpenChange={setOpen}>
                   <DialogTrigger asChild>
-                    <Button className="w-full mb-2">Editar</Button>
+                    <Button className="w-full mb-2">
+                      <Pencil />
+                      Editar
+                    </Button>
                   </DialogTrigger>
                   <DialogContent
                     className="sm:max-w-[500px] w-full"
@@ -302,7 +311,9 @@ const Category = () => {
                           )}
                         />
                         <Button type="submit" disabled={LoadingRequest}>
-                          {LoadingRequest && <Loader2 className="animate-spin" />}
+                          {LoadingRequest && (
+                            <Loader2 className="animate-spin" />
+                          )}
                           Guardar
                         </Button>
                       </form>
@@ -314,6 +325,7 @@ const Category = () => {
                   className="w-full mb-2"
                   onClick={onDeletePres}
                 >
+                  <CircleX />
                   Eliminar
                 </Button>
                 <Dialog
@@ -321,7 +333,10 @@ const Category = () => {
                   onOpenChange={setOpenCreateSubcategory}
                 >
                   <DialogTrigger asChild>
-                    <Button className="w-full">Añadir subcategoría</Button>
+                    <Button className="w-full">
+                      <CirclePlus />
+                      Añadir subcategoría
+                    </Button>
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
@@ -351,7 +366,9 @@ const Category = () => {
                           )}
                         />
                         <Button type="submit" disabled={LoadingRequest}>
-                          {LoadingRequest && <Loader2 className="animate-spin" />}
+                          {LoadingRequest && (
+                            <Loader2 className="animate-spin" />
+                          )}
                           Guardar
                         </Button>
                       </form>

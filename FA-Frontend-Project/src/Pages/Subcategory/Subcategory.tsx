@@ -42,7 +42,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { AlertCircle, Loader2 } from "lucide-react";
+import { AlertCircle, CircleX, Loader2, Pencil } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
@@ -216,7 +216,10 @@ export const Subcategory = () => {
               <CardContent>
                 <Dialog open={Open} onOpenChange={setOpen}>
                   <DialogTrigger asChild>
-                    <Button className="w-full mb-2">Editar</Button>
+                    <Button className="w-full mb-2">
+                      <Pencil />
+                      Editar
+                    </Button>
                   </DialogTrigger>
                   <DialogContent
                     className="sm:max-w-[500px] w-full"
@@ -249,7 +252,9 @@ export const Subcategory = () => {
                           )}
                         />
                         <Button type="submit" disabled={LoadingRequest}>
-                          {LoadingRequest && <Loader2 className="animate-spin" />}
+                          {LoadingRequest && (
+                            <Loader2 className="animate-spin" />
+                          )}
                           Guardar
                         </Button>
                       </form>
@@ -261,6 +266,7 @@ export const Subcategory = () => {
                   className="w-full"
                   onClick={onDeletePres}
                 >
+                  <CircleX />
                   Eliminar
                 </Button>
               </CardContent>
@@ -292,9 +298,7 @@ export const Subcategory = () => {
                             : "cursor-pointer"
                         }
                         onClick={() =>
-                          navigate(
-                            `/catalog/products/${product.id}`
-                          )
+                          navigate(`/catalog/products/${product.id}`)
                         }
                       >
                         <TableCell className="font-medium">
