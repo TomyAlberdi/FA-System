@@ -29,6 +29,18 @@ public class Stock {
     private String productName;
     
     @Column
+    private String productImage;
+    
+    @Column
+    private String productSaleUnit;
+    
+    @Column
+    private String productMeasureType;
+    
+    @Column
+    private Double productMeasurePerSaleUnit;
+    
+    @Column
     private Integer quantity = 0;
     
     @ElementCollection

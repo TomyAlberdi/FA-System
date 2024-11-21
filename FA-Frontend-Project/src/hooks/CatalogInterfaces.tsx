@@ -87,6 +87,10 @@ export interface ProductStock {
   id: number;
   productId: number;
   productName: string;
+  productImage: string;
+  productSaleUnit: string;
+  productMeasureType: string;
+  productMeasurePerSaleUnit: number;
   quantity: number;
   stockRecords: Array<StockRecord>;
 }

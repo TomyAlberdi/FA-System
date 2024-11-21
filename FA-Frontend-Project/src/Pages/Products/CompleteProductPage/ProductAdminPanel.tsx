@@ -8,6 +8,7 @@ import {
   Pencil,
   Download,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export const ProductPageAdminPanel = ({
   Product,
@@ -35,9 +36,11 @@ export const ProductPageAdminPanel = ({
           Desactivar Producto
         </Button>
       )}
-      <Button className="w-10/12 text-md">
-        <Package />
-        Actualizar Stock
+      <Button className="w-10/12 text-md" asChild>
+        <Link to={`/catalog/products/stock/${Product?.id}`}>
+          <Package />
+          Administrar Stock
+        </Link>
       </Button>
       <Button className="w-10/12 text-md">
         <Download />
