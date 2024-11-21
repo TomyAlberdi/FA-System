@@ -25,10 +25,14 @@ public class StockService {
         return stockRepository.findByProductId(productId);
     }
     
-    public Stock save(Long productId, String productName) {
+    public Stock save(Long productId, String productName, String productImage, String productSaleUnit, String productMeasureType, Double productMeasurePerSaleUnit) {
         Stock stock = new Stock();
         stock.setProductId(productId);
         stock.setProductName(productName);
+        stock.setProductImage(productImage);
+        stock.setProductSaleUnit(productSaleUnit);
+        stock.setProductMeasureType(productMeasureType);
+        stock.setProductMeasurePerSaleUnit(productMeasurePerSaleUnit);
         return stockRepository.save(stock);
     }
 

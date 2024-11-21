@@ -79,6 +79,10 @@ div.App {
       }
     }
   }
+  .big-icon {
+    width: 1em;
+    height: 1em;
+  }
   .ProductPage {
     display: grid;
     grid-template-columns: repeat(15, 1fr);
@@ -87,12 +91,6 @@ div.App {
     grid-row-gap: 0.25rem;
     .complementaryInfo {
       max-height: 65vh;
-      border: 1px solid red;
-    }
-  }
-  .productGridItem {
-    .gridSubItem {
-      border: 1px solid blue;
     }
   }
 }

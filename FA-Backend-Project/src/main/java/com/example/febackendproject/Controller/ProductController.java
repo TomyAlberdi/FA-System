@@ -7,6 +7,8 @@ import com.example.febackendproject.DTO.PartialProductDTO;
 import com.example.febackendproject.Entity.Product;
 import com.example.febackendproject.Entity.Provider;
 import com.example.febackendproject.Entity.Stock;
+import com.example.febackendproject.Entity.Subcategory;
+import com.example.febackendproject.Repository.SubcategoryRepository;
 import com.example.febackendproject.Service.CategoryService;
 import com.example.febackendproject.Service.ProductService;
 import com.example.febackendproject.Service.ProviderService;
@@ -32,6 +34,7 @@ public class ProductController {
     private final ProviderService providerService;
     private final CategoryService categoryService;
     private final StockService stockService;
+    private final SubcategoryRepository subcategoryRepository;
     
     public ResponseEntity<?> notFound(String dataType, String data) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product with " + dataType + " " + data + " not found");
@@ -81,15 +84,22 @@ public class ProductController {
     public ResponseEntity<?> save(@Valid @RequestBody Product product) {
         Optional<CompleteCategoryDTO> category = categoryService.findById(product.getCategoryId());
         Optional<Provider> provider = providerService.findById(product.getProviderId());
+        Optional<Subcategory> subcategory = subcategoryRepository.findById(product.getSubcategoryId());
         if (productService.existByName(product.getName())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Product with id " + product.getId() + " already exists");
         } else if (category.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Category with id " + product.getCategoryId() + " not found");
         } else if (provider.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Provider with id " + product.getProviderId() + " not found");
+        } else if (subcategory.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Subcategory with id " + product.getSubcategoryId() + " not found");
         }
         Product newProduct = productService.add(product);
-        Stock newStock = stockService.save(newProduct.getId(), newProduct.getName());
+        if (newProduct.getImages().isEmpty()) {
+            Stock newStock = stockService.save(newProduct.getId(), newProduct.getName(), "", newProduct.getSaleUnit(), newProduct.getMeasureType(), newProduct.getMeasurePerSaleUnit());
+        } else {
+            Stock newStock = stockService.save(newProduct.getId(), newProduct.getName(), newProduct.getImages().get(0), newProduct.getSaleUnit(), newProduct.getMeasureType(), newProduct.getMeasurePerSaleUnit());
+        }
         return ResponseEntity.status(HttpStatus.CREATED).body(newProduct);
     }
     

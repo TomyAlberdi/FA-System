@@ -179,6 +179,7 @@ public class ProductService {
     
     public void deleteById(Long id) {
         productRepository.deleteById(id);
+        stockRepository.deleteByProductId(id);
     }
     
     public void updateProduct(Product product) {
