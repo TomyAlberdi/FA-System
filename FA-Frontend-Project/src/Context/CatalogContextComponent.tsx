@@ -245,6 +245,22 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({ child
     }
   }
 
+  const fetchStockList = async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/stock`);
+      if (!response.ok) {
+        console.error("Error fetching Product Stock: ", response.statusText);
+        return;
+      }
+      const result: Array<ProductStock> = await response.json();
+      return (result);
+    } catch (error) {
+      console.error("Error fetching Product Stock: ", error);
+    }
+  }
+
+  /// EXPORT DATA /////
+
   const exportData: CatalogContextType = {
     BASE_URL,
     fetchCategories,
@@ -261,6 +277,7 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({ child
     fetchPrices,
     fetchProduct,
     fetchProductStock,
+    fetchStockList,
   }
 
   return (

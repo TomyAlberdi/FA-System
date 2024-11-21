@@ -1,5 +1,6 @@
 package com.example.febackendproject.Service;
 
+import com.example.febackendproject.DTO.PartialStockDTO;
 import com.example.febackendproject.Entity.Stock;
 import com.example.febackendproject.Entity.StockRecord;
 import com.example.febackendproject.Repository.StockRepository;
@@ -19,6 +20,10 @@ public class StockService {
     
     public List<Stock> findAll() {
         return stockRepository.findAll();
+    }
+    
+    public List<PartialStockDTO> list() {
+        return stockRepository.listStocks();
     }
     
     public Optional<Stock> getByProductId(Long productId) {

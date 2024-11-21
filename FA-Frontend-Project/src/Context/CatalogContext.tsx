@@ -24,6 +24,7 @@ export interface CatalogContextType {
   fetchProduct: (id: number) => Promise<CompleteProduct | undefined>;
   // STOCK GET
   fetchProductStock: (id: number) => Promise<ProductStock | undefined>;
+  fetchStockList: () => Promise<Array<ProductStock> | undefined>;
 }
 
 export const CatalogContext = createContext<CatalogContextType | null>(null);

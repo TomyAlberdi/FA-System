@@ -32,6 +32,10 @@ const data = [
         title: "Proveedores",
         url: "/providers",
       },
+      {
+        title: "Stock",
+        url: "/stock",
+      }
     ],
   }
 ];

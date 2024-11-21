@@ -37,7 +37,7 @@ export const ProductPageAdminPanel = ({
         </Button>
       )}
       <Button className="w-10/12 text-md" asChild>
-        <Link to={`/catalog/products/stock/${Product?.id}`}>
+        <Link to={`/catalog/stock/${Product?.id}`}>
           <Package />
           Administrar Stock
         </Link>

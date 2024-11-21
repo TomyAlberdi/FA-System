@@ -10,6 +10,7 @@ import { AddProduct } from "@/Pages/Products/AddProduct";
 import { Subcategory } from "@/Pages/Subcategory/Subcategory";
 import { ProductPage } from "@/Pages/Products/CompleteProductPage/ProductPage";
 import { Stock } from "@/Pages/Stock/Stock";
+import { StockList } from "@/Pages/Stock/StockList";
 
 export const routesConfig = [
   { index: true, element: <Home />, handle: "Inicio" },
@@ -18,7 +19,8 @@ export const routesConfig = [
   { path: "/catalog/products", element: <Products />, handle: "Productos" },
   { path: "/catalog/products/:id", element: <ProductPage />, handle: "Producto" },
   { path: "/catalog/products/add", element: <AddProduct />, handle: "Añadir Producto" },
-  { path: "/catalog/products/stock/:id", element: <Stock />, handle: "Stock" },
+  { path: "/catalog/stock", element: <StockList />, handle: "Stock" },
+  { path: "/catalog/stock/:id", element: <Stock />, handle: "Stock" },
   { path: "/catalog/providers", element: <Providers />, handle: "Proveedores" },
   { path: "/catalog/providers/:id", element: <Provider /> },
   { path: "/catalog/categories", element: <Categories />, handle: "Categorías" },
