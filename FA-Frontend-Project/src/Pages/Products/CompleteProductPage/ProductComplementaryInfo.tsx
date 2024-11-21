@@ -4,6 +4,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Table,
   TableBody,
@@ -21,6 +23,7 @@ import {
 } from "@/hooks/CatalogInterfaces";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 export const ProductComplementaryInfo = ({
   Product,
@@ -52,7 +55,7 @@ export const ProductComplementaryInfo = ({
   };
 
   return (
-    <div className="complementaryInfo row-start-5 row-end-16 col-start-5 col-end-16 productGridItem px-2 py-4">
+    <ScrollArea className="complementaryInfo row-start-5 row-end-16 col-start-5 col-end-16 productGridItem px-2 py-4">
       <Accordion type="multiple" className="w-full">
         <AccordionItem value="price">
           <AccordionTrigger>Precio</AccordionTrigger>
@@ -134,6 +137,11 @@ export const ProductComplementaryInfo = ({
                 </TableBody>
               </Table>
             )}
+            <Button asChild>
+              <Link to={`/catalog/products/stock/${Product?.id}`}>
+                Ver Registro Completo
+              </Link>
+            </Button>
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="characteristics">
@@ -141,6 +149,6 @@ export const ProductComplementaryInfo = ({
           <AccordionContent>Info características</AccordionContent>
         </AccordionItem>
       </Accordion>
-    </div>
+    </ScrollArea>
   );
 };

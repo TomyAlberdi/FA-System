@@ -85,6 +85,10 @@ div.App {
     grid-template-rows: repeat(15, 1fr);
     grid-column-gap: 0.25rem;
     grid-row-gap: 0.25rem;
+    .complementaryInfo {
+      max-height: 65vh;
+      border: 1px solid red;
+    }
   }
   .productGridItem {
     .gridSubItem {
