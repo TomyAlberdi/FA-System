@@ -15,6 +15,8 @@ export const ProductPage = () => {
   const [Loading, setLoading] = useState(true);
   const [Product, setProduct] = useState<CompleteProduct | null>(null);
 
+  const [ReloadProduct, setReloadProduct] = useState(false);
+
   useEffect(() => {
     if (id) {
       fetchProduct(Number.parseInt(id))
@@ -22,7 +24,7 @@ export const ProductPage = () => {
         .finally(() => setLoading(false));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [id, ReloadProduct]);
 
   return (
     <div className="ProductPage w-full h-full">
@@ -37,7 +39,7 @@ export const ProductPage = () => {
         <>
           <ProductCarousel Product={Product} />
           <ProductMainInfo Product={Product} />
-          <ProductPageAdminPanel Product={Product} />
+          <ProductPageAdminPanel Product={Product} ReloadProduct={ReloadProduct} setReloadProduct={setReloadProduct} />
           <ProductComplementaryInfo Product={Product} />
         </>
       )}
