@@ -12,7 +12,7 @@ import {
   Pencil,
   Download,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export const ProductPageAdminPanel = ({
   Product,
@@ -26,6 +26,7 @@ export const ProductPageAdminPanel = ({
 
   const { BASE_URL } = useCatalogContext();
   const { getToken } = useKindeAuth();
+  const navigate = useNavigate();
 
   const onDisablePress = () => {
     toast({
@@ -92,13 +93,64 @@ export const ProductPageAdminPanel = ({
     }
   }
 
+  const onDeletePress = () => {
+    toast({
+      variant: "destructive",
+      title: "Confirmación",
+      description: "¿Desea eliminar el producto? Esta acción no se puede deshacer.",
+      action: (
+        <ToastAction altText="Eliminar" onClick={deleteProduct}>
+          Eliminar
+        </ToastAction>
+      )
+    })
+  }
+
+  const deleteProduct = async () => {
+    try {
+      if (!getToken) {
+        console.error("getToken is undefined");
+        return;
+      }
+      const accessToken = await getToken();
+      const response = await fetch(`${BASE_URL}/product/${Product?.id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        }
+      });
+      if (!response.ok) {
+        console.error("Error: ", response.statusText);
+        toast({
+          variant: "destructive",
+          title: `Error ${response.status}`,
+          description: `Ocurrió un error al eliminar el producto.`,
+        });
+        return;
+      }
+      toast({
+        title: "Producto eliminado",
+        description: "El producto ha sido eliminado con éxito",
+      });
+      navigate(`/catalog/products`);
+    } catch (error) {
+      console.error("Error: ", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Ocurrió un error al eliminar el producto",
+      });
+    }
+  }
+
   return (
     <div className="adminPanel productGridItem row-start-8 row-end-16 col-start-1 col-end-5 p-2 flex flex-col justify-start items-center gap-4">
       <Button className="w-10/12 text-md">
         <Pencil />
         Editar Producto
       </Button>
-      <Button className="w-10/12 text-md" variant="destructive">
+      <Button className="w-10/12 text-md" variant="destructive" onClick={onDeletePress}>
         <CircleX />
         Eliminar Producto
       </Button>
