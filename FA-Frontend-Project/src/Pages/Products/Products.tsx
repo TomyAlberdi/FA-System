@@ -6,11 +6,12 @@ import {
 } from "@/hooks/CatalogInterfaces";
 import { ProductFilters } from "@/Pages/Products/ProductFilters";
 import { ProductPagination } from "@/Pages/Products/ProductPagination";
+import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useEffect, useState } from "react";
 
 export const Products = () => {
   const { BASE_URL } = useCatalogContext();
-
+  const { getToken } = useKindeAuth();
   const [CurrentPage, setCurrentPage] = useState(0);
   const [PaginationInfo, setPaginationInfo] = useState<PaginationInfo>({
     pageNumber: 0,
@@ -37,7 +38,16 @@ export const Products = () => {
       let filterURL = getFilteredURL();
       filterURL += `&page=${CurrentPage}&size=15`;
       try {
-        const response = await fetch(filterURL);
+        if (!getToken) {
+          console.error("getToken is undefined");
+          return;
+        }
+        const accessToken = await getToken();
+        const response = await fetch(filterURL, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
         if (!response.ok) {
           console.error("Error fetching products: ", response.status);
           return;
