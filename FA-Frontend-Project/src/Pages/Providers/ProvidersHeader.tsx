@@ -73,44 +73,46 @@ export const ProvidersHeader: React.FC<ProvidersHeaderProps> = ({
   });
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
-    if (typeof getToken === "function") {
-      const token = await getToken();
-      try {
-        setLoadingRequest(true);
-        const response = await fetch(`${BASE_URL}/provider`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(data),
-        });
-        if (!response.ok) {
-          console.error("Error: ", response.statusText);
-          toast({
-            variant: "destructive",
-            title: `Error ${response.status}`,
-            description: `Ocurrió un error al crear el proveedor.`,
-          });
-          return;
-        }
-        toast({
-          title: "Proveedor creado",
-          description: "El proveedor ha sido creado con éxito",
-        });
-        setUpdateData(!UpdateData);
-      } catch (error) {
-        console.error("Error: ", error);
+    try {
+      if (!getToken) {
+        console.error("getToken is undefined");
+        return;
+      }
+      const accessToken = await getToken();
+      setLoadingRequest(true);
+      const response = await fetch(`${BASE_URL}/provider`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) {
+        console.error("Error: ", response.statusText);
         toast({
           variant: "destructive",
-          title: "Error",
-          description: "Ocurrió un error al crear el proveedor",
+          title: `Error ${response.status}`,
+          description: `Ocurrió un error al crear el proveedor.`,
         });
-      } finally {
-        setLoadingRequest(false);
-        setOpen(false);
+        return;
       }
-    } else return;
+      toast({
+        title: "Proveedor creado",
+        description: "El proveedor ha sido creado con éxito",
+      });
+      setUpdateData(!UpdateData);
+    } catch (error) {
+      console.error("Error: ", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Ocurrió un error al crear el proveedor",
+      });
+    } finally {
+      setLoadingRequest(false);
+      setOpen(false);
+    }
   }
 
   return (
@@ -216,7 +218,11 @@ export const ProvidersHeader: React.FC<ProvidersHeaderProps> = ({
                 )}
               />
               <div className="col-span-2 col-start-1 flex justify-center items-center">
-                <Button type="submit" className="w-full" disabled={LoadingRequest}>
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={LoadingRequest}
+                >
                   {LoadingRequest && <Loader2 className="animate-spin" />}
                   Guardar
                 </Button>

@@ -71,45 +71,47 @@ export const Subcategory = () => {
 
   const updateSubcategory = useCallback(
     async (data: z.infer<typeof formSchema>) => {
-      if (typeof getToken === "function") {
-        const token = await getToken();
-        try {
-          setLoadingRequest(true);
-          const response = await fetch(
-            `${BASE_URL}/category/subcategory?name=${data.name}&subcategoryId=${id}`,
-            {
-              method: "PATCH",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          if (!response.ok) {
-            console.error("Error: ", response.statusText);
-            toast({
-              variant: "destructive",
-              title: `Error ${response.status}`,
-              description: `Ocurrió un error al actualizar la subcategoría.`,
-            });
-            return;
+      try {
+        if (!getToken) {
+          console.error("getToken is undefined");
+          return;
+        }
+        const accessToken = await getToken();
+        setLoadingRequest(true);
+        const response = await fetch(
+          `${BASE_URL}/category/subcategory?name=${data.name}&subcategoryId=${id}`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`,
+            },
           }
-          toast({
-            title: "Categoría actualizada",
-            description: "La subcategoría ha sido actualizada con éxito",
-          });
-        } catch (error) {
-          console.error("Error: ", error);
+        );
+        if (!response.ok) {
+          console.error("Error: ", response.statusText);
           toast({
             variant: "destructive",
-            title: "Error",
-            description: "Ocurrió un error al actualizar la subcategoría",
+            title: `Error ${response.status}`,
+            description: `Ocurrió un error al actualizar la subcategoría.`,
           });
-        } finally {
-          setLoadingRequest(false);
-          setOpen(false);
+          return;
         }
-      } else return;
+        toast({
+          title: "Categoría actualizada",
+          description: "La subcategoría ha sido actualizada con éxito",
+        });
+      } catch (error) {
+        console.error("Error: ", error);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Ocurrió un error al actualizar la subcategoría",
+        });
+      } finally {
+        setLoadingRequest(false);
+        setOpen(false);
+      }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
@@ -156,39 +158,41 @@ export const Subcategory = () => {
   };
 
   const deleteSubcategory = async () => {
-    if (typeof getToken === "function") {
-      const token = await getToken();
-      try {
-        const response = await fetch(`${BASE_URL}/category/subcategory/${id}`, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (!response.ok) {
-          console.error("Error: ", response.statusText);
-          toast({
-            variant: "destructive",
-            title: `Error ${response.status}`,
-            description: `Ocurrió un error al eliminar la subcategoría.`,
-          });
-          return;
-        }
-        toast({
-          title: "Subcategoría eliminada",
-          description: "La subcategoría ha sido eliminada con éxito",
-        });
-        navigate(`/catalog/categories/${Subcategory?.categoryId}`);
-      } catch (error) {
-        console.error("Error: ", error);
+    try {
+      if (!getToken) {
+        console.error("getToken is undefined");
+        return;
+      }
+      const accessToken = await getToken();
+      const response = await fetch(`${BASE_URL}/category/subcategory/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (!response.ok) {
+        console.error("Error: ", response.statusText);
         toast({
           variant: "destructive",
-          title: "Error",
-          description: "Ocurrió un error al eliminar la subcategoría",
+          title: `Error ${response.status}`,
+          description: `Ocurrió un error al eliminar la subcategoría.`,
         });
+        return;
       }
-    } else return;
+      toast({
+        title: "Subcategoría eliminada",
+        description: "La subcategoría ha sido eliminada con éxito",
+      });
+      navigate(`/catalog/categories/${Subcategory?.categoryId}`);
+    } catch (error) {
+      console.error("Error: ", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Ocurrió un error al eliminar la subcategoría",
+      });
+    }
   };
 
   return (

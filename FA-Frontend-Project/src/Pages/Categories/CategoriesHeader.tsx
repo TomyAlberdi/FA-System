@@ -55,43 +55,45 @@ export const CategoriesHeader: React.FC<CategoriesHeaderProps> = ({
   });
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
-    if (typeof getToken === "function") {
-      const token = await getToken();
-      try {
-        setLoadingRequest(true);
-        const response = await fetch(`${BASE_URL}/category/${data.name}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (!response.ok) {
-          console.error("Error: ", response.statusText);
-          toast({
-            variant: "destructive",
-            title: `Error ${response.status}`,
-            description: `Ocurrió un error al crear la categoría.`,
-          });
-          return;
-        }
-        toast({
-          title: "Categoría creada",
-          description: "La categoría ha sido creada con éxito",
-        });
-        setUpdateData(!UpdateData);
-      } catch (error) {
-        console.error("Error: ", error);
+    try {
+      if (!getToken) {
+        console.error("getToken is undefined");
+        return;
+      }
+      const accessToken = await getToken();
+      setLoadingRequest(true);
+      const response = await fetch(`${BASE_URL}/category/${data.name}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (!response.ok) {
+        console.error("Error: ", response.statusText);
         toast({
           variant: "destructive",
-          title: "Error",
-          description: "Ocurrió un error al crear la categoría",
+          title: `Error ${response.status}`,
+          description: `Ocurrió un error al crear la categoría.`,
         });
-      } finally {
-        setOpen(false);
-        setLoadingRequest(false);
+        return;
       }
-    } else return;
+      toast({
+        title: "Categoría creada",
+        description: "La categoría ha sido creada con éxito",
+      });
+      setUpdateData(!UpdateData);
+    } catch (error) {
+      console.error("Error: ", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Ocurrió un error al crear la categoría",
+      });
+    } finally {
+      setOpen(false);
+      setLoadingRequest(false);
+    }
   }
 
   return (

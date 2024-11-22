@@ -103,39 +103,41 @@ export const AddProduct = () => {
   }, [selectedCategoryId]);
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
-    if (typeof getToken === "function") {
-      const token = await getToken();
-      try {
-        const response = await fetch(`${BASE_URL}/product`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(data),
-        });
-        if (!response.ok) {
-          console.error("Error: ", response.statusText);
-          toast({
-            variant: "destructive",
-            title: `Error ${response.status}`,
-            description: `Ocurrió un error al crear el producto.`,
-          });
-          return;
-        }
-        toast({
-          title: "Producto creado",
-          description: "El producto ha sido creado con éxito",
-        });
-      } catch (error) {
-        console.error("Error: ", error);
+    try {
+      if (!getToken) {
+        console.error("getToken is undefined");
+        return;
+      }
+      const accessToken = await getToken();
+      const response = await fetch(`${BASE_URL}/product`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) {
+        console.error("Error: ", response.statusText);
         toast({
           variant: "destructive",
-          title: "Error",
-          description: "Ocurrió un error al crear el producto",
+          title: `Error ${response.status}`,
+          description: `Ocurrió un error al crear el producto.`,
         });
+        return;
       }
-    } else return;
+      toast({
+        title: "Producto creado",
+        description: "El producto ha sido creado con éxito",
+      });
+    } catch (error) {
+      console.error("Error: ", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Ocurrió un error al crear el producto",
+      });
+    }
   }
 
   return (
@@ -144,7 +146,10 @@ export const AddProduct = () => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className={"w-full grid grid-cols-2 gap-4 " + (Subcategories?.length > 0 ? "grid-rows-11" : "grid-rows-9")}
+          className={
+            "w-full grid grid-cols-2 gap-4 " +
+            (Subcategories?.length > 0 ? "grid-rows-11" : "grid-rows-9")
+          }
         >
           {/* Basic data */}
           <FormField
@@ -268,9 +273,14 @@ export const AddProduct = () => {
           >
             images
           </div>
-          <div className={"tagSection col-start-1 pg-4 bg-primary-foreground rounded " + (Subcategories?.length > 0 ? "row-start-9 row-end-11" : "row-start-8 row-end-10")}>
-
-          </div>
+          <div
+            className={
+              "tagSection col-start-1 pg-4 bg-primary-foreground rounded " +
+              (Subcategories?.length > 0
+                ? "row-start-9 row-end-11"
+                : "row-start-8 row-end-10")
+            }
+          ></div>
           {/* Measures data */}
           <div className="measureSection row-span-3 row-start-1 row-end-4 col-start-2 p-4 bg-primary-foreground rounded">
             <FormField

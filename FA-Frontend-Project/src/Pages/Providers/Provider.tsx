@@ -85,43 +85,45 @@ export const Provider = () => {
 
   const updateCategory = useCallback(
     async (data: z.infer<typeof formSchema>) => {
-      if (typeof getToken === "function") {
-        const token = await getToken();
-        setLoadingRequest(true);
-        try {
-          const response = await fetch(`${BASE_URL}/provider/${id}`, {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify(data),
-          });
-          if (!response.ok) {
-            console.error("Error: ", response.statusText);
-            toast({
-              variant: "destructive",
-              title: `Error ${response.status}`,
-              description: `Ocurrió un error al actualizar el proveedor.`,
-            });
-            return;
-          }
-          toast({
-            title: "Proveedor actualizado",
-            description: "El proveedor ha sido actualizada con éxito",
-          });
-        } catch (error) {
-          console.error("Error: ", error);
+      setLoadingRequest(true);
+      try {
+        if (!getToken) {
+          console.error("getToken is undefined");
+          return;
+        }
+        const accessToken = await getToken();
+        const response = await fetch(`${BASE_URL}/provider/${id}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify(data),
+        });
+        if (!response.ok) {
+          console.error("Error: ", response.statusText);
           toast({
             variant: "destructive",
-            title: "Error",
-            description: "Ocurrió un error al actualizar el proveedor",
+            title: `Error ${response.status}`,
+            description: `Ocurrió un error al actualizar el proveedor.`,
           });
-        } finally {
-          setLoadingRequest(false);
-          setOpen(false);
+          return;
         }
-      } else return;
+        toast({
+          title: "Proveedor actualizado",
+          description: "El proveedor ha sido actualizada con éxito",
+        });
+      } catch (error) {
+        console.error("Error: ", error);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Ocurrió un error al actualizar el proveedor",
+        });
+      } finally {
+        setLoadingRequest(false);
+        setOpen(false);
+      }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
@@ -183,39 +185,41 @@ export const Provider = () => {
   };
 
   const deleteProvider = async () => {
-    if (typeof getToken === "function") {
-      const token = await getToken();
-      try {
-        const response = await fetch(`${BASE_URL}/provider/${id}`, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (!response.ok) {
-          console.error("Error: ", response.statusText);
-          toast({
-            variant: "destructive",
-            title: `Error ${response.status}`,
-            description: `Ocurrió un error al eliminar el proveedor.`,
-          });
-          return;
-        }
-        toast({
-          title: "Proveedor eliminado",
-          description: "El proveedor ha sido eliminado con éxito",
-        });
-        navigate("/catalog/providers");
-      } catch (error) {
-        console.error("Error: ", error);
+    try {
+      if (!getToken) {
+        console.error("getToken is undefined");
+        return;
+      }
+      const accessToken = await getToken();
+      const response = await fetch(`${BASE_URL}/provider/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (!response.ok) {
+        console.error("Error: ", response.statusText);
         toast({
           variant: "destructive",
-          title: "Error",
-          description: "Ocurrió un error al eliminar el proveedor",
+          title: `Error ${response.status}`,
+          description: `Ocurrió un error al eliminar el proveedor.`,
         });
+        return;
       }
-    } else return;
+      toast({
+        title: "Proveedor eliminado",
+        description: "El proveedor ha sido eliminado con éxito",
+      });
+      navigate("/catalog/providers");
+    } catch (error) {
+      console.error("Error: ", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Ocurrió un error al eliminar el proveedor",
+      });
+    }
   };
 
   return (
