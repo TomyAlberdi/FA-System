@@ -46,7 +46,7 @@ export const StockList = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetchStockListByKeyword(Keyword, CurrentPage, 4)
+    fetchStockListByKeyword(Keyword, CurrentPage, 15)
       .then((result) => {
         setStocks(result.content);
         setPaginationInfo({
@@ -109,7 +109,7 @@ export const StockList = () => {
               </Button>
             </form>
           </Form>
-          <StockPagination Stocks={Stocks} CurrentPage={CurrentPage} setCurrentPage={setCurrentPage} PaginationInfo={PaginationInfo} Loading={Loading} />
+          <StockPagination Stocks={Stocks} CurrentPage={CurrentPage} setCurrentPage={setCurrentPage} PaginationInfo={PaginationInfo} />
         </>
       )}
     </div>

@@ -54,7 +54,7 @@ export const StockPagination: React.FC<StockPaginationProps> = ({
 
   return (
     <section className="StockPagination w-full">
-      <section className="listBody">
+      <section className="listBody w-full">
         <TooltipProvider>
           {Stocks?.map((stock: PartialProductStock, i) => {
             return <StockCard key={i} stock={stock} />;
