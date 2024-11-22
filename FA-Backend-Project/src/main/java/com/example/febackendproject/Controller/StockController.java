@@ -28,20 +28,15 @@ public class StockController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product with " + dataType + " " + data + " not found");
     }
     
-    @GetMapping
-    public ResponseEntity<Page<PartialStockDTO>> list(
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "9") int size
-    ) {
-        return ResponseEntity.ok(stockService.getPaginatedStocks(page, size));
-    }
-    
-    @GetMapping("/search/{keyword}")
+    @GetMapping()
     public ResponseEntity<Page<PartialStockDTO>> search(
-            @PathVariable String keyword,
+            @RequestParam(value = "keyword", defaultValue = "") String keyword,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "9") int size
     ) {
+        if (keyword == null || keyword.isEmpty()) {
+            return ResponseEntity.ok(stockService.getPaginatedStocks(page, size));
+        }
         return ResponseEntity.ok(stockService.getPaginatedStocksByKeyword(keyword, page, size));
     }
     

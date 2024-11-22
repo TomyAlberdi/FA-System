@@ -77,22 +77,25 @@ export interface CompleteProduct extends StockProduct {
   providerId: number;
 }
 
-export interface StockRecord {
-  recordType: string;
-  stockChange: number;
-  recordDate: string;
-}
-
-export interface ProductStock {
+export interface PartialProductStock {
   id: number;
   productId: number;
   productName: string;
   productImage: string;
   productSaleUnit: string;
+  quantity: number;
+}
+
+export interface ProductStock extends PartialProductStock {
   productMeasureType: string;
   productMeasurePerSaleUnit: number;
-  quantity: number;
   stockRecords: Array<StockRecord>;
+}
+
+export interface StockRecord {
+  recordType: string;
+  stockChange: number;
+  recordDate: string;
 }
 
 export interface FilterData {
@@ -130,4 +133,33 @@ export interface PaginationInfo {
   totalElements: number;
   first: boolean;
   last: boolean;
+}
+
+export interface PaginationResponse {
+  content: Array<never>;
+  pageable: {
+    pageNumber: number;
+    pageSize: number;
+    sort: {
+      empty: boolean;
+      sorted: boolean;
+      unsorted: boolean;
+    },
+    offset: number;
+    paged: boolean;
+    unpaged: boolean;
+  },
+  last: boolean;
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number;
+  sort: {
+    empty: boolean;
+    sorted: boolean;
+    unsorted: boolean;
+  },
+  first: boolean;
+  numberOfElements: number;
+  empty: boolean;
 }
