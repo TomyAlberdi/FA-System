@@ -79,46 +79,48 @@ export const Stock = () => {
   });
 
   const updateStock = async (data: z.infer<typeof formSchema>) => {
-    if (typeof getToken === "function") {
-      setLoadingRequest(true);
-      const token = await getToken();
-      try {
-        const response = await fetch(
-          `${BASE_URL}/stock/${data.type}?productId=${stock?.productId}&quantity=${data.quantity}`,
-          {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        if (!response.ok) {
-          console.error("Error: ", response.statusText);
-          toast({
-            variant: "destructive",
-            title: `Error ${response.status}`,
-            description: `Ocurrió un error al actualizar el stock.`,
-          });
-          return;
+    setLoadingRequest(true);
+    try {
+      if (!getToken) {
+        console.error("getToken is undefined");
+        return;
+      }
+      const accessToken = await getToken();
+      const response = await fetch(
+        `${BASE_URL}/stock/${data.type}?productId=${stock?.productId}&quantity=${data.quantity}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
         }
-        toast({
-          title: "Stock actualizado",
-          variant: "default",
-          description: "El stock ha sido actualizado con éxito",
-        });
-      } catch (error) {
-        console.error("Error: ", error);
+      );
+      if (!response.ok) {
+        console.error("Error: ", response.statusText);
         toast({
           variant: "destructive",
-          title: "Error",
-          description: "Ocurrió un error al actualizar el stock",
+          title: `Error ${response.status}`,
+          description: `Ocurrió un error al actualizar el stock.`,
         });
-      } finally {
-        setLoadingRequest(false);
-        setOpen(false);
+        return;
       }
-    } else return;
+      toast({
+        title: "Stock actualizado",
+        variant: "default",
+        description: "El stock ha sido actualizado con éxito",
+      });
+    } catch (error) {
+      console.error("Error: ", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Ocurrió un error al actualizar el stock",
+      });
+    } finally {
+      setLoadingRequest(false);
+      setOpen(false);
+    }
   };
 
   useEffect(() => {
@@ -247,12 +249,16 @@ export const Stock = () => {
                               )}
                             />
 
-                              <Button type="submit" className="w-full" disabled={LoadingRequest}>
-                                {LoadingRequest && (
-                                  <Loader2 className="animate-spin" />
-                                )}
-                                Guardar
-                              </Button>
+                            <Button
+                              type="submit"
+                              className="w-full"
+                              disabled={LoadingRequest}
+                            >
+                              {LoadingRequest && (
+                                <Loader2 className="animate-spin" />
+                              )}
+                              Guardar
+                            </Button>
                           </form>
                         </Form>
                       </DialogContent>

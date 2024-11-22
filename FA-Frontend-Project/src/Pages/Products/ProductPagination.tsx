@@ -41,9 +41,6 @@ export const ProductPagination: React.FC<ProductPaginationProps> = ({
   Loading,
   setFilter,
 }) => {
-  /* Diseñar product card */
-  /* Implementar menú pagination */
-
   const [PaginationDropdownOpen, setPaginationDropdownOpen] = useState(false);
 
   const handlePrev = () => {
