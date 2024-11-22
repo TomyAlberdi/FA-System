@@ -16,6 +16,6 @@ public class PartialStockDTO {
     private String productName;
     private String productSaleUnit;
     private Integer quantity = 0;
-    private String productimage;
+    private String productImage;
     
 }

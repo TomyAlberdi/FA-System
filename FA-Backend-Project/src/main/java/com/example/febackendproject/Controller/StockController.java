@@ -1,10 +1,12 @@
 package com.example.febackendproject.Controller;
 
+import com.example.febackendproject.DTO.PartialStockDTO;
 import com.example.febackendproject.Entity.Product;
 import com.example.febackendproject.Entity.Stock;
 import com.example.febackendproject.Service.ProductService;
 import com.example.febackendproject.Service.StockService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -27,8 +29,20 @@ public class StockController {
     }
     
     @GetMapping
-    public ResponseEntity<?> list() {
-        return ResponseEntity.status(HttpStatus.OK).body(stockService.list());
+    public ResponseEntity<Page<PartialStockDTO>> list(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "9") int size
+    ) {
+        return ResponseEntity.ok(stockService.getPaginatedStocks(page, size));
+    }
+    
+    @GetMapping("/search/{keyword}")
+    public ResponseEntity<Page<PartialStockDTO>> search(
+            @PathVariable String keyword,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "9") int size
+    ) {
+        return ResponseEntity.ok(stockService.getPaginatedStocksByKeyword(keyword, page, size));
     }
     
     @GetMapping("/{id}")

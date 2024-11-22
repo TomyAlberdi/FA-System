@@ -3,8 +3,12 @@ package com.example.febackendproject.Service;
 import com.example.febackendproject.DTO.PartialStockDTO;
 import com.example.febackendproject.Entity.Stock;
 import com.example.febackendproject.Entity.StockRecord;
+import com.example.febackendproject.Repository.StockPaginationRepository;
 import com.example.febackendproject.Repository.StockRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -17,13 +21,16 @@ import java.util.Optional;
 public class StockService {
     
     private final StockRepository stockRepository;
+    private final StockPaginationRepository stockPaginationRepository;
     
-    public List<Stock> findAll() {
-        return stockRepository.findAll();
+    public Page<PartialStockDTO> getPaginatedStocks(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return stockPaginationRepository.listStocks(pageable);
     }
     
-    public List<PartialStockDTO> list() {
-        return stockRepository.listStocks();
+    public Page<PartialStockDTO> getPaginatedStocksByKeyword(String keyword, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return stockPaginationRepository.listStocksByKeyword(keyword, pageable);
     }
     
     public Optional<Stock> getByProductId(Long productId) {
