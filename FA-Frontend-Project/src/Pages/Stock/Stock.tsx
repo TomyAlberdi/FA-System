@@ -175,9 +175,13 @@ export const Stock = () => {
                     {stock?.quantity} {stock?.productSaleUnit}s{" "}
                     {stock?.productSaleUnit !== stock?.productMeasureType &&
                       stock &&
-                      `(${stock?.quantity * stock?.productMeasurePerSaleUnit} ${
-                        stock?.productMeasureType
-                      })`}
+                      `(${
+                        Math.round(
+                          (stock?.quantity * stock?.productMeasurePerSaleUnit +
+                            Number.EPSILON) *
+                            100
+                        ) / 100
+                      } ${stock?.productMeasureType})`}
                   </span>
                   <div className="adminButtons flex flex-col justify-start items-start gap-2">
                     <Dialog open={open} onOpenChange={setOpen}>
