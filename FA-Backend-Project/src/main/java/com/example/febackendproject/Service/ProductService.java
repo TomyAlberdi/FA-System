@@ -60,9 +60,7 @@ public class ProductService {
     
     public Page<PartialProductDTO> searchProductsByKeyword(String keyword, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<PartialProductDTO> partialProductDTOPage = productPaginationRepository.getPartialProductsByKeyword(keyword, pageable);
-        List<PartialProductDTO> PartialProductDTOList = partialProductDTOPage.getContent().stream().toList();
-        return new PageImpl<>(PartialProductDTOList, pageable, partialProductDTOPage.getTotalElements());
+        return productPaginationRepository.getPartialProductsByKeyword(keyword, pageable);
     }
     
     public Product add(Product product) {
