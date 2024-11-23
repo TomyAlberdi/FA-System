@@ -4,15 +4,9 @@ import com.example.febackendproject.DTO.CompleteCategoryDTO;
 import com.example.febackendproject.DTO.CompleteProductDTO;
 import com.example.febackendproject.DTO.FilterDTO;
 import com.example.febackendproject.DTO.PartialProductDTO;
-import com.example.febackendproject.Entity.Product;
-import com.example.febackendproject.Entity.Provider;
-import com.example.febackendproject.Entity.Stock;
-import com.example.febackendproject.Entity.Subcategory;
+import com.example.febackendproject.Entity.*;
 import com.example.febackendproject.Repository.SubcategoryRepository;
-import com.example.febackendproject.Service.CategoryService;
-import com.example.febackendproject.Service.ProductService;
-import com.example.febackendproject.Service.ProviderService;
-import com.example.febackendproject.Service.StockService;
+import com.example.febackendproject.Service.*;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -35,6 +29,7 @@ public class ProductController {
     private final CategoryService categoryService;
     private final StockService stockService;
     private final SubcategoryRepository subcategoryRepository;
+    private final ProductCharacteristicService productCharacteristicService;
     
     public ResponseEntity<?> notFound(String dataType, String data) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product with " + dataType + " " + data + " not found");
@@ -146,6 +141,19 @@ public class ProductController {
         } else {
             return notFound("ID", productId.toString());
         }
+    }
+    
+    @GetMapping("/tags")
+    public ResponseEntity<?> getTags() {
+        return ResponseEntity.ok(productCharacteristicService.listKeys());
+    }
+    
+    @GetMapping("/tags/{key}")
+    public ResponseEntity<?> getTag(@PathVariable String key) {
+        if (productCharacteristicService.existsByKey(key)) {
+            return ResponseEntity.ok(productCharacteristicService.listValuesByKey(key));
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("tag not found");
     }
     
 }

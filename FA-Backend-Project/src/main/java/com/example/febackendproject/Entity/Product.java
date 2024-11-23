@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -44,15 +45,17 @@ public class Product {
     // External Tables data
     @NotNull
     @ElementCollection
-    @CollectionTable(name = "product_tags", joinColumns = @JoinColumn(name = "product_id"))
-    @Column
-    private List<String> tags;
-    
-    @NotNull
-    @ElementCollection
     @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
     @Column
     private List<String> images;
+    
+    @ManyToMany
+    @JoinTable(
+            name = "product_characteristic_map",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "characteristic_id")
+    )
+    private Set<ProductCharacteristic> characteristics;
     
     @Column(name = "provider_id")
     @NotNull
@@ -100,25 +103,5 @@ public class Product {
     @Column(name = "discounted_measure_price")
     private Double discountedMeasurePrice;
     
-    /*@Override
-    public String toString() {
-        return "Product {" +
-                "\n  id=" + id +
-                ",\n  providerId=" + providerId +
-                ",\n  categoryId=" + categoryId +
-                ",\n  tags=" + tags +
-                ",\n  images=" + images +
-                ",\n  name='" + name + '\'' +
-                ",\n  description='" + description + '\'' +
-                ",\n  price=" + price +
-                ",\n  measures='" + measures + '\'' +
-                ",\n  saleUnit='" + saleUnit + '\'' +
-                ",\n  priceSaleUnit=" + priceSaleUnit +
-                ",\n  unitPerBox=" + unitPerBox +
-                ",\n  quality='" + quality + '\'' +
-                ",\n  discountPercentage=" + discountPercentage +
-                ",\n  discountedPrice=" + discountedPrice +
-                "\n}";
-    }*/
 
 }
