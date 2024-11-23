@@ -438,9 +438,13 @@ export const Provider = () => {
                         <TableCell>
                           {product.stock} {product.saleUnit}s
                           {product.saleUnit !== product.measureType &&
-                            ` (${product.measurePerSaleUnit * product.stock} ${
-                              product.measureType
-                            })`}
+                            ` (${
+                              Math.round(
+                                (product.measurePerSaleUnit * product.stock +
+                                  Number.EPSILON) *
+                                  100
+                              ) / 100
+                            } ${product.measureType})`}
                         </TableCell>
                         <TableCell>
                           ${product.saleUnitPrice} / {product.saleUnit}
