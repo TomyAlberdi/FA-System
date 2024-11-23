@@ -1,21 +1,21 @@
 import { createContext } from 'react';
-import { Category, CompleteProduct, Measure, PaginationResponse, Price, ProductStock, Provider, StockProduct, Subcategory } from "@/hooks/CatalogInterfaces";
+import { Category, CompleteProduct, Measure, PaginationResponse, Price, ProductStock, Provider, Subcategory } from "@/hooks/CatalogInterfaces";
 
 export interface CatalogContextType {
   BASE_URL: string;
   // CATEGORY GET
   fetchCategories: () => Promise<Array<Category> | undefined>;
   fetchCategory: (id: number) => Promise<Category | undefined>;
-  fetchCategoryProducts: (id: number) => Promise<Array<StockProduct> | undefined>;
+  fetchCategoryProducts: (id: number, page: number, size: number) => Promise<PaginationResponse>;
   // SUBCATEGORY GET
   fetchSubcategories: () => Promise<Array<Subcategory> | undefined >;
   fetchSubcategoriesByCategoryId: (id: number) => Promise<Array<Subcategory> | undefined>;
   fetchSubcategoryById: (id: number) => Promise<Subcategory | undefined>;
-  fetchSubcategoryProducts: (id: number) => Promise<Array<StockProduct> | undefined>;
+  fetchSubcategoryProducts: (id: number, page: number, size: number) => Promise<PaginationResponse>;
   // PROVIDER GET
   fetchProviders: () => Promise<Array<Provider> | undefined>;
   fetchProvider: (id: number) => Promise<Provider | undefined>;
-  fetchProviderProducts: (id: number) => Promise<Array<StockProduct> | undefined>;
+  fetchProviderProducts: (id: number, page: number, size: number) => Promise<PaginationResponse>;
   // MEASURE GET
   fetchMeasures: () => Promise<Array<Measure> | undefined>;
   // PRICE GET

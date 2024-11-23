@@ -15,10 +15,9 @@ import {
   Table,
   TableBody,
   TableCaption,
-  TableCell,
-  TableHead,
+  TableCell, TableHead,
   TableHeader,
-  TableRow,
+  TableRow
 } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
@@ -30,6 +29,7 @@ import {
   CircleX,
   Loader2,
   Pencil,
+  Plus,
 } from "lucide-react";
 import {
   Dialog,
@@ -70,8 +70,11 @@ const Category = () => {
   const { getToken } = useKindeAuth();
   const [Category, setCategory] = useState<CategoryInterface | null>(null);
   const [Products, setProducts] = useState<Array<StockProduct> | null>([]);
+  const [IsLastPage, setIsLastPage] = useState(false);
   const [Loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
+
+  const [LastLoadedPage, setLastLoadedPage] = useState(0);
 
   const [LoadingRequest, setLoadingRequest] = useState(false);
 
@@ -192,12 +195,23 @@ const Category = () => {
       fetchCategory(Number.parseInt(id))
         .then((result) => setCategory(result ?? null))
         .finally(() => setLoading(false));
-      fetchCategoryProducts(Number.parseInt(id)).then((result) =>
-        setProducts(result ?? null)
-      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, BASE_URL, open, openCreateSubcategory]);
+
+  useEffect(() => {
+    if (id) {
+      fetchCategoryProducts(Number.parseInt(id), LastLoadedPage, 8).then(
+        (result) => {
+          setProducts(
+            Products ? [...Products, ...result.content] : result.content
+          );
+          setIsLastPage(result.last);
+        }
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [LastLoadedPage]);
 
   const onDeletePres = () => {
     if (Category && Category?.productsAmount > 0) {
@@ -429,53 +443,66 @@ const Category = () => {
               Lista de productos
             </h2>
             {Products && Products?.length > 0 ? (
-              <Table>
-                <TableCaption>Lista de productos</TableCaption>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-1/12">ID</TableHead>
-                    <TableHead className="w-1/3">Nombre</TableHead>
-                    <TableHead className="w-1/3">Stock</TableHead>
-                    <TableHead>Precio</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {Products?.map((product: StockProduct, i: number) => {
-                    return (
-                      <TableRow
-                        key={i}
-                        className={
-                          product.disabled
-                            ? "cursor-pointer opacity-50 text-red-700"
-                            : "cursor-pointer"
-                        }
-                        onClick={() =>
-                          navigate(`/catalog/products/${product.id}`)
-                        }
-                      >
-                        <TableCell className="font-medium">
-                          {product.id}
-                        </TableCell>
-                        <TableCell>{product.name}</TableCell>
-                        <TableCell>
-                          {product.stock} {product.saleUnit}s
-                          {product.saleUnit !== product.measureType &&
-                            ` (${
-                              Math.round(
-                                (product.measurePerSaleUnit * product.stock +
-                                  Number.EPSILON) *
-                                  100
-                              ) / 100
-                            } ${product.measureType})`}
-                        </TableCell>
-                        <TableCell>
-                          ${product.saleUnitPrice} x {product.saleUnit}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
+              <>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-1/12">ID</TableHead>
+                      <TableHead className="w-1/3">Nombre</TableHead>
+                      <TableHead className="w-1/3">Stock</TableHead>
+                      <TableHead>Precio</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {Products?.map((product: StockProduct, i: number) => {
+                      return (
+                        <TableRow
+                          key={i}
+                          className={
+                            product.disabled
+                              ? "cursor-pointer opacity-50 text-red-700"
+                              : "cursor-pointer"
+                          }
+                          onClick={() =>
+                            navigate(`/catalog/products/${product.id}`)
+                          }
+                        >
+                          <TableCell className="font-medium">
+                            {product.id}
+                          </TableCell>
+                          <TableCell>{product.name}</TableCell>
+                          <TableCell>
+                            {product.stock} {product.saleUnit}s
+                            {product.saleUnit !== product.measureType &&
+                              ` (${
+                                Math.round(
+                                  (product.measurePerSaleUnit * product.stock +
+                                    Number.EPSILON) *
+                                    100
+                                ) / 100
+                              } ${product.measureType})`}
+                          </TableCell>
+                          <TableCell>
+                            ${product.saleUnitPrice} x {product.saleUnit}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+                {!IsLastPage && (
+                  <div className="w-full flex justify-center">
+                    <Button
+                      onClick={() => {
+                        setLastLoadedPage(LastLoadedPage + 1);
+                      }}
+                    >
+                      <Plus />
+                      Cargar más
+                    </Button>
+                  </div>
+                )}
+              </>
             ) : (
               <Alert variant="destructive" className="w-auto">
                 <AlertCircle className="w-5 pt-1" />
