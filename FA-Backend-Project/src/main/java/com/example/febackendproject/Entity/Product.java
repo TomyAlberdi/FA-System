@@ -38,6 +38,9 @@ public class Product {
     @Column
     private String quality;
     
+    @Column(name = "main_image")
+    private String mainImage;
+    
     // External Tables data
     @NotNull
     @ElementCollection

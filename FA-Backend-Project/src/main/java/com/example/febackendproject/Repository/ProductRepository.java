@@ -37,12 +37,13 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "measurePerSaleUnit = ?14, " +
             "discountPercentage = ?15, " +
             "discountedPrice = ?16," +
-            "discountedMeasurePrice = ?17 " +
+            "discountedMeasurePrice = ?17, " +
+            "mainImage = ?18 " +
             "WHERE id = ?1")
     void updateById(Long id, String name, Boolean disabled, String description, String quality, Long providerId, Long categoryId, Long subcategoryId,
                     String measureType, String measures, Double measurePrice,
                     String salesUnit, Double saleUnitPrice, Double measurePerSaleUnit,
-                    Integer discount_percentage, Double discount_new_price, Double discount_measure_price);
+                    Integer discount_percentage, Double discount_new_price, Double discount_measure_price, String mainImage);
     
     @Modifying
     @Transactional

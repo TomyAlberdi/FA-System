@@ -41,21 +41,7 @@ public class ProductService {
     
     public Page<PartialProductDTO> getPaginatedPartialProducts(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<PartialProductDTO> partialProductDTOPage = productPaginationRepository.getPartialProducts(pageable);
-        
-        List<PartialProductDTO> PartialProductDTOList = partialProductDTOPage.getContent().stream().toList();
-        
-        for (PartialProductDTO PartialProductDTO : PartialProductDTOList) {
-            Optional<List<String>> images = this.getProductImages(PartialProductDTO.getId());
-            images.ifPresent(strings -> {
-                if (!strings.isEmpty()) {
-                    PartialProductDTO.setImage(strings.get(0));
-                } else {
-                    PartialProductDTO.setImage("");
-                }
-            });
-        }
-        return new PageImpl<>(PartialProductDTOList, pageable, partialProductDTOPage.getTotalElements());
+        return productPaginationRepository.getPartialProducts(pageable);
     }
     
     public Page<PartialProductDTO> searchProductsByKeyword(String keyword, int page, int size) {
@@ -80,6 +66,11 @@ public class ProductService {
         } else {
             product.setDiscountedPrice(0.0);
             product.setDiscountedMeasurePrice(0.0);
+        }
+        if (!product.getImages().isEmpty()) {
+            product.setMainImage(product.getImages().get(0));
+        } else {
+            product.setMainImage("");
         }
         return productRepository.save(product);
     }
@@ -202,7 +193,7 @@ public class ProductService {
             product.setDiscountedMeasurePrice(0.0);
         }
         
-        productRepository.updateById(product.getId(), product.getName(), product.getDisabled(), product.getDescription(), product.getQuality(), product.getProviderId(), product.getCategoryId(), product.getSubcategoryId(), product.getMeasureType(), product.getMeasures(), product.getMeasurePrice(), product.getSaleUnit(), product.getSaleUnitPrice(), product.getMeasurePerSaleUnit(), product.getDiscountPercentage(), product.getDiscountedPrice(), product.getDiscountedMeasurePrice());
+        productRepository.updateById(product.getId(), product.getName(), product.getDisabled(), product.getDescription(), product.getQuality(), product.getProviderId(), product.getCategoryId(), product.getSubcategoryId(), product.getMeasureType(), product.getMeasures(), product.getMeasurePrice(), product.getSaleUnit(), product.getSaleUnitPrice(), product.getMeasurePerSaleUnit(), product.getDiscountPercentage(), product.getDiscountedPrice(), product.getDiscountedMeasurePrice(), product.getMainImage());
         for (String tag : product.getTags()) {
             productRepository.insertTagById(tag, product.getId());
         }
@@ -252,8 +243,7 @@ public class ProductService {
                         .and(ProductSpecifications.isDiscontinued(filterDTO.getDiscontinued()));
         
         return productPaginationRepository.findAll(spec, pageable).map(product -> {
-                String image = !product.getImages().isEmpty() ? product.getImages().get(0) : null;
-                return new PartialProductDTO(product.getId(), product.getName(), product.getDisabled(), product.getMeasureType(), product.getMeasurePrice(), product.getSaleUnit(), product.getSaleUnitPrice(), product.getMeasurePerSaleUnit(), product.getDiscountPercentage(), product.getDiscountedPrice(), product.getDiscountedMeasurePrice(), image);
+                return new PartialProductDTO(product.getId(), product.getName(), product.getDisabled(), product.getMeasureType(), product.getMeasurePrice(), product.getSaleUnit(), product.getSaleUnitPrice(), product.getMeasurePerSaleUnit(), product.getDiscountPercentage(), product.getDiscountedPrice(), product.getDiscountedMeasurePrice(), product.getMainImage());
         });
     }
     
