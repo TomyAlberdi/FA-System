@@ -53,11 +53,12 @@ export interface StockProduct {
   name: string;
   disabled: boolean;
   measureType: string;
-  measurePrice: number;
   stock: number;
   saleUnit: string;
   measurePerSaleUnit: number;
   saleUnitPrice: number;
+  discountPercentage: number;
+  discountedPrice: number;
 }
 
 export interface CompleteProduct extends StockProduct {

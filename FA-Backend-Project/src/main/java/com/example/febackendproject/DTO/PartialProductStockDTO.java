@@ -17,10 +17,11 @@ public class PartialProductStockDTO {
     private Integer Stock;
     
     private String measureType;
-    private Double measurePrice;
-    
     private String saleUnit;
     private Double measurePerSaleUnit;
     private Double saleUnitPrice;
+    
+    private Integer discountPercentage;
+    private Double discountedPrice;
 
 }

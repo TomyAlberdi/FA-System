@@ -64,10 +64,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT COUNT(p) AS amount FROM Product p WHERE p.subcategoryId = ?1")
     Integer getProductAmountBySubcategory(Long id);
     
-    @Query("SELECT new com.example.febackendproject.DTO.PartialProductStockDTO(p.id, p.name, p.disabled, 0, p.measureType, p.measurePrice, p.saleUnit, p.measurePerSaleUnit, p.saleUnitPrice) FROM Product p WHERE p.categoryId = ?1")
+    @Query("SELECT new com.example.febackendproject.DTO.PartialProductStockDTO(p.id, p.name, p.disabled, 0, p.measureType, p.saleUnit, p.measurePerSaleUnit, p.saleUnitPrice, p.discountPercentage, p.discountedPrice) FROM Product p WHERE p.categoryId = ?1")
     List<PartialProductStockDTO> getPartialProductStockByCategory(Long id);
     
-    @Query("SELECT new com.example.febackendproject.DTO.PartialProductStockDTO(p.id, p.name, p.disabled, 0, p.measureType, p.measurePrice, p.saleUnit, p.measurePerSaleUnit, p.saleUnitPrice) FROM Product p WHERE p.subcategoryId = ?1")
+    @Query("SELECT new com.example.febackendproject.DTO.PartialProductStockDTO(p.id, p.name, p.disabled, 0, p.measureType, p.saleUnit, p.measurePerSaleUnit, p.saleUnitPrice, p.discountPercentage, p.discountedPrice) FROM Product p WHERE p.subcategoryId = ?1")
     List<PartialProductStockDTO> getPartialProductStockBySubcategory(Long id);
     
     /////// SEARCHES BY PROVIDER
@@ -78,7 +78,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT COUNT(p) AS amount FROM Product p WHERE p.providerId = ?1")
     Integer getProductAmountByProvider(Long id);
     
-    @Query("SELECT new com.example.febackendproject.DTO.PartialProductStockDTO(p.id, p.name, p.disabled, 0, p.measureType, p.measurePrice, p.saleUnit, p.measurePerSaleUnit, p.saleUnitPrice) FROM Product p WHERE p.providerId = ?1")
+    @Query("SELECT new com.example.febackendproject.DTO.PartialProductStockDTO(p.id, p.name, p.disabled, 0, p.measureType, p.saleUnit, p.measurePerSaleUnit, p.saleUnitPrice, p.discountPercentage, p.discountedPrice) FROM Product p WHERE p.providerId = ?1")
     List<PartialProductStockDTO> getPartialProductStockByProvider(Long id);
     
     /////// UTILS
