@@ -13,10 +13,11 @@ import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   Table,
-  TableBody, TableCell,
+  TableBody,
+  TableCell,
   TableHead,
   TableHeader,
-  TableRow
+  TableRow,
 } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
@@ -422,10 +423,11 @@ export const Provider = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="w-1/12">ID</TableHead>
+                      <TableHead className="w-1/6">ID</TableHead>
                       <TableHead className="w-1/3">Nombre</TableHead>
-                      <TableHead className="w-1/3">Stock</TableHead>
+                      <TableHead className="w-1/5">Stock</TableHead>
                       <TableHead>Precio</TableHead>
+                      <TableHead className="w-1/12">Descuento</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -458,7 +460,14 @@ export const Provider = () => {
                               } ${product.measureType})`}
                           </TableCell>
                           <TableCell>
-                            ${product.saleUnitPrice} / {product.saleUnit}
+                            {product.discountPercentage > 0
+                              ? `$${product.discountedPrice} / ${product.saleUnit}`
+                              : `$${product.saleUnitPrice} / ${product.saleUnit}`}
+                          </TableCell>
+                          <TableCell>
+                            {product.discountPercentage > 0
+                              ? `${product.discountPercentage}%`
+                              : "N/A"}
                           </TableCell>
                         </TableRow>
                       );

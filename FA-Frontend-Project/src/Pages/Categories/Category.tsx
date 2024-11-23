@@ -447,10 +447,11 @@ const Category = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="w-1/12">ID</TableHead>
+                      <TableHead className="w-1/6">ID</TableHead>
                       <TableHead className="w-1/3">Nombre</TableHead>
-                      <TableHead className="w-1/3">Stock</TableHead>
+                      <TableHead className="w-1/5">Stock</TableHead>
                       <TableHead>Precio</TableHead>
+                      <TableHead className="w-1/12">Descuento</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -483,7 +484,14 @@ const Category = () => {
                               } ${product.measureType})`}
                           </TableCell>
                           <TableCell>
-                            ${product.saleUnitPrice} x {product.saleUnit}
+                            {product.discountPercentage > 0
+                              ? `$${product.discountedPrice} / ${product.saleUnit}`
+                              : `$${product.saleUnitPrice} / ${product.saleUnit}`}
+                          </TableCell>
+                          <TableCell>
+                            {product.discountPercentage > 0
+                              ? `${product.discountPercentage}%`
+                              : "N/A"}
                           </TableCell>
                         </TableRow>
                       );
