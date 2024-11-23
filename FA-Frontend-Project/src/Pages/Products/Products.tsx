@@ -74,7 +74,7 @@ export const Products = () => {
 
   return (
     <div className="Products grid grid-cols-8 gap-4">
-      <ProductFilters Filter={Filter} setFilter={setFilter} />
+      <ProductFilters Filter={Filter} setFilter={setFilter} Loading={Loading} />
       <ProductPagination
         Products={Products}
         CurrentPage={CurrentPage}

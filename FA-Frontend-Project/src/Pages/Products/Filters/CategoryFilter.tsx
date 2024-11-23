@@ -16,6 +16,7 @@ import {
 export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   Filter,
   setFilter,
+  Loading,
 }) => {
   const { fetchSubcategories } = useCatalogContext();
   const [Data, setData] = useState<Array<CategoryCheck> | null>([]);
@@ -68,15 +69,16 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [Filter]);
 
-  if (Data) {
-    return (
-      <AccordionItem
-        value="categoryFilter"
-        className="filterGroup w-full px-4 rounded-md mb-4"
-      >
-        <AccordionTrigger>Subcategorías</AccordionTrigger>
-        <AccordionContent>
-          {Data?.map((category: CategoryCheck) => {
+  return (
+    <AccordionItem
+      value="categoryFilter"
+      className="filterGroup w-full px-4 rounded-md mb-4"
+      disabled={Loading}
+    >
+      <AccordionTrigger>Subcategorías</AccordionTrigger>
+      <AccordionContent>
+        {Data &&
+          Data?.map((category: CategoryCheck) => {
             return (
               category.productsAmount > 0 && (
                 <div
@@ -101,8 +103,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
               )
             );
           })}
-        </AccordionContent>
-      </AccordionItem>
-    );
-  }
+      </AccordionContent>
+    </AccordionItem>
+  );
 };

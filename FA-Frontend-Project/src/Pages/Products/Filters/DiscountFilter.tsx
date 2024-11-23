@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 export const DiscountFilter: React.FC<DiscountFilterProps> = ({
   Filter,
   setFilter,
+  Loading,
 }) => {
   const [Discount, setDiscount] = useState<boolean>(false);
   const [Discontinued, setDiscontinued] = useState<boolean>(false);
@@ -55,6 +56,7 @@ export const DiscountFilter: React.FC<DiscountFilterProps> = ({
     <AccordionItem
       value="discountFilter"
       className="filterGroup w-full px-4 rounded-md"
+      disabled={Loading}
     >
       <AccordionTrigger>Otros filtros</AccordionTrigger>
       <AccordionContent className="w-full">

@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 export const ProviderFilter: React.FC<ProviderFilterProps> = ({
   Filter,
   setFilter,
+  Loading,
 }) => {
   const { fetchProviders } = useCatalogContext();
   const [Data, setData] = useState<Array<ProviderCheck> | null>([]);
@@ -68,15 +69,16 @@ export const ProviderFilter: React.FC<ProviderFilterProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [Filter]);
 
-  if (Data) {
-    return (
-      <AccordionItem
-        value="providerFilter"
-        className="filterGroup w-full px-4 rounded-md mb-4"
-      >
-        <AccordionTrigger>Proveedores</AccordionTrigger>
-        <AccordionContent>
-          {Data?.map((provider: ProviderCheck) => {
+  return (
+    <AccordionItem
+      value="providerFilter"
+      className="filterGroup w-full px-4 rounded-md mb-4"
+      disabled={Loading}
+    >
+      <AccordionTrigger>Proveedores</AccordionTrigger>
+      <AccordionContent>
+        {Data &&
+          Data?.map((provider: ProviderCheck) => {
             return (
               provider.productsAmount > 0 && (
                 <div
@@ -101,8 +103,7 @@ export const ProviderFilter: React.FC<ProviderFilterProps> = ({
               )
             );
           })}
-        </AccordionContent>
-      </AccordionItem>
-    );
-  }
+      </AccordionContent>
+    </AccordionItem>
+  );
 };

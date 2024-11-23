@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 export const MeasureFilter: React.FC<MeasureFilterProps> = ({
   Filter,
   setFilter,
+  Loading,
 }) => {
   const { fetchMeasures } = useCatalogContext();
   const [Data, setData] = useState<Array<MeasureCheck> | null>([]);
@@ -70,15 +71,16 @@ export const MeasureFilter: React.FC<MeasureFilterProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [Filter]);
 
-  if (Data) {
-    return (
-      <AccordionItem
-        value="measureFilter"
-        className="filterGroup w-full px-4 rounded-md mb-4"
-      >
-        <AccordionTrigger>Medidas</AccordionTrigger>
-        <AccordionContent>
-          {Data?.map((measure: MeasureCheck) => {
+  return (
+    <AccordionItem
+      value="measureFilter"
+      className="filterGroup w-full px-4 rounded-md mb-4"
+      disabled={Loading}
+    >
+      <AccordionTrigger>Medidas</AccordionTrigger>
+      <AccordionContent>
+        {Data &&
+          Data?.map((measure: MeasureCheck) => {
             return (
               measure.measure && (
                 <div
@@ -103,8 +105,7 @@ export const MeasureFilter: React.FC<MeasureFilterProps> = ({
               )
             );
           })}
-        </AccordionContent>
-      </AccordionItem>
-    );
-  }
+      </AccordionContent>
+    </AccordionItem>
+  );
 };

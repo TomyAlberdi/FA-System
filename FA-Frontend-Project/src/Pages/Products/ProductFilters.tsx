@@ -9,41 +9,41 @@ import { FilterData } from "@/hooks/CatalogInterfaces";
 interface ProductFiltersProps {
   Filter: Array<FilterData | null>;
   setFilter: (value: Array<FilterData | null>) => void;
+  Loading: boolean;
 }
 
 export const ProductFilters: React.FC<ProductFiltersProps> = ({
   Filter,
   setFilter,
+  Loading,
 }) => {
-  /* 
-  {
-    subcategoryId: "",
-    providerId: "",
-    measure: "",
-    minPrice: 0,
-    maxPrice: 0,
-    discount: false,
-  }
-  */
-
   return (
     <section className="ProductFilters col-span-2">
       <Accordion
         type="multiple"
         className="filterAccordion w-full"
-        defaultValue={[
-          "categoryFilter",
-          "providerFilter",
-          "measureFilter",
-          "priceFilter",
-          "discountFilter",
-        ]}
       >
-        <CategoryFilter Filter={Filter} setFilter={setFilter} />
-        <ProviderFilter Filter={Filter} setFilter={setFilter} />
-        <MeasureFilter Filter={Filter} setFilter={setFilter} />
-        <PricesFilter Filter={Filter} setFilter={setFilter} />
-        <DiscountFilter Filter={Filter} setFilter={setFilter} />
+        <CategoryFilter
+          Filter={Filter}
+          setFilter={setFilter}
+          Loading={Loading}
+        />
+        <ProviderFilter
+          Filter={Filter}
+          setFilter={setFilter}
+          Loading={Loading}
+        />
+        <MeasureFilter
+          Filter={Filter}
+          setFilter={setFilter}
+          Loading={Loading}
+        />
+        <PricesFilter Filter={Filter} setFilter={setFilter} Loading={Loading} />
+        <DiscountFilter
+          Filter={Filter}
+          setFilter={setFilter}
+          Loading={Loading}
+        />
       </Accordion>
     </section>
   );

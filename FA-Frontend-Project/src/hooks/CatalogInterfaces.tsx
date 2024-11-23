@@ -125,6 +125,7 @@ export interface PriceCheck {
 export interface BasicFilterProps {
   Filter: Array<FilterData | null>;
   setFilter: (value: Array<FilterData | null>) => void;
+  Loading: boolean
 }
 
 export interface PaginationInfo {
