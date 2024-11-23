@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -31,8 +32,8 @@ public class CompleteProductDTO {
     private Double discountedPrice;
     private Double discountedMeasurePrice;
     
-    private List<String> tags;
     private List<String> images;
+    private Set<Long> characteristicsIds;
     
     private String category;
     private Long categoryId;

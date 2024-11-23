@@ -101,16 +101,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     
     @Modifying
     @Transactional
-    @Query(value = "DELETE FROM product_tags WHERE product_id = ?1", nativeQuery = true)
-    void deleteTagsById(Long code);
-    
-    @Modifying
-    @Transactional
-    @Query(value = "INSERT INTO product_tags (product_id, tags) VALUES (?2, ?1)", nativeQuery = true)
-    void insertTagById(String tag, Long id);
-    
-    @Modifying
-    @Transactional
     @Query(value = "DELETE FROM product WHERE category_id = ?1", nativeQuery = true)
     void deleteByCategoryId(Long id);
     

@@ -104,7 +104,6 @@ public class ProductService {
             returnProduct.setDiscountedMeasurePrice(product.get().getDiscountedMeasurePrice());
             
             returnProduct.setImages(product.get().getImages());
-            returnProduct.setTags(product.get().getTags());
             
             returnProduct.setCategoryId(product.get().getCategoryId());
             String category = categoryRepository.findById(product.get().getCategoryId()).get().getName();
@@ -179,7 +178,6 @@ public class ProductService {
     
     public void updateProduct(Product product) {
         productRepository.deleteImagesById(product.getId());
-        productRepository.deleteTagsById(product.getId());
         
         if (product.getSaleUnit().equals(product.getMeasureType())) {
             product.setMeasurePerSaleUnit(1.0);
@@ -200,36 +198,13 @@ public class ProductService {
         }
         
         productRepository.updateById(product.getId(), product.getName(), product.getDisabled(), product.getDescription(), product.getQuality(), product.getProviderId(), product.getCategoryId(), product.getSubcategoryId(), product.getMeasureType(), product.getMeasures(), product.getMeasurePrice(), product.getSaleUnit(), product.getSaleUnitPrice(), product.getMeasurePerSaleUnit(), product.getDiscountPercentage(), product.getDiscountedPrice(), product.getDiscountedMeasurePrice(), product.getMainImage());
-        for (String tag : product.getTags()) {
-            productRepository.insertTagById(tag, product.getId());
-        }
         for (String image : product.getImages()) {
             productRepository.insertImageById(image, product.getId());
         }
     }
     
-    public Optional<List<String>> getProductTags(Long productId) {
-        return productRepository.findById(productId).map(Product::getTags);
-    }
-    
     public Optional<List<String>> getProductImages(Long productId) {
         return productRepository.findById(productId).map(Product::getImages);
-    }
-    
-    public void deleteProductByCategoryId(Long categoryId) {
-        List<Long> listProductsByCategory = productRepository.getIdByCategory(categoryId);
-        for (Long id : listProductsByCategory) {
-            productRepository.deleteById(id);
-            stockRepository.deleteByProductId(id);
-        }
-    }
-    
-    public void deleteProductByProviderId(Long providerId) {
-        List<Long> listProductsByProvider = productRepository.getIdByProvider(providerId);
-        for (Long id : listProductsByProvider) {
-            stockRepository.deleteByProductId(id);
-            productRepository.deleteById(id);
-        }
     }
     
     public Optional<Product> updateDisabled(Long productId, Boolean disabled) {

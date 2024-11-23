@@ -62,10 +62,6 @@ const formSchema = z.object({
     z.array(z.string()).min(1, {
       message: "La imagen no puede estar vacía.",
     }) || null,
-  tags:
-    z.array(z.string()).min(1, {
-      message: "El tag no puede estar vacío.",
-    }) || null,
 });
 
 export const AddProduct = () => {
@@ -273,14 +269,6 @@ export const AddProduct = () => {
           >
             images
           </div>
-          <div
-            className={
-              "tagSection col-start-1 pg-4 bg-primary-foreground rounded " +
-              (Subcategories?.length > 0
-                ? "row-start-9 row-end-11"
-                : "row-start-8 row-end-10")
-            }
-          ></div>
           {/* Measures data */}
           <div className="measureSection row-span-3 row-start-1 row-end-4 col-start-2 p-4 bg-primary-foreground rounded">
             <FormField

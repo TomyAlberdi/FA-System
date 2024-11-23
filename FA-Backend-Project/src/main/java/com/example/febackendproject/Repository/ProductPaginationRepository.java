@@ -24,8 +24,7 @@ public interface ProductPaginationRepository extends PagingAndSortingRepository<
             "WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
             "OR LOWER(p.description) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
             "OR LOWER(c.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-            "OR LOWER(pr.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-            "OR :keyword MEMBER OF p.tags")
+            "OR LOWER(pr.name) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     Page<PartialProductDTO> getPartialProductsByKeyword(@Param("keyword") String keyword, Pageable pageable);
     
     @Query("SELECT new com.example.febackendproject.DTO.PartialProductStockDTO(p.id, p.name, p.disabled, 0, p.measureType, p.saleUnit, p.measurePerSaleUnit, p.saleUnitPrice, p.discountPercentage, p.discountedPrice) FROM Product p WHERE p.categoryId = :categoryId")
