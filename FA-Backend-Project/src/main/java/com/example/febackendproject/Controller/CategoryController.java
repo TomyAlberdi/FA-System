@@ -7,6 +7,7 @@ import com.example.febackendproject.Entity.Subcategory;
 import com.example.febackendproject.Service.CategoryService;
 import com.example.febackendproject.Service.ProductService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -55,8 +56,12 @@ public class CategoryController {
     }
     
     @GetMapping("/{categoryId}/products")
-    public ResponseEntity<List<PartialProductStockDTO>> getPartialByCategory(@PathVariable Long categoryId) {
-        return ResponseEntity.ok(productService.getPartialProductStockByCategory(categoryId));
+    public ResponseEntity<Page<PartialProductStockDTO>> getPartialByCategory(
+            @PathVariable Long categoryId,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "8") int size
+    ) {
+        return ResponseEntity.ok(productService.getPartialProductStockByCategory(categoryId, page, size));
     }
     
     @PostMapping("/{name}")
@@ -126,8 +131,12 @@ public class CategoryController {
     }
     
     @GetMapping("/subcategory/{subcategoryId}/products")
-    public ResponseEntity<List<PartialProductStockDTO>> getPartialBySubcategory(@PathVariable Long subcategoryId) {
-        return ResponseEntity.ok(productService.getPartialProductStockBySubcategory(subcategoryId));
+    public ResponseEntity<Page<PartialProductStockDTO>> getPartialBySubcategory(
+            @PathVariable Long subcategoryId,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "8") int size
+    ) {
+        return ResponseEntity.ok(productService.getPartialProductStockBySubcategory(subcategoryId, page, size));
     }
     
     @PostMapping("/subcategory")

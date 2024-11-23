@@ -5,6 +5,7 @@ import com.example.febackendproject.Entity.Provider;
 import com.example.febackendproject.Service.ProductService;
 import com.example.febackendproject.Service.ProviderService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -53,8 +54,12 @@ public class ProviderController {
     }
     
     @GetMapping("/{providerId}/products")
-    public ResponseEntity<List<PartialProductStockDTO>> getPartialByProvider(@PathVariable Long providerId) {
-        return ResponseEntity.ok(productService.getPartialProductStockByProvider(providerId));
+    public ResponseEntity<Page<PartialProductStockDTO>> getPartialByProvider(
+            @PathVariable Long providerId,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "8") int size
+    ) {
+        return ResponseEntity.ok(productService.getPartialProductStockByProvider(providerId, page, size));
     }
     
     @PostMapping

@@ -1,6 +1,7 @@
 package com.example.febackendproject.Repository;
 
 import com.example.febackendproject.DTO.PartialProductDTO;
+import com.example.febackendproject.DTO.PartialProductStockDTO;
 import com.example.febackendproject.Entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -26,5 +27,14 @@ public interface ProductPaginationRepository extends PagingAndSortingRepository<
             "OR LOWER(pr.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
             "OR :keyword MEMBER OF p.tags")
     Page<PartialProductDTO> getPartialProductsByKeyword(@Param("keyword") String keyword, Pageable pageable);
+    
+    @Query("SELECT new com.example.febackendproject.DTO.PartialProductStockDTO(p.id, p.name, p.disabled, 0, p.measureType, p.saleUnit, p.measurePerSaleUnit, p.saleUnitPrice, p.discountPercentage, p.discountedPrice) FROM Product p WHERE p.categoryId = :categoryId")
+    Page<PartialProductStockDTO> getPartialProductStockByCategoryId(@Param("categoryId") Long categoryId, Pageable pageable);
+    
+    @Query("SELECT new com.example.febackendproject.DTO.PartialProductStockDTO(p.id, p.name, p.disabled, 0, p.measureType, p.saleUnit, p.measurePerSaleUnit, p.saleUnitPrice, p.discountPercentage, p.discountedPrice) FROM Product p WHERE p.categoryId = :subcategoryId")
+    Page<PartialProductStockDTO> getPartialProductStockBySubcategoryId(@Param("subcategoryId") Long subcategoryId, Pageable pageable);
+    
+    @Query("SELECT new com.example.febackendproject.DTO.PartialProductStockDTO(p.id, p.name, p.disabled, 0, p.measureType, p.saleUnit, p.measurePerSaleUnit, p.saleUnitPrice, p.discountPercentage, p.discountedPrice) FROM Product p WHERE p.providerId = :providerId")
+    Page<PartialProductStockDTO> getPartialProductStockByProviderId(@Param("providerId") Long providerId, Pageable pageable);
     
 }

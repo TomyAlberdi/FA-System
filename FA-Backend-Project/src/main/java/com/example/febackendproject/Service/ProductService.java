@@ -124,37 +124,43 @@ public class ProductService {
         return Optional.of(returnProduct);
     }
     
-    public List<PartialProductStockDTO> getPartialProductStockByCategory(Long categoryId) {
-        List<PartialProductStockDTO> noStockList = productRepository.getPartialProductStockByCategory(categoryId);
-        if (noStockList.isEmpty()) {
-            return noStockList;
+    public Page<PartialProductStockDTO> getPartialProductStockByCategory(Long categoryId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<PartialProductStockDTO> partialProductStockDTOPage = productPaginationRepository.getPartialProductStockByCategoryId(categoryId, pageable);
+        List<PartialProductStockDTO> partialProductStockDTOList = partialProductStockDTOPage.getContent().stream().toList();
+        if (partialProductStockDTOList.isEmpty()) {
+            return new PageImpl<>(partialProductStockDTOList, pageable, partialProductStockDTOPage.getTotalElements());
         }
-        noStockList.forEach((prod) -> {
+        partialProductStockDTOList.forEach((prod) -> {
             prod.setStock(stockRepository.getQuantityByProductId(prod.getId()));
         });
-        return noStockList;
+        return new PageImpl<>(partialProductStockDTOList, pageable, partialProductStockDTOPage.getTotalElements());
     }
 
-    public List<PartialProductStockDTO> getPartialProductStockBySubcategory(Long subcategoryId) {
-        List<PartialProductStockDTO> noStockList = productRepository.getPartialProductStockBySubcategory(subcategoryId);
-        if (noStockList.isEmpty()) {
-            return noStockList;
+    public Page<PartialProductStockDTO> getPartialProductStockBySubcategory(Long subcategoryId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<PartialProductStockDTO> partialProductStockDTOPage = productPaginationRepository.getPartialProductStockBySubcategoryId(subcategoryId, pageable);
+        List<PartialProductStockDTO> partialProductStockDTOList = partialProductStockDTOPage.getContent().stream().toList();
+        if (partialProductStockDTOList.isEmpty()) {
+            return new PageImpl<>(partialProductStockDTOList, pageable, partialProductStockDTOPage.getTotalElements());
         }
-        noStockList.forEach((prod) -> {
+        partialProductStockDTOList.forEach((prod) -> {
             prod.setStock(stockRepository.getQuantityByProductId(prod.getId()));
         });
-        return noStockList;
+        return new PageImpl<>(partialProductStockDTOList, pageable, partialProductStockDTOPage.getTotalElements());
     }
     
-    public List<PartialProductStockDTO> getPartialProductStockByProvider(Long providerId) {
-        List<PartialProductStockDTO> noStockList = productRepository.getPartialProductStockByProvider(providerId);
-        if (noStockList.isEmpty()) {
-            return noStockList;
+    public Page<PartialProductStockDTO> getPartialProductStockByProvider(Long providerId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<PartialProductStockDTO> partialProductStockDTOPage = productPaginationRepository.getPartialProductStockByProviderId(providerId, pageable);
+        List<PartialProductStockDTO> partialProductStockDTOList = partialProductStockDTOPage.getContent().stream().toList();
+        if (partialProductStockDTOList.isEmpty()) {
+            return new PageImpl<>(partialProductStockDTOList, pageable, partialProductStockDTOPage.getTotalElements());
         }
-        noStockList.forEach((prod) -> {
+        partialProductStockDTOList.forEach((prod) -> {
             prod.setStock(stockRepository.getQuantityByProductId(prod.getId()));
         });
-        return noStockList;
+        return new PageImpl<>(partialProductStockDTOList, pageable, partialProductStockDTOPage.getTotalElements());
     }
     
     public Boolean existByName(String name) {
