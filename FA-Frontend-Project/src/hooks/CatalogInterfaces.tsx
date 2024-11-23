@@ -72,6 +72,7 @@ export interface CompleteProduct extends StockProduct {
   images: Array<string>;
   category: string;
   categoryId: number;
+  measurePrice: number;
   subcategory: string;
   subcategoryId: number;
   provider: string;

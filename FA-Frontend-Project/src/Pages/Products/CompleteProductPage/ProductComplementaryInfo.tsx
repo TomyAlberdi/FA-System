@@ -22,14 +22,14 @@ export const ProductComplementaryInfo = ({
           <AccordionContent className="px-2 flex flex-col justify-start items-start text-lg gap-2">
             {Product?.discountPercentage && Product?.discountPercentage > 0 ? (
               <>
-                <span className="p-2 bg-destructive text-destructive-foreground rounded-md">
+                <span className="p-2 bg-destructive text-destructive-foreground rounded-md font-semibold text-2xl">
                   EN OFERTA -{Product?.discountPercentage}% :
                 </span>
-                <span>
+                <span className="text-2xl font-semibold">
                   $ {Product?.discountedPrice} x {Product?.saleUnit}
                 </span>
                 {Product?.saleUnit !== Product?.measureType && (
-                  <span>
+                  <span className="text-2xl font-semibold">
                     $ {Product?.discountedMeasurePrice} x {Product?.measureType}
                   </span>
                 )}
