@@ -51,11 +51,11 @@ public class Product {
     
     @ManyToMany
     @JoinTable(
-            name = "product_characteristic_map",
+            name = "product_tag_map",
             joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "characteristic_id")
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
-    private Set<ProductCharacteristic> characteristics;
+    private Set<Tag> tags;
     
     @Column(name = "provider_id")
     @NotNull

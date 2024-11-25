@@ -6,25 +6,25 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
-@Table
 @Getter
 @Setter
+@Entity
+@Table
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductCharacteristic {
+public class Tag {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     @Column
-    private String key;
+    private String tagKey;
     
     @Column
     private String value;
     
     @Column
-    private Integer productsAmount;
+    private Integer productsAmount = 0;
     
 }
