@@ -144,6 +144,11 @@ public class ProductController {
     }
     
     @GetMapping("/tags")
+    public ResponseEntity<?> getAll() {
+        return ResponseEntity.ok(tagService.listAll());
+    }
+    
+    @GetMapping("/tags/keys")
     public ResponseEntity<?> getKeys() {
         return ResponseEntity.ok(tagService.listKeys());
     }

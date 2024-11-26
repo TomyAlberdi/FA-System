@@ -22,6 +22,10 @@ public class TagService {
         return tagRepository.listValuesByKey(key);
     }
     
+    public List<Tag> listAll() {
+        return tagRepository.findAll();
+    }
+    
     public Boolean existsByValue(String value) {
         return tagRepository.existsByValue(value);
     }

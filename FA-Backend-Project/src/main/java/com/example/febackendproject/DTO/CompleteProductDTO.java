@@ -33,7 +33,7 @@ public class CompleteProductDTO {
     private Double discountedMeasurePrice;
     
     private List<String> images;
-    private Set<Long> characteristicsIds;
+    private Set<Long> tagsIds;
     
     private String category;
     private Long categoryId;

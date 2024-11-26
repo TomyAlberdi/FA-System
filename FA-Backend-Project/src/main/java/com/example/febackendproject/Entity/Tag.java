@@ -24,7 +24,4 @@ public class Tag {
     @Column
     private String value;
     
-    @Column
-    private Integer productsAmount = 0;
-    
 }
