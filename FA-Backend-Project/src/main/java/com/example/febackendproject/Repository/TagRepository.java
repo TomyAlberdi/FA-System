@@ -26,4 +26,7 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
     @Query("SELECT EXISTS (SELECT 1 FROM Tag WHERE tagKey = ?1) AS key_exists")
     Boolean existsByKey(String key);
     
+    @Query("SELECT t.id FROM Tag t WHERE t.id IN :ids")
+    List<Long> findExistingIds(List<Long> ids);
+    
 }

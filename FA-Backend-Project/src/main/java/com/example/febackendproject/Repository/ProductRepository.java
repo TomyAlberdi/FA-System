@@ -21,32 +21,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     
     @Modifying
     @Transactional
-    @Query("UPDATE Product SET " +
-            "name = ?2, " +
-            "disabled = ?3, " +
-            "description = ?4, " +
-            "quality = ?5, " +
-            "providerId = ?6, " +
-            "categoryId = ?7, " +
-            "subcategoryId = ?8, " +
-            "measureType = ?9, " +
-            "measures = ?10, " +
-            "measurePrice = ?11, " +
-            "saleUnit = ?12, " +
-            "saleUnitPrice = ?13, " +
-            "measurePerSaleUnit = ?14, " +
-            "discountPercentage = ?15, " +
-            "discountedPrice = ?16," +
-            "discountedMeasurePrice = ?17, " +
-            "mainImage = ?18 " +
-            "WHERE id = ?1")
-    void updateById(Long id, String name, Boolean disabled, String description, String quality, Long providerId, Long categoryId, Long subcategoryId,
-                    String measureType, String measures, Double measurePrice,
-                    String salesUnit, Double saleUnitPrice, Double measurePerSaleUnit,
-                    Integer discount_percentage, Double discount_new_price, Double discount_measure_price, String mainImage);
-    
-    @Modifying
-    @Transactional
     @Query(value = "UPDATE Product SET disabled = ?2 WHERE id = ?1")
     void updateDisabled(Long productId, Boolean disabled);
     
@@ -99,14 +73,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query(value = "INSERT INTO product_images (product_id, images) VALUES (?2, ?1)", nativeQuery = true)
     void insertImageById(String image, Long id);
     
-    @Modifying
-    @Transactional
-    @Query(value = "DELETE FROM product WHERE category_id = ?1", nativeQuery = true)
-    void deleteByCategoryId(Long id);
-    
-    @Modifying
-    @Transactional
-    @Query(value = "DELETE FROM product WHERE provider_id = ?1", nativeQuery = true)
-    void deleteByProviderId(Long id);
     
 }

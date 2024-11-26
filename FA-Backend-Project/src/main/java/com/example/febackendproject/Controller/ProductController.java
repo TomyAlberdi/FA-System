@@ -89,7 +89,7 @@ public class ProductController {
         } else if (subcategory.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Subcategory with id " + product.getSubcategoryId() + " not found");
         }
-        Product newProduct = productService.add(product);
+        Product newProduct = productService.save(product);
         if (newProduct.getImages().isEmpty()) {
             Stock newStock = stockService.save(newProduct.getId(), newProduct.getName(), "", newProduct.getSaleUnit(), newProduct.getMeasureType(), newProduct.getMeasurePerSaleUnit());
         } else {
@@ -113,19 +113,17 @@ public class ProductController {
     @PutMapping()
     // @PreAuthorize("hasAuthority('ROLE_admin')")
     public ResponseEntity<?> updateById(@Valid @RequestBody Product product) {
-        Optional<CompleteProductDTO> newProduct = productService.getById(product.getId());
-        if (newProduct.isEmpty()) {
+        if (!productService.existById(product.getId())) {
             return notFound("ID", product.getId().toString());
         }
-        Optional<CompleteCategoryDTO> category = categoryService.findById(product.getCategoryId());
-        Optional<Provider> provider = providerService.findById(product.getProviderId());
-        if (category.isEmpty()) {
-            return notFound("Category ID", product.getCategoryId().toString());
+        if (categoryService.findById(product.getCategoryId()).isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Category with id " + product.getCategoryId() + " not found");
+        } else if (providerService.findById(product.getProviderId()).isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Provider with id " + product.getProviderId() + " not found");
+        } else if (subcategoryRepository.findById(product.getSubcategoryId()).isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Subcategory with id " + product.getSubcategoryId() + " not found");
         }
-        if (provider.isEmpty()) {
-            return notFound("Provider ID", product.getProviderId().toString());
-        }
-        productService.updateProduct(product);
+        Product newProduct = productService.save(product);
         return ResponseEntity.ok("Product updated.");
     }
     

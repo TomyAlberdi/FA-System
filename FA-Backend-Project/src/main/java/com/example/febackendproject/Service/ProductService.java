@@ -7,6 +7,7 @@ import com.example.febackendproject.DTO.PartialProductStockDTO;
 import com.example.febackendproject.Entity.Category;
 import com.example.febackendproject.Entity.Product;
 import com.example.febackendproject.Entity.Provider;
+import com.example.febackendproject.Entity.Tag;
 import com.example.febackendproject.Hooks.ProductSpecifications;
 import com.example.febackendproject.Repository.*;
 import lombok.AllArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,12 +34,7 @@ public class ProductService {
     private final SubcategoryRepository subcategoryRepository;
     private final ProviderRepository providerRepository;
     private final StockRepository stockRepository;
-    
-    public Boolean searchKeys(Long categoryId, Long providerId) {
-        Optional<Category> category = categoryRepository.findById(categoryId);
-        Optional<Provider> provider = providerRepository.findById(providerId);
-        return category.isPresent() && provider.isPresent();
-    }
+    private final TagRepository tagRepository;
     
     public Page<PartialProductDTO> getPaginatedPartialProducts(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -49,7 +46,7 @@ public class ProductService {
         return productPaginationRepository.getPartialProductsByKeyword(keyword, pageable);
     }
     
-    public Product add(Product product) {
+    public Product save(Product product) {
         if (product.getSaleUnit().equals(product.getMeasureType())) {
             product.setMeasurePerSaleUnit(1.0);
             product.setMeasurePrice(truncateToTwoDecimals(product.getSaleUnitPrice()));
@@ -71,6 +68,10 @@ public class ProductService {
             product.setMainImage(product.getImages().get(0));
         } else {
             product.setMainImage("");
+        }
+        if (!product.getTags().isEmpty()) {
+            List<Long> validIds = tagRepository.findExistingIds(product.getTags());
+            product.setTags(validIds);
         }
         return productRepository.save(product);
     }
@@ -119,6 +120,13 @@ public class ProductService {
             
             Integer stock = stockRepository.getQuantityByProductId(product.get().getId());
             returnProduct.setStock(stock);
+            
+            List<Tag> tags = new ArrayList<>();
+            for (Long tagId : product.get().getTags()) {
+                Optional<Tag> newTag = tagRepository.findById(tagId);
+                newTag.ifPresent(tags::add);
+            }
+            returnProduct.setTags(tags);
         }
         return Optional.of(returnProduct);
     }
@@ -174,33 +182,6 @@ public class ProductService {
     public void deleteById(Long id) {
         productRepository.deleteById(id);
         stockRepository.deleteByProductId(id);
-    }
-    
-    public void updateProduct(Product product) {
-        productRepository.deleteImagesById(product.getId());
-        
-        if (product.getSaleUnit().equals(product.getMeasureType())) {
-            product.setMeasurePerSaleUnit(1.0);
-            product.setMeasurePrice(truncateToTwoDecimals(product.getSaleUnitPrice()));
-        } else if (product.getMeasurePerSaleUnit() > 0) {
-            double measurePrice = product.getSaleUnitPrice() / product.getMeasurePerSaleUnit();
-            product.setMeasurePrice(truncateToTwoDecimals(measurePrice));
-        }
-        if (product.getDiscountPercentage() > 0) {
-            double discountFactor = 1 - (product.getDiscountPercentage() / 100.0);
-            double discountedPrice = product.getSaleUnitPrice() * discountFactor;
-            double discountedMeasurePrice = product.getMeasurePrice() * discountFactor;
-            product.setDiscountedPrice(discountedPrice);
-            product.setDiscountedMeasurePrice(discountedMeasurePrice);
-        } else {
-            product.setDiscountedPrice(0.0);
-            product.setDiscountedMeasurePrice(0.0);
-        }
-        
-        productRepository.updateById(product.getId(), product.getName(), product.getDisabled(), product.getDescription(), product.getQuality(), product.getProviderId(), product.getCategoryId(), product.getSubcategoryId(), product.getMeasureType(), product.getMeasures(), product.getMeasurePrice(), product.getSaleUnit(), product.getSaleUnitPrice(), product.getMeasurePerSaleUnit(), product.getDiscountPercentage(), product.getDiscountedPrice(), product.getDiscountedMeasurePrice(), product.getMainImage());
-        for (String image : product.getImages()) {
-            productRepository.insertImageById(image, product.getId());
-        }
     }
     
     public Optional<List<String>> getProductImages(Long productId) {

@@ -1,5 +1,6 @@
 package com.example.febackendproject.DTO;
 
+import com.example.febackendproject.Entity.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,7 +34,7 @@ public class CompleteProductDTO {
     private Double discountedMeasurePrice;
     
     private List<String> images;
-    private Set<Long> tagsIds;
+    private List<Tag> tags;
     
     private String category;
     private Long categoryId;

@@ -49,13 +49,10 @@ public class Product {
     @Column
     private List<String> images;
     
-    @ManyToMany
-    @JoinTable(
-            name = "product_tag_map",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id")
-    )
-    private Set<Tag> tags;
+    @ElementCollection
+    @CollectionTable(name = "product_tag_mapping", joinColumns = @JoinColumn(name = "product_id"))
+    @Column(name = "tag_id")
+    private List<Long> tags;
     
     @Column(name = "provider_id")
     @NotNull
