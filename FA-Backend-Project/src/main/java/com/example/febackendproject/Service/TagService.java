@@ -5,8 +5,11 @@ import com.example.febackendproject.Repository.TagRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -43,6 +46,14 @@ public class TagService {
         newTag.setValue(value);
         tagRepository.save(newTag);
         return Optional.of(newTag);
+    }
+    
+    public List<Long> filterUniqueTagKeys(List<Tag> tags) {
+        Set<String> seenKeys = new HashSet<>();
+        return tags.stream()
+                .filter(tag -> seenKeys.add(tag.getTagKey()))
+                .map(Tag::getId)
+                .collect(Collectors.toList());
     }
     
 }

@@ -4,9 +4,7 @@ import com.example.febackendproject.DTO.CompleteProductDTO;
 import com.example.febackendproject.DTO.FilterDTO;
 import com.example.febackendproject.DTO.PartialProductDTO;
 import com.example.febackendproject.DTO.PartialProductStockDTO;
-import com.example.febackendproject.Entity.Category;
 import com.example.febackendproject.Entity.Product;
-import com.example.febackendproject.Entity.Provider;
 import com.example.febackendproject.Entity.Tag;
 import com.example.febackendproject.Hooks.ProductSpecifications;
 import com.example.febackendproject.Repository.*;
@@ -35,6 +33,7 @@ public class ProductService {
     private final ProviderRepository providerRepository;
     private final StockRepository stockRepository;
     private final TagRepository tagRepository;
+    private final TagService tagService;
     
     public Page<PartialProductDTO> getPaginatedPartialProducts(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -70,8 +69,9 @@ public class ProductService {
             product.setMainImage("");
         }
         if (!product.getTags().isEmpty()) {
-            List<Long> validIds = tagRepository.findExistingIds(product.getTags());
-            product.setTags(validIds);
+            List<Tag> tagObjects = tagRepository.findValidIds(product.getTags());
+            List<Long> filteredIds = tagService.filterUniqueTagKeys(tagObjects);
+            product.setTags(filteredIds);
         }
         return productRepository.save(product);
     }
