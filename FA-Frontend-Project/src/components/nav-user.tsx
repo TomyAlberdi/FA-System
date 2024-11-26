@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronsUpDown, LogOut, User, Cog } from "lucide-react";
+import { ChevronsUpDown, LogOut, User } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -18,7 +18,6 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { Link } from "react-router-dom";
 import { useTheme } from "@/Context/theme-provider";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -65,14 +64,14 @@ export function NavUser() {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
+{/*             <DropdownMenuGroup>
               <Link to={"/user"}>
                 <DropdownMenuItem>
                   <Cog />
                   Usuario
                 </DropdownMenuItem>
               </Link>
-            </DropdownMenuGroup>
+            </DropdownMenuGroup> */}
             <DropdownMenuGroup className="flex items-center gap-2 p-2">
               <Switch
                 id="dark-mode"

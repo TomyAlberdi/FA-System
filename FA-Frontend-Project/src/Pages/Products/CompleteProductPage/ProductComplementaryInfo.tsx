@@ -36,11 +36,11 @@ export const ProductComplementaryInfo = ({
               </>
             ) : (
               <>
-                <span>
+                <span className="text-2xl font-semibold">
                   $ {Product?.saleUnitPrice} x {Product?.saleUnit}
-                </span>
+                </span >
                 {Product?.saleUnit !== Product?.measureType && (
-                  <span>
+                  <span className="text-2xl font-semibold">
                     $ {Product?.measurePrice} x {Product?.measureType}
                   </span>
                 )}
