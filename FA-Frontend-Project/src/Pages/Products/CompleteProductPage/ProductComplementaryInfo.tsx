@@ -4,10 +4,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  CompleteProduct
-} from "@/hooks/CatalogInterfaces";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CompleteProduct, Tag } from "@/hooks/CatalogInterfaces";
 
 export const ProductComplementaryInfo = ({
   Product,
@@ -15,44 +13,132 @@ export const ProductComplementaryInfo = ({
   Product: CompleteProduct | null;
 }) => {
   return (
-    <ScrollArea className="complementaryInfo row-start-5 row-end-16 col-start-5 col-end-16 productGridItem px-2 py-4">
-      <Accordion type="multiple" className="w-full">
-        <AccordionItem value="price">
-          <AccordionTrigger>Precio</AccordionTrigger>
-          <AccordionContent className="px-2 flex flex-col justify-start items-start text-lg gap-2">
+    <div className="complementaryInfo row-start-5 row-end-16 col-start-5 col-end-16 productGridItem px-2 py-4">
+      <Accordion
+        type="multiple"
+        className="w-full"
+        defaultValue={["measures", "tags"]}
+      >
+        <AccordionItem value="measures">
+          <AccordionTrigger>Información</AccordionTrigger>
+          <AccordionContent className="flex flex-row items-center gap-2 flex-wrap">
             {Product?.discountPercentage && Product?.discountPercentage > 0 ? (
-              <>
-                <span className="p-2 bg-destructive text-destructive-foreground rounded-md font-semibold text-2xl">
-                  EN OFERTA -{Product?.discountPercentage}% :
-                </span>
-                <span className="text-2xl font-semibold">
-                  $ {Product?.discountedPrice} x {Product?.saleUnit}
-                </span>
-                {Product?.saleUnit !== Product?.measureType && (
-                  <span className="text-2xl font-semibold">
-                    $ {Product?.discountedMeasurePrice} x {Product?.measureType}
+              <Card className="bg-destructive">
+                <CardHeader>
+                  <CardTitle className="text-center">Oferta</CardTitle>
+                </CardHeader>
+                <CardContent className="text-center">
+                  <span className="text-2xl font-bold">
+                    - {Product?.discountPercentage}%
                   </span>
-                )}
-              </>
-            ) : (
-              <>
-                <span className="text-2xl font-semibold">
-                  $ {Product?.saleUnitPrice} x {Product?.saleUnit}
-                </span >
-                {Product?.saleUnit !== Product?.measureType && (
-                  <span className="text-2xl font-semibold">
-                    $ {Product?.measurePrice} x {Product?.measureType}
-                  </span>
-                )}
-              </>
+                </CardContent>
+              </Card>
+            ): null}
+            {Product?.saleUnitPrice && Product?.saleUnit && (
+              <Card
+                className={
+                  Product?.discountPercentage && Product?.discountPercentage > 0
+                    ? "bg-destructive"
+                    : ""
+                }
+              >
+                <CardHeader>
+                  <CardTitle className="text-center">Precio por {Product?.saleUnit}</CardTitle>
+                </CardHeader>
+                <CardContent className="text-center">
+                  {Product?.discountPercentage &&
+                  Product?.discountPercentage > 0 ? (
+                    <span className="text-xl">
+                      $ {Product?.discountedPrice}
+                    </span>
+                  ) : (
+                    <span className="text-xl">$ {Product?.saleUnitPrice}</span>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+            {Product?.measurePrice !== Product?.saleUnitPrice && (
+              <Card
+                className={
+                  Product?.discountPercentage && Product?.discountPercentage > 0
+                    ? "bg-destructive"
+                    : ""
+                }
+              >
+                <CardHeader>
+                  <CardTitle className="text-center">Precio por {Product?.measureType}</CardTitle>
+                </CardHeader>
+                <CardContent className="text-center">
+                  {Product?.discountPercentage &&
+                  Product?.discountPercentage > 0 ? (
+                    <span className="text-xl">
+                      $ {Product?.discountedMeasurePrice}
+                    </span>
+                  ) : (
+                    <span className="text-xl">$ {Product?.measurePrice}</span>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+            {Product?.measurePerSaleUnit &&
+              Product?.measureType !== Product?.saleUnit && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-center">
+                      {Product?.measureType} por {Product?.saleUnit}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="text-center">
+                    <span className="text-xl">
+                      {Product?.measurePerSaleUnit} {Product?.measureType}
+                    </span>
+                  </CardContent>
+                </Card>
+              )}
+            {Product?.measures && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-center">Medidas</CardTitle>
+                </CardHeader>
+                <CardContent className="text-center">
+                  <span className="text-xl">{Product?.measures} CM</span>
+                </CardContent>
+              </Card>
+            )}
+            {Product?.quality && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-center">Calidad</CardTitle>
+                </CardHeader>
+                <CardContent className="text-center">
+                  <span className="text-xl">{Product?.quality}</span>
+                </CardContent>
+              </Card>
             )}
           </AccordionContent>
         </AccordionItem>
-        <AccordionItem value="characteristics">
-          <AccordionTrigger>Características</AccordionTrigger>
-          <AccordionContent>Info características</AccordionContent>
-        </AccordionItem>
+        {Product?.tags && Product?.tags.length > 0 && (
+          <AccordionItem value="tags">
+            <AccordionTrigger>Características</AccordionTrigger>
+            <AccordionContent className="flex flex-row items-center gap-2 flex-wrap">
+              {Product?.tags?.map((tag: Tag, index: number) => {
+                return (
+                  <Card key={index}>
+                    <CardHeader>
+                      <CardTitle className="text-center">
+                        {tag.tagKey}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="text-center">
+                      <span className="text-xl">{tag.value}</span>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </AccordionContent>
+          </AccordionItem>
+        )}
       </Accordion>
-    </ScrollArea>
+    </div>
   );
 };

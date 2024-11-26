@@ -69,6 +69,7 @@ export interface CompleteProduct extends StockProduct {
   discountedPrice: number;
   discountedMeasurePrice: number,
   images: Array<string>;
+  tags: Array<Tag>;
   category: string;
   categoryId: number;
   measurePrice: number;
@@ -164,4 +165,10 @@ export interface PaginationResponse {
   first: boolean;
   numberOfElements: number;
   empty: boolean;
+}
+
+export interface Tag {
+  id: number;
+  tagKey: string;
+  value: string;
 }

@@ -14,7 +14,7 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
     @Query("SELECT c FROM Tag c WHERE c.tagKey = ?1 AND c.value = ?1")
     Optional<Tag> find(String key, String value);
     
-    @Query("SELECT c.tagKey FROM Tag c")
+    @Query("SELECT c.tagKey FROM Tag c GROUP BY c.tagKey")
     List<String> listKeys();
     
     @Query("SELECT c.value FROM Tag c WHERE c.tagKey = ?1")

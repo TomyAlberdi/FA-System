@@ -87,6 +87,10 @@ div.App {
     width: 1.5em;
     height: 1.5em;
   }
+  .large-icon {
+    width: 2em;
+    height: 2em;
+  }
   .ProductPage {
     display: grid;
     grid-template-columns: repeat(15, 1fr);
