@@ -16,13 +16,22 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Skeleton } from "@/components/ui/skeleton";
-import { CardProduct, FilterData, PaginationInfo } from "@/hooks/CatalogInterfaces";
-import { AlertCircle, CirclePlus } from "lucide-react";
+import {
+  CardProduct,
+  FilterData,
+  PaginationInfo,
+} from "@/hooks/CatalogInterfaces";
+import { AlertCircle, CirclePlus, Search } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ProductCard } from "@/Pages/Products/ProductCard";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { RefreshCcw } from 'lucide-react';
+import { RefreshCcw } from "lucide-react";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormField } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 
 interface ProductPaginationProps {
   Products: Array<CardProduct>;
@@ -30,8 +39,13 @@ interface ProductPaginationProps {
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
   PaginationInfo: PaginationInfo;
   Loading: boolean;
+  Filter: Array<FilterData | null>;
   setFilter: React.Dispatch<React.SetStateAction<Array<FilterData | null>>>;
 }
+
+const formSchema = z.object({
+  keyword: z.string(),
+});
 
 export const ProductPagination: React.FC<ProductPaginationProps> = ({
   Products,
@@ -39,9 +53,33 @@ export const ProductPagination: React.FC<ProductPaginationProps> = ({
   setCurrentPage,
   PaginationInfo,
   Loading,
+  Filter,
   setFilter,
 }) => {
   const [PaginationDropdownOpen, setPaginationDropdownOpen] = useState(false);
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      keyword: "",
+    },
+  });
+
+  const handleKeyword = (keyword: string) => {
+    // Remove all filters with type "keyword"
+    const newAppliedFilters = Filter?.filter(
+      (filter) => filter?.type !== "keyword"
+    );
+    if (keyword.length > 0) {
+      // Update the appliedFilters array with the new filter
+      newAppliedFilters?.push({
+        type: "keyword",
+        value: keyword,
+      });
+    }
+    // Update the filter array with the new filter
+    setFilter(newAppliedFilters);
+  };
 
   const handlePrev = () => {
     if (CurrentPage > 0) {
@@ -74,6 +112,28 @@ export const ProductPagination: React.FC<ProductPaginationProps> = ({
           <RefreshCcw />
           Recargar productos
         </Button>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit((data) => handleKeyword(data.keyword))}
+            className="flex flex-row items-start justify-start gap-2"
+          >
+            <FormField
+              control={form.control}
+              name="keyword"
+              render={({ field }) => (
+                <Input
+                  placeholder="Buscar por nombre o descripción"
+                  type="text"
+                  className="w-96 text-lg"
+                  {...field}
+                />
+              )}
+            />
+            <Button type="submit" className="w-10">
+              <Search className="bigger-icon" />
+            </Button>
+          </form>
+        </Form>
         <Link to={"/catalog/products/add"}>
           <Button className="text-lg">
             <CirclePlus />

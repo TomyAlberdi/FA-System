@@ -81,6 +81,7 @@ export const Products = () => {
         setCurrentPage={setCurrentPage}
         PaginationInfo={PaginationInfo}
         Loading={Loading}
+        Filter={Filter}
         setFilter={setFilter}
       />
     </div>
