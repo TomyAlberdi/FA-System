@@ -18,15 +18,6 @@ public interface ProductPaginationRepository extends PagingAndSortingRepository<
     @Query("SELECT new com.example.febackendproject.DTO.PartialProductDTO(p.id, p.name, p.disabled, p.measureType, p.measurePrice, p.saleUnit, p.saleUnitPrice, p.measurePerSaleUnit, p.discountPercentage, p.discountedPrice,p.discountedMeasurePrice, p.mainImage) FROM Product p")
     Page<PartialProductDTO> getPartialProducts(Pageable pageable);
     
-    @Query("SELECT new com.example.febackendproject.DTO.PartialProductDTO(p.id, p.name, p.disabled, p.measureType, p.measurePrice, p.saleUnit, p.saleUnitPrice, p.measurePerSaleUnit, p.discountPercentage, p.discountedPrice, p.discountedMeasurePrice, p.mainImage) FROM Product p " +
-            "LEFT JOIN Category c ON p.categoryId = c.id " +
-            "LEFT JOIN Provider pr ON p.providerId = pr.id " +
-            "WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-            "OR LOWER(p.description) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-            "OR LOWER(c.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-            "OR LOWER(pr.name) LIKE LOWER(CONCAT('%', :keyword, '%'))")
-    Page<PartialProductDTO> getPartialProductsByKeyword(@Param("keyword") String keyword, Pageable pageable);
-    
     @Query("SELECT new com.example.febackendproject.DTO.PartialProductStockDTO(p.id, p.name, p.disabled, 0, p.measureType, p.saleUnit, p.measurePerSaleUnit, p.saleUnitPrice, p.discountPercentage, p.discountedPrice) FROM Product p WHERE p.categoryId = :categoryId")
     Page<PartialProductStockDTO> getPartialProductStockByCategoryId(@Param("categoryId") Long categoryId, Pageable pageable);
     

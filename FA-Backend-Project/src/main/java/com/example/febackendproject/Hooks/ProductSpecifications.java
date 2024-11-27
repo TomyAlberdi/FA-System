@@ -1,6 +1,7 @@
 package com.example.febackendproject.Hooks;
 
 import com.example.febackendproject.Entity.Product;
+import jakarta.persistence.criteria.JoinType;
 import org.springframework.data.jpa.domain.Specification;
 
 public class ProductSpecifications {
@@ -47,6 +48,19 @@ public class ProductSpecifications {
             } else {
                 return builder.equal(root.get("discountPercentage"), 0); // Filter where discountPercentage == 0
             }
+        };
+    }
+    
+    public static Specification<Product> hasKeyword(String keyword) {
+        return (root, query, builder) -> {
+            if (keyword == null || keyword.trim().isEmpty()) {
+                return builder.conjunction();
+            }
+            String likePattern = "%" + keyword + "%";
+            return builder.or(
+                    builder.like(builder.lower(root.get("name")), likePattern),
+                    builder.like(builder.lower(root.get("description")), likePattern)
+            );
         };
     }
     

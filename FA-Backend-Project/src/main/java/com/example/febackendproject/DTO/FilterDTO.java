@@ -18,5 +18,6 @@ public class FilterDTO {
     private Double maxPrice;
     private Boolean discount;
     private Boolean discontinued;
+    private String keyword;
     
 }

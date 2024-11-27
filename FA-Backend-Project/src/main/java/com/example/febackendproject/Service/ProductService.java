@@ -40,11 +40,6 @@ public class ProductService {
         return productPaginationRepository.getPartialProducts(pageable);
     }
     
-    public Page<PartialProductDTO> searchProductsByKeyword(String keyword, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return productPaginationRepository.getPartialProductsByKeyword(keyword, pageable);
-    }
-    
     public Product save(Product product) {
         if (product.getSaleUnit().equals(product.getMeasureType())) {
             product.setMeasurePerSaleUnit(1.0);
@@ -197,15 +192,29 @@ public class ProductService {
         
         Pageable pageable = PageRequest.of(page, size);
         
-        Specification<Product> spec = Specification.where(ProductSpecifications.hasSubcategory(filterDTO.getSubcategoryId())
-                        .and(ProductSpecifications.hasProvider(filterDTO.getProviderId()))
-                        .and(ProductSpecifications.hasMeasure(filterDTO.getMeasures()))
-                        .and(ProductSpecifications.priceBetween(filterDTO.getMinPrice(), filterDTO.getMaxPrice()))
-                        .and(ProductSpecifications.hasDiscount(filterDTO.getDiscount())))
-                        .and(ProductSpecifications.isDiscontinued(filterDTO.getDiscontinued()));
+        Specification<Product> spec = Specification
+                .where(ProductSpecifications.hasSubcategory(filterDTO.getSubcategoryId()))
+                .and(ProductSpecifications.hasProvider(filterDTO.getProviderId()))
+                .and(ProductSpecifications.hasMeasure(filterDTO.getMeasures()))
+                .and(ProductSpecifications.priceBetween(filterDTO.getMinPrice(), filterDTO.getMaxPrice()))
+                .and(ProductSpecifications.hasDiscount(filterDTO.getDiscount()))
+                .and(ProductSpecifications.isDiscontinued(filterDTO.getDiscontinued()))
+                .and(ProductSpecifications.hasKeyword(filterDTO.getKeyword()));
         
         return productPaginationRepository.findAll(spec, pageable).map(product -> {
-                return new PartialProductDTO(product.getId(), product.getName(), product.getDisabled(), product.getMeasureType(), product.getMeasurePrice(), product.getSaleUnit(), product.getSaleUnitPrice(), product.getMeasurePerSaleUnit(), product.getDiscountPercentage(), product.getDiscountedPrice(), product.getDiscountedMeasurePrice(), product.getMainImage());
+                return new PartialProductDTO(
+                        product.getId(),
+                        product.getName(),
+                        product.getDisabled(),
+                        product.getMeasureType(),
+                        product.getMeasurePrice(),
+                        product.getSaleUnit(),
+                        product.getSaleUnitPrice(),
+                        product.getMeasurePerSaleUnit(),
+                        product.getDiscountPercentage(),
+                        product.getDiscountedPrice(),
+                        product.getDiscountedMeasurePrice(),
+                        product.getMainImage());
         });
     }
     

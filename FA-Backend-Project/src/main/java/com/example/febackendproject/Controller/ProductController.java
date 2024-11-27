@@ -46,17 +46,6 @@ public class ProductController {
         return ResponseEntity.ok().body(productService.getPaginatedPartialProducts(page, size));
     }
     
-    @GetMapping("/search/{keyword}")
-    public ResponseEntity<Page<PartialProductDTO>> searchProductByKeyword(
-            @PathVariable String keyword,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "9") int size) {
-        if (keyword.length() < 4) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
-        return ResponseEntity.ok(productService.searchProductsByKeyword(keyword, page, size));
-    }
-    
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id) {
         Optional<CompleteProductDTO> product = productService.getById(id);
