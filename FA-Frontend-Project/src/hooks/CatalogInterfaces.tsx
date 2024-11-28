@@ -65,8 +65,6 @@ export interface CompleteProduct extends StockProduct {
   description: string;
   quality: string;
   measures: string;
-  discountPercentage: number;
-  discountedPrice: number;
   discountedMeasurePrice: number,
   images: Array<string>;
   tags: Array<Tag>;

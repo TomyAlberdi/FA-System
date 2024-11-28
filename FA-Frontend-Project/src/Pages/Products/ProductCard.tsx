@@ -76,7 +76,7 @@ export const ProductCard = ({ product }: { product: CardProduct }) => {
             ) : (
               <>
                 $ {product?.saleUnitPrice} X {product.saleUnit} (
-                {product.measurePerSaleUnit} m2)
+                {product.measurePerSaleUnit} {product.measureType})
               </>
             )}
           </CardDescription>
