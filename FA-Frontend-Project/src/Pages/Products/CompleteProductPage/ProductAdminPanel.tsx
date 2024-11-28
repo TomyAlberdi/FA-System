@@ -3,6 +3,7 @@ import { ToastAction } from "@/components/ui/toast";
 import { useCatalogContext } from "@/Context/UseCatalogContext";
 import { CompleteProduct } from "@/hooks/CatalogInterfaces";
 import { toast } from "@/hooks/use-toast";
+import { ProductDetail } from "@/lib/ProductDetail";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import {
   CircleX,
@@ -10,7 +11,6 @@ import {
   ListX,
   Package,
   Pencil,
-  Download,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -171,10 +171,7 @@ export const ProductPageAdminPanel = ({
           Administrar Stock
         </Link>
       </Button>
-      <Button className="w-10/12 text-md">
-        <Download />
-        Descargar Detalle
-      </Button>
+      <ProductDetail Product={Product} />
     </div>
   );
 };
