@@ -11,11 +11,13 @@ import lombok.Setter;
 @NoArgsConstructor
 public class FilterDTO {
     
-    private Long categoryId;
+    private Long subcategoryId;
     private Long providerId;
-    private String measure;
+    private String measures;
     private Double minPrice;
     private Double maxPrice;
     private Boolean discount;
+    private Boolean discontinued;
+    private String keyword;
     
 }

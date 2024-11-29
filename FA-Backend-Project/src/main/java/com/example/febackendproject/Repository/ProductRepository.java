@@ -1,6 +1,7 @@
 package com.example.febackendproject.Repository;
 
 import com.example.febackendproject.DTO.MeasureDTO;
+import com.example.febackendproject.DTO.PartialProductStockDTO;
 import com.example.febackendproject.DTO.PricesDTO;
 import com.example.febackendproject.Entity.Product;
 import jakarta.transaction.Transactional;
@@ -18,11 +19,32 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p FROM Product p WHERE p.name = ?1")
     Optional<Product> findProductByName(String name);
     
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE Product SET disabled = ?2 WHERE id = ?1")
+    void updateDisabled(Long productId, Boolean disabled);
+    
+    /////// SEARCHES BY CATEGORY
+    
     @Query("SELECT p.id FROM Product p WHERE p.categoryId = ?1")
     List<Long> getIdByCategory(Long id);
     
+    @Query("SELECT p.id FROM Product p WHERE p.subcategoryId = ?1")
+    List<Long> getIdBySubcategory(Long id);
+    
     @Query("SELECT COUNT(p) AS amount FROM Product p WHERE p.categoryId = ?1")
     Integer getProductAmountByCategory(Long id);
+    
+    @Query("SELECT COUNT(p) AS amount FROM Product p WHERE p.subcategoryId = ?1")
+    Integer getProductAmountBySubcategory(Long id);
+    
+    @Query("SELECT new com.example.febackendproject.DTO.PartialProductStockDTO(p.id, p.name, p.disabled, 0, p.measureType, p.saleUnit, p.measurePerSaleUnit, p.saleUnitPrice, p.discountPercentage, p.discountedPrice) FROM Product p WHERE p.categoryId = ?1")
+    List<PartialProductStockDTO> getPartialProductStockByCategory(Long id);
+    
+    @Query("SELECT new com.example.febackendproject.DTO.PartialProductStockDTO(p.id, p.name, p.disabled, 0, p.measureType, p.saleUnit, p.measurePerSaleUnit, p.saleUnitPrice, p.discountPercentage, p.discountedPrice) FROM Product p WHERE p.subcategoryId = ?1")
+    List<PartialProductStockDTO> getPartialProductStockBySubcategory(Long id);
+    
+    /////// SEARCHES BY PROVIDER
     
     @Query("SELECT p.id FROM Product p WHERE p.providerId = ?1")
     List<Long> getIdByProvider(Long id);
@@ -30,31 +52,16 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT COUNT(p) AS amount FROM Product p WHERE p.providerId = ?1")
     Integer getProductAmountByProvider(Long id);
     
+    @Query("SELECT new com.example.febackendproject.DTO.PartialProductStockDTO(p.id, p.name, p.disabled, 0, p.measureType, p.saleUnit, p.measurePerSaleUnit, p.saleUnitPrice, p.discountPercentage, p.discountedPrice) FROM Product p WHERE p.providerId = ?1")
+    List<PartialProductStockDTO> getPartialProductStockByProvider(Long id);
+    
+    /////// UTILS
+    
     @Query("SELECT new com.example.febackendproject.DTO.MeasureDTO(p.measures, COUNT(p)) FROM Product p GROUP BY p.measures ORDER BY COUNT(p) DESC")
     List<MeasureDTO> getMeasures();
     
-    @Query("SELECT new com.example.febackendproject.DTO.PricesDTO(MIN(p.price), MAX(p.price)) FROM Product p")
+    @Query("SELECT new com.example.febackendproject.DTO.PricesDTO(MIN(p.measurePrice), MAX(p.measurePrice)) FROM Product p")
     PricesDTO getPrices();
-    
-    @Modifying
-    @Transactional
-    @Query("UPDATE Product SET " +
-            "name = ?1, " +
-            "description = ?2, " +
-            "categoryId = ?3, " +
-            "providerId = ?4, " +
-            "discountPercentage = ?5, " +
-            "discountedPrice = ?6, " +
-            "measures = ?7, " +
-            "unitPerBox = ?8, " +
-            "priceSaleUnit = ?9, " +
-            "saleUnit = ?10, " +
-            "price = ?11, " +
-            "quality = ?12 " +
-            "WHERE id = ?13")
-    void updateById(String name, String description, Long categoryId, Long providerId, Integer discount_percentage,
-                      Double discount_new_price, String measures, Double m2PerBox, Double priceUnit,
-                      String salesUnit, Double price, String quality, Long id);
     
     @Modifying
     @Transactional
@@ -66,24 +73,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query(value = "INSERT INTO product_images (product_id, images) VALUES (?2, ?1)", nativeQuery = true)
     void insertImageById(String image, Long id);
     
-    @Modifying
-    @Transactional
-    @Query(value = "DELETE FROM product_tags WHERE product_id = ?1", nativeQuery = true)
-    void deleteTagsById(Long code);
-    
-    @Modifying
-    @Transactional
-    @Query(value = "INSERT INTO product_tags (product_id, tags) VALUES (?2, ?1)", nativeQuery = true)
-    void insertTagById(String tag, Long id);
-    
-    @Modifying
-    @Transactional
-    @Query(value = "DELETE FROM product WHERE category_id = ?1", nativeQuery = true)
-    void deleteByCategoryId(Long id);
-    
-    @Modifying
-    @Transactional
-    @Query(value = "DELETE FROM product WHERE provider_id = ?1", nativeQuery = true)
-    void deleteByProviderId(Long id);
     
 }

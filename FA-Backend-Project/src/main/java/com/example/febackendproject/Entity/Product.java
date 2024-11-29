@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -18,9 +19,40 @@ import java.util.List;
 @NoArgsConstructor
 public class Product {
     
+    // Basic data
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    
+    @NotBlank
+    @Column(unique = true)
+    private String name;
+    
+    @Column
+    private Boolean disabled = false;
+    
+    @NotNull
+    @Column
+    private String description;
+    
+    @NotNull
+    @Column
+    private String quality;
+    
+    @Column(name = "main_image")
+    private String mainImage;
+    
+    // External Tables data
+    @NotNull
+    @ElementCollection
+    @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
+    @Column
+    private List<String> images;
+    
+    @ElementCollection
+    @CollectionTable(name = "product_tag_mapping", joinColumns = @JoinColumn(name = "product_id"))
+    @Column(name = "tag_id")
+    private List<Long> tags;
     
     @Column(name = "provider_id")
     @NotNull
@@ -30,82 +62,43 @@ public class Product {
     @NotNull
     private Long categoryId;
     
+    @Column(name = "subcategory_id")
     @NotNull
-    @ElementCollection
-    @CollectionTable(name = "product_tags", joinColumns = @JoinColumn(name = "product_id"))
-    @Column
-    private List<String> tags;
-    
-    @NotNull
-    @ElementCollection
-    @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
-    @Column
-    private List<String> images;
-    
-    @NotBlank
-    @Column(unique = true)
-    private String name;
-    
-    @NotNull
-    @Column
-    private String description;
-    
+    private Long subcategoryId;
+
+    // Measure data
     @Column
     @NotNull
-    private Double price;
+    private String measureType;
     
     @Column
-    @NotNull
-    // 13cm x 13cm
     private String measures;
     
+    @Column
+    private Double measurePrice;
+    
+    // Sale unit data
     @NotNull
     @Column(name = "sale_unit")
-    // M2
     private String saleUnit;
     
     @NotNull
-    @Column(name = "price_sale_unit")
-    // 100$ x M2
-    private Double priceSaleUnit;
+    @Column(name = "sale_unit_price")
+    private Double saleUnitPrice;
     
-    @NotNull
-    @Column(name = "unit_per_box")
-    // 10 M2 per box
-    private Double unitPerBox;
+    @Column(name = "measure_per_sale_unit")
+    private Double measurePerSaleUnit;
     
-    @NotNull
-    @Column
-    private String quality;
-    
+    // Discount data
     @NotNull
     @Column(name = "discount_percentage")
     private Integer discountPercentage;
     
-    @NotNull
     @Column(name = "discounted_price")
     private Double discountedPrice;
     
-    @Override
-    public String toString() {
-        return "Product {" +
-                "\n  id=" + id +
-                ",\n  providerId=" + providerId +
-                ",\n  categoryId=" + categoryId +
-                ",\n  tags=" + tags +
-                ",\n  images=" + images +
-                ",\n  name='" + name + '\'' +
-                ",\n  description='" + description + '\'' +
-                ",\n  price=" + price +
-                ",\n  measures='" + measures + '\'' +
-                ",\n  saleUnit='" + saleUnit + '\'' +
-                ",\n  priceSaleUnit=" + priceSaleUnit +
-                ",\n  unitPerBox=" + unitPerBox +
-                ",\n  quality='" + quality + '\'' +
-                ",\n  discountPercentage=" + discountPercentage +
-                ",\n  discountedPrice=" + discountedPrice +
-                "\n}";
-    }
-
+    @Column(name = "discounted_measure_price")
+    private Double discountedMeasurePrice;
     
+
 }

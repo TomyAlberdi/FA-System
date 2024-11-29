@@ -1,0 +1,20 @@
+@use "@/var";
+
+div.Products {
+  section {
+    &.ProductFilters {
+      .filterScrollArea {
+        height: 86.8vh;
+      }
+      .filterGroup {
+        border: 1px solid var.$secondary-foreground;
+        .checkboxLabel {
+          @include var.flex-container(row, space-between, center);
+          span {
+            color: var.$muted-foreground;
+          }
+        }
+      }
+    }
+  }
+}

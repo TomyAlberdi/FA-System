@@ -13,11 +13,18 @@ public class PartialProductDTO {
     
     private Long id;
     private String name;
-    private Double price;
-    private String salesUnit;
-    private Double priceSaleUnit;
+    private Boolean disabled = false;
+    
+    private String measureType;
+    private Double measurePrice;
+    
+    private String saleUnit;
+    private Double saleUnitPrice;
+    private Double measurePerSaleUnit;
+    
     private Integer discountPercentage;
     private Double discountedPrice;
+    private Double discountedMeasurePrice;
     
     private String image;
     

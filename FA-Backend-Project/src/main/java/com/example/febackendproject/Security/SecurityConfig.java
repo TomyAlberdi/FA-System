@@ -15,6 +15,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
@@ -28,25 +29,16 @@ public class SecurityConfig {
     @Value("${kinde.jwks.url}")
     private String jwksUrl;
     
-    //@Value("${kinde.issuer}")
-    @Value("${jwt.issuer}")
+    @Value("${kinde.issuer}")
     private String issuer;
     
-    //@Value("${kinde.audience}")
-    @Value("${jwt.audience}")
+    @Value("${kinde.audience}")
     private String audience;
     
     @Bean
     public JWTVerifier jwtVerifier() throws Exception {
-        /*
         JwksService jwksService = new JwksService(jwksUrl);
         Algorithm algorithm = Algorithm.RSA256(jwksService);
-        return JWT.require(algorithm)
-                .withIssuer(issuer)
-                .withAudience(audience)
-                .build();
-        */
-        Algorithm algorithm = Algorithm.HMAC256("my-test-secret");
         return JWT.require(algorithm)
                 .withIssuer(issuer)
                 .withAudience(audience)
@@ -59,7 +51,13 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.GET).permitAll()
+                        // testing disable security
+                        .requestMatchers(HttpMethod.POST).permitAll()
+                        .requestMatchers(HttpMethod.PUT).permitAll()
+                        .requestMatchers(HttpMethod.PATCH).permitAll()
+                        .requestMatchers(HttpMethod.DELETE).permitAll()
                         .anyRequest().authenticated())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .addFilterBefore(new JwtAuthenticationFilter(jwtVerifier()), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
@@ -69,11 +67,24 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(Arrays.asList("http://localhost:5173/\", \"http://192.168.0.183:5173/"));
+        config.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://192.168.0.183:5173"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Cache-Control"));
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
+    }
+    
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://192.168.0.183:5173"));
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Cache-Control"));
+        
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
     }
     
 }

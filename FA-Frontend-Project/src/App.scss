@@ -1,0 +1,104 @@
+@use "@/var";
+@use "@/Pages/Home/Home";
+@use "@/Pages/User/User";
+@use "@/components/sidebar";
+@use "@/Pages/Catalog/Catalog";
+@use "@/Pages/Products/Products";
+
+@import url("https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@200;300;400;500;700&display=swap");
+
+div.App {
+  div.Welcome {
+    min-height: 100vh;
+    min-width: 100vw;
+    @include var.flex-container(row, center, center);
+    background-color: var.$foreground;
+    div.loading-welcome {
+      @include var.flex-container(column, center, center);
+      h1 {
+        font-size: 20px;
+        font-weight: bold;
+        color: var.$secondary;
+        padding-bottom: 20px;
+      }
+    }
+  }
+  .sectionTitle {
+    font-size: 1.875rem;
+    font-family: "Be Vietnam Pro", sans-serif;
+    font-weight: 700;
+    letter-spacing: -.025em;
+  }
+  .listHeader {
+    @include var.flex-container(row, space-between, center);
+  }
+  .listBody {
+    @include var.flex-container(row, flex-start, flex-start);
+    flex-wrap: wrap;
+    gap: 1%;
+    padding-top: 1rem;
+    .buttonCard, .skeletonCard {
+      margin-bottom: 1%;
+      @include var.flex-container(column, center, center);
+    }
+    .ProductCard {
+      margin-bottom: 1%;
+      transition: all 0.2s ease-in-out;
+      &:hover {
+        transform: scale(1.01);
+        transition: all 0.2s ease-in-out;
+      }
+      div.discountTag {
+        top: 15%;
+      }
+    }
+  }
+  .loading {
+    @include var.flex-container(column, center, center);
+    background-color: var.$card-foreground;
+    border-radius: 0.75rem;
+    box-shadow: var.$shadow-3;
+    h1 {
+      color: var.$secondary;
+      font-weight: bold;
+      padding-bottom: 20px;
+    }
+  }
+  .pageBody {
+    min-height: calc(100svh - 5rem);
+  }
+  .CatalogPage {
+    @include var.flex-container(column, center, center);
+    .CatalogPageData {
+      @include var.flex-container(row, flex-start, flex-start);
+      div.CatalogPageInfo {
+        @include var.flex-container(row, center, flex-start);
+      }
+      div.CatalogPageList {
+        height: 88vh;
+      }
+    }
+  }
+  .big-icon {
+    width: 1em;
+    height: 1em;
+  }
+  .bigger-icon {
+    width: 1.5em;
+    height: 1.5em;
+  }
+  .large-icon {
+    width: 2em;
+    height: 2em;
+  }
+  .ProductPage {
+    display: grid;
+    grid-template-columns: repeat(15, 1fr);
+    grid-template-rows: repeat(15, 1fr);
+    grid-column-gap: 0.25rem;
+    grid-row-gap: 0.25rem;
+    .complementaryInfo {
+      max-height: 65vh;
+    }
+  }
+}

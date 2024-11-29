@@ -1,0 +1,45 @@
+$background: #ffffff;
+$foreground: #1b1b1b;
+$card: #ffffff;
+$card-foreground: #1b1b1b;
+$popover: #ffffff;
+$popover-foreground: #1b1b1b;
+$primary: #1c1c1c;
+$primary-foreground: #f5f8ff;
+$secondary: #eff2f7;
+$secondary-foreground: #1c1c1c;
+$muted: #eff2f7;
+$muted-foreground: #717171;
+$accent: #eff2f7;
+$accent-foreground: #1c1c1c;
+$destructive: #f65a5a;
+$destructive-foreground: #f5f8ff;
+$border: #e7ebf4;
+$input: #e7ebf4;
+$ring: #1b1b1b;
+$chart-1: #f88c5b;
+$chart-2: #48a584;
+$chart-3: #374e6a;
+$chart-4: #cddc35;
+$chart-5: #ffb94e;
+$radius: 0.5rem;
+$sidebar-background: #f8f8f8;
+$sidebar-foreground: #3c3c3c;
+$sidebar-primary: #171717;
+$sidebar-primary-foreground: #f8f8f8;
+$sidebar-accent: #f2f4f9;
+$sidebar-accent-foreground: #171717;
+$sidebar-border: #e2e6f1;
+$sidebar-ring: #3ea8d1;
+
+$shadow-1: 3px 7px 13px -7.5px rgba(0,0,0,0.3);
+$shadow-2: 0 40px 90px 0 rgba(51, 51, 51, 0.3);
+$shadow-3: 0px 0px 15px 0px rgba(0,0,0,0.5);
+$shadow-4:  0px 1px 3px 1px rgba(0,0,0,0.3);
+
+@mixin flex-container($direction, $space, $items) {
+  display: flex;
+  align-items: $items;
+  flex-direction: $direction;
+  justify-content: $space;
+}

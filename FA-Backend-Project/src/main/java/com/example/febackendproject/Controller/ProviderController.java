@@ -1,9 +1,11 @@
 package com.example.febackendproject.Controller;
 
+import com.example.febackendproject.DTO.PartialProductStockDTO;
 import com.example.febackendproject.Entity.Provider;
 import com.example.febackendproject.Service.ProductService;
 import com.example.febackendproject.Service.ProviderService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -51,14 +53,34 @@ public class ProviderController {
         }
     }
     
-    @PostMapping("/{name}")
-    public ResponseEntity<?> save(@PathVariable String name) {
-        Optional<Provider> repeatedProvider = providerService.findByName(name);
+    @GetMapping("/{providerId}/products")
+    public ResponseEntity<Page<PartialProductStockDTO>> getPartialByProvider(
+            @PathVariable Long providerId,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "8") int size
+    ) {
+        return ResponseEntity.ok(productService.getPartialProductStockByProvider(providerId, page, size));
+    }
+    
+    @PostMapping
+    public ResponseEntity<?> save(@RequestBody Provider provider) {
+        Optional<Provider> repeatedProvider = providerService.findByName(provider.getName());
         if (repeatedProvider.isPresent()) {
-            return existingAttribute("Name", name);
+            return existingAttribute("Name", provider.getName());
         }
-        Provider newProvider = providerService.save(name);
+        Provider newProvider = providerService.save(provider);
         return ResponseEntity.status(HttpStatus.CREATED).body(newProvider);
+    }
+    
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> update(@RequestBody Provider provider, @PathVariable Long id) {
+        Optional<Provider> searchProvider = providerService.findById(id);
+        if (searchProvider.isEmpty()) {
+            return notFound("ID", provider.getId().toString());
+        }
+        provider.setId(id);
+        providerService.updateById(provider);
+        return ResponseEntity.ok("Provider updated");
     }
     
     @DeleteMapping("/{id}")
@@ -70,21 +92,7 @@ public class ProviderController {
                 providerService.deleteById(id);
                 return ResponseEntity.ok("Provider " + provider.get().getName() + " deleted successfully");
             }
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("The provider " + provider.get().getName() + " has " + productIds.size() + " products associated to it. To delete all products and the provider refer to /provider/force/{id}.");
-        }
-        return notFound("ID", Long.toString(id));
-    }
-    
-    @DeleteMapping("/force/{id}")
-    public ResponseEntity<?> forceDelete(@PathVariable Long id) {
-        Optional<Provider> provider = providerService.findById(id);
-        if (provider.isPresent()) {
-            List<Long> productIds = providerService.getIdByProvider(id);
-            if (!productIds.isEmpty()) {
-                productService.deleteProductByProviderId(id);
-            }
-            providerService.deleteById(id);
-            return ResponseEntity.ok("Provider " + provider.get().getName() + " and its products deleted successfully");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("The provider " + provider.get().getName() + " has " + productIds.size() + " products associated to it.");
         }
         return notFound("ID", Long.toString(id));
     }
