@@ -15,22 +15,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useCatalogContext } from "@/Context/UseCatalogContext";
-import { useToast } from "@/hooks/use-toast";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Info } from "lucide-react";
+import { Slider } from "@/components/ui/slider";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useCatalogContext } from "@/Context/UseCatalogContext";
 import { Category, Provider, Subcategory } from "@/hooks/CatalogInterfaces";
+import { useToast } from "@/hooks/use-toast";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import { Info } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Label } from "@/components/ui/label";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 const formSchema = z.object({
   // Base data
@@ -44,7 +44,6 @@ const formSchema = z.object({
   // Measure data
   measureUnit: z.string({ required_error: "Seleccione una unidad de medida" }),
   measures: z.string() || null,
-  priceMeasureUnit: z.number(),
   // Sale unit data
   saleUnit: z.string().min(1, {
     message: "La unidad de venta no puede estar vacía.",
@@ -52,8 +51,7 @@ const formSchema = z.object({
   saleUnitPrice: z.number(),
   measurePerSaleUnit: z.number() || null,
   // Discount data
-  discountPercentage: z.number() || null,
-  discountedPrice: z.number() || null,
+  discountPercentage: z.number().max(100).min(0) || null,
   // External data
   providerId: z.string(),
   categoryId: z.string(),
@@ -61,6 +59,10 @@ const formSchema = z.object({
   images:
     z.array(z.string()).min(1, {
       message: "La imagen no puede estar vacía.",
+    }) || null,
+  tags:
+    z.array(z.number()).min(1, {
+      message: "La etiqueta no puede estar vacía.",
     }) || null,
 });
 
@@ -97,6 +99,9 @@ export const AddProduct = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCategoryId]);
+
+  const [SelectedSaleUnit, setSelectedSaleUnit] = useState("Caja")
+  const [SelectedMeasureUnit, setSelectedMeasureUnit] = useState("M2")
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
     try {
@@ -142,10 +147,7 @@ export const AddProduct = () => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className={
-            "w-full grid grid-cols-2 gap-4 " +
-            (Subcategories?.length > 0 ? "grid-rows-11" : "grid-rows-9")
-          }
+          className={"w-full grid grid-cols-2 gap-4"}
         >
           {/* Basic data */}
           <FormField
@@ -194,156 +196,95 @@ export const AddProduct = () => {
             render={({ field }) => (
               <FormItem className="col-span-1 row-span-1 row-start-4 row-end-5">
                 <FormLabel>Proveedor</FormLabel>
-                <FormControl>
-                  <Select {...field} defaultValue="1">
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="1" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {Providers?.map((provider: Provider) => {
-                        return (
-                          <SelectItem value={provider.id.toString()}>
-                            {provider.name}
-                          </SelectItem>
-                        );
-                      })}
-                    </SelectContent>
-                  </Select>
-                </FormControl>
+                <Select {...field}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {Providers?.map((provider: Provider, index: number) => {
+                      return (
+                        <SelectItem value={provider.id.toString()} key={index}>
+                          {provider.name}
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <section className="col-span-1 row-span-1 row-start-5 row-end-6">
-            <Label htmlFor="subcategoryId">Categoría</Label>
-            <Select
-              name="categoryId"
-              onValueChange={(value) => setSelectedCategoryId(value)}
-            >
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                {Categories?.map((category: Category) => {
-                  return (
-                    <SelectItem value={category.id.toString()}>
-                      {category.name}
-                    </SelectItem>
-                  );
-                })}
-              </SelectContent>
-            </Select>
-          </section>
-          {Subcategories?.length > 0 && (
-            <section className="col-span-1 row-span-1 row-start-6 row-end-7">
-              <Label htmlFor="subcategoryId">Subcategoría</Label>
-              <Select name="subcategoryId">
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {Subcategories?.map((subcategory: Subcategory) => {
-                    return (
-                      <SelectItem value={subcategory.id.toString()}>
-                        {subcategory.name}
-                      </SelectItem>
-                    );
-                  })}
-                </SelectContent>
-              </Select>
-            </section>
-          )}
-          <div
-            className={
-              "imageSection col-start-1 pg-4 bg-primary-foreground rounded " +
-              (Subcategories?.length > 0
-                ? "row-start-7 row-end-9"
-                : "row-start-6 row-end-8")
-            }
-          >
-            images
-          </div>
-          {/* Measures data */}
-          <div className="measureSection row-span-3 row-start-1 row-end-4 col-start-2 p-4 bg-primary-foreground rounded">
-            <FormField
-              control={form.control}
-              name="measureUnit"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Unidad de medida del producto</FormLabel>
-                  <Select {...field} defaultValue="M2">
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="M2" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="M2">M2</SelectItem>
-                      <SelectItem value="Pieza">Pieza</SelectItem>
-                      <SelectItem value="Juego">Juego</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="measures"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Medidas (Opcional)</FormLabel>
+          <FormField
+            control={form.control}
+            name="categoryId"
+            render={({ field }) => (
+              <FormItem className="col-span-1 row-span-1 row-start-5 row-end-6">
+                <FormLabel>Categoría</FormLabel>
+                <Select
+                  {...field}
+                  onValueChange={(value) => setSelectedCategoryId(value)}
+                >
                   <FormControl>
-                    <Input placeholder="Ej: 20x20" {...field} />
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="priceMeasureUnit"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex justify-start align-center pt-2">
-                    Precio de unidad de medida
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Info className="w-4 h-4 ml-2" />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          Ejemplos: <br />
-                          - Precio por M2: 10000 <br />
-                          - Precio por Pieza: 5000 <br />
-                          - Precio por Juego: 1000 <br />
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </FormLabel>
+                  <SelectContent>
+                    {Categories?.map((category: Category, index: number) => {
+                      return (
+                        <SelectItem value={category.id.toString()} key={index}>
+                          {category.name}
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="subcategoryId"
+            render={({ field }) => (
+              <FormItem className="col-span-1 row-span-1 row-start-6 row-end-7">
+                <FormLabel>Subcategoría</FormLabel>
+                <Select {...field} disabled={Subcategories?.length === 0}>
                   <FormControl>
-                    <Input placeholder="Ej: 25000" {...field} />
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+                  <SelectContent>
+                    {Subcategories?.map(
+                      (subcategory: Subcategory, index: number) => {
+                        return (
+                          <SelectItem
+                            value={subcategory.id.toString()}
+                            key={index}
+                          >
+                            {subcategory.name}
+                          </SelectItem>
+                        );
+                      }
+                    )}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           {/* Sale unit data */}
-          <div className="saleUnitSection row-span-3 row-start-4 row-end-7 col-start-2 p-4 bg-primary-foreground rounded">
+          <div className="saleUnitSection row-span-3 row-start-1 row-end-3 col-start-2 p-4 bg-primary-foreground rounded">
             <FormField
               control={form.control}
               name="saleUnit"
               render={({ field }) => (
-                <FormItem className="col-start-2 row-span-1 row-start-4">
+                <FormItem>
                   <FormLabel>Unidad de venta</FormLabel>
-                  <Select {...field} defaultValue="Caja">
+                  <Select {...field} defaultValue="Caja" onValueChange={(value) => setSelectedSaleUnit(value)}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Caja" />
@@ -361,11 +302,65 @@ export const AddProduct = () => {
             />
             <FormField
               control={form.control}
+              name="saleUnitPrice"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex justify-start align-center pt-2">
+                    Precio por {SelectedSaleUnit}
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="w-4 h-4 ml-2" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          Ejemplos: <br />
+                          - $ 10000 por Caja <br />
+                          - $ 5000 por Pieza <br />
+                          - $ 1000 por Juego <br />
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </FormLabel>
+                  <FormControl>
+                    <Input placeholder="Ej: 10000" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          {/* Measures data */}
+          <div className="measureSection row-span-3 row-start-3 row-end-6 col-start-2 p-4 bg-primary-foreground rounded">
+            <FormField
+              control={form.control}
+              name="measureUnit"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Unidad de medida del producto</FormLabel>
+                  <Select {...field} defaultValue="M2" onValueChange={(value) => setSelectedMeasureUnit(value)}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="M2" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="M2">M2</SelectItem>
+                      <SelectItem value="ML">ML</SelectItem>
+                      <SelectItem value="Pieza">Pieza</SelectItem>
+                      <SelectItem value="Juego">Juego</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="measurePerSaleUnit"
               render={({ field }) => (
-                <FormItem className="row-start-5 col-start-2">
+                <FormItem>
                   <FormLabel className="flex justify-start align-center pt-2">
-                    Cantidad de unidades
+                    Cantidad de {SelectedMeasureUnit} por {SelectedSaleUnit}
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
@@ -380,7 +375,7 @@ export const AddProduct = () => {
                     </TooltipProvider>
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder="Ej: 100" {...field} />
+                    <Input placeholder="Ej: 100" {...field} disabled={SelectedMeasureUnit === SelectedSaleUnit} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -388,27 +383,12 @@ export const AddProduct = () => {
             />
             <FormField
               control={form.control}
-              name="saleUnitPrice"
+              name="measures"
               render={({ field }) => (
-                <FormItem className="col-span-1 row-span-1 row-start-6">
-                  <FormLabel className="flex justify-start align-center pt-2">
-                    Precio por unidad de venta
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Info className="w-4 h-4 ml-2" />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          Ejemplos: <br />
-                          - Precio por Caja: 10000 <br />
-                          - Precio por Pieza: 5000 <br />
-                          - Precio por Juego: 1000 <br />
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </FormLabel>
+                <FormItem>
+                  <FormLabel>Medidas (Opcional)</FormLabel>
                   <FormControl>
-                    <Input placeholder="Ej: 10000" {...field} />
+                    <Input placeholder="Ej: 20x20" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -416,23 +396,39 @@ export const AddProduct = () => {
             />
           </div>
           {/* Discount data */}
-          <div className="discountSection row-span-2 row-start-7 row-end-9 col-start-2 p-4 bg-primary-foreground rounded">
+          <div className="col-start-2 row-start-6 row-end-7 p-4 bg-primary-foreground rounded">
             <FormField
               control={form.control}
               name="discountPercentage"
               render={({ field }) => (
-                <FormItem className="col-start-2 row-start-1">
-                  <FormLabel>Porcentaje de descuento (Opcional)</FormLabel>
+                <FormItem className="col-span-1 row-span-1 row-start-6 row-end-7">
+                  <FormLabel>
+                    Porcentaje de descuento (Opcional): %{field.value}
+                  </FormLabel>
                   <FormControl>
-                    <Input placeholder="Ej: 10" {...field} />
+                    <Slider
+                      min={0}
+                      max={100}
+                      step={1}
+                      defaultValue={[0]}
+                      onValueChange={(values) => field.onChange(values[0])}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
+          {/* Images */}
+          <div className="col-start-1 col-span-1 row-start-7 row-end-9 p-4 bg-primary-foreground rounded">
+              images
+          </div>
+          {/* Tags */}
+          <div className="col-start-2 col-span-1 row-start-7 row-end-9 p-4 bg-primary-foreground rounded">
+              tags
+          </div>
           {/* Submit button */}
-          <div className="buttonDiv col-span-2 w-full flex justify-center items-center row-start-11">
+          <div className="buttonDiv col-span-2 w-full flex justify-center items-center row-start-9">
             <Button type="submit" className="w-1/3">
               Guardar
             </Button>
