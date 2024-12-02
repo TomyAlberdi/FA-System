@@ -6,7 +6,6 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Skeleton } from "@/components/ui/skeleton";
 import { CompleteProduct } from "@/hooks/CatalogInterfaces";
 
 export const ProductCarousel = ({
@@ -30,7 +29,12 @@ export const ProductCarousel = ({
               );
             })
           ) : (
-            <Skeleton className="w-full h-full" />
+            <Card
+              className="w-full h-full bg-contain bg-no-repeat bg-center"
+              style={{
+                backgroundImage: `url(https://media.istockphoto.com/id/1147544807/es/vector/no-imagen-en-miniatura-gr%C3%A1fico-vectorial.jpg?s=612x612&w=0&k=20&c=Bb7KlSXJXh3oSDlyFjIaCiB9llfXsgS7mHFZs6qUgVk=)`,
+              }}
+            ></Card>
           )}
         </CarouselContent>
         <CarouselPrevious />

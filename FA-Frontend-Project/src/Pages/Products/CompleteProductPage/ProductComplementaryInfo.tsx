@@ -122,7 +122,7 @@ export const ProductComplementaryInfo = ({
             <AccordionTrigger>Características</AccordionTrigger>
             <AccordionContent className="flex flex-row items-center gap-2 flex-wrap">
               {Product?.characteristics?.map((tag: characteristic, index: number) => {
-                return (
+                return tag.value !== null && tag.value !== "" && (
                   <Card key={index}>
                     <CardHeader>
                       <CardTitle className="text-center">
