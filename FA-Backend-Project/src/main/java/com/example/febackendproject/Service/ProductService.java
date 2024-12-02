@@ -35,16 +35,17 @@ public class ProductService {
     }
     
     public Product save(Product product) {
+        double parsedSaleUnitPrice = Double.parseDouble(product.getSaleUnitPrice());
         if (product.getSaleUnit().equals(product.getMeasureType())) {
             product.setMeasurePerSaleUnit(1.0);
-            product.setMeasurePrice(truncateToTwoDecimals(product.getSaleUnitPrice()));
+            product.setMeasurePrice(truncateToTwoDecimals(parsedSaleUnitPrice));
         } else if (product.getMeasurePerSaleUnit() > 0) {
-            double measurePrice = product.getSaleUnitPrice() / product.getMeasurePerSaleUnit();
+            double measurePrice = parsedSaleUnitPrice / product.getMeasurePerSaleUnit();
             product.setMeasurePrice(truncateToTwoDecimals(measurePrice));
         }
         if (product.getDiscountPercentage() > 0) {
             double discountFactor = 1 - (product.getDiscountPercentage() / 100.0);
-            double discountedPrice = product.getSaleUnitPrice() * discountFactor;
+            double discountedPrice = parsedSaleUnitPrice * discountFactor;
             double discountedMeasurePrice = product.getMeasurePrice() * discountFactor;
             product.setDiscountedPrice(truncateToTwoDecimals(discountedPrice));
             product.setDiscountedMeasurePrice(truncateToTwoDecimals(discountedMeasurePrice));
@@ -70,6 +71,7 @@ public class ProductService {
         CompleteProductDTO returnProduct = new CompleteProductDTO();
         if (productRepository.existsById(id)) {
             Optional<Product> product = productRepository.findById(id);
+            double parsedSaleUnitPrice = Double.parseDouble(product.get().getSaleUnitPrice());
             returnProduct.setId(product.get().getId());
             returnProduct.setName(product.get().getName());
             returnProduct.setDisabled(product.get().getDisabled());
@@ -81,7 +83,7 @@ public class ProductService {
             returnProduct.setMeasurePrice(product.get().getMeasurePrice());
             
             returnProduct.setSaleUnit(product.get().getSaleUnit());
-            returnProduct.setSaleUnitPrice(product.get().getSaleUnitPrice());
+            returnProduct.setSaleUnitPrice(parsedSaleUnitPrice);
             returnProduct.setMeasurePerSaleUnit(product.get().getMeasurePerSaleUnit());
             
             returnProduct.setDiscountPercentage(product.get().getDiscountPercentage());
@@ -212,7 +214,7 @@ public class ProductService {
                 .and(ProductSpecifications.hasKeyword(filterDTO.getKeyword()));
         
         return productPaginationRepository.findAll(spec, pageable).map(product -> {
-                return new PartialProductDTO(
+            return new PartialProductDTO(
                         product.getId(),
                         product.getName(),
                         product.getDisabled(),

@@ -78,7 +78,7 @@ public class Product {
     
     @NotNull
     @Column(name = "sale_unit_price")
-    private Double saleUnitPrice;
+    private String saleUnitPrice;
     
     @Column(name = "measure_per_sale_unit")
     private Double measurePerSaleUnit;

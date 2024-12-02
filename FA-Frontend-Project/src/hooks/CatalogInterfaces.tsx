@@ -173,5 +173,5 @@ export interface PaginationResponse {
 
 export interface characteristic {
   key: string;
-  value: string;
+  value: string | null;
 }

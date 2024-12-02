@@ -26,14 +26,14 @@ import {
 import { useCatalogContext } from "@/Context/UseCatalogContext";
 import {
   Category,
-  NewTag,
+  characteristic,
   Provider,
   Subcategory,
 } from "@/hooks/CatalogInterfaces";
 import { useToast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { Info } from "lucide-react";
+import { Info, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -48,14 +48,14 @@ const formSchema = z.object({
   }),
   quality: z.string() || null,
   // Measure data
-  measureUnit: z.string({ required_error: "Seleccione una unidad de medida" }),
+  measureType: z.string({ required_error: "Seleccione una unidad de medida" }),
   measures: z.string() || null,
   // Sale unit data
   saleUnit: z.string().min(1, {
     message: "La unidad de venta no puede estar vacía.",
   }),
-  saleUnitPrice: z.number(),
-  measurePerSaleUnit: z.number() || null,
+  saleUnitPrice: z.string(),
+  measurePerSaleUnit: z.string() || null,
   // Discount data
   discountPercentage: z.number().max(100).min(0) || null,
   // External data
@@ -63,7 +63,13 @@ const formSchema = z.object({
   categoryId: z.string(),
   subcategoryId: z.string() || null,
   images: z.array(z.string()) || null,
-  tags: z.array(z.number()) || null,
+  // Characteristics
+  color: z.string() || null,
+  origen: z.string() || null,
+  borde: z.string() || null,
+  aspecto: z.string() || null,
+  textura: z.string() || null,
+  transito: z.string() || null,
 });
 
 export const AddProduct = () => {
@@ -73,10 +79,32 @@ export const AddProduct = () => {
     fetchCategories,
     fetchSubcategoriesByCategoryId,
   } = useCatalogContext();
+
   const { getToken } = useKindeAuth();
   const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      description: "",
+      quality: "",
+      measureType: "",
+      measures: "",
+      saleUnit: "",
+      saleUnitPrice: "",
+      measurePerSaleUnit: "",
+      discountPercentage: 0,
+      providerId: "",
+      categoryId: "",
+      subcategoryId: "",
+      images: [],
+      color: "",
+      origen: "",
+      borde: "",
+      aspecto: "",
+      textura: "",
+      transito: "",
+    },
   });
 
   // Static form data setting
@@ -101,7 +129,7 @@ export const AddProduct = () => {
   }, [selectedCategoryId]);
 
   const [SelectedSaleUnit, setSelectedSaleUnit] = useState("Caja");
-  const [SelectedMeasureUnit, setSelectedMeasureUnit] = useState("M2");
+  const [SelectedMeasureType, setSelectedMeasureType] = useState("M2");
 
   // Image uploading
   const [SelectedFiles, setSelectedFiles] = useState<Array<File>>([]);
@@ -152,35 +180,44 @@ export const AddProduct = () => {
     return uploadedUrls;
   };
 
-  // New Tag Uploading
-  /*   const [NewTags, setNewTags] = useState<Array<NewTag>>([]);
+  // Characteristics
+  const characteristicsKey = [
+    "Color",
+    "Origen",
+    "Borde",
+    "Aspecto",
+    "Textura",
+    "Tránsito",
+  ];
 
-  const uploadTags = async (tags: Array<NewTag>) => {
-    try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return false;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(`${BASE_URL}/tag`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify(tags),
-      });
-      if (!response.ok) {
-        console.error("Error: ", response.statusText);
-        return false;
-      }
-    } catch (error) {
-      console.error("Error: ", error);
-      return false;
-    }
-    return true;
-  }
- */
+  const [Characteristics, setCharacteristics] = useState<Array<characteristic>>(
+    [
+      {
+        key: "color",
+        value: null,
+      },
+      {
+        key: "origen",
+        value: null,
+      },
+      {
+        key: "borde",
+        value: null,
+      },
+      {
+        key: "aspecto",
+        value: null,
+      },
+      {
+        key: "textura",
+        value: null,
+      },
+      {
+        key: "transito",
+        value: null,
+      },
+    ]
+  );
 
   // Form submitting
   const [IsSubmitting, setIsSubmitting] = useState(false);
@@ -194,13 +231,51 @@ export const AddProduct = () => {
         imageUrls = await uploadImages(fileInput);
         data.images = imageUrls;
       }
+      if (
+        Characteristics[0].value !== null &&
+        Characteristics[0].value !== ""
+      ) {
+        data.color = Characteristics[0].value;
+      }
+      if (
+        Characteristics[1].value !== null &&
+        Characteristics[1].value !== ""
+      ) {
+        data.origen = Characteristics[1].value;
+      }
+      if (
+        Characteristics[2].value !== null &&
+        Characteristics[2].value !== ""
+      ) {
+        data.borde = Characteristics[2].value;
+      }
+      if (
+        Characteristics[3].value !== null &&
+        Characteristics[3].value !== ""
+      ) {
+        data.aspecto = Characteristics[3].value;
+      }
+      if (
+        Characteristics[4].value !== null &&
+        Characteristics[4].value !== ""
+      ) {
+        data.textura = Characteristics[4].value;
+      }
+      if (
+        Characteristics[5].value !== null &&
+        Characteristics[5].value !== ""
+      ) {
+        data.transito = Characteristics[5].value;
+      }
       await submitFormData(data);
     } catch (error) {
       console.error("Error: ", error);
     }
-  }
+  };
 
-  const submitFormData = async (formData: z.infer<typeof formSchema>): Promise<void> => {
+  const submitFormData = async (
+    formData: z.infer<typeof formSchema>
+  ): Promise<void> => {
     try {
       if (!getToken) {
         console.error("getToken is undefined");
@@ -295,7 +370,7 @@ export const AddProduct = () => {
             render={({ field }) => (
               <FormItem className="col-span-1 row-span-1 row-start-4 row-end-5">
                 <FormLabel>Proveedor</FormLabel>
-                <Select {...field}>
+                <Select value={field.value} onValueChange={field.onChange}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue />
@@ -322,8 +397,11 @@ export const AddProduct = () => {
               <FormItem className="col-span-1 row-span-1 row-start-5 row-end-6">
                 <FormLabel>Categoría</FormLabel>
                 <Select
-                  {...field}
-                  onValueChange={(value) => setSelectedCategoryId(value)}
+                  value={field.value}
+                  onValueChange={(value) => {
+                    setSelectedCategoryId(value);
+                    field.onChange(value);
+                  }}
                 >
                   <FormControl>
                     <SelectTrigger>
@@ -350,7 +428,11 @@ export const AddProduct = () => {
             render={({ field }) => (
               <FormItem className="col-span-1 row-span-1 row-start-6 row-end-7">
                 <FormLabel>Subcategoría</FormLabel>
-                <Select {...field} disabled={Subcategories?.length === 0}>
+                <Select
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  disabled={Subcategories?.length === 0}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue />
@@ -384,9 +466,12 @@ export const AddProduct = () => {
                 <FormItem>
                   <FormLabel>Unidad de venta</FormLabel>
                   <Select
-                    {...field}
+                    value={field.value}
                     defaultValue="Caja"
-                    onValueChange={(value) => setSelectedSaleUnit(value)}
+                    onValueChange={(value) => {
+                      setSelectedSaleUnit(value);
+                      field.onChange(value);
+                    }}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -425,7 +510,11 @@ export const AddProduct = () => {
                     </TooltipProvider>
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder="Ej: 10000" {...field} />
+                    <Input
+                      placeholder="Ej: 10000.50"
+                      {...field}
+                      type="number"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -436,14 +525,17 @@ export const AddProduct = () => {
           <div className="measureSection row-span-3 row-start-3 row-end-6 col-start-2 p-4 bg-primary-foreground rounded">
             <FormField
               control={form.control}
-              name="measureUnit"
+              name="measureType"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Unidad de medida del producto</FormLabel>
                   <Select
-                    {...field}
                     defaultValue="M2"
-                    onValueChange={(value) => setSelectedMeasureUnit(value)}
+                    value={field.value}
+                    onValueChange={(value) => {
+                      setSelectedMeasureType(value);
+                      field.onChange(value);
+                    }}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -467,7 +559,7 @@ export const AddProduct = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex justify-start align-center pt-2">
-                    Cantidad de {SelectedMeasureUnit} por {SelectedSaleUnit}
+                    Cantidad de {SelectedMeasureType} por {SelectedSaleUnit}
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
@@ -485,7 +577,9 @@ export const AddProduct = () => {
                     <Input
                       placeholder="Ej: 100"
                       {...field}
-                      disabled={SelectedMeasureUnit === SelectedSaleUnit}
+                      disabled={SelectedMeasureType === SelectedSaleUnit}
+                      value={SelectedMeasureType === SelectedSaleUnit ? 1 : field.value}
+                      type="number"
                     />
                   </FormControl>
                   <FormMessage />
@@ -514,7 +608,10 @@ export const AddProduct = () => {
               render={({ field }) => (
                 <FormItem className="col-span-1 row-span-1 row-start-6 row-end-7">
                   <FormLabel>
-                    Porcentaje de descuento (Opcional): %{field.value ? field.value : 0}
+                    Porcentaje de descuento (Opcional):
+                    <span className="px-2 text-lg font-semibold">
+                      %{field.value ? field.value : 0}
+                    </span>
                   </FormLabel>
                   <FormControl>
                     <Slider
@@ -531,7 +628,7 @@ export const AddProduct = () => {
             />
           </div>
           {/* Images */}
-          <div className="col-start-1 col-span-1 row-start-7 row-end-9 p-4 bg-primary-foreground rounded">
+          <div className="col-span-2 row-start-7 row-end-9 p-4 bg-primary-foreground rounded h-[100px]">
             <Label htmlFor="file-input">Imágenes</Label>
             <Input
               type="file"
@@ -541,12 +638,40 @@ export const AddProduct = () => {
             />
           </div>
           {/* Tags */}
-          <div className="col-start-2 col-span-1 row-start-7 row-end-9 p-4 bg-primary-foreground rounded">
-            tags
+          <div className="col-span-2 row-start-9 row-end-11 p-4 bg-primary-foreground rounded flex flex-col gap-4">
+            <div className="characteristicsHeader flex flex-row justify-between w-full">
+              <h3 className="text-xl font-semibold">Agregar Características</h3>
+            </div>
+            <div className="characteristicsContainer flex flex-col gap-2">
+              {
+                // Add new characteristics
+                characteristicsKey.map((c, index) => (
+                  <div
+                    className="flex flex-row justify-between w-full"
+                    key={index}
+                  >
+                    <span className="text-lg font-semibold w-1/6 border border-input bg-secondary rounded-l-md flex justify-center items-center -mr-5">
+                      {c}
+                    </span>
+                    <Input
+                      onChange={(e) =>
+                        setCharacteristics((prevState) => {
+                          const newState = [...prevState];
+                          newState[index].value = e.target.value;
+                          return newState;
+                        })
+                      }
+                      className="text-lg"
+                    />
+                  </div>
+                ))
+              }
+            </div>
           </div>
           {/* Submit button */}
-          <div className="buttonDiv col-span-2 w-full flex justify-center items-center row-start-9">
-            <Button type="submit" className="w-1/3">
+          <div className="buttonDiv col-span-2 w-full flex justify-center items-center row-start-11">
+            <Button type="submit" className="w-1/3" disabled={IsSubmitting}>
+              {IsSubmitting && <Loader2 className="animate-spin" />}
               Guardar
             </Button>
           </div>
