@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -149,11 +150,11 @@ public class ProductController {
     }
     
     @PostMapping("/tags")
-    public ResponseEntity<?> addTag(
-            @RequestParam(value = "key") String key,
-            @RequestParam(value = "value") String value) {
-        Optional<Tag> newTag = tagService.addTag(key, value);
-        return ResponseEntity.ok(newTag);
+    public ResponseEntity<?> addTags(@RequestBody List<Tag> tags) {
+        for (Tag tag : tags) {
+            tagService.addTag(tag.getTagKey(), tag.getValue());
+        }
+        return ResponseEntity.ok("Tags added");
     }
     
 }

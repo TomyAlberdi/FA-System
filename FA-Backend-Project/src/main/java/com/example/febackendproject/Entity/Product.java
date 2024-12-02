@@ -43,7 +43,6 @@ public class Product {
     private String mainImage;
     
     // External Tables data
-    @NotNull
     @ElementCollection
     @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
     @Column

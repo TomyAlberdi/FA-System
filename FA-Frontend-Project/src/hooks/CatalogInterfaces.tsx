@@ -170,3 +170,8 @@ export interface Tag {
   tagKey: string;
   value: string;
 }
+
+export interface NewTag {
+  tagKey: string;
+  value: string;
+}

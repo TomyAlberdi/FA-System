@@ -8,6 +8,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -23,7 +24,12 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useCatalogContext } from "@/Context/UseCatalogContext";
-import { Category, Provider, Subcategory } from "@/hooks/CatalogInterfaces";
+import {
+  Category,
+  NewTag,
+  Provider,
+  Subcategory,
+} from "@/hooks/CatalogInterfaces";
 import { useToast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
@@ -56,14 +62,8 @@ const formSchema = z.object({
   providerId: z.string(),
   categoryId: z.string(),
   subcategoryId: z.string() || null,
-  images:
-    z.array(z.string()).min(1, {
-      message: "La imagen no puede estar vacía.",
-    }) || null,
-  tags:
-    z.array(z.number()).min(1, {
-      message: "La etiqueta no puede estar vacía.",
-    }) || null,
+  images: z.array(z.string()) || null,
+  tags: z.array(z.number()) || null,
 });
 
 export const AddProduct = () => {
@@ -75,21 +75,21 @@ export const AddProduct = () => {
   } = useCatalogContext();
   const { getToken } = useKindeAuth();
   const { toast } = useToast();
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+  });
 
+  // Static form data setting
   const [Providers, setProviders] = useState<Array<Provider>>([]);
   const [Categories, setCategories] = useState<Array<Category>>([]);
   const [Subcategories, setSubcategories] = useState<Array<Subcategory>>([]);
-
   useEffect(() => {
     fetchProviders().then((result) => setProviders(result ?? []));
     fetchCategories().then((result) => setCategories(result ?? []));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-  });
-
+  // Dynamic form data setting
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
   useEffect(() => {
     if (selectedCategoryId) {
@@ -100,10 +100,107 @@ export const AddProduct = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCategoryId]);
 
-  const [SelectedSaleUnit, setSelectedSaleUnit] = useState("Caja")
-  const [SelectedMeasureUnit, setSelectedMeasureUnit] = useState("M2")
+  const [SelectedSaleUnit, setSelectedSaleUnit] = useState("Caja");
+  const [SelectedMeasureUnit, setSelectedMeasureUnit] = useState("M2");
 
-  async function onSubmit(data: z.infer<typeof formSchema>) {
+  // Image uploading
+  const [SelectedFiles, setSelectedFiles] = useState<Array<File>>([]);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      setSelectedFiles(Array.from(event.target.files));
+    }
+  };
+
+  const uploadImages = async (files: Array<File>) => {
+    const uploadedUrls: string[] = [];
+    files.forEach(async (file) => {
+      try {
+        if (!getToken) {
+          console.error("getToken is undefined");
+          return false;
+        }
+        const accessToken = await getToken();
+        const responseUrl = await fetch(
+          `${BASE_URL}/img?fileName=${file.name}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        if (!responseUrl.ok) {
+          console.error("Error: ", responseUrl.statusText);
+          return false;
+        }
+        const uploadUrl = await responseUrl.text();
+        await fetch(uploadUrl, {
+          method: "PUT",
+          body: file,
+          headers: {
+            "Content-Type": file.type,
+          },
+        });
+        const imageUrl = uploadUrl.split("?")[0];
+        uploadedUrls.push(imageUrl);
+      } catch (error) {
+        console.error("Error: ", error);
+        return false;
+      }
+    });
+    return uploadedUrls;
+  };
+
+  // New Tag Uploading
+  /*   const [NewTags, setNewTags] = useState<Array<NewTag>>([]);
+
+  const uploadTags = async (tags: Array<NewTag>) => {
+    try {
+      if (!getToken) {
+        console.error("getToken is undefined");
+        return false;
+      }
+      const accessToken = await getToken();
+      const response = await fetch(`${BASE_URL}/tag`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(tags),
+      });
+      if (!response.ok) {
+        console.error("Error: ", response.statusText);
+        return false;
+      }
+    } catch (error) {
+      console.error("Error: ", error);
+      return false;
+    }
+    return true;
+  }
+ */
+
+  // Form submitting
+  const [IsSubmitting, setIsSubmitting] = useState(false);
+
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    setIsSubmitting(true);
+    try {
+      const fileInput = SelectedFiles;
+      let imageUrls: string[] = [];
+      if (fileInput && fileInput.length > 0) {
+        imageUrls = await uploadImages(fileInput);
+        data.images = imageUrls;
+      }
+      await submitFormData(data);
+    } catch (error) {
+      console.error("Error: ", error);
+    }
+  }
+
+  const submitFormData = async (formData: z.infer<typeof formSchema>): Promise<void> => {
     try {
       if (!getToken) {
         console.error("getToken is undefined");
@@ -116,7 +213,7 @@ export const AddProduct = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(formData),
       });
       if (!response.ok) {
         console.error("Error: ", response.statusText);
@@ -135,11 +232,13 @@ export const AddProduct = () => {
       console.error("Error: ", error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Ocurrió un error al crear el producto",
+        title: `Error ${error}`,
+        description: `Ocurrió un error al crear el producto.`,
       });
+    } finally {
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <div className="AddProduct">
@@ -284,7 +383,11 @@ export const AddProduct = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Unidad de venta</FormLabel>
-                  <Select {...field} defaultValue="Caja" onValueChange={(value) => setSelectedSaleUnit(value)}>
+                  <Select
+                    {...field}
+                    defaultValue="Caja"
+                    onValueChange={(value) => setSelectedSaleUnit(value)}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Caja" />
@@ -337,7 +440,11 @@ export const AddProduct = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Unidad de medida del producto</FormLabel>
-                  <Select {...field} defaultValue="M2" onValueChange={(value) => setSelectedMeasureUnit(value)}>
+                  <Select
+                    {...field}
+                    defaultValue="M2"
+                    onValueChange={(value) => setSelectedMeasureUnit(value)}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="M2" />
@@ -375,7 +482,11 @@ export const AddProduct = () => {
                     </TooltipProvider>
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder="Ej: 100" {...field} disabled={SelectedMeasureUnit === SelectedSaleUnit} />
+                    <Input
+                      placeholder="Ej: 100"
+                      {...field}
+                      disabled={SelectedMeasureUnit === SelectedSaleUnit}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -403,7 +514,7 @@ export const AddProduct = () => {
               render={({ field }) => (
                 <FormItem className="col-span-1 row-span-1 row-start-6 row-end-7">
                   <FormLabel>
-                    Porcentaje de descuento (Opcional): %{field.value}
+                    Porcentaje de descuento (Opcional): %{field.value ? field.value : 0}
                   </FormLabel>
                   <FormControl>
                     <Slider
@@ -421,11 +532,17 @@ export const AddProduct = () => {
           </div>
           {/* Images */}
           <div className="col-start-1 col-span-1 row-start-7 row-end-9 p-4 bg-primary-foreground rounded">
-              images
+            <Label htmlFor="file-input">Imágenes</Label>
+            <Input
+              type="file"
+              multiple
+              id="file-input"
+              onChange={handleFileChange}
+            />
           </div>
           {/* Tags */}
           <div className="col-start-2 col-span-1 row-start-7 row-end-9 p-4 bg-primary-foreground rounded">
-              tags
+            tags
           </div>
           {/* Submit button */}
           <div className="buttonDiv col-span-2 w-full flex justify-center items-center row-start-9">
