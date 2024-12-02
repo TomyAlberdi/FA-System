@@ -48,11 +48,6 @@ public class Product {
     @Column
     private List<String> images;
     
-    @ElementCollection
-    @CollectionTable(name = "product_tag_mapping", joinColumns = @JoinColumn(name = "product_id"))
-    @Column(name = "tag_id")
-    private List<Long> tags;
-    
     @Column(name = "provider_id")
     @NotNull
     private Long providerId;
@@ -99,5 +94,24 @@ public class Product {
     @Column(name = "discounted_measure_price")
     private Double discountedMeasurePrice;
     
+    // Characteristics
+    
+    @Column
+    private String color;
+    
+    @Column
+    private String origen;
+    
+    @Column
+    private String borde;
+    
+    @Column
+    private String aspecto;
+    
+    @Column
+    private String textura;
+    
+    @Column
+    private String transito;
 
 }

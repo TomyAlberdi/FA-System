@@ -30,7 +30,6 @@ public class ProductController {
     private final CategoryService categoryService;
     private final StockService stockService;
     private final SubcategoryRepository subcategoryRepository;
-    private final TagService tagService;
     
     public ResponseEntity<?> notFound(String dataType, String data) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product with " + dataType + " " + data + " not found");
@@ -129,32 +128,6 @@ public class ProductController {
         } else {
             return notFound("ID", productId.toString());
         }
-    }
-    
-    @GetMapping("/tags")
-    public ResponseEntity<?> getAll() {
-        return ResponseEntity.ok(tagService.listAll());
-    }
-    
-    @GetMapping("/tags/keys")
-    public ResponseEntity<?> getKeys() {
-        return ResponseEntity.ok(tagService.listKeys());
-    }
-    
-    @GetMapping("/tags/{key}")
-    public ResponseEntity<?> getValuesByKey(@PathVariable String key) {
-        if (tagService.existsByKey(key)) {
-            return ResponseEntity.ok(tagService.listValuesByKey(key));
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("tag not found");
-    }
-    
-    @PostMapping("/tags")
-    public ResponseEntity<?> addTags(@RequestBody List<Tag> tags) {
-        for (Tag tag : tags) {
-            tagService.addTag(tag.getTagKey(), tag.getValue());
-        }
-        return ResponseEntity.ok("Tags added");
     }
     
 }

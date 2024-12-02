@@ -29,20 +29,16 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p.id FROM Product p WHERE p.categoryId = ?1")
     List<Long> getIdByCategory(Long id);
     
-    @Query("SELECT p.id FROM Product p WHERE p.subcategoryId = ?1")
-    List<Long> getIdBySubcategory(Long id);
-    
     @Query("SELECT COUNT(p) AS amount FROM Product p WHERE p.categoryId = ?1")
     Integer getProductAmountByCategory(Long id);
     
+    /////// SEARCHES BY SUBCATEGORY
+    
+    @Query("SELECT p.id FROM Product p WHERE p.subcategoryId = ?1")
+    List<Long> getIdBySubcategory(Long id);
+    
     @Query("SELECT COUNT(p) AS amount FROM Product p WHERE p.subcategoryId = ?1")
     Integer getProductAmountBySubcategory(Long id);
-    
-    @Query("SELECT new com.example.febackendproject.DTO.PartialProductStockDTO(p.id, p.name, p.disabled, 0, p.measureType, p.saleUnit, p.measurePerSaleUnit, p.saleUnitPrice, p.discountPercentage, p.discountedPrice) FROM Product p WHERE p.categoryId = ?1")
-    List<PartialProductStockDTO> getPartialProductStockByCategory(Long id);
-    
-    @Query("SELECT new com.example.febackendproject.DTO.PartialProductStockDTO(p.id, p.name, p.disabled, 0, p.measureType, p.saleUnit, p.measurePerSaleUnit, p.saleUnitPrice, p.discountPercentage, p.discountedPrice) FROM Product p WHERE p.subcategoryId = ?1")
-    List<PartialProductStockDTO> getPartialProductStockBySubcategory(Long id);
     
     /////// SEARCHES BY PROVIDER
     
@@ -52,9 +48,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT COUNT(p) AS amount FROM Product p WHERE p.providerId = ?1")
     Integer getProductAmountByProvider(Long id);
     
-    @Query("SELECT new com.example.febackendproject.DTO.PartialProductStockDTO(p.id, p.name, p.disabled, 0, p.measureType, p.saleUnit, p.measurePerSaleUnit, p.saleUnitPrice, p.discountPercentage, p.discountedPrice) FROM Product p WHERE p.providerId = ?1")
-    List<PartialProductStockDTO> getPartialProductStockByProvider(Long id);
-    
     /////// UTILS
     
     @Query("SELECT new com.example.febackendproject.DTO.MeasureDTO(p.measures, COUNT(p)) FROM Product p GROUP BY p.measures ORDER BY COUNT(p) DESC")
@@ -62,16 +55,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     
     @Query("SELECT new com.example.febackendproject.DTO.PricesDTO(MIN(p.measurePrice), MAX(p.measurePrice)) FROM Product p")
     PricesDTO getPrices();
-    
-    @Modifying
-    @Transactional
-    @Query(value = "DELETE FROM product_images WHERE product_id = ?1", nativeQuery = true)
-    void deleteImagesById(Long code);
-    
-    @Modifying
-    @Transactional
-    @Query(value = "INSERT INTO product_images (product_id, images) VALUES (?2, ?1)", nativeQuery = true)
-    void insertImageById(String image, Long id);
-    
     
 }

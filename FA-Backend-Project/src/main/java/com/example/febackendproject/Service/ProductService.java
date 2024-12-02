@@ -5,7 +5,6 @@ import com.example.febackendproject.DTO.FilterDTO;
 import com.example.febackendproject.DTO.PartialProductDTO;
 import com.example.febackendproject.DTO.PartialProductStockDTO;
 import com.example.febackendproject.Entity.Product;
-import com.example.febackendproject.Entity.Tag;
 import com.example.febackendproject.Hooks.ProductSpecifications;
 import com.example.febackendproject.Repository.*;
 import lombok.AllArgsConstructor;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,8 +30,6 @@ public class ProductService {
     private final SubcategoryRepository subcategoryRepository;
     private final ProviderRepository providerRepository;
     private final StockRepository stockRepository;
-    private final TagRepository tagRepository;
-    private final TagService tagService;
     
     public Page<PartialProductDTO> getPaginatedPartialProducts(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -62,11 +58,6 @@ public class ProductService {
             product.setMainImage(product.getImages().get(0));
         } else {
             product.setMainImage("");
-        }
-        if (!product.getTags().isEmpty()) {
-            List<Tag> tagObjects = tagRepository.findValidIds(product.getTags());
-            List<Long> filteredIds = tagService.filterUniqueTagKeys(tagObjects);
-            product.setTags(filteredIds);
         }
         return productRepository.save(product);
     }
@@ -116,12 +107,13 @@ public class ProductService {
             Integer stock = stockRepository.getQuantityByProductId(product.get().getId());
             returnProduct.setStock(stock);
             
-            List<Tag> tags = new ArrayList<>();
-            for (Long tagId : product.get().getTags()) {
-                Optional<Tag> newTag = tagRepository.findById(tagId);
-                newTag.ifPresent(tags::add);
-            }
-            returnProduct.setTags(tags);
+            returnProduct.setColor(product.get().getColor());
+            returnProduct.setOrigen(product.get().getOrigen());
+            returnProduct.setBorde(product.get().getBorde());
+            returnProduct.setAspecto(product.get().getAspecto());
+            returnProduct.setTextura(product.get().getTextura());
+            returnProduct.setTransito(product.get().getTransito());
+
         }
         return Optional.of(returnProduct);
     }
