@@ -43,11 +43,6 @@ public class CompleteProductDTO {
     
     private Integer stock;
     
-    private String color;
-    private String origen;
-    private String borde;
-    private String aspecto;
-    private String textura;
-    private String transito;
+    private List<CharacteristicDTO> characteristics;
     
 }

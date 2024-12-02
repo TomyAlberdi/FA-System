@@ -67,7 +67,6 @@ export interface CompleteProduct extends StockProduct {
   measures: string;
   discountedMeasurePrice: number,
   images: Array<string>;
-  tags: Array<Tag>;
   category: string;
   categoryId: number;
   measurePrice: number;
@@ -75,6 +74,13 @@ export interface CompleteProduct extends StockProduct {
   subcategoryId: number;
   provider: string;
   providerId: number;
+  characteristics: Array<characteristic>;
+  color: string;
+  origen: string;
+  borde: string;
+  aspecto: string;
+  textura: string;
+  transito: string;
 }
 
 export interface PartialProductStock {
@@ -165,13 +171,7 @@ export interface PaginationResponse {
   empty: boolean;
 }
 
-export interface Tag {
-  id: number;
-  tagKey: string;
-  value: string;
-}
-
-export interface NewTag {
-  tagKey: string;
+export interface characteristic {
+  key: string;
   value: string;
 }

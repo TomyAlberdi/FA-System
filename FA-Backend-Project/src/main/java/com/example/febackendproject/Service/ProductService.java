@@ -1,9 +1,6 @@
 package com.example.febackendproject.Service;
 
-import com.example.febackendproject.DTO.CompleteProductDTO;
-import com.example.febackendproject.DTO.FilterDTO;
-import com.example.febackendproject.DTO.PartialProductDTO;
-import com.example.febackendproject.DTO.PartialProductStockDTO;
+import com.example.febackendproject.DTO.*;
 import com.example.febackendproject.Entity.Product;
 import com.example.febackendproject.Hooks.ProductSpecifications;
 import com.example.febackendproject.Repository.*;
@@ -17,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -107,12 +105,32 @@ public class ProductService {
             Integer stock = stockRepository.getQuantityByProductId(product.get().getId());
             returnProduct.setStock(stock);
             
-            returnProduct.setColor(product.get().getColor());
-            returnProduct.setOrigen(product.get().getOrigen());
-            returnProduct.setBorde(product.get().getBorde());
-            returnProduct.setAspecto(product.get().getAspecto());
-            returnProduct.setTextura(product.get().getTextura());
-            returnProduct.setTransito(product.get().getTransito());
+            List<CharacteristicDTO> characteristics = new ArrayList<>();
+            String color = product.get().getColor();
+            if (color != null) {
+                characteristics.add(new CharacteristicDTO("Color", color));
+            }
+            String origen = product.get().getOrigen();
+            if (origen != null) {
+                characteristics.add(new CharacteristicDTO("Origen", origen));
+            }
+            String borde = product.get().getBorde();
+            if (borde != null) {
+                characteristics.add(new CharacteristicDTO("Borde", borde));
+            }
+            String aspecto  = product.get().getAspecto();
+            if (aspecto != null) {
+                characteristics.add(new CharacteristicDTO("Aspecto", aspecto));
+            }
+            String textura = product.get().getTextura();
+            if (textura != null) {
+                characteristics.add(new CharacteristicDTO("Textura", textura));
+            }
+            String transito = product.get().getTransito();
+            if (transito != null) {
+                characteristics.add(new CharacteristicDTO("Tránsito", transito));
+            }
+            returnProduct.setCharacteristics(characteristics);
 
         }
         return Optional.of(returnProduct);

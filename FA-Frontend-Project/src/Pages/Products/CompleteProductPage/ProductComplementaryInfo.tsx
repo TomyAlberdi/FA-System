@@ -5,7 +5,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CompleteProduct, Tag } from "@/hooks/CatalogInterfaces";
+import { characteristic, CompleteProduct } from "@/hooks/CatalogInterfaces";
 
 export const ProductComplementaryInfo = ({
   Product,
@@ -117,16 +117,16 @@ export const ProductComplementaryInfo = ({
             )}
           </AccordionContent>
         </AccordionItem>
-        {Product?.tags && Product?.tags.length > 0 && (
+        {Product?.characteristics && Product?.characteristics.length > 0 && (
           <AccordionItem value="tags">
             <AccordionTrigger>Características</AccordionTrigger>
             <AccordionContent className="flex flex-row items-center gap-2 flex-wrap">
-              {Product?.tags?.map((tag: Tag, index: number) => {
+              {Product?.characteristics?.map((tag: characteristic, index: number) => {
                 return (
                   <Card key={index}>
                     <CardHeader>
                       <CardTitle className="text-center">
-                        {tag.tagKey}
+                        {tag.key}
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="text-center">
