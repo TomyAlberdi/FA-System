@@ -1,7 +1,7 @@
 package com.example.febackendproject.Service;
 
 import io.github.cdimascio.dotenv.Dotenv;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.annotation.PreDestroy;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
@@ -30,17 +30,27 @@ public class S3Service {
     }
     
     public URL generatePresignedUrl(String bucket, String key) {
+        
+        if (bucket == null || bucket.isEmpty() || key == null || key.isEmpty()) {
+            throw new IllegalArgumentException("Bucket and key must not be null or empty.");
+        }
+        
         PutObjectRequest objectRequest = PutObjectRequest.builder()
                 .bucket(bucket)
                 .key(key)
                 .build();
         
         PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
-                .signatureDuration(Duration.ofMinutes(10))
+                .signatureDuration(Duration.ofMinutes(5))
                 .putObjectRequest(objectRequest)
                 .build();
         
         return presigner.presignPutObject(presignRequest).url();
+    }
+    
+    @PreDestroy
+    public void close() {
+        presigner.close();
     }
 
 }

@@ -36,6 +36,7 @@ import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { Info, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 
 const formSchema = z.object({
@@ -79,6 +80,8 @@ export const AddProduct = () => {
     fetchCategories,
     fetchSubcategoriesByCategoryId,
   } = useCatalogContext();
+
+  const navigate = useNavigate();
 
   const { getToken } = useKindeAuth();
   const { toast } = useToast();
@@ -141,14 +144,14 @@ export const AddProduct = () => {
   };
 
   const uploadImages = async (files: Array<File>) => {
-    const uploadedUrls: string[] = [];
-    files.forEach(async (file) => {
+    const uploadPromises = files.map(async (file) => {
       try {
         if (!getToken) {
-          console.error("getToken is undefined");
-          return false;
+          console.error("Token is undefined");
+          throw new Error("Authentication token is missing.")
         }
         const accessToken = await getToken();
+
         const responseUrl = await fetch(
           `${BASE_URL}/img?fileName=${file.name}`,
           {
@@ -158,26 +161,28 @@ export const AddProduct = () => {
             },
           }
         );
+
         if (!responseUrl.ok) {
-          console.error("Error: ", responseUrl.statusText);
-          return false;
+          throw new Error(`Failed to get Presigned URL: ${responseUrl.statusText}`);
         }
+
         const uploadUrl = await responseUrl.text();
+
         await fetch(uploadUrl, {
           method: "PUT",
           body: file,
           headers: {
-            "Content-Type": file.type,
-          },
-        });
-        const imageUrl = uploadUrl.split("?")[0];
-        uploadedUrls.push(imageUrl);
+            "Content-Type": file.type
+          }
+        })
+
+        return uploadUrl.split("?")[0];
       } catch (error) {
-        console.error("Error: ", error);
-        return false;
+        console.error("Error during Image Upload: ", error);
+        throw error;
       }
-    });
-    return uploadedUrls;
+    })
+    return Promise.all(uploadPromises);
   };
 
   // Characteristics
@@ -226,50 +231,21 @@ export const AddProduct = () => {
     setIsSubmitting(true);
     try {
       const fileInput = SelectedFiles;
-      let imageUrls: string[] = [];
       if (fileInput && fileInput.length > 0) {
-        imageUrls = await uploadImages(fileInput);
-        data.images = imageUrls;
+        const uploadedUrls = await uploadImages(fileInput);
+        data.images = uploadedUrls;
       }
-      if (
-        Characteristics[0].value !== null &&
-        Characteristics[0].value !== ""
-      ) {
-        data.color = Characteristics[0].value;
-      }
-      if (
-        Characteristics[1].value !== null &&
-        Characteristics[1].value !== ""
-      ) {
-        data.origen = Characteristics[1].value;
-      }
-      if (
-        Characteristics[2].value !== null &&
-        Characteristics[2].value !== ""
-      ) {
-        data.borde = Characteristics[2].value;
-      }
-      if (
-        Characteristics[3].value !== null &&
-        Characteristics[3].value !== ""
-      ) {
-        data.aspecto = Characteristics[3].value;
-      }
-      if (
-        Characteristics[4].value !== null &&
-        Characteristics[4].value !== ""
-      ) {
-        data.textura = Characteristics[4].value;
-      }
-      if (
-        Characteristics[5].value !== null &&
-        Characteristics[5].value !== ""
-      ) {
-        data.transito = Characteristics[5].value;
-      }
+
+      if (Characteristics[0].value) data.color = Characteristics[0].value;
+      if (Characteristics[1].value) data.origen = Characteristics[1].value;
+      if (Characteristics[2].value) data.borde = Characteristics[2].value;
+      if (Characteristics[3].value) data.aspecto = Characteristics[3].value;
+      if (Characteristics[4].value) data.textura = Characteristics[4].value;
+      if (Characteristics[5].value) data.transito = Characteristics[5].value;
+
       await submitFormData(data);
     } catch (error) {
-      console.error("Error: ", error);
+      console.error("Error during form submission: ", error);
     }
   };
 
@@ -291,7 +267,7 @@ export const AddProduct = () => {
         body: JSON.stringify(formData),
       });
       if (!response.ok) {
-        console.error("Error: ", response.statusText);
+        console.error("Error creando el producto: ", response.statusText);
         toast({
           variant: "destructive",
           title: `Error ${response.status}`,
@@ -303,8 +279,9 @@ export const AddProduct = () => {
         title: "Producto creado",
         description: "El producto ha sido creado con éxito",
       });
+      navigate(-1)
     } catch (error) {
-      console.error("Error: ", error);
+      console.error("Error creando el producto: ", error);
       toast({
         variant: "destructive",
         title: `Error ${error}`,
