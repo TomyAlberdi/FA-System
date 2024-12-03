@@ -20,7 +20,7 @@ export const ProductMainInfo = ({
         <ChevronRight size={20} />
         <Button variant={"ghost"}>
           <Link
-            to={`/catalog/categories/subcategory/${Product?.subcategoryId}`}
+            to={`/catalog/subcategory/${Product?.subcategoryId}`}
           >
             {Product?.subcategory}
           </Link>

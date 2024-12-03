@@ -419,7 +419,7 @@ const Category = () => {
                               key={index}
                               onClick={() =>
                                 navigate(
-                                  `/catalog/categories/subcategory/${item.id}`
+                                  `/catalog/subcategory/${item.id}`
                                 )
                               }
                             >
