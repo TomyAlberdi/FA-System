@@ -61,7 +61,6 @@
             <version>0.22.1</version>
         </dependency>
 
-
         <!-- Database -->
         <dependency>
             <groupId>mysql</groupId>
@@ -75,6 +74,11 @@
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>io.github.cdimascio</groupId>
+            <artifactId>java-dotenv</artifactId>
+            <version>5.2.2</version>
         </dependency>
 
         <!-- Testing -->
