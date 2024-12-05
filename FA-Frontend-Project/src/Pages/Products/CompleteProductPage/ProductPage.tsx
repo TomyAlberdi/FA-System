@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useCatalogContext } from "@/Context/UseCatalogContext";
 import { CompleteProduct } from "@/hooks/CatalogInterfaces";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ProductPageAdminPanel } from "@/Pages/Products/CompleteProductPage/ProductAdminPanel";
 import { ProductCarousel } from "@/Pages/Products/CompleteProductPage/ProductCarousel";
 import { ProductMainInfo } from "@/Pages/Products/CompleteProductPage/ProductMainInfo";
@@ -17,10 +17,17 @@ export const ProductPage = () => {
 
   const [ReloadProduct, setReloadProduct] = useState(false);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (id) {
       fetchProduct(Number.parseInt(id))
-        .then((result) => setProduct(result ?? null))
+        .then((result) => {
+          if (!result) {
+            navigate(-1)
+          }
+          setProduct(result ?? null)
+        })
         .finally(() => setLoading(false));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

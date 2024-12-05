@@ -146,6 +146,9 @@ export const Provider = () => {
     if (id) {
       fetchProvider(Number.parseInt(id))
         .then((result) => {
+          if (!result) {
+            navigate(-1);
+          }
           setProvider(result ?? null);
           form.reset({
             name: result?.name ?? "",

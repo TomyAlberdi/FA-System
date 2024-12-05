@@ -15,9 +15,10 @@ import {
   Table,
   TableBody,
   TableCaption,
-  TableCell, TableHead,
+  TableCell,
+  TableHead,
   TableHeader,
-  TableRow
+  TableRow,
 } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
@@ -193,7 +194,12 @@ const Category = () => {
   useEffect(() => {
     if (id) {
       fetchCategory(Number.parseInt(id))
-        .then((result) => setCategory(result ?? null))
+        .then((result) => {
+          if (!result) {
+            navigate(-1);
+          }
+          setCategory(result ?? null);
+        })
         .finally(() => setLoading(false));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -418,9 +424,7 @@ const Category = () => {
                               className="cursor-pointer"
                               key={index}
                               onClick={() =>
-                                navigate(
-                                  `/catalog/subcategory/${item.id}`
-                                )
+                                navigate(`/catalog/subcategory/${item.id}`)
                               }
                             >
                               <TableCell className="font-medium">
