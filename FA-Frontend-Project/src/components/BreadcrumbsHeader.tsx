@@ -1,46 +1,44 @@
 import {
   Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbSeparator,
+  BreadcrumbItem, BreadcrumbList,
+  BreadcrumbSeparator
 } from "@/components/ui/breadcrumb";
-import { routesConfig } from "@/hooks/routesConfig";
-import { Link, matchPath, useLocation, useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+
+const breadcrumbsHandles = [
+  // Catalog
+  { label: "catalog", handle: "Catálogo" },
+  // Catalog pages
+  { label: "products", handle: "Productos" },
+  { label: "providers", handle: "Proveedores" },
+  { label: "categories", handle: "Categorías" },
+  { label: "subcategory", handle: "Subcategoría" },
+  { label: "stock", handle: "Stock" },
+  // Product pages
+  { label: "add", handle: "Agregar" },
+  { label: "update", handle: "Editar" },
+];
 
 export const BreadcrumbsHeader = () => {
-
   const location = useLocation();
-  const params = useParams();
 
-  // Helper to match the current route and build breadcrumbs segments
+  const BASE_URL = "localhost:5173";
+
   const getBreadcrumbs = () => {
-    const pathSegments = location.pathname.split("/").filter(Boolean);
-    let accumulatedPath = "";
-    const breadcrumbs: { label: string; to: string}[] = [];
-
-    pathSegments.forEach((segment) => {
-      accumulatedPath += `/${segment}`;
-      const matchedRoute = routesConfig.find((route) =>
-        matchPath(route.path ?? "", accumulatedPath)
+    const currentPath = location.pathname
+      .replace(BASE_URL, "")
+      .split("/")
+      .filter(Boolean);
+    const breadcrumbs = currentPath.map((segment) => {
+      const matchedHandle = breadcrumbsHandles.find(
+        (handle) => handle.label === segment
       );
-      if (matchedRoute) {
-        // Dynamic segment handling
-        let label = matchedRoute.handle || segment;
-        if (matchedRoute.path?.includes(":id")) {
-          const paramId = params.id || params[segment];
-          label += ` ${paramId}`;
-        }
-
-        breadcrumbs.push({
-          label,
-          to: accumulatedPath,
-        })
-      }
-    })
-
+      const isId = !isNaN(Number(segment));
+      const label = isId ? segment : matchedHandle?.handle || segment;
+      return { label };
+    });
     return breadcrumbs;
-  }
+  };
 
   const breadcrumbs = getBreadcrumbs();
 
@@ -48,16 +46,12 @@ export const BreadcrumbsHeader = () => {
     <Breadcrumb>
       <BreadcrumbList>
         {breadcrumbs.map((crumb, index) => (
-          <BreadcrumbItem key={crumb.to}>
-            <BreadcrumbLink asChild>
-              <Link to={crumb.to}>
-                {crumb.label}
-              </Link>
-            </BreadcrumbLink>
-            {index < breadcrumbs.length - 1 && <BreadcrumbSeparator /> }
+          <BreadcrumbItem key={index} className="select-none">
+            {crumb.label}
+            {index < breadcrumbs.length - 1 && <BreadcrumbSeparator />}
           </BreadcrumbItem>
         ))}
       </BreadcrumbList>
     </Breadcrumb>
-  )
-}
+  );
+};
