@@ -19,7 +19,7 @@ export const routesConfig = [
   { path: "/catalog/products", element: <Products /> },
   { path: "/catalog/products/:id", element: <ProductPage /> },
   { path: "/catalog/products/add", element: <AddProduct /> },
-  { path: "/catalog/products/update/:id", element: <UpdateProduct /> },
+  { path: "/catalog/products/:id/update", element: <UpdateProduct /> },
   { path: "/catalog/stock", element: <StockList /> },
   { path: "/catalog/stock/:id", element: <Stock /> },
   { path: "/catalog/providers", element: <Providers /> },

@@ -150,7 +150,7 @@ export const ProductPageAdminPanel = ({
   return (
     <div className="adminPanel productGridItem row-start-8 row-end-16 col-start-1 col-end-5 p-2 flex flex-col justify-start items-center gap-4">
       <Button className="w-10/12 text-md" asChild>
-        <Link to={`/catalog/products/update/${Product?.id}`}>
+        <Link to={`/catalog/products/${Product?.id}/update`}>
           <Pencil />
           Editar Producto
         </Link>
