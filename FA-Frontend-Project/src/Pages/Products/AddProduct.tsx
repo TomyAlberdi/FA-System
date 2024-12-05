@@ -25,10 +25,8 @@ import {
 } from "@/components/ui/tooltip";
 import { useCatalogContext } from "@/Context/UseCatalogContext";
 import {
-  Category,
-  characteristic,
-  Provider,
-  Subcategory,
+  Category, Provider,
+  Subcategory
 } from "@/hooks/CatalogInterfaces";
 import { useToast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -49,7 +47,9 @@ const formSchema = z.object({
   }),
   quality: z.string() || null,
   // Measure data
-  measureType: z.string({ required_error: "Seleccione una unidad de medida" }),
+  measureType: z.string().min(1, {
+    message: "La unidad de medida no puede estar vacía.",
+  }),
   measures: z.string() || null,
   // Sale unit data
   saleUnit: z.string().min(1, {
@@ -91,9 +91,9 @@ export const AddProduct = () => {
       name: "",
       description: "",
       quality: "",
-      measureType: "",
+      measureType: "M2",
       measures: "",
-      saleUnit: "",
+      saleUnit: "Caja",
       saleUnitPrice: "",
       measurePerSaleUnit: "",
       discountPercentage: 0,
@@ -148,7 +148,7 @@ export const AddProduct = () => {
       try {
         if (!getToken) {
           console.error("Token is undefined");
-          throw new Error("Authentication token is missing.")
+          throw new Error("Authentication token is missing.");
         }
         const accessToken = await getToken();
 
@@ -163,7 +163,9 @@ export const AddProduct = () => {
         );
 
         if (!responseUrl.ok) {
-          throw new Error(`Failed to get Presigned URL: ${responseUrl.statusText}`);
+          throw new Error(
+            `Failed to get Presigned URL: ${responseUrl.statusText}`
+          );
         }
 
         const uploadUrl = await responseUrl.text();
@@ -172,57 +174,18 @@ export const AddProduct = () => {
           method: "PUT",
           body: file,
           headers: {
-            "Content-Type": file.type
-          }
-        })
+            "Content-Type": file.type,
+          },
+        });
 
         return uploadUrl.split("?")[0];
       } catch (error) {
         console.error("Error during Image Upload: ", error);
         throw error;
       }
-    })
+    });
     return Promise.all(uploadPromises);
   };
-
-  // Characteristics
-  const characteristicsKey = [
-    "Color",
-    "Origen",
-    "Borde",
-    "Aspecto",
-    "Textura",
-    "Tránsito",
-  ];
-
-  const [Characteristics, setCharacteristics] = useState<Array<characteristic>>(
-    [
-      {
-        key: "color",
-        value: null,
-      },
-      {
-        key: "origen",
-        value: null,
-      },
-      {
-        key: "borde",
-        value: null,
-      },
-      {
-        key: "aspecto",
-        value: null,
-      },
-      {
-        key: "textura",
-        value: null,
-      },
-      {
-        key: "transito",
-        value: null,
-      },
-    ]
-  );
 
   // Form submitting
   const [IsSubmitting, setIsSubmitting] = useState(false);
@@ -235,14 +198,6 @@ export const AddProduct = () => {
         const uploadedUrls = await uploadImages(fileInput);
         data.images = uploadedUrls;
       }
-
-      if (Characteristics[0].value) data.color = Characteristics[0].value;
-      if (Characteristics[1].value) data.origen = Characteristics[1].value;
-      if (Characteristics[2].value) data.borde = Characteristics[2].value;
-      if (Characteristics[3].value) data.aspecto = Characteristics[3].value;
-      if (Characteristics[4].value) data.textura = Characteristics[4].value;
-      if (Characteristics[5].value) data.transito = Characteristics[5].value;
-
       await submitFormData(data);
     } catch (error) {
       console.error("Error during form submission: ", error);
@@ -279,7 +234,7 @@ export const AddProduct = () => {
         title: "Producto creado",
         description: "El producto ha sido creado con éxito",
       });
-      navigate(-1)
+      navigate(-1);
     } catch (error) {
       console.error("Error creando el producto: ", error);
       toast({
@@ -544,7 +499,7 @@ export const AddProduct = () => {
                         </TooltipTrigger>
                         <TooltipContent>
                           Ejemplos: <br />
-                          - M2 por Caja: 25 <br />
+                          - M2 por Caja: 2.35 <br />
                           - Unidades por Juego: 5 <br />
                         </TooltipContent>
                       </Tooltip>
@@ -552,10 +507,14 @@ export const AddProduct = () => {
                   </FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Ej: 100"
+                      placeholder="Ej: 2.35"
                       {...field}
                       disabled={SelectedMeasureType === SelectedSaleUnit}
-                      value={SelectedMeasureType === SelectedSaleUnit ? 1 : field.value}
+                      value={
+                        SelectedMeasureType === SelectedSaleUnit
+                          ? 1
+                          : field.value
+                      }
                       type="number"
                     />
                   </FormControl>
@@ -620,29 +579,90 @@ export const AddProduct = () => {
               <h3 className="text-xl font-semibold">Agregar Características</h3>
             </div>
             <div className="characteristicsContainer flex flex-col gap-2">
-              {
-                // Add new characteristics
-                characteristicsKey.map((c, index) => (
-                  <div
-                    className="flex flex-row justify-between w-full"
-                    key={index}
-                  >
-                    <span className="text-lg font-semibold w-1/6 border border-input bg-secondary rounded-l-md flex justify-center items-center -mr-5">
-                      {c}
-                    </span>
-                    <Input
-                      onChange={(e) =>
-                        setCharacteristics((prevState) => {
-                          const newState = [...prevState];
-                          newState[index].value = e.target.value;
-                          return newState;
-                        })
-                      }
-                      className="text-lg"
-                    />
-                  </div>
-                ))
-              }
+              <FormField
+                control={form.control}
+                name="color"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Color</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Ej: Rojo" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="origen"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Origen</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Ej: España" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="borde"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Borde</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Ej: Rectificado / Sin Rectificar"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="aspecto"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Aspecto</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Ej: Madera / Mármol" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="textura"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Textura</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Ej: Mate / Satinado" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="transito"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tránsito</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Ej: Intenso / Solo pared"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
           </div>
           {/* Submit button */}
