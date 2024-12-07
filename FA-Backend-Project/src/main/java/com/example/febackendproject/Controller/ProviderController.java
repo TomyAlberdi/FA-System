@@ -72,29 +72,25 @@ public class ProviderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newProvider);
     }
     
-    @PatchMapping("/{id}")
-    public ResponseEntity<?> update(@RequestBody Provider provider, @PathVariable Long id) {
-        Optional<Provider> searchProvider = providerService.findById(id);
-        if (searchProvider.isEmpty()) {
-            return notFound("ID", provider.getId().toString());
+    @PatchMapping
+    public ResponseEntity<?> update(@RequestBody Provider provider) {
+        if (providerService.existsById(provider.getId())) {
+            providerService.updateById(provider);
+            return ResponseEntity.ok("Provider updated");
         }
-        provider.setId(id);
-        providerService.updateById(provider);
-        return ResponseEntity.ok("Provider updated");
+        return notFound("ID", provider.getId().toString());
     }
     
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
-        Optional<Provider> provider = providerService.findById(id);
-        if (provider.isPresent()) {
+        if (providerService.existsById(id)) {
             List<Long> productIds = providerService.getIdByProvider(id);
             if (productIds.isEmpty()) {
                 providerService.deleteById(id);
-                return ResponseEntity.ok("Provider " + provider.get().getName() + " deleted successfully");
+                return ResponseEntity.ok("Provider deleted successfully");
             }
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("The provider " + provider.get().getName() + " has " + productIds.size() + " products associated to it.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("The provider has " + productIds.size() + " products associated to it.");
         }
         return notFound("ID", Long.toString(id));
     }
-    
 }
