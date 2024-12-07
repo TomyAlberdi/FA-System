@@ -230,4 +230,53 @@ public class ProductService {
         });
     }
     
+    public void increasePriceByProvider(Integer percentage, Long providerId) {
+        List<Product> products = productRepository.getProductByProviderId(providerId);
+        products.forEach(product -> {
+            double parsedSaleUnitPrice = Double.parseDouble(product.getSaleUnitPrice());
+            double updatedPrice = truncateToTwoDecimals(parsedSaleUnitPrice * (1 + percentage / 100.0));
+            product.setSaleUnitPrice(String.valueOf(updatedPrice));
+            if (product.getSaleUnit().equals(product.getMeasureType())) {
+                product.setMeasurePrice(updatedPrice);
+            } else {
+                double updatedMeasurePrice = updatedPrice / product.getMeasurePerSaleUnit();
+                product.setMeasurePrice(updatedMeasurePrice);
+            }
+        });
+    }
+    
+    public void applyDiscountByProvider(Integer percentage, Long providerId) {
+        List<Product> products = productRepository.getProductByProviderId(providerId);
+        products.forEach(product -> {
+            double parsedSaleUnitPrice = Double.parseDouble(product.getSaleUnitPrice());
+            
+            double totalDiscount = product.getDiscountPercentage() + percentage;
+            double discountFactor = 1 - (totalDiscount / 100.0);
+            
+            double discountedPrice = parsedSaleUnitPrice * discountFactor;
+            double discountedMeasurePrice = product.getMeasurePrice() * discountFactor;
+            
+            product.setDiscountedPrice(truncateToTwoDecimals(discountedPrice));
+            product.setDiscountedMeasurePrice(truncateToTwoDecimals(discountedMeasurePrice));
+        });
+    }
+    
+    public void removeDiscountByProvider(Integer percentage, Long providerId) {
+        List<Product> products = productRepository.getProductByProviderId(providerId);
+        products.forEach(product -> {
+           if (product.getDiscountPercentage() < percentage) {
+               double parsedSaleUnitPrice = Double.parseDouble(product.getSaleUnitPrice());
+               
+               double finalDiscount = product.getDiscountPercentage() - percentage;
+               double discountFactor = 1 - (finalDiscount / 100.0);
+               
+               double discountedPrice = parsedSaleUnitPrice * discountFactor;
+               double discountedMeasurePrice = product.getMeasurePrice() * discountFactor;
+               
+               product.setDiscountedPrice(truncateToTwoDecimals(discountedPrice));
+               product.setDiscountedMeasurePrice(truncateToTwoDecimals(discountedMeasurePrice));
+           }
+        });
+    }
+    
 }

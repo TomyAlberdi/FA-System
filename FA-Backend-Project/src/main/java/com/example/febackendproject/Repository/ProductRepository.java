@@ -48,6 +48,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT COUNT(p) AS amount FROM Product p WHERE p.providerId = ?1")
     Integer getProductAmountByProvider(Long id);
     
+    @Query("SELECT p FROM Product p WHERE p.providerId = ?1")
+    List<Product> getProductByProviderId(Long id);
+    
     /////// UTILS
     
     @Query("SELECT new com.example.febackendproject.DTO.MeasureDTO(p.measures, COUNT(p)) FROM Product p GROUP BY p.measures ORDER BY COUNT(p) DESC")

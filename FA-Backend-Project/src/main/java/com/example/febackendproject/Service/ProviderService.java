@@ -40,6 +40,10 @@ public class ProviderService {
         providerRepository.updateById(provider.getId(), provider.getName(), provider.getLocality(), provider.getAddress(), provider.getPhone(), provider.getEmail(), provider.getCuit());
     }
     
+    public boolean existsById(Long id) {
+        return providerRepository.existsById(id);
+    }
+    
     public Provider save(Provider provider) {
         return providerRepository.save(provider);
     }

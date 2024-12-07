@@ -130,4 +130,40 @@ public class ProductController {
         }
     }
     
+    @PutMapping("/applyDiscountByProvider")
+    public ResponseEntity<?> applyDiscountByProvider(
+            @RequestParam(value = "providerId") Long providerId,
+            @RequestParam(value = "percentage") Integer percentage
+    ) {
+        if (providerService.existsById(providerId)) {
+            productService.applyDiscountByProvider(percentage, providerId);
+            return ResponseEntity.ok("Descuento aplicado");
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontró el proveedor con ID: " + providerId.toString());
+    }
+    
+    @PutMapping("/increasePriceByProvider")
+    public ResponseEntity<?> increasePriceByProvider(
+            @RequestParam(value = "providerId") Long providerId,
+            @RequestParam(value = "percentage") Integer percentage
+    ) {
+        if (providerService.existsById(providerId)) {
+            productService.increasePriceByProvider(percentage, providerId);
+            return ResponseEntity.ok("Precio actualizado");
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontró el proveedor con ID: " + providerId.toString());
+    }
+    
+    @PutMapping("/removeDiscountByProvider")
+    public ResponseEntity<?> removeDiscountByProvider(
+            @RequestParam(value = "providerId") Long providerId,
+            @RequestParam(value = "percentage") Integer percentage
+    ) {
+        if (providerService.existsById(providerId)) {
+            productService.removeDiscountByProvider(percentage, providerId);
+            return ResponseEntity.ok("Descuento actualizado");
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontró el proveedor con ID: " + providerId.toString());
+    }
+    
 }
