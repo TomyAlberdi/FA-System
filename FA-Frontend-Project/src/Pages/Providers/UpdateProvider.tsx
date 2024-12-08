@@ -49,14 +49,16 @@ const formSchema = z.object({
 
 export const UpdateProvider = ({
   provider,
-  Open,
-  setOpen,
+  Reload,
+  setReload,
 }: {
   provider: ProviderInterface | null;
-  Open: boolean;
-  setOpen: (value: boolean) => void;
+  Reload: boolean;
+  setReload: (value: boolean) => void;
 }) => {
   const [LoadingRequest, setLoadingRequest] = useState(false);
+  const [Open, setOpen] = useState(false);
+
   const { BASE_URL } = useCatalogContext();
   const { toast } = useToast();
   const { getToken } = useKindeAuth();
@@ -107,6 +109,7 @@ export const UpdateProvider = ({
         title: "Proveedor actualizado",
         description: "El proveedor ha sido actualizada con éxito",
       });
+      setReload(!Reload);
     } catch (error) {
       console.error("Error: ", error);
       toast({

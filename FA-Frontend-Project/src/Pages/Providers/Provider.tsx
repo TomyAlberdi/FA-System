@@ -32,6 +32,7 @@ import {
   StockProduct,
 } from "@/hooks/CatalogInterfaces";
 import { UpdateProvider } from "@/Pages/Providers/UpdateProvider";
+import { UpdatePriceProvider } from "@/Pages/Providers/UpdatePriceProvider";
 
 const formSchema = z.object({
   id: z.number(),
@@ -67,7 +68,7 @@ export const Provider = () => {
   const { toast } = useToast();
   const { getToken } = useKindeAuth();
   const navigate = useNavigate();
-  const [Open, setOpen] = useState(false);
+  const [Reload, setReload] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -101,7 +102,7 @@ export const Provider = () => {
         .finally(() => setLoading(false));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, BASE_URL, Open]);
+  }, [id, BASE_URL, Reload]);
 
   useEffect(() => {
     if (id) {
@@ -116,6 +117,16 @@ export const Provider = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [LastLoadedPage]);
+
+  useEffect(() => {
+    if (id) {
+      fetchProviderProducts(Number.parseInt(id), 0, 8).then((result) => {
+        setProducts(result.content);
+        setIsLastPage(result.last);
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [Reload]);
 
   const onDeletePres = () => {
     if (Provider && Provider?.productsAmount > 0) {
@@ -229,8 +240,27 @@ export const Provider = () => {
                   </span>
                 </CardDescription>
               </CardContent>
+              {Provider && Provider.productsDiscount > 0 && (
+                <CardContent className="flex flex-row gap-2">
+                  <h3 className="text-xl font-semibold">
+                    Descuento actual:{" "}
+                    <span className="text-destructive text-2xl">
+                      %{Provider.productsDiscount}
+                    </span>
+                  </h3>
+                </CardContent>
+              )}
               <CardContent>
-                <UpdateProvider provider={Provider} Open={Open} setOpen={setOpen} />
+                <UpdateProvider
+                  provider={Provider}
+                  setReload={setReload}
+                  Reload={Reload}
+                />
+                <UpdatePriceProvider
+                  provider={Provider}
+                  setReload={setReload}
+                  Reload={Reload}
+                />
                 <Button
                   variant="destructive"
                   className="w-full"

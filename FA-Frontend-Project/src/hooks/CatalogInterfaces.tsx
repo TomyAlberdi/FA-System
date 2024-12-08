@@ -21,6 +21,7 @@ export interface Provider {
   email: string;
   cuit: string;
   productsAmount: number;
+  productsDiscount: number;
 }
 
 export interface Measure {

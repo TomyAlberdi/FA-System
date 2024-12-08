@@ -28,6 +28,7 @@ public class ProductService {
     private final SubcategoryRepository subcategoryRepository;
     private final ProviderRepository providerRepository;
     private final StockRepository stockRepository;
+    private final ProviderService providerService;
     
     public Page<PartialProductDTO> getPaginatedPartialProducts(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -239,14 +240,34 @@ public class ProductService {
             if (product.getSaleUnit().equals(product.getMeasureType())) {
                 product.setMeasurePrice(updatedPrice);
             } else {
-                double updatedMeasurePrice = updatedPrice / product.getMeasurePerSaleUnit();
+                double updatedMeasurePrice = truncateToTwoDecimals(updatedPrice / product.getMeasurePerSaleUnit());
+                product.setMeasurePrice(updatedMeasurePrice);
+            }
+            System.out.println("New Measure Price " + product.getMeasurePrice());
+        });
+        productRepository.saveAll(products);
+    }
+    
+    public void reducePriceByProvider(Integer percentage, Long providerId) {
+        List<Product> products = productRepository.getProductByProviderId(providerId);
+        products.forEach(product -> {
+            double parsedSaleUnitPrice = Double.parseDouble(product.getSaleUnitPrice());
+            double reduceFactor = 1 - (percentage / 100.0);
+            double updatedPrice = truncateToTwoDecimals(parsedSaleUnitPrice * reduceFactor);
+            product.setSaleUnitPrice(String.valueOf(updatedPrice));
+            if (product.getSaleUnit().equals(product.getMeasureType())) {
+                product.setMeasurePrice(updatedPrice);
+            } else {
+                double updatedMeasurePrice = truncateToTwoDecimals(updatedPrice / product.getMeasurePerSaleUnit());
                 product.setMeasurePrice(updatedMeasurePrice);
             }
         });
+        productRepository.saveAll(products);
     }
     
     public void applyDiscountByProvider(Integer percentage, Long providerId) {
         List<Product> products = productRepository.getProductByProviderId(providerId);
+        providerRepository.addProductsDiscount(percentage,providerId);
         products.forEach(product -> {
             double parsedSaleUnitPrice = Double.parseDouble(product.getSaleUnitPrice());
             
@@ -256,13 +277,17 @@ public class ProductService {
             double discountedPrice = parsedSaleUnitPrice * discountFactor;
             double discountedMeasurePrice = product.getMeasurePrice() * discountFactor;
             
+            product.setDiscountPercentage((int) totalDiscount);
             product.setDiscountedPrice(truncateToTwoDecimals(discountedPrice));
             product.setDiscountedMeasurePrice(truncateToTwoDecimals(discountedMeasurePrice));
         });
+        productRepository.saveAll(products);
     }
     
     public void removeDiscountByProvider(Integer percentage, Long providerId) {
         List<Product> products = productRepository.getProductByProviderId(providerId);
+        Integer currentDiscount = providerRepository.getProductsDiscount(providerId);
+        if (currentDiscount != null && currentDiscount >= percentage) {
         products.forEach(product -> {
            if (product.getDiscountPercentage() < percentage) {
                double parsedSaleUnitPrice = Double.parseDouble(product.getSaleUnitPrice());
@@ -273,10 +298,13 @@ public class ProductService {
                double discountedPrice = parsedSaleUnitPrice * discountFactor;
                double discountedMeasurePrice = product.getMeasurePrice() * discountFactor;
                
+               product.setDiscountPercentage((int) finalDiscount);
                product.setDiscountedPrice(truncateToTwoDecimals(discountedPrice));
                product.setDiscountedMeasurePrice(truncateToTwoDecimals(discountedMeasurePrice));
            }
         });
+        }
+        productRepository.saveAll(products);
     }
     
 }

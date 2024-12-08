@@ -30,6 +30,7 @@ public class Provider {
     private String phone;
     private String email;
     private String cuit;
+    private Integer productsDiscount = 0;
     
     @Column(name = "products_amount")
     private int productsAmount = 0;
