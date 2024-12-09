@@ -59,6 +59,27 @@ public class ProductService {
         } else {
             product.setMainImage("");
         }
+        if (productRepository.existsById(product.getId())) {
+            Optional<Product> oldProduct = productRepository.findById(product.getId());
+            if (oldProduct.isPresent()) {
+                if (!product.getCategoryId().equals(oldProduct.get().getCategoryId())) {
+                    categoryRepository.decrementProductsAmount(oldProduct.get().getCategoryId());
+                    categoryRepository.incrementProductsAmount(product.getCategoryId());
+                }
+                if (!product.getSubcategoryId().equals(oldProduct.get().getSubcategoryId())) {
+                    subcategoryRepository.decrementProductsAmount(oldProduct.get().getSubcategoryId());
+                    subcategoryRepository.incrementProductsAmount(product.getSubcategoryId());
+                }
+                if (!product.getProviderId().equals(oldProduct.get().getProviderId())) {
+                    providerRepository.decrementProductsAmount(oldProduct.get().getProviderId());
+                    providerRepository.incrementProductsAmount(product.getProviderId());
+                }
+            }
+        } else {
+            categoryRepository.incrementProductsAmount(product.getCategoryId());
+            subcategoryRepository.incrementProductsAmount(product.getSubcategoryId());
+            providerRepository.incrementProductsAmount(product.getProviderId());
+        }
         return productRepository.save(product);
     }
     
@@ -188,12 +209,14 @@ public class ProductService {
     }
     
     public void deleteById(Long id) {
+        Optional<Product> product = productRepository.findById(id);
         productRepository.deleteById(id);
         stockRepository.deleteByProductId(id);
-    }
-    
-    public Optional<List<String>> getProductImages(Long productId) {
-        return productRepository.findById(productId).map(Product::getImages);
+        if (product.isPresent()) {
+            categoryRepository.decrementProductsAmount(product.get().getCategoryId());
+            subcategoryRepository.decrementProductsAmount(product.get().getSubcategoryId());
+            providerRepository.decrementProductsAmount(product.get().getProviderId());
+        }
     }
     
     public Optional<Product> updateDisabled(Long productId, Boolean disabled) {

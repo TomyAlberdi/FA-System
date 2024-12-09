@@ -17,23 +17,15 @@ public class ProviderService {
     private final ProductRepository productRepository;
     
     public List<Provider> list() {
-        List<Provider> providers = providerRepository.findAll();
-        for (Provider provider : providers) {
-            provider.setProductsAmount(productRepository.getProductAmountByProvider(provider.getId()));
-        }
-        return providers;
+        return providerRepository.findAll();
     }
     
     public Optional<Provider> findById(Long id) {
-        Optional<Provider> provider = providerRepository.findById(id);
-        provider.ifPresent(value -> value.setProductsAmount(productRepository.getProductAmountByProvider(id)));
-        return provider;
+        return providerRepository.findById(id);
     }
     
     public Optional<Provider> findByName(String name) {
-        Optional<Provider> provider = providerRepository.findByName(name);
-        provider.ifPresent(value -> value.setProductsAmount(productRepository.getProductAmountByProvider(provider.get().getId())));
-        return provider;
+        return providerRepository.findByName(name);
     }
     
     public void updateById(Provider provider) {

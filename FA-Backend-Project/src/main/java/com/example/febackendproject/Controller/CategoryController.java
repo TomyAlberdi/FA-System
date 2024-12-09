@@ -102,6 +102,16 @@ public class CategoryController {
         return notFound("ID", Long.toString(id));
     }
     
+    @GetMapping("/top4")
+    public ResponseEntity<?> topFour() {
+        return ResponseEntity.ok(categoryService.listTopFour());
+    }
+    
+    @GetMapping("/offset4")
+    public ResponseEntity<?> offsetFour() {
+        return ResponseEntity.ok(categoryService.getProductsAmountOffset());
+    }
+    
     // Subcategories
     
     @GetMapping("/subcategory")

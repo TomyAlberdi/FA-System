@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -19,5 +20,20 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     @Transactional
     @Query("UPDATE Category SET name=?1 WHERE id=?2")
     void updateById(String name, Long id);
-
+    
+    @Modifying
+    @Transactional
+    @Query("UPDATE Category SET productsAmount = productsAmount + 1 WHERE id=?1")
+    void incrementProductsAmount(Long id);
+    
+    @Modifying
+    @Transactional
+    @Query("UPDATE Category SET productsAmount = productsAmount - 1 WHERE id = ?1")
+    void decrementProductsAmount(Long id);
+    
+    @Query("SELECT c FROM Category c ORDER BY c.productsAmount DESC LIMIT 4")
+    List<Category> listTopFourByProductAmount();
+    
+    @Query("SELECT SUM(c.productsAmount) FROM Category c ORDER BY c.productsAmount DESC OFFSET 4")
+    Integer getProductAmountOffset();
 }

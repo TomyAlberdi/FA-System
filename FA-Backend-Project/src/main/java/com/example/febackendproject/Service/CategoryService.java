@@ -21,11 +21,15 @@ public class CategoryService {
     private final ProductRepository productRepository;
     
     public List<Category> list() {
-        List<Category> categories = categoryRepository.findAll();
-        for (Category category : categories) {
-            category.setProductsAmount(productRepository.getProductAmountByCategory(category.getId()));
-        }
-        return categories;
+        return categoryRepository.findAll();
+    }
+    
+    public List<Category> listTopFour() {
+        return categoryRepository.listTopFourByProductAmount();
+    }
+    
+    public Integer getProductsAmountOffset() {
+        return categoryRepository.getProductAmountOffset();
     }
     
     public Optional<CompleteCategoryDTO> findById(Long id) {
@@ -34,13 +38,8 @@ public class CategoryService {
         CompleteCategoryDTO newCategory = new CompleteCategoryDTO();
         if (category.isPresent()) {
             newCategory.setName(category.get().getName());
-            newCategory.setProductsAmount(productRepository.getProductAmountByCategory(id));
             newCategory.setId(id);
-            List<Subcategory> subcategories = subcategoryRepository.findByCategoryId(id);
-            subcategories.forEach(subcategory -> {
-                subcategory.setProductsAmount(productRepository.getProductAmountBySubcategory(subcategory.getId()));
-            });
-            newCategory.setSubcategories(subcategories);
+            newCategory.setSubcategories(subcategoryRepository.findByCategoryId(id));
         }
         
         return Optional.of(newCategory);
@@ -51,7 +50,6 @@ public class CategoryService {
         Optional<CompleteCategoryDTO> newCategory = Optional.empty();
         if (category.isPresent()) {
             newCategory.get().setName(category.get().getName());
-            newCategory.get().setProductsAmount(productRepository.getProductAmountByCategory(category.get().getId()));
             newCategory.get().setId(category.get().getId());
             newCategory.get().setSubcategories(subcategoryRepository.findByCategoryId(category.get().getId()));
         }
@@ -79,23 +77,15 @@ public class CategoryService {
     // Subcategories
     
     public List<Subcategory> listSubcategories() {
-        List<Subcategory> subcategories = subcategoryRepository.findAll();
-        for (Subcategory subcategory : subcategories) {
-            subcategory.setProductsAmount(productRepository.getProductAmountBySubcategory(subcategory.getId()));
-        }
-        return subcategories;
+        return subcategoryRepository.findAll();
     }
     
     public Optional<Subcategory> findSubcategoryById(Long id) {
-        Optional<Subcategory> subcategory = subcategoryRepository.findById(id);
-        subcategory.ifPresent(value -> value.setProductsAmount(productRepository.getProductAmountBySubcategory(id)));
-        return subcategory;
+        return subcategoryRepository.findById(id);
     }
     
     public Optional<Subcategory> findSubcategoryByName(String name) {
-        Optional<Subcategory> subcategory = subcategoryRepository.findByName(name);
-        subcategory.ifPresent(value -> value.setProductsAmount(productRepository.getProductAmountBySubcategory(subcategory.get().getCategoryId())));
-        return subcategory;
+        return subcategoryRepository.findByName(name);
     }
     
     public void updateSubcategory(String name, Long id) {

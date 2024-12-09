@@ -28,4 +28,14 @@ public interface ProviderRepository extends JpaRepository<Provider, Long> {
     @Query("UPDATE Provider SET productsDiscount = ?1 WHERE id = ?2")
     void updateProductsDiscount(Integer productsDiscount, Long id);
     
+    @Modifying
+    @Transactional
+    @Query("UPDATE Category SET productsAmount = productsAmount + 1 WHERE id=?1")
+    void incrementProductsAmount(Long id);
+    
+    @Modifying
+    @Transactional
+    @Query("UPDATE Category SET productsAmount = productsAmount - 1 WHERE id = ?1")
+    void decrementProductsAmount(Long id);
+    
 }
