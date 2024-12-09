@@ -101,7 +101,7 @@ export const ProductComplementaryInfo = ({
                   <CardTitle className="text-center">Medidas</CardTitle>
                 </CardHeader>
                 <CardContent className="text-center">
-                  <span className="text-xl">{Product?.measures} CM</span>
+                  <span className="text-xl">{Product?.measures}</span>
                 </CardContent>
               </Card>
             )}
