@@ -65,58 +65,34 @@ export const UpdatePriceProvider = ({
         return;
       }
       const accessToken = await getToken();
+      let url;
       if (data.percentage > 0) {
-        const response = await fetch(
-          `${BASE_URL}/product/increasePriceByProvider?providerId=${provider?.id}&percentage=${data.percentage}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
-        if (!response.ok) {
-          console.error("Error: ", response.statusText);
-          toast({
-            variant: "destructive",
-            title: `Error ${response.status}`,
-            description: `Ocurrió un error al actualizar el precio.`,
-          });
-          return;
-        }
-        toast({
-          title: "Precio actualizado",
-          description: "El precio ha sido actualizado con éxito",
-        });
+        url = `${BASE_URL}/product/increasePriceByProvider?providerId=${provider?.id}&percentage=${data.percentage}`;
       } else {
-        const response = await fetch(
-          `${BASE_URL}/product/reducePriceByProvider?providerId=${
-            provider?.id
-          }&percentage=${data.percentage * -1}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
-        if (!response.ok) {
-          console.error("Error: ", response.statusText);
-          toast({
-            variant: "destructive",
-            title: `Error ${response.status}`,
-            description: `Ocurrió un error al actualizar el precio.`,
-          });
-          return;
-        }
-        toast({
-          title: "Precio actualizado",
-          description: "El precio ha sido actualizado con éxito",
-          variant: "default",
-        });
+        url = `${BASE_URL}/product/reducePriceByProvider?providerId=${
+          provider?.id
+        }&percentage=${data.percentage * -1}`;
       }
+      const response = await fetch(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (!response.ok) {
+        console.error("Error: ", response.statusText);
+        toast({
+          variant: "destructive",
+          title: `Error ${response.status}`,
+          description: `Ocurrió un error al actualizar el precio.`,
+        });
+        return;
+      }
+      toast({
+        title: "Precio actualizado",
+        description: "El precio ha sido actualizado con éxito",
+      });
     } catch (error) {
       console.error("Error: ", error);
       toast({

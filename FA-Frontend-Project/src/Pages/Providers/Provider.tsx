@@ -261,6 +261,11 @@ export const Provider = () => {
                   setReload={setReload}
                   Reload={Reload}
                 />
+{/*                 <UpdateDiscountProvider
+                  provider={Provider}
+                  setReload={setReload}
+                  Reload={Reload}
+                /> */}
                 <Button
                   variant="destructive"
                   className="w-full"

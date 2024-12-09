@@ -25,12 +25,7 @@ public interface ProviderRepository extends JpaRepository<Provider, Long> {
     
     @Modifying
     @Transactional
-    @Query("UPDATE Provider SET productsDiscount = productsDiscount + ?1 WHERE id = ?2")
-    void addProductsDiscount(Integer productsDiscount, Long id);
-    
-    @Modifying
-    @Transactional
-    @Query("UPDATE Provider SET productsDiscount = productsDiscount - ?1 WHERE id = ?2")
-    void removeProductsDiscount(Integer productsDiscount, Long id);
+    @Query("UPDATE Provider SET productsDiscount = ?1 WHERE id = ?2")
+    void updateProductsDiscount(Integer productsDiscount, Long id);
     
 }

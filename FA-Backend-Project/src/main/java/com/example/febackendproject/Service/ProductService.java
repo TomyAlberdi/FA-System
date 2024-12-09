@@ -267,20 +267,25 @@ public class ProductService {
     
     public void applyDiscountByProvider(Integer percentage, Long providerId) {
         List<Product> products = productRepository.getProductByProviderId(providerId);
-        providerRepository.addProductsDiscount(percentage,providerId);
+        Integer currentDiscount = providerRepository.getProductsDiscount(providerId);
         products.forEach(product -> {
             double parsedSaleUnitPrice = Double.parseDouble(product.getSaleUnitPrice());
+            double discountDifference = product.getDiscountPercentage() - currentDiscount;
+            double finalDiscount = Math.abs(discountDifference + (currentDiscount + percentage));
             
-            double totalDiscount = product.getDiscountPercentage() + percentage;
-            double discountFactor = 1 - (totalDiscount / 100.0);
+            double discountFactor = 1 - (finalDiscount / 100.0);
             
             double discountedPrice = parsedSaleUnitPrice * discountFactor;
             double discountedMeasurePrice = product.getMeasurePrice() * discountFactor;
             
-            product.setDiscountPercentage((int) totalDiscount);
+            System.out.println("Old discount: " + product.getDiscountPercentage());
+            System.out.println("New discount: " + finalDiscount);
+            
+            product.setDiscountPercentage((int) finalDiscount);
             product.setDiscountedPrice(truncateToTwoDecimals(discountedPrice));
             product.setDiscountedMeasurePrice(truncateToTwoDecimals(discountedMeasurePrice));
         });
+        providerRepository.updateProductsDiscount(percentage,providerId);
         productRepository.saveAll(products);
     }
     
@@ -288,22 +293,26 @@ public class ProductService {
         List<Product> products = productRepository.getProductByProviderId(providerId);
         Integer currentDiscount = providerRepository.getProductsDiscount(providerId);
         if (currentDiscount != null && currentDiscount >= percentage) {
-        products.forEach(product -> {
-           if (product.getDiscountPercentage() < percentage) {
-               double parsedSaleUnitPrice = Double.parseDouble(product.getSaleUnitPrice());
-               
-               double finalDiscount = product.getDiscountPercentage() - percentage;
-               double discountFactor = 1 - (finalDiscount / 100.0);
-               
-               double discountedPrice = parsedSaleUnitPrice * discountFactor;
-               double discountedMeasurePrice = product.getMeasurePrice() * discountFactor;
-               
-               product.setDiscountPercentage((int) finalDiscount);
-               product.setDiscountedPrice(truncateToTwoDecimals(discountedPrice));
-               product.setDiscountedMeasurePrice(truncateToTwoDecimals(discountedMeasurePrice));
-           }
-        });
+            products.forEach(product -> {
+                if (product.getDiscountPercentage() < percentage) {
+                   double parsedSaleUnitPrice = Double.parseDouble(product.getSaleUnitPrice());
+                   double discountDifference = product.getDiscountPercentage() - currentDiscount;
+                   double finalDiscount = Math.abs(discountDifference + (currentDiscount - percentage));
+                   double discountFactor = 1 - (finalDiscount / 100.0);
+                   
+                   double discountedPrice = parsedSaleUnitPrice * discountFactor;
+                   double discountedMeasurePrice = product.getMeasurePrice() * discountFactor;
+                    
+                    System.out.println("Old discount: " + product.getDiscountPercentage());
+                    System.out.println("New discount: " + finalDiscount);
+                    
+                   product.setDiscountPercentage((int) finalDiscount);
+                   product.setDiscountedPrice(truncateToTwoDecimals(discountedPrice));
+                   product.setDiscountedMeasurePrice(truncateToTwoDecimals(discountedMeasurePrice));
+                }
+            });
         }
+        providerRepository.updateProductsDiscount(percentage,providerId);
         productRepository.saveAll(products);
     }
     
