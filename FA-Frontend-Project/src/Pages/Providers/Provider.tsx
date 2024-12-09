@@ -240,7 +240,7 @@ export const Provider = () => {
                   </span>
                 </CardDescription>
               </CardContent>
-              {Provider && Provider.productsDiscount > 0 && (
+{/*               {Provider && Provider.productsDiscount > 0 && (
                 <CardContent className="flex flex-row gap-2">
                   <h3 className="text-xl font-semibold">
                     Descuento actual:{" "}
@@ -249,7 +249,7 @@ export const Provider = () => {
                     </span>
                   </h3>
                 </CardContent>
-              )}
+              )} */}
               <CardContent>
                 <UpdateProvider
                   provider={Provider}
