@@ -20,6 +20,10 @@ public class ProviderService {
         return providerRepository.findAll();
     }
     
+    public List<Provider> listTopFive() {
+        return providerRepository.listTopFiveByProductAmount();
+    }
+    
     public Optional<Provider> findById(Long id) {
         return providerRepository.findById(id);
     }

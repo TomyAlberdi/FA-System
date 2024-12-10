@@ -93,4 +93,9 @@ public class ProviderController {
         }
         return notFound("ID", Long.toString(id));
     }
+    
+    @GetMapping("/top5")
+    public ResponseEntity<?> topFive() {
+        return ResponseEntity.ok(providerService.listTopFive());
+    }
 }

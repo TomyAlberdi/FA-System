@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -37,5 +38,8 @@ public interface ProviderRepository extends JpaRepository<Provider, Long> {
     @Transactional
     @Query("UPDATE Category SET productsAmount = productsAmount - 1 WHERE id = ?1")
     void decrementProductsAmount(Long id);
+    
+    @Query("SELECT p FROM Provider p ORDER BY p.productsAmount DESC LIMIT 5")
+    List<Provider> listTopFiveByProductAmount();
     
 }
