@@ -105,6 +105,13 @@ export interface StockRecord {
   recordDate: string;
 }
 
+export interface StockRecordInfo {
+  productId: number;
+  productName: string;
+  productSaleUnit: string;
+  record: StockRecord;
+}
+
 export interface FilterData {
   type: string;
   value: number | string | boolean;
