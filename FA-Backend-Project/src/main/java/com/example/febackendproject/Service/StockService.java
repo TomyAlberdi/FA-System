@@ -1,6 +1,7 @@
 package com.example.febackendproject.Service;
 
 import com.example.febackendproject.DTO.PartialStockDTO;
+import com.example.febackendproject.DTO.StockRecordDTO;
 import com.example.febackendproject.Entity.Stock;
 import com.example.febackendproject.Entity.StockRecord;
 import com.example.febackendproject.Repository.StockPaginationRepository;
@@ -11,10 +12,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -77,6 +80,15 @@ public class StockService {
             stock.setStockRecords(new ArrayList<>());
         }
         stock.getStockRecords().add(0, record);
+    }
+    
+    public List<StockRecordDTO> getLastRecords() {
+        List<Object[]> results = stockRepository.getLastRecordsNative();
+        return results.stream().map(row -> {
+            Timestamp date = (Timestamp) row[5];
+            StockRecord stockRecord = new StockRecord((String) row[3], (Integer) row[4], date.toLocalDateTime());
+            return new StockRecordDTO((Long) row[0], (String) row[1], (String) row[2], stockRecord);
+        }).collect(Collectors.toList());
     }
     
 }

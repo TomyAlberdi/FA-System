@@ -79,4 +79,9 @@ public class StockController {
         }
     }
     
+    @GetMapping("/lastRecords")
+    public ResponseEntity<?> getLastRecords() {
+        return ResponseEntity.ok(stockService.getLastRecords());
+    }
+    
 }
