@@ -31,9 +31,9 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     @Query("UPDATE Category SET productsAmount = productsAmount - 1 WHERE id = ?1")
     void decrementProductsAmount(Long id);
     
-    @Query("SELECT c FROM Category c ORDER BY c.productsAmount DESC LIMIT 4")
-    List<Category> listTopFourByProductAmount();
+    @Query("SELECT c FROM Category c ORDER BY c.productsAmount DESC LIMIT 5")
+    List<Category> listTopFiveByProductAmount();
     
-    @Query("SELECT SUM(c.productsAmount) FROM Category c ORDER BY c.productsAmount DESC OFFSET 4")
+    @Query("SELECT SUM(c.productsAmount) FROM Category c ORDER BY c.productsAmount DESC OFFSET 5")
     Integer getProductAmountOffset();
 }

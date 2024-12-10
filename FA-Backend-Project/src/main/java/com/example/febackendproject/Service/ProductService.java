@@ -59,7 +59,7 @@ public class ProductService {
         } else {
             product.setMainImage("");
         }
-        if (productRepository.existsById(product.getId())) {
+        if (product.getId() != null) {
             Optional<Product> oldProduct = productRepository.findById(product.getId());
             if (oldProduct.isPresent()) {
                 if (!product.getCategoryId().equals(oldProduct.get().getCategoryId())) {
@@ -131,27 +131,27 @@ public class ProductService {
             
             List<CharacteristicDTO> characteristics = new ArrayList<>();
             String color = product.get().getColor();
-            if (color != null) {
+            if (color != null && !color.isEmpty()) {
                 characteristics.add(new CharacteristicDTO("Color", color));
             }
             String origen = product.get().getOrigen();
-            if (origen != null) {
+            if (origen != null && !origen.isEmpty()) {
                 characteristics.add(new CharacteristicDTO("Origen", origen));
             }
             String borde = product.get().getBorde();
-            if (borde != null) {
+            if (borde != null && !borde.isEmpty()) {
                 characteristics.add(new CharacteristicDTO("Borde", borde));
             }
             String aspecto  = product.get().getAspecto();
-            if (aspecto != null) {
+            if (aspecto != null && !aspecto.isEmpty()) {
                 characteristics.add(new CharacteristicDTO("Aspecto", aspecto));
             }
             String textura = product.get().getTextura();
-            if (textura != null) {
+            if (textura != null && !textura.isEmpty()) {
                 characteristics.add(new CharacteristicDTO("Textura", textura));
             }
             String transito = product.get().getTransito();
-            if (transito != null) {
+            if (transito != null && !transito.isEmpty()) {
                 characteristics.add(new CharacteristicDTO("Tránsito", transito));
             }
             returnProduct.setCharacteristics(characteristics);
@@ -337,6 +337,10 @@ public class ProductService {
         }
         providerRepository.updateProductsDiscount(percentage,providerId);
         productRepository.saveAll(products);
+    }
+    
+    public long getTotalProducts() {
+        return productRepository.count();
     }
     
 }

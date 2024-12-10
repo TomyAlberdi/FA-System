@@ -24,8 +24,8 @@ public class CategoryService {
         return categoryRepository.findAll();
     }
     
-    public List<Category> listTopFour() {
-        return categoryRepository.listTopFourByProductAmount();
+    public List<Category> listTopFive() {
+        return categoryRepository.listTopFiveByProductAmount();
     }
     
     public Integer getProductsAmountOffset() {

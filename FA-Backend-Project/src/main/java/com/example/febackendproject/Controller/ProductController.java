@@ -178,4 +178,9 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontró el proveedor con ID: " + providerId.toString());
     }
     
+    @GetMapping("/count")
+    public ResponseEntity<?> count() {
+        return ResponseEntity.ok(productService.getTotalProducts());
+    }
+    
 }

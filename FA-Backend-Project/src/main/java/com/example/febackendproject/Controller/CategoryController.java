@@ -102,9 +102,9 @@ public class CategoryController {
         return notFound("ID", Long.toString(id));
     }
     
-    @GetMapping("/top4")
-    public ResponseEntity<?> topFour() {
-        return ResponseEntity.ok(categoryService.listTopFour());
+    @GetMapping("/top5")
+    public ResponseEntity<?> topFive() {
+        return ResponseEntity.ok(categoryService.listTopFive());
     }
     
     @GetMapping("/offset4")
