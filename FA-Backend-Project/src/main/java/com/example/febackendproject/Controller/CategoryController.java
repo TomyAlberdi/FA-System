@@ -107,11 +107,6 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.listTopFive());
     }
     
-    @GetMapping("/offset4")
-    public ResponseEntity<?> offsetFour() {
-        return ResponseEntity.ok(categoryService.getProductsAmountOffset());
-    }
-    
     // Subcategories
     
     @GetMapping("/subcategory")

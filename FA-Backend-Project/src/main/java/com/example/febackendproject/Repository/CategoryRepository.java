@@ -34,6 +34,4 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     @Query("SELECT c FROM Category c ORDER BY c.productsAmount DESC LIMIT 5")
     List<Category> listTopFiveByProductAmount();
     
-    @Query("SELECT SUM(c.productsAmount) FROM Category c ORDER BY c.productsAmount DESC OFFSET 5")
-    Integer getProductAmountOffset();
 }

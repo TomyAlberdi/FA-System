@@ -28,10 +28,6 @@ public class CategoryService {
         return categoryRepository.listTopFiveByProductAmount();
     }
     
-    public Integer getProductsAmountOffset() {
-        return categoryRepository.getProductAmountOffset();
-    }
-    
     public Optional<CompleteCategoryDTO> findById(Long id) {
         Optional<Category> category = categoryRepository.findById(id);
         

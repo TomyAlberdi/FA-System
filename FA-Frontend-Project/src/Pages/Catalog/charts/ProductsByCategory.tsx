@@ -84,7 +84,7 @@ export const ProductsByCategory = () => {
   } else {
     return (
       <Card className="flex flex-col row-span-5 col-span-3 border border-input">
-        <CardHeader className="items-center pb-0">
+        <CardHeader className="items-center pb-0 text-center">
           <CardTitle>Categorías más populares</CardTitle>
         </CardHeader>
         <CardContent className="flex-1 pb-0">
