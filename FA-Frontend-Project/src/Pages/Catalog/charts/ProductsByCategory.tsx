@@ -72,10 +72,10 @@ export const ProductsByCategory = () => {
   }, [ChartData]);
 
   if (Loading) {
-    return <Skeleton className="row-span-5 col-span-3" />;
+    return <Skeleton className="row-span-5 col-span-4" />;
   } else if (ChartData.length === 0) {
     return (
-      <Card className="row-span-5 col-span-3 border border-input flex flex-col items-center justify-center text-center">
+      <Card className="row-span-5 col-span-4 border border-input flex flex-col items-center justify-center text-center">
         <CardHeader className="items-center pb-0">
           <CardTitle>No hay categorías disponibles</CardTitle>
         </CardHeader>
@@ -83,7 +83,7 @@ export const ProductsByCategory = () => {
     );
   } else {
     return (
-      <Card className="flex flex-col row-span-5 col-span-3 border border-input">
+      <Card className="flex flex-col row-span-5 col-span-4 border border-input">
         <CardHeader className="items-center pb-0 text-center">
           <CardTitle>Categorías más populares</CardTitle>
         </CardHeader>

@@ -40,13 +40,13 @@ export const ProductsByProvider = () => {
         const totalProducts = await response.json();
         setTotalProducts(totalProducts);
         setChartData((prev) => {
-          const hasOtras = prev.some((item) => item.category === "Otras");
+          const hasOtras = prev.some((item) => item.category === "Otros");
           if (totalProducts > topTotalProducts && !hasOtras) {
             const difference = totalProducts - topTotalProducts;
             return [
               ...prev,
               {
-                category: "Otras",
+                category: "Otros",
                 products: difference,
                 fill: `hsl(var(--ring))`,
               },
@@ -73,10 +73,10 @@ export const ProductsByProvider = () => {
   }, [ChartData]);
 
   if (Loading) {
-    return <Skeleton className="col-start-4 row-span-5 col-span-3" />;
+    return <Skeleton className="col-start-5 row-span-5 col-span-4" />;
   } else if (ChartData.length === 0) {
     return (
-      <Card className="col-start-4 row-span-5 col-span-3 border border-input flex flex-col items-center justify-center text-center">
+      <Card className="col-start-5 row-span-5 col-span-4 border border-input flex flex-col items-center justify-center text-center">
         <CardHeader className="items-center pb-0">
           <CardTitle>No hay proveedores disponibles</CardTitle>
         </CardHeader>
@@ -84,7 +84,7 @@ export const ProductsByProvider = () => {
     );
   } else {
     return (
-      <Card className="col-start-4 flex flex-col row-span-5 col-span-3 border border-input">
+      <Card className="col-start-5 flex flex-col row-span-5 col-span-4 border border-input">
         <CardHeader className="items-center pb-0 text-center">
           <CardTitle>Proveedores más populares</CardTitle>
         </CardHeader>
