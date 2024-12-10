@@ -1,7 +1,7 @@
 package com.example.febackendproject.Service;
 
-import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.annotation.PreDestroy;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
@@ -17,15 +17,15 @@ import java.time.Duration;
 public class S3Service {
 
     private final S3Presigner presigner;
-    private final Dotenv dotenv;
     
-    public S3Service() {
-        this.dotenv = Dotenv.load();
+    public S3Service(
+            @Value("${aws.accessKeyId}") String accessKeyId,
+            @Value("${aws.secretAccessKey}") String secretAccessKey) {
         this.presigner = S3Presigner.builder()
                 .region(Region.SA_EAST_1)
                 .credentialsProvider(
                         StaticCredentialsProvider.create(
-                                AwsBasicCredentials.create(dotenv.get("ACCESS_KEY_ID"),dotenv.get("SECRET_ACCESS_KEY"))))
+                                AwsBasicCredentials.create(accessKeyId, secretAccessKey)))
                 .build();
     }
     
