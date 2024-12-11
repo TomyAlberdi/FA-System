@@ -34,4 +34,16 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
             nativeQuery = true)
     List<Object[]> getLastRecordsNative();
     
+    @Query(value = """
+        SELECT
+            DATE_FORMAT(record_date, '%Y-%m') AS month,
+            record_type,
+            SUM(quantity_change) AS total
+        FROM stock_records
+        WHERE record_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+        GROUP BY month, record_type
+        ORDER BY month DESC
+    """, nativeQuery = true)
+    List<Object[]> getStocksByMonth();
+    
 }
