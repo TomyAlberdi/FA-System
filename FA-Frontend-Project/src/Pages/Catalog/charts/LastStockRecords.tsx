@@ -78,6 +78,7 @@ export const LastStockRecords = () => {
                   <TableRow
                     key={index}
                     onClick={() => navigate(`/catalog/stock/${data.productId}`)}
+                    className="cursor-pointer"
                   >
                     <TableCell>{data.productName}</TableCell>
                     <TableCell className="flex flex-row items-center gap-2">
