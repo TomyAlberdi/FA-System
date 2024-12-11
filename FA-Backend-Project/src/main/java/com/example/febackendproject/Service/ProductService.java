@@ -59,19 +59,21 @@ public class ProductService {
         } else {
             product.setMainImage("");
         }
-        Optional<Product> oldProduct = productRepository.findById(product.getId());
-        if (oldProduct.isPresent()) {
-            if (!product.getCategoryId().equals(oldProduct.get().getCategoryId())) {
-                categoryRepository.decrementProductsAmount(oldProduct.get().getCategoryId());
-                categoryRepository.incrementProductsAmount(product.getCategoryId());
-            }
-            if (!product.getSubcategoryId().equals(oldProduct.get().getSubcategoryId())) {
-                subcategoryRepository.decrementProductsAmount(oldProduct.get().getSubcategoryId());
-                subcategoryRepository.incrementProductsAmount(product.getSubcategoryId());
-            }
-            if (!product.getProviderId().equals(oldProduct.get().getProviderId())) {
-                providerRepository.decrementProductsAmount(oldProduct.get().getProviderId());
-                providerRepository.incrementProductsAmount(product.getProviderId());
+        if (product.getId() != null) {
+            Optional<Product> oldProduct = productRepository.findById(product.getId());
+            if (oldProduct.isPresent()) {
+                if (!product.getCategoryId().equals(oldProduct.get().getCategoryId())) {
+                    categoryRepository.decrementProductsAmount(oldProduct.get().getCategoryId());
+                    categoryRepository.incrementProductsAmount(product.getCategoryId());
+                }
+                if (!product.getSubcategoryId().equals(oldProduct.get().getSubcategoryId())) {
+                    subcategoryRepository.decrementProductsAmount(oldProduct.get().getSubcategoryId());
+                    subcategoryRepository.incrementProductsAmount(product.getSubcategoryId());
+                }
+                if (!product.getProviderId().equals(oldProduct.get().getProviderId())) {
+                    providerRepository.decrementProductsAmount(oldProduct.get().getProviderId());
+                    providerRepository.incrementProductsAmount(product.getProviderId());
+                }
             }
         } else {
             categoryRepository.incrementProductsAmount(product.getCategoryId());
@@ -140,7 +142,7 @@ public class ProductService {
             if (borde != null && !borde.isEmpty()) {
                 characteristics.add(new CharacteristicDTO("Borde", borde));
             }
-            String aspecto = product.get().getAspecto();
+            String aspecto  = product.get().getAspecto();
             if (aspecto != null && !aspecto.isEmpty()) {
                 characteristics.add(new CharacteristicDTO("Aspecto", aspecto));
             }
@@ -153,7 +155,7 @@ public class ProductService {
                 characteristics.add(new CharacteristicDTO("Tránsito", transito));
             }
             returnProduct.setCharacteristics(characteristics);
-            
+
         }
         return Optional.of(returnProduct);
     }
@@ -170,7 +172,7 @@ public class ProductService {
         });
         return new PageImpl<>(partialProductStockDTOList, pageable, partialProductStockDTOPage.getTotalElements());
     }
-    
+
     public Page<PartialProductStockDTO> getPartialProductStockBySubcategory(Long subcategoryId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<PartialProductStockDTO> partialProductStockDTOPage = productPaginationRepository.getPartialProductStockBySubcategoryId(subcategoryId, pageable);
@@ -237,18 +239,18 @@ public class ProductService {
         
         return productPaginationRepository.findAll(spec, pageable).map(product -> {
             return new PartialProductDTO(
-                    product.getId(),
-                    product.getName(),
-                    product.getDisabled(),
-                    product.getMeasureType(),
-                    product.getMeasurePrice(),
-                    product.getSaleUnit(),
-                    product.getSaleUnitPrice(),
-                    product.getMeasurePerSaleUnit(),
-                    product.getDiscountPercentage(),
-                    product.getDiscountedPrice(),
-                    product.getDiscountedMeasurePrice(),
-                    product.getMainImage());
+                        product.getId(),
+                        product.getName(),
+                        product.getDisabled(),
+                        product.getMeasureType(),
+                        product.getMeasurePrice(),
+                        product.getSaleUnit(),
+                        product.getSaleUnitPrice(),
+                        product.getMeasurePerSaleUnit(),
+                        product.getDiscountPercentage(),
+                        product.getDiscountedPrice(),
+                        product.getDiscountedMeasurePrice(),
+                        product.getMainImage());
         });
     }
     
@@ -306,7 +308,7 @@ public class ProductService {
             product.setDiscountedPrice(truncateToTwoDecimals(discountedPrice));
             product.setDiscountedMeasurePrice(truncateToTwoDecimals(discountedMeasurePrice));
         });
-        providerRepository.updateProductsDiscount(percentage, providerId);
+        providerRepository.updateProductsDiscount(percentage,providerId);
         productRepository.saveAll(products);
     }
     
@@ -316,24 +318,24 @@ public class ProductService {
         if (currentDiscount != null && currentDiscount >= percentage) {
             products.forEach(product -> {
                 if (product.getDiscountPercentage() < percentage) {
-                    double parsedSaleUnitPrice = Double.parseDouble(product.getSaleUnitPrice());
-                    double discountDifference = product.getDiscountPercentage() - currentDiscount;
-                    double finalDiscount = Math.abs(discountDifference + (currentDiscount - percentage));
-                    double discountFactor = 1 - (finalDiscount / 100.0);
-                    
-                    double discountedPrice = parsedSaleUnitPrice * discountFactor;
-                    double discountedMeasurePrice = product.getMeasurePrice() * discountFactor;
+                   double parsedSaleUnitPrice = Double.parseDouble(product.getSaleUnitPrice());
+                   double discountDifference = product.getDiscountPercentage() - currentDiscount;
+                   double finalDiscount = Math.abs(discountDifference + (currentDiscount - percentage));
+                   double discountFactor = 1 - (finalDiscount / 100.0);
+                   
+                   double discountedPrice = parsedSaleUnitPrice * discountFactor;
+                   double discountedMeasurePrice = product.getMeasurePrice() * discountFactor;
                     
                     System.out.println("Old discount: " + product.getDiscountPercentage());
                     System.out.println("New discount: " + finalDiscount);
                     
-                    product.setDiscountPercentage((int) finalDiscount);
-                    product.setDiscountedPrice(truncateToTwoDecimals(discountedPrice));
-                    product.setDiscountedMeasurePrice(truncateToTwoDecimals(discountedMeasurePrice));
+                   product.setDiscountPercentage((int) finalDiscount);
+                   product.setDiscountedPrice(truncateToTwoDecimals(discountedPrice));
+                   product.setDiscountedMeasurePrice(truncateToTwoDecimals(discountedMeasurePrice));
                 }
             });
         }
-        providerRepository.updateProductsDiscount(percentage, providerId);
+        providerRepository.updateProductsDiscount(percentage,providerId);
         productRepository.saveAll(products);
     }
     
