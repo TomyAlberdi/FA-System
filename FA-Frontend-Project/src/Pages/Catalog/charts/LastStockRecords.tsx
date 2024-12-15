@@ -3,6 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
+  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -48,10 +49,10 @@ export const LastStockRecords = () => {
   };
 
   if (Loading) {
-    return <Skeleton className="col-start-9 col-span-7 row-span-7" />;
+    return <Skeleton className="col-start-9 col-span-7 row-start-1 row-end-16" />;
   } else if (Data.length === 0) {
     return (
-      <Card className="col-start-9 col-span-7 row-span-7 border border-input flex flex-col items-center justify-center text-center">
+      <Card className="col-start-9 col-span-7 row-start-1 row-end-16 border border-input flex flex-col items-center justify-center text-center">
         <CardHeader className="items-center pb-0">
           <CardTitle>No hay registros de stock disponibles</CardTitle>
         </CardHeader>
@@ -59,7 +60,7 @@ export const LastStockRecords = () => {
     );
   } else {
     return (
-      <Card className="col-start-9 col-span-7 row-span-7 flex flex-col">
+      <Card className="col-start-9 col-span-7 row-start-1 row-end-16 flex flex-col">
         <CardHeader className="items-center pb-2 text-center">
           <CardTitle>Últimos movimientos de stock</CardTitle>
         </CardHeader>
@@ -94,6 +95,9 @@ export const LastStockRecords = () => {
                 );
               })}
             </TableBody>
+            <TableCaption className="text-center">
+              Últimos registros de stock
+            </TableCaption>
           </Table>
         </CardContent>
       </Card>

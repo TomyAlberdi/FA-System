@@ -30,7 +30,7 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
             "sr.record_type, sr.quantity_change, sr.record_date " + // Map specific StockRecord fields
             "FROM stock s " +
             "JOIN stock_records sr ON s.id = sr.stock_id " +
-            "ORDER BY sr.record_date DESC LIMIT 5",
+            "ORDER BY sr.record_date DESC LIMIT 12",
             nativeQuery = true)
     List<Object[]> getLastRecordsNative();
     
