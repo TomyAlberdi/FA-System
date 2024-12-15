@@ -183,3 +183,9 @@ export interface characteristic {
   key: string;
   value: string | null;
 }
+
+export interface StockReport {
+  month: string;
+  in: number;
+  out: number;
+}

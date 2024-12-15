@@ -14,24 +14,44 @@ import { StockRecordInfo } from "@/hooks/CatalogInterfaces";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 
 export const LastStockRecords = () => {
   const { BASE_URL } = useCatalogContext();
+  const { getToken } = useKindeAuth();
   const [Loading, setLoading] = useState(true);
   const [Data, setData] = useState<Array<StockRecordInfo>>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    setLoading(true);
-    fetch(`${BASE_URL}/stock/lastRecords`)
-      .then((response) => response.json())
-      .then((data: Array<StockRecordInfo>) => {
-        setData(data);
-      })
-      .catch((error) => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        if (!getToken) {
+          console.error("getToken is undefined");
+          return;
+        }
+        const accessToken = await getToken();
+        fetch(`${BASE_URL}/stock/lastRecords`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+          .then((response) => response.json())
+          .then((data: Array<StockRecordInfo>) => {
+            setData(data);
+          })
+          .catch((error) => {
+            console.error("Error fetching data:", error);
+          })
+          .finally(() => setLoading(false));
+      } catch (error) {
         console.error("Error fetching data:", error);
-      })
-      .finally(() => setLoading(false));
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -49,7 +69,9 @@ export const LastStockRecords = () => {
   };
 
   if (Loading) {
-    return <Skeleton className="col-start-9 col-span-7 row-start-1 row-end-16" />;
+    return (
+      <Skeleton className="col-start-9 col-span-7 row-start-1 row-end-16" />
+    );
   } else if (Data.length === 0) {
     return (
       <Card className="col-start-9 col-span-7 row-start-1 row-end-16 border border-input flex flex-col items-center justify-center text-center">
@@ -90,7 +112,9 @@ export const LastStockRecords = () => {
                       )}
                       {data.record.stockChange} {data.productSaleUnit}s
                     </TableCell>
-                    <TableCell>{formatDateTime(data.record.recordDate)}</TableCell>
+                    <TableCell>
+                      {formatDateTime(data.record.recordDate)}
+                    </TableCell>
                   </TableRow>
                 );
               })}
