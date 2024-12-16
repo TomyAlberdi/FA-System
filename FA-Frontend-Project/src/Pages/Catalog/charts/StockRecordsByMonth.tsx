@@ -1,4 +1,10 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
@@ -58,10 +64,12 @@ export const StockRecordsByMonth = () => {
   }, []);
 
   if (Loading) {
-    return <Skeleton className="row-start-1 row-end-8 col-start-1 col-end-9" />;
+    return (
+      <Skeleton className="row-start-1 row-end-8 col-start-1 col-span-8" />
+    );
   } else if (ChartData.length === 0) {
     return (
-      <Card className="row-start-1 row-end-8 col-start-1 col-end-9">
+      <Card className="row-start-1 row-end-8 col-start-1 col-span-8">
         <CardHeader className="items-center pb-0">
           <CardTitle>No hay información disponible</CardTitle>
         </CardHeader>
@@ -69,7 +77,7 @@ export const StockRecordsByMonth = () => {
     );
   } else {
     return (
-      <Card className="col-start-1 col-end-9 row-span-10">
+      <Card className="row-start-1 row-end-11 col-start-1 col-span-8">
         <CardHeader>
           <CardTitle>Movimientos de stock por mes</CardTitle>
           <CardDescription>
@@ -77,32 +85,32 @@ export const StockRecordsByMonth = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="flex-1 pb-0 w-full">
-        <ChartContainer config={chartConfig}>
-          <BarChart accessibilityLayer data={ChartData}>
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="month"
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-              tickFormatter={(value) => value.slice(0, 3)}
-            />
-            <ChartTooltip content={<ChartTooltipContent hideLabel />} />
-            <ChartLegend content={<ChartLegendContent />} />
-            <Bar
-              dataKey="in"
-              stackId="a"
-              fill="hsl(var(--chart-2))"
-              radius={[0, 0, 4, 4]}
-            />
-            <Bar
-              dataKey="out"
-              stackId="a"
-              fill="hsl(var(--destructive))"
-              radius={[4, 4, 0, 0]}
-            />
-          </BarChart>
-        </ChartContainer>
+          <ChartContainer config={chartConfig}>
+            <BarChart accessibilityLayer data={ChartData}>
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="month"
+                tickLine={false}
+                tickMargin={10}
+                axisLine={false}
+                tickFormatter={(value) => value.slice(0, 3)}
+              />
+              <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+              <ChartLegend content={<ChartLegendContent />} />
+              <Bar
+                dataKey="in"
+                stackId="a"
+                fill="hsl(var(--chart-2))"
+                radius={[0, 0, 4, 4]}
+              />
+              <Bar
+                dataKey="out"
+                stackId="a"
+                fill="hsl(var(--destructive))"
+                radius={[4, 4, 0, 0]}
+              />
+            </BarChart>
+          </ChartContainer>
         </CardContent>
       </Card>
     );
