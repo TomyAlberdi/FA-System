@@ -22,4 +22,14 @@ public interface SubcategoryRepository extends JpaRepository<Subcategory, Long> 
     @Query("UPDATE Subcategory SET name=?1 WHERE id=?2")
     void updateById(String name, Long id);
     
+    @Modifying
+    @Transactional
+    @Query("UPDATE Subcategory SET productsAmount = productsAmount + 1 WHERE id=?1")
+    void incrementProductsAmount(Long id);
+    
+    @Modifying
+    @Transactional
+    @Query("UPDATE Subcategory SET productsAmount = productsAmount - 1 WHERE id = ?1")
+    void decrementProductsAmount(Long id);
+    
 }

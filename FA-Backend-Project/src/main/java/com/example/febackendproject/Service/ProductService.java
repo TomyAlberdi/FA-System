@@ -1,11 +1,7 @@
 package com.example.febackendproject.Service;
 
-import com.example.febackendproject.DTO.CompleteProductDTO;
-import com.example.febackendproject.DTO.FilterDTO;
-import com.example.febackendproject.DTO.PartialProductDTO;
-import com.example.febackendproject.DTO.PartialProductStockDTO;
+import com.example.febackendproject.DTO.*;
 import com.example.febackendproject.Entity.Product;
-import com.example.febackendproject.Entity.Tag;
 import com.example.febackendproject.Hooks.ProductSpecifications;
 import com.example.febackendproject.Repository.*;
 import lombok.AllArgsConstructor;
@@ -32,8 +28,7 @@ public class ProductService {
     private final SubcategoryRepository subcategoryRepository;
     private final ProviderRepository providerRepository;
     private final StockRepository stockRepository;
-    private final TagRepository tagRepository;
-    private final TagService tagService;
+    private final ProviderService providerService;
     
     public Page<PartialProductDTO> getPaginatedPartialProducts(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -41,16 +36,17 @@ public class ProductService {
     }
     
     public Product save(Product product) {
+        double parsedSaleUnitPrice = Double.parseDouble(product.getSaleUnitPrice());
         if (product.getSaleUnit().equals(product.getMeasureType())) {
             product.setMeasurePerSaleUnit(1.0);
-            product.setMeasurePrice(truncateToTwoDecimals(product.getSaleUnitPrice()));
+            product.setMeasurePrice(truncateToTwoDecimals(parsedSaleUnitPrice));
         } else if (product.getMeasurePerSaleUnit() > 0) {
-            double measurePrice = product.getSaleUnitPrice() / product.getMeasurePerSaleUnit();
+            double measurePrice = parsedSaleUnitPrice / product.getMeasurePerSaleUnit();
             product.setMeasurePrice(truncateToTwoDecimals(measurePrice));
         }
         if (product.getDiscountPercentage() > 0) {
             double discountFactor = 1 - (product.getDiscountPercentage() / 100.0);
-            double discountedPrice = product.getSaleUnitPrice() * discountFactor;
+            double discountedPrice = parsedSaleUnitPrice * discountFactor;
             double discountedMeasurePrice = product.getMeasurePrice() * discountFactor;
             product.setDiscountedPrice(truncateToTwoDecimals(discountedPrice));
             product.setDiscountedMeasurePrice(truncateToTwoDecimals(discountedMeasurePrice));
@@ -63,10 +59,26 @@ public class ProductService {
         } else {
             product.setMainImage("");
         }
-        if (!product.getTags().isEmpty()) {
-            List<Tag> tagObjects = tagRepository.findValidIds(product.getTags());
-            List<Long> filteredIds = tagService.filterUniqueTagKeys(tagObjects);
-            product.setTags(filteredIds);
+        if (product.getId() != null) {
+            Optional<Product> oldProduct = productRepository.findById(product.getId());
+            if (oldProduct.isPresent()) {
+                if (!product.getCategoryId().equals(oldProduct.get().getCategoryId())) {
+                    categoryRepository.decrementProductsAmount(oldProduct.get().getCategoryId());
+                    categoryRepository.incrementProductsAmount(product.getCategoryId());
+                }
+                if (!product.getSubcategoryId().equals(oldProduct.get().getSubcategoryId())) {
+                    subcategoryRepository.decrementProductsAmount(oldProduct.get().getSubcategoryId());
+                    subcategoryRepository.incrementProductsAmount(product.getSubcategoryId());
+                }
+                if (!product.getProviderId().equals(oldProduct.get().getProviderId())) {
+                    providerRepository.decrementProductsAmount(oldProduct.get().getProviderId());
+                    providerRepository.incrementProductsAmount(product.getProviderId());
+                }
+            }
+        } else {
+            categoryRepository.incrementProductsAmount(product.getCategoryId());
+            subcategoryRepository.incrementProductsAmount(product.getSubcategoryId());
+            providerRepository.incrementProductsAmount(product.getProviderId());
         }
         return productRepository.save(product);
     }
@@ -81,6 +93,7 @@ public class ProductService {
         CompleteProductDTO returnProduct = new CompleteProductDTO();
         if (productRepository.existsById(id)) {
             Optional<Product> product = productRepository.findById(id);
+            double parsedSaleUnitPrice = Double.parseDouble(product.get().getSaleUnitPrice());
             returnProduct.setId(product.get().getId());
             returnProduct.setName(product.get().getName());
             returnProduct.setDisabled(product.get().getDisabled());
@@ -92,7 +105,7 @@ public class ProductService {
             returnProduct.setMeasurePrice(product.get().getMeasurePrice());
             
             returnProduct.setSaleUnit(product.get().getSaleUnit());
-            returnProduct.setSaleUnitPrice(product.get().getSaleUnitPrice());
+            returnProduct.setSaleUnitPrice(parsedSaleUnitPrice);
             returnProduct.setMeasurePerSaleUnit(product.get().getMeasurePerSaleUnit());
             
             returnProduct.setDiscountPercentage(product.get().getDiscountPercentage());
@@ -116,12 +129,33 @@ public class ProductService {
             Integer stock = stockRepository.getQuantityByProductId(product.get().getId());
             returnProduct.setStock(stock);
             
-            List<Tag> tags = new ArrayList<>();
-            for (Long tagId : product.get().getTags()) {
-                Optional<Tag> newTag = tagRepository.findById(tagId);
-                newTag.ifPresent(tags::add);
+            List<CharacteristicDTO> characteristics = new ArrayList<>();
+            String color = product.get().getColor();
+            if (color != null && !color.isEmpty()) {
+                characteristics.add(new CharacteristicDTO("Color", color));
             }
-            returnProduct.setTags(tags);
+            String origen = product.get().getOrigen();
+            if (origen != null && !origen.isEmpty()) {
+                characteristics.add(new CharacteristicDTO("Origen", origen));
+            }
+            String borde = product.get().getBorde();
+            if (borde != null && !borde.isEmpty()) {
+                characteristics.add(new CharacteristicDTO("Borde", borde));
+            }
+            String aspecto  = product.get().getAspecto();
+            if (aspecto != null && !aspecto.isEmpty()) {
+                characteristics.add(new CharacteristicDTO("Aspecto", aspecto));
+            }
+            String textura = product.get().getTextura();
+            if (textura != null && !textura.isEmpty()) {
+                characteristics.add(new CharacteristicDTO("Textura", textura));
+            }
+            String transito = product.get().getTransito();
+            if (transito != null && !transito.isEmpty()) {
+                characteristics.add(new CharacteristicDTO("Tránsito", transito));
+            }
+            returnProduct.setCharacteristics(characteristics);
+
         }
         return Optional.of(returnProduct);
     }
@@ -175,12 +209,14 @@ public class ProductService {
     }
     
     public void deleteById(Long id) {
+        Optional<Product> product = productRepository.findById(id);
         productRepository.deleteById(id);
         stockRepository.deleteByProductId(id);
-    }
-    
-    public Optional<List<String>> getProductImages(Long productId) {
-        return productRepository.findById(productId).map(Product::getImages);
+        if (product.isPresent()) {
+            categoryRepository.decrementProductsAmount(product.get().getCategoryId());
+            subcategoryRepository.decrementProductsAmount(product.get().getSubcategoryId());
+            providerRepository.decrementProductsAmount(product.get().getProviderId());
+        }
     }
     
     public Optional<Product> updateDisabled(Long productId, Boolean disabled) {
@@ -202,7 +238,7 @@ public class ProductService {
                 .and(ProductSpecifications.hasKeyword(filterDTO.getKeyword()));
         
         return productPaginationRepository.findAll(spec, pageable).map(product -> {
-                return new PartialProductDTO(
+            return new PartialProductDTO(
                         product.getId(),
                         product.getName(),
                         product.getDisabled(),
@@ -216,6 +252,95 @@ public class ProductService {
                         product.getDiscountedMeasurePrice(),
                         product.getMainImage());
         });
+    }
+    
+    public void increasePriceByProvider(Integer percentage, Long providerId) {
+        List<Product> products = productRepository.getProductByProviderId(providerId);
+        products.forEach(product -> {
+            double parsedSaleUnitPrice = Double.parseDouble(product.getSaleUnitPrice());
+            double updatedPrice = truncateToTwoDecimals(parsedSaleUnitPrice * (1 + percentage / 100.0));
+            product.setSaleUnitPrice(String.valueOf(updatedPrice));
+            if (product.getSaleUnit().equals(product.getMeasureType())) {
+                product.setMeasurePrice(updatedPrice);
+            } else {
+                double updatedMeasurePrice = truncateToTwoDecimals(updatedPrice / product.getMeasurePerSaleUnit());
+                product.setMeasurePrice(updatedMeasurePrice);
+            }
+            System.out.println("New Measure Price " + product.getMeasurePrice());
+        });
+        productRepository.saveAll(products);
+    }
+    
+    public void reducePriceByProvider(Integer percentage, Long providerId) {
+        List<Product> products = productRepository.getProductByProviderId(providerId);
+        products.forEach(product -> {
+            double parsedSaleUnitPrice = Double.parseDouble(product.getSaleUnitPrice());
+            double reduceFactor = 1 - (percentage / 100.0);
+            double updatedPrice = truncateToTwoDecimals(parsedSaleUnitPrice * reduceFactor);
+            product.setSaleUnitPrice(String.valueOf(updatedPrice));
+            if (product.getSaleUnit().equals(product.getMeasureType())) {
+                product.setMeasurePrice(updatedPrice);
+            } else {
+                double updatedMeasurePrice = truncateToTwoDecimals(updatedPrice / product.getMeasurePerSaleUnit());
+                product.setMeasurePrice(updatedMeasurePrice);
+            }
+        });
+        productRepository.saveAll(products);
+    }
+    
+    public void applyDiscountByProvider(Integer percentage, Long providerId) {
+        List<Product> products = productRepository.getProductByProviderId(providerId);
+        Integer currentDiscount = providerRepository.getProductsDiscount(providerId);
+        products.forEach(product -> {
+            double parsedSaleUnitPrice = Double.parseDouble(product.getSaleUnitPrice());
+            double discountDifference = product.getDiscountPercentage() - currentDiscount;
+            double finalDiscount = Math.abs(discountDifference + (currentDiscount + percentage));
+            
+            double discountFactor = 1 - (finalDiscount / 100.0);
+            
+            double discountedPrice = parsedSaleUnitPrice * discountFactor;
+            double discountedMeasurePrice = product.getMeasurePrice() * discountFactor;
+            
+            System.out.println("Old discount: " + product.getDiscountPercentage());
+            System.out.println("New discount: " + finalDiscount);
+            
+            product.setDiscountPercentage((int) finalDiscount);
+            product.setDiscountedPrice(truncateToTwoDecimals(discountedPrice));
+            product.setDiscountedMeasurePrice(truncateToTwoDecimals(discountedMeasurePrice));
+        });
+        providerRepository.updateProductsDiscount(percentage,providerId);
+        productRepository.saveAll(products);
+    }
+    
+    public void removeDiscountByProvider(Integer percentage, Long providerId) {
+        List<Product> products = productRepository.getProductByProviderId(providerId);
+        Integer currentDiscount = providerRepository.getProductsDiscount(providerId);
+        if (currentDiscount != null && currentDiscount >= percentage) {
+            products.forEach(product -> {
+                if (product.getDiscountPercentage() < percentage) {
+                   double parsedSaleUnitPrice = Double.parseDouble(product.getSaleUnitPrice());
+                   double discountDifference = product.getDiscountPercentage() - currentDiscount;
+                   double finalDiscount = Math.abs(discountDifference + (currentDiscount - percentage));
+                   double discountFactor = 1 - (finalDiscount / 100.0);
+                   
+                   double discountedPrice = parsedSaleUnitPrice * discountFactor;
+                   double discountedMeasurePrice = product.getMeasurePrice() * discountFactor;
+                    
+                    System.out.println("Old discount: " + product.getDiscountPercentage());
+                    System.out.println("New discount: " + finalDiscount);
+                    
+                   product.setDiscountPercentage((int) finalDiscount);
+                   product.setDiscountedPrice(truncateToTwoDecimals(discountedPrice));
+                   product.setDiscountedMeasurePrice(truncateToTwoDecimals(discountedMeasurePrice));
+                }
+            });
+        }
+        providerRepository.updateProductsDiscount(percentage,providerId);
+        productRepository.saveAll(products);
+    }
+    
+    public long getTotalProducts() {
+        return productRepository.count();
     }
     
 }

@@ -26,10 +26,11 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
-  TableBody, TableCell,
+  TableBody,
+  TableCell,
   TableHead,
   TableHeader,
-  TableRow
+  TableRow,
 } from "@/components/ui/table";
 import { ToastAction } from "@/components/ui/toast";
 import { useCatalogContext } from "@/Context/UseCatalogContext";
@@ -127,7 +128,12 @@ export const Subcategory = () => {
   useEffect(() => {
     if (id) {
       fetchSubcategoryById(Number.parseInt(id))
-        .then((result) => setSubcategory(result ?? null))
+        .then((result) => {
+          if (!result) {
+            navigate(-1);
+          }
+          setSubcategory(result ?? null);
+        })
         .finally(() => setLoading(false));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

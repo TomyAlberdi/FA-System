@@ -21,6 +21,7 @@ export interface Provider {
   email: string;
   cuit: string;
   productsAmount: number;
+  productsDiscount: number;
 }
 
 export interface Measure {
@@ -67,7 +68,6 @@ export interface CompleteProduct extends StockProduct {
   measures: string;
   discountedMeasurePrice: number,
   images: Array<string>;
-  tags: Array<Tag>;
   category: string;
   categoryId: number;
   measurePrice: number;
@@ -75,6 +75,13 @@ export interface CompleteProduct extends StockProduct {
   subcategoryId: number;
   provider: string;
   providerId: number;
+  characteristics: Array<characteristic>;
+  color: string;
+  origen: string;
+  borde: string;
+  aspecto: string;
+  textura: string;
+  transito: string;
 }
 
 export interface PartialProductStock {
@@ -96,6 +103,13 @@ export interface StockRecord {
   recordType: string;
   stockChange: number;
   recordDate: string;
+}
+
+export interface StockRecordInfo {
+  productId: number;
+  productName: string;
+  productSaleUnit: string;
+  record: StockRecord;
 }
 
 export interface FilterData {
@@ -165,8 +179,13 @@ export interface PaginationResponse {
   empty: boolean;
 }
 
-export interface Tag {
-  id: number;
-  tagKey: string;
-  value: string;
+export interface characteristic {
+  key: string;
+  value: string | null;
+}
+
+export interface StockReport {
+  month: string;
+  in: number;
+  out: number;
 }

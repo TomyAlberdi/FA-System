@@ -1,13 +1,12 @@
 package com.example.febackendproject.DTO;
 
-import com.example.febackendproject.Entity.Tag;
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
-import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -34,7 +33,6 @@ public class CompleteProductDTO {
     private Double discountedMeasurePrice;
     
     private List<String> images;
-    private List<Tag> tags;
     
     private String category;
     private Long categoryId;
@@ -44,5 +42,7 @@ public class CompleteProductDTO {
     private Long providerId;
     
     private Integer stock;
+    
+    private List<CharacteristicDTO> characteristics;
     
 }

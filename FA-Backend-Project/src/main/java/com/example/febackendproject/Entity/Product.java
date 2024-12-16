@@ -43,16 +43,10 @@ public class Product {
     private String mainImage;
     
     // External Tables data
-    @NotNull
     @ElementCollection
     @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
     @Column
     private List<String> images;
-    
-    @ElementCollection
-    @CollectionTable(name = "product_tag_mapping", joinColumns = @JoinColumn(name = "product_id"))
-    @Column(name = "tag_id")
-    private List<Long> tags;
     
     @Column(name = "provider_id")
     @NotNull
@@ -84,7 +78,7 @@ public class Product {
     
     @NotNull
     @Column(name = "sale_unit_price")
-    private Double saleUnitPrice;
+    private String saleUnitPrice;
     
     @Column(name = "measure_per_sale_unit")
     private Double measurePerSaleUnit;
@@ -100,5 +94,24 @@ public class Product {
     @Column(name = "discounted_measure_price")
     private Double discountedMeasurePrice;
     
+    // Characteristics
+    
+    @Column
+    private String color;
+    
+    @Column
+    private String origen;
+    
+    @Column
+    private String borde;
+    
+    @Column
+    private String aspecto;
+    
+    @Column
+    private String textura;
+    
+    @Column
+    private String transito;
 
 }

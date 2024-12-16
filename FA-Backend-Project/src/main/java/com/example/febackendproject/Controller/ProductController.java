@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -29,7 +30,6 @@ public class ProductController {
     private final CategoryService categoryService;
     private final StockService stockService;
     private final SubcategoryRepository subcategoryRepository;
-    private final TagService tagService;
     
     public ResponseEntity<?> notFound(String dataType, String data) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product with " + dataType + " " + data + " not found");
@@ -130,30 +130,57 @@ public class ProductController {
         }
     }
     
-    @GetMapping("/tags")
-    public ResponseEntity<?> getAll() {
-        return ResponseEntity.ok(tagService.listAll());
-    }
-    
-    @GetMapping("/tags/keys")
-    public ResponseEntity<?> getKeys() {
-        return ResponseEntity.ok(tagService.listKeys());
-    }
-    
-    @GetMapping("/tags/{key}")
-    public ResponseEntity<?> getValuesByKey(@PathVariable String key) {
-        if (tagService.existsByKey(key)) {
-            return ResponseEntity.ok(tagService.listValuesByKey(key));
+    @PutMapping("/applyDiscountByProvider")
+    public ResponseEntity<?> applyDiscountByProvider(
+            @RequestParam(value = "providerId") Long providerId,
+            @RequestParam(value = "percentage") Integer percentage
+    ) {
+        if (providerService.existsById(providerId)) {
+            productService.applyDiscountByProvider(percentage, providerId);
+            return ResponseEntity.ok("Descuento aplicado");
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("tag not found");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontró el proveedor con ID: " + providerId.toString());
     }
     
-    @PostMapping("/tags")
-    public ResponseEntity<?> addTag(
-            @RequestParam(value = "key") String key,
-            @RequestParam(value = "value") String value) {
-        Optional<Tag> newTag = tagService.addTag(key, value);
-        return ResponseEntity.ok(newTag);
+    @PutMapping("/removeDiscountByProvider")
+    public ResponseEntity<?> removeDiscountByProvider(
+            @RequestParam(value = "providerId") Long providerId,
+            @RequestParam(value = "percentage") Integer percentage
+    ) {
+        if (providerService.existsById(providerId)) {
+            productService.removeDiscountByProvider(percentage, providerId);
+            return ResponseEntity.ok("Descuento actualizado");
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontró el proveedor con ID: " + providerId.toString());
+    }
+    
+    @PutMapping("/increasePriceByProvider")
+    public ResponseEntity<?> increasePriceByProvider(
+            @RequestParam(value = "providerId") Long providerId,
+            @RequestParam(value = "percentage") Integer percentage
+    ) {
+        if (providerService.existsById(providerId)) {
+            productService.increasePriceByProvider(percentage, providerId);
+            return ResponseEntity.ok("Precio actualizado");
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontró el proveedor con ID: " + providerId.toString());
+    }
+    
+    @PutMapping("/reducePriceByProvider")
+    public ResponseEntity<?> reducePriceByProvider(
+            @RequestParam(value = "providerId") Long providerId,
+            @RequestParam(value = "percentage") Integer percentage
+    ) {
+        if (providerService.existsById(providerId)) {
+            productService.reducePriceByProvider(percentage, providerId);
+            return ResponseEntity.ok("Precio actualizado");
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontró el proveedor con ID: " + providerId.toString());
+    }
+    
+    @GetMapping("/count")
+    public ResponseEntity<?> count() {
+        return ResponseEntity.ok(productService.getTotalProducts());
     }
     
 }

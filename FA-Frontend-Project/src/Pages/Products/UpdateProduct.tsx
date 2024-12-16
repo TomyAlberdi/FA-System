@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
+import { ToastAction } from "@/components/ui/toast";
 import {
   Tooltip,
   TooltipContent,
@@ -31,14 +32,15 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { Info, Loader2 } from "lucide-react";
+import { Info, Loader2, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
 
 const formSchema = z.object({
   // Base data
+  id: z.number(),
   name: z.string().min(5, {
     message: "El nombre debe contar con al menos 5 caracteres.",
   }),
@@ -46,10 +48,9 @@ const formSchema = z.object({
     message: "La descripción debe contar con al menos 5 caracteres.",
   }),
   quality: z.string() || null,
+  disabled: z.boolean(),
   // Measure data
-  measureType: z.string().min(1, {
-    message: "La unidad de medida no puede estar vacía.",
-  }),
+  measureType: z.string({ required_error: "Seleccione una unidad de medida" }),
   measures: z.string() || null,
   // Sale unit data
   saleUnit: z.string().min(1, {
@@ -73,27 +74,29 @@ const formSchema = z.object({
   transito: z.string() || null,
 });
 
-export const AddProduct = () => {
+export const UpdateProduct = () => {
+  const { id } = useParams();
   const {
     BASE_URL,
+    fetchProduct,
     fetchProviders,
     fetchCategories,
     fetchSubcategoriesByCategoryId,
   } = useCatalogContext();
-
-  const navigate = useNavigate();
-
   const { getToken } = useKindeAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      id: 0,
       name: "",
       description: "",
       quality: "",
-      measureType: "M2",
+      measureType: "",
       measures: "",
-      saleUnit: "Caja",
+      saleUnit: "",
       saleUnitPrice: "",
       measurePerSaleUnit: "",
       discountPercentage: 0,
@@ -196,8 +199,9 @@ export const AddProduct = () => {
       const fileInput = SelectedFiles;
       if (fileInput && fileInput.length > 0) {
         const uploadedUrls = await uploadImages(fileInput);
-        data.images = uploadedUrls;
+        data.images = [...data.images, ...uploadedUrls];
       }
+
       await submitFormData(data);
     } catch (error) {
       console.error("Error during form submission: ", error);
@@ -214,7 +218,7 @@ export const AddProduct = () => {
       }
       const accessToken = await getToken();
       const response = await fetch(`${BASE_URL}/product`, {
-        method: "POST",
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
@@ -226,13 +230,13 @@ export const AddProduct = () => {
         toast({
           variant: "destructive",
           title: `Error ${response.status}`,
-          description: `Ocurrió un error al crear el producto.`,
+          description: `Ocurrió un error al actualizar el producto.`,
         });
         return;
       }
       toast({
-        title: "Producto creado",
-        description: "El producto ha sido creado con éxito",
+        title: "Producto actualizado",
+        description: "El producto ha sido actualizado con éxito",
       });
       navigate(-1);
     } catch (error) {
@@ -240,16 +244,94 @@ export const AddProduct = () => {
       toast({
         variant: "destructive",
         title: `Error ${error}`,
-        description: `Ocurrió un error al crear el producto.`,
+        description: `Ocurrió un error al actualizar el producto.`,
       });
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  useEffect(() => {
+    if (id) {
+      fetchProduct(Number.parseInt(id)).then((result) => {
+        if (!result) {
+          navigate(-1);
+        }
+        form.reset({
+          id: result?.id ?? 0,
+          name: result?.name ?? "",
+          description: result?.description ?? "",
+          quality: result?.quality ?? "",
+          disabled: result?.disabled ?? false,
+          measureType: result?.measureType ?? "",
+          measures: result?.measures ?? "",
+          saleUnit: result?.saleUnit ?? "",
+          saleUnitPrice: result?.saleUnitPrice.toString() ?? "",
+          measurePerSaleUnit: result?.measurePerSaleUnit.toString() ?? "",
+          discountPercentage: result?.discountPercentage ?? undefined,
+          providerId: result?.providerId.toString() ?? "",
+          categoryId: result?.categoryId.toString() ?? "",
+          subcategoryId: result?.subcategoryId.toString() ?? "",
+          images: result?.images ?? [],
+          color:
+            result?.characteristics?.find((e) => {
+              return e.key === "Color";
+            })?.value ?? "",
+          origen:
+            result?.characteristics?.find((e) => {
+              return e.key === "Origen";
+            })?.value ?? "",
+          borde:
+            result?.characteristics?.find((e) => {
+              return e.key === "Borde";
+            })?.value ?? "",
+          aspecto:
+            result?.characteristics?.find((e) => {
+              return e.key === "Aspecto";
+            })?.value ?? "",
+          textura:
+            result?.characteristics?.find((e) => {
+              return e.key === "Textura";
+            })?.value ?? "",
+          transito:
+            result?.characteristics?.find((e) => {
+              return e.key === "Tránsito";
+            })?.value ?? "",
+        });
+        fetchSubcategoriesByCategoryId(
+          parseInt(result?.categoryId.toString() ?? "")
+        ).then((result) => setSubcategories(result ?? []));
+        setSelectedSaleUnit(result?.saleUnit ?? "");
+        setSelectedMeasureType(result?.measureType ?? "");
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+
+  const removeImage = (url: string) => {
+    toast({
+      variant: "destructive",
+      title: "Confirmación",
+      description: "¿Eliminar la imagen?",
+      action: (
+        <ToastAction
+          altText="Eliminar"
+          onClick={() => {
+            form.setValue(
+              "images",
+              form.watch("images").filter((image: string) => image !== url)
+            );
+          }}
+        >
+          Eliminar
+        </ToastAction>
+      ),
+    });
+  };
+
   return (
-    <div className="AddProduct">
-      <h1 className="sectionTitle">Añadir Producto</h1>
+    <div>
+      <h1 className="sectionTitle">Editar Producto</h1>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -296,99 +378,112 @@ export const AddProduct = () => {
             )}
           />
           {/* Provider, Category and Subcategory data */}
-          <FormField
-            control={form.control}
-            name="providerId"
-            render={({ field }) => (
-              <FormItem className="col-span-1 row-span-1 row-start-4 row-end-5">
-                <FormLabel>Proveedor</FormLabel>
-                <Select value={field.value} onValueChange={field.onChange}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {Providers?.map((provider: Provider, index: number) => {
-                      return (
-                        <SelectItem value={provider.id.toString()} key={index}>
-                          {provider.name}
-                        </SelectItem>
-                      );
-                    })}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="categoryId"
-            render={({ field }) => (
-              <FormItem className="col-span-1 row-span-1 row-start-5 row-end-6">
-                <FormLabel>Categoría</FormLabel>
-                <Select
-                  value={field.value}
-                  onValueChange={(value) => {
-                    setSelectedCategoryId(value);
-                    field.onChange(value);
-                  }}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {Categories?.map((category: Category, index: number) => {
-                      return (
-                        <SelectItem value={category.id.toString()} key={index}>
-                          {category.name}
-                        </SelectItem>
-                      );
-                    })}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="subcategoryId"
-            render={({ field }) => (
-              <FormItem className="col-span-1 row-span-1 row-start-6 row-end-7">
-                <FormLabel>Subcategoría</FormLabel>
-                <Select
-                  value={field.value}
-                  onValueChange={field.onChange}
-                  disabled={Subcategories?.length === 0}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {Subcategories?.map(
-                      (subcategory: Subcategory, index: number) => {
+          {form.watch("providerId") !== "" && (
+            <FormField
+              control={form.control}
+              name="providerId"
+              render={({ field }) => (
+                <FormItem className="col-span-1 row-span-1 row-start-4 row-end-5">
+                  <FormLabel>Proveedor</FormLabel>
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {Providers?.map((provider: Provider, index: number) => {
                         return (
                           <SelectItem
-                            value={subcategory.id.toString()}
+                            value={provider.id.toString()}
                             key={index}
                           >
-                            {subcategory.name}
+                            {provider.name}
                           </SelectItem>
                         );
-                      }
-                    )}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
+                      })}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+          {form.watch("categoryId") !== "" && (
+            <FormField
+              control={form.control}
+              name="categoryId"
+              render={({ field }) => (
+                <FormItem className="col-span-1 row-span-1 row-start-5 row-end-6">
+                  <FormLabel>Categoría</FormLabel>
+                  <Select
+                    value={field.value}
+                    onValueChange={(value) => {
+                      setSelectedCategoryId(value);
+                      field.onChange(value);
+                    }}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {Categories?.map((category: Category, index: number) => {
+                        return (
+                          <SelectItem
+                            value={category.id.toString()}
+                            key={index}
+                          >
+                            {category.name}
+                          </SelectItem>
+                        );
+                      })}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+          {form.watch("subcategoryId") !== "" &&
+            Subcategories?.length !== 0 && (
+              <FormField
+                control={form.control}
+                name="subcategoryId"
+                render={({ field }) => (
+                  <FormItem className="col-span-1 row-span-1 row-start-6 row-end-7">
+                    <FormLabel>Subcategoría</FormLabel>
+                    <Select
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      disabled={Subcategories?.length === 0}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {Subcategories?.map(
+                          (subcategory: Subcategory, index: number) => {
+                            return (
+                              <SelectItem
+                                value={subcategory.id.toString()}
+                                key={index}
+                              >
+                                {subcategory.name}
+                              </SelectItem>
+                            );
+                          }
+                        )}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             )}
-          />
           {/* Sale unit data */}
           <div className="saleUnitSection row-span-3 row-start-1 row-end-3 col-start-2 p-4 bg-primary-foreground rounded">
             <FormField
@@ -399,7 +494,6 @@ export const AddProduct = () => {
                   <FormLabel>Unidad de venta</FormLabel>
                   <Select
                     value={field.value}
-                    defaultValue="Caja"
                     onValueChange={(value) => {
                       setSelectedSaleUnit(value);
                       field.onChange(value);
@@ -407,7 +501,7 @@ export const AddProduct = () => {
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Caja" />
+                        <SelectValue />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -499,7 +593,7 @@ export const AddProduct = () => {
                         </TooltipTrigger>
                         <TooltipContent>
                           Ejemplos: <br />
-                          - M2 por Caja: 2.35 <br />
+                          - M2 por Caja: 25 <br />
                           - Unidades por Juego: 5 <br />
                         </TooltipContent>
                       </Tooltip>
@@ -507,7 +601,7 @@ export const AddProduct = () => {
                   </FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Ej: 2.35"
+                      placeholder="Ej: 100"
                       {...field}
                       disabled={SelectedMeasureType === SelectedSaleUnit}
                       value={
@@ -537,46 +631,72 @@ export const AddProduct = () => {
             />
           </div>
           {/* Discount data */}
-          <div className="col-start-2 row-start-6 row-end-7 p-4 bg-primary-foreground rounded">
-            <FormField
-              control={form.control}
-              name="discountPercentage"
-              render={({ field }) => (
-                <FormItem className="col-span-1 row-span-1 row-start-6 row-end-7">
-                  <FormLabel>
-                    Porcentaje de descuento (Opcional):
-                    <span className="px-2 text-lg font-semibold">
-                      %{field.value ? field.value : 0}
-                    </span>
-                  </FormLabel>
-                  <FormControl>
-                    <Slider
-                      min={0}
-                      max={100}
-                      step={1}
-                      defaultValue={[0]}
-                      onValueChange={(values) => field.onChange(values[0])}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+          {form.watch("discountPercentage") !== undefined && (
+            <div className="col-start-2 row-start-6 row-end-7 p-4 bg-primary-foreground rounded">
+              <FormField
+                control={form.control}
+                name="discountPercentage"
+                render={({ field }) => (
+                  <FormItem className="col-span-1 row-span-1 row-start-6 row-end-7">
+                    <FormLabel>
+                      Porcentaje de descuento (Opcional):
+                      <span className="px-2 text-lg font-semibold">
+                        %{field.value ? field.value : 0}
+                      </span>
+                    </FormLabel>
+                    <FormControl>
+                      <Slider
+                        min={0}
+                        max={100}
+                        step={1}
+                        defaultValue={[0]}
+                        value={[field.value ? field.value : 0]}
+                        onValueChange={(values) => field.onChange(values[0])}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          )}
           {/* Images */}
-          <div className="col-span-2 row-start-7 row-end-9 p-4 bg-primary-foreground rounded h-[100px]">
-            <Label htmlFor="file-input">Imágenes</Label>
-            <Input
-              type="file"
-              multiple
-              id="file-input"
-              onChange={handleFileChange}
-            />
+          <div className="col-span-2 row-start-7 p-4 bg-primary-foreground rounded flex flex-col gap-4">
+            <section className="loadImages">
+              <Label htmlFor="file-input">Agregar Imágenes</Label>
+              <Input
+                type="file"
+                multiple
+                id="file-input"
+                onChange={handleFileChange}
+              />
+            </section>
+            {form.watch("images").length !== 0 && (
+              <section className="removeImages">
+                <Label>Eliminar Imágenes</Label>
+                <div className="flex flex-row gap-2 flex-wrap">
+                  {form.watch("images").map((image: string, index: number) => (
+                    <article
+                      key={index}
+                      className="w-60 h-60 rounded-md border border-input bg-contain bg-no-repeat bg-center relative"
+                      style={{ backgroundImage: `url(${image})` }}
+                    >
+                      <span
+                        className="p-2 absolute right-1 bottom-1 bg-destructive rounded-md cursor-pointer hover:opacity-85"
+                        onClick={() => removeImage(image)}
+                      >
+                        <Trash color="white" />
+                      </span>
+                    </article>
+                  ))}
+                </div>
+              </section>
+            )}
           </div>
           {/* Tags */}
-          <div className="col-span-2 row-start-9 row-end-11 p-4 bg-primary-foreground rounded flex flex-col gap-4">
+          <div className="col-span-2 row-start-8 row-end-11 p-4 bg-primary-foreground rounded flex flex-col gap-4">
             <div className="characteristicsHeader flex flex-row justify-between w-full">
-              <h3 className="text-xl font-semibold">Agregar Características</h3>
+              <h3 className="text-xl font-semibold">Características</h3>
             </div>
             <div className="characteristicsContainer flex flex-col gap-2">
               <FormField

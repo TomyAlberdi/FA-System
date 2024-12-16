@@ -46,7 +46,7 @@ export const StockList = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetchStockListByKeyword(Keyword, CurrentPage, 15)
+    fetchStockListByKeyword(Keyword, CurrentPage, 16)
       .then((result) => {
         setStocks(result.content);
         setPaginationInfo({

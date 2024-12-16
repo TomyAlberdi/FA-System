@@ -1,6 +1,8 @@
 package com.example.febackendproject.Service;
 
 import com.example.febackendproject.DTO.PartialStockDTO;
+import com.example.febackendproject.DTO.StockRecordDTO;
+import com.example.febackendproject.DTO.StockReportMonthDTO;
 import com.example.febackendproject.Entity.Stock;
 import com.example.febackendproject.Entity.StockRecord;
 import com.example.febackendproject.Repository.StockPaginationRepository;
@@ -11,10 +13,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -77,6 +82,48 @@ public class StockService {
             stock.setStockRecords(new ArrayList<>());
         }
         stock.getStockRecords().add(0, record);
+    }
+    
+    public List<StockRecordDTO> getLastRecords() {
+        List<Object[]> results = stockRepository.getLastRecordsNative();
+        return results.stream().map(row -> {
+            Timestamp date = (Timestamp) row[5];
+            StockRecord stockRecord = new StockRecord((String) row[3], (Integer) row[4], date.toLocalDateTime());
+            return new StockRecordDTO((Long) row[0], (String) row[1], (String) row[2], stockRecord);
+        }).collect(Collectors.toList());
+    }
+    
+    public List<StockReportMonthDTO> getReportStock() {
+        List<Object[]> rawData = stockRepository.getStocksByMonth();
+        Map<String, StockReportMonthDTO> reportMap = new LinkedHashMap<>();
+        
+        Locale spanishLocale = new Locale("es", "ES");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM", spanishLocale);
+        
+        LocalDate now = LocalDate.now();
+        for (int i = 0; i < 6; i++) {
+            String month = now.minusMonths(i).format(formatter);
+            reportMap.put(month, new StockReportMonthDTO(month, 0, 0));
+        }
+        
+        for (Object[] record : rawData) {
+            String rawMonth = (String) record[0];
+            String recordType = (String) record[1];
+            Integer total = ((Number) record[2]).intValue();
+            
+            YearMonth yearMonth = YearMonth.parse(rawMonth, DateTimeFormatter.ofPattern("yyyy-MM"));
+            String month = yearMonth.format(formatter);
+            
+            StockReportMonthDTO report = reportMap.get(month);
+            if (report != null) {
+                if ("INCREASE".equals(recordType)) {
+                    report.setIN(total);
+                } else if ("DECREASE".equals(recordType)) {
+                    report.setOUT(total);
+                }
+            }
+        }
+        return new ArrayList<>(reportMap.values());
     }
     
 }

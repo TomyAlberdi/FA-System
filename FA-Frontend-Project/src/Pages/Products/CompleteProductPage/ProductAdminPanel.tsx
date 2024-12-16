@@ -5,25 +5,18 @@ import { CompleteProduct } from "@/hooks/CatalogInterfaces";
 import { toast } from "@/hooks/use-toast";
 import { ProductDetail } from "@/lib/ProductDetail";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import {
-  CircleX,
-  ListPlus,
-  ListX,
-  Package,
-  Pencil,
-} from "lucide-react";
+import { CircleX, ListPlus, ListX, Package, Pencil } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
 export const ProductPageAdminPanel = ({
   Product,
   ReloadProduct,
-  setReloadProduct
+  setReloadProduct,
 }: {
   Product: CompleteProduct | null;
   ReloadProduct: boolean;
   setReloadProduct: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-
   const { BASE_URL } = useCatalogContext();
   const { getToken } = useKindeAuth();
   const navigate = useNavigate();
@@ -34,12 +27,15 @@ export const ProductPageAdminPanel = ({
       title: "Confirmación",
       description: "¿Desea desactivar el producto?",
       action: (
-        <ToastAction altText="Desactivar" onClick={() => updateProductStatus(true)}>
+        <ToastAction
+          altText="Desactivar"
+          onClick={() => updateProductStatus(true)}
+        >
           Desactivar
         </ToastAction>
-      )
-    })
-  }
+      ),
+    });
+  };
 
   const onEnablePress = () => {
     toast({
@@ -47,12 +43,15 @@ export const ProductPageAdminPanel = ({
       title: "Confirmación",
       description: "¿Desea activar el producto?",
       action: (
-        <ToastAction altText="Activar" onClick={() => updateProductStatus(false)}>
+        <ToastAction
+          altText="Activar"
+          onClick={() => updateProductStatus(false)}
+        >
           Activar
         </ToastAction>
-      )
-    })
-  }
+      ),
+    });
+  };
 
   const updateProductStatus = async (disabled: boolean) => {
     try {
@@ -61,13 +60,16 @@ export const ProductPageAdminPanel = ({
         return;
       }
       const accessToken = await getToken();
-      const response = await fetch(`${BASE_URL}/product?productId=${Product?.id}&disabled=${disabled}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
+      const response = await fetch(
+        `${BASE_URL}/product?productId=${Product?.id}&disabled=${disabled}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
         }
-      });
+      );
       if (!response.ok) {
         console.error("Error: ", response.statusText);
         toast({
@@ -91,20 +93,21 @@ export const ProductPageAdminPanel = ({
     } finally {
       setReloadProduct(!ReloadProduct);
     }
-  }
+  };
 
   const onDeletePress = () => {
     toast({
       variant: "destructive",
       title: "Confirmación",
-      description: "¿Desea eliminar el producto? Esta acción no se puede deshacer.",
+      description:
+        "¿Desea eliminar el producto? Esta acción no se puede deshacer.",
       action: (
         <ToastAction altText="Eliminar" onClick={deleteProduct}>
           Eliminar
         </ToastAction>
-      )
-    })
-  }
+      ),
+    });
+  };
 
   const deleteProduct = async () => {
     try {
@@ -118,7 +121,7 @@ export const ProductPageAdminPanel = ({
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
-        }
+        },
       });
       if (!response.ok) {
         console.error("Error: ", response.statusText);
@@ -142,15 +145,21 @@ export const ProductPageAdminPanel = ({
         description: "Ocurrió un error al eliminar el producto",
       });
     }
-  }
+  };
 
   return (
     <div className="adminPanel productGridItem row-start-8 row-end-16 col-start-1 col-end-5 p-2 flex flex-col justify-start items-center gap-4">
-      <Button className="w-10/12 text-md">
-        <Pencil />
-        Editar Producto
+      <Button className="w-10/12 text-md" asChild>
+        <Link to={`/catalog/products/${Product?.id}/update`}>
+          <Pencil />
+          Editar Producto
+        </Link>
       </Button>
-      <Button className="w-10/12 text-md" variant="destructive" onClick={onDeletePress}>
+      <Button
+        className="w-10/12 text-md"
+        variant="destructive"
+        onClick={onDeletePress}
+      >
         <CircleX />
         Eliminar Producto
       </Button>
@@ -160,7 +169,11 @@ export const ProductPageAdminPanel = ({
           Activar Producto
         </Button>
       ) : (
-        <Button className="w-10/12 text-md" variant="destructive" onClick={onDisablePress}>
+        <Button
+          className="w-10/12 text-md"
+          variant="destructive"
+          onClick={onDisablePress}
+        >
           <ListX />
           Desactivar Producto
         </Button>

@@ -79,4 +79,14 @@ public class StockController {
         }
     }
     
+    @GetMapping("/lastRecords")
+    public ResponseEntity<?> getLastRecords() {
+        return ResponseEntity.ok(stockService.getLastRecords());
+    }
+    
+    @GetMapping("/reportStock")
+    public ResponseEntity<?> getReportStock() {
+        return ResponseEntity.ok(stockService.getReportStock());
+    }
+    
 }
