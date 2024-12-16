@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -64,7 +65,6 @@ public class ProductController {
     }
     
     @PostMapping()
-    // @PreAuthorize("hasAuthority('ROLE_admin')")
     public ResponseEntity<?> save(@Valid @RequestBody Product product) {
         Optional<CompleteCategoryDTO> category = categoryService.findById(product.getCategoryId());
         Optional<Provider> provider = providerService.findById(product.getProviderId());
@@ -88,7 +88,6 @@ public class ProductController {
     }
     
     @DeleteMapping("/{id}")
-    // @PreAuthorize("hasAuthority('ROLE_admin')")
     public ResponseEntity<?> deleteById(@PathVariable Long id) {
         Optional<CompleteProductDTO> product = productService.getById(id);
         if (product.isPresent()) {
@@ -100,7 +99,6 @@ public class ProductController {
     }
     
     @PutMapping()
-    // @PreAuthorize("hasAuthority('ROLE_admin')")
     public ResponseEntity<?> updateById(@Valid @RequestBody Product product) {
         if (!productService.existById(product.getId())) {
             return notFound("ID", product.getId().toString());
