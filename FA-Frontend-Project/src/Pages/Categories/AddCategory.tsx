@@ -24,8 +24,8 @@ const formSchema = z.object({
 });
 
 interface CategoriesHeaderProps {
-  setUpdateData: (value: boolean) => void;
-  UpdateData: boolean;
+  setUpdateData?: (value: boolean) => void;
+  UpdateData?: boolean;
   setOpen: (value: boolean) => void;
 }
 
@@ -76,7 +76,9 @@ export const AddCategory: React.FC<CategoriesHeaderProps> = ({
         title: "Categoría creada",
         description: "La categoría ha sido creada con éxito",
       });
-      setUpdateData(!UpdateData);
+      if (setUpdateData) {
+        setUpdateData(!UpdateData);
+      }
     } catch (error) {
       console.error("Error: ", error);
       toast({

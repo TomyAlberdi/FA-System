@@ -39,8 +39,8 @@ const formSchema = z.object({
 });
 
 interface CategoriesHeaderProps {
-  setUpdateData: (value: boolean) => void;
-  UpdateData: boolean;
+  setUpdateData?: (value: boolean) => void;
+  UpdateData?: boolean;
   setOpen: (value: boolean) => void;
 }
 
@@ -95,7 +95,9 @@ export const AddProvider: React.FC<CategoriesHeaderProps> = ({
         title: "Proveedor creado",
         description: "El proveedor ha sido creado con éxito",
       });
-      setUpdateData(!UpdateData);
+      if (setUpdateData) {
+        setUpdateData(!UpdateData);
+      }
     } catch (error) {
       console.error("Error: ", error);
       toast({

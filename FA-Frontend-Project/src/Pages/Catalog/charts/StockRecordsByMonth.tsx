@@ -22,11 +22,11 @@ import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 
 const chartConfig = {
   out: {
-    label: "Salida",
+    label: "Salidas",
     color: "hsl(var(--destructive))",
   },
   in: {
-    label: "Ingreso",
+    label: "Ingresos",
     color: "hsl(var(--chart-2))",
   },
 } satisfies ChartConfig;
