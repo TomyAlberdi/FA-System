@@ -136,7 +136,7 @@ export const ProductPageAdminPanel = ({
         title: "Producto eliminado",
         description: "El producto ha sido eliminado con éxito",
       });
-      navigate(`/catalog/products`);
+      navigate(-1);
     } catch (error) {
       console.error("Error: ", error);
       toast({

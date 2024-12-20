@@ -4,6 +4,7 @@ import com.example.febackendproject.DTO.*;
 import com.example.febackendproject.Entity.Product;
 import com.example.febackendproject.Hooks.ProductSpecifications;
 import com.example.febackendproject.Repository.*;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -16,6 +17,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -62,23 +64,43 @@ public class ProductService {
         if (product.getId() != null) {
             Optional<Product> oldProduct = productRepository.findById(product.getId());
             if (oldProduct.isPresent()) {
-                if (!product.getCategoryId().equals(oldProduct.get().getCategoryId())) {
-                    categoryRepository.decrementProductsAmount(oldProduct.get().getCategoryId());
-                    categoryRepository.incrementProductsAmount(product.getCategoryId());
+                if (!Objects.equals(product.getCategoryId(), oldProduct.get().getCategoryId())) {
+                    if (oldProduct.get().getCategoryId() != null) {
+                        categoryRepository.decrementProductsAmount(oldProduct.get().getCategoryId());
+                    }
+                    if (product.getCategoryId() != null) {
+                        categoryRepository.incrementProductsAmount(product.getCategoryId());
+                    }
                 }
-                if (!product.getSubcategoryId().equals(oldProduct.get().getSubcategoryId())) {
-                    subcategoryRepository.decrementProductsAmount(oldProduct.get().getSubcategoryId());
-                    subcategoryRepository.incrementProductsAmount(product.getSubcategoryId());
+                if (!Objects.equals(product.getSubcategoryId(), oldProduct.get().getSubcategoryId())) {
+                    if (oldProduct.get().getSubcategoryId() != null) {
+                        subcategoryRepository.decrementProductsAmount(oldProduct.get().getSubcategoryId());
+                    }
+                    if (product.getSubcategoryId() != null) {
+                        subcategoryRepository.incrementProductsAmount(product.getSubcategoryId());
+                    }
                 }
-                if (!product.getProviderId().equals(oldProduct.get().getProviderId())) {
-                    providerRepository.decrementProductsAmount(oldProduct.get().getProviderId());
-                    providerRepository.incrementProductsAmount(product.getProviderId());
+                if (!Objects.equals(product.getProviderId(), oldProduct.get().getProviderId())) {
+                    if (oldProduct.get().getProviderId() != null) {
+                        providerRepository.decrementProductsAmount(oldProduct.get().getProviderId());
+                    }
+                    if (product.getProviderId() != null) {
+                        providerRepository.incrementProductsAmount(product.getProviderId());
+                    }
                 }
+            } else {
+                throw new IllegalArgumentException("Product with ID " + product.getId() + " does not exist.");
             }
         } else {
-            categoryRepository.incrementProductsAmount(product.getCategoryId());
-            subcategoryRepository.incrementProductsAmount(product.getSubcategoryId());
-            providerRepository.incrementProductsAmount(product.getProviderId());
+            if (product.getCategoryId() != null) {
+                categoryRepository.incrementProductsAmount(product.getCategoryId());
+            }
+            if (product.getSubcategoryId() != null) {
+                subcategoryRepository.incrementProductsAmount(product.getSubcategoryId());
+            }
+            if (product.getProviderId() != null) {
+                providerRepository.incrementProductsAmount(product.getProviderId());
+            }
         }
         return productRepository.save(product);
     }
@@ -208,17 +230,26 @@ public class ProductService {
         return productRepository.existsById(id);
     }
     
+    @Transactional
     public void deleteById(Long id) {
-        Optional<Product> product = productRepository.findById(id);
-        productRepository.deleteById(id);
-        stockRepository.deleteByProductId(id);
-        if (product.isPresent()) {
-            categoryRepository.decrementProductsAmount(product.get().getCategoryId());
-            subcategoryRepository.decrementProductsAmount(product.get().getSubcategoryId());
-            providerRepository.decrementProductsAmount(product.get().getProviderId());
+        Optional<Product> productOpt = productRepository.findById(id);
+        if (productOpt.isPresent()) {
+            Product product = productOpt.get();
+            if (product.getCategoryId() != null) {
+                categoryRepository.decrementProductsAmount(product.getCategoryId());
+            }
+            if (product.getSubcategoryId() != null) {
+                subcategoryRepository.decrementProductsAmount(product.getSubcategoryId());
+            }
+            if (product.getProviderId() != null) {
+                providerRepository.decrementProductsAmount(product.getProviderId());
+            }
+            productRepository.deleteById(id);
+            stockRepository.deleteByProductId(id);
+        } else {
+            throw new IllegalArgumentException("Product with ID " + id + " does not exist.");
         }
     }
-    
     public Optional<Product> updateDisabled(Long productId, Boolean disabled) {
         productRepository.updateDisabled(productId, disabled);
         return productRepository.findById(productId);

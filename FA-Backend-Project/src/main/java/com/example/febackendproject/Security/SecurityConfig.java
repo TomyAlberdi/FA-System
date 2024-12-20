@@ -51,12 +51,13 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         // disable security for testing ignore otherwise
-                        //.requestMatchers(HttpMethod.GET).permitAll()
+                        .requestMatchers(HttpMethod.GET).permitAll()
                         //.requestMatchers(HttpMethod.POST).permitAll()
                         //.requestMatchers(HttpMethod.PUT).permitAll()
                         //.requestMatchers(HttpMethod.PATCH).permitAll()
                         //.requestMatchers(HttpMethod.DELETE).permitAll()
-                        .anyRequest().hasAnyAuthority("ROLE_admin"))
+                        //.anyRequest().hasAnyAuthority("ROLE_admin"))
+                        .anyRequest().authenticated())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .addFilterBefore(new JwtAuthenticationFilter(jwtVerifier()), UsernamePasswordAuthenticationFilter.class);
         return http.build();

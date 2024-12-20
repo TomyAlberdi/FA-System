@@ -35,6 +35,7 @@ public class CategoryService {
         if (category.isPresent()) {
             newCategory.setName(category.get().getName());
             newCategory.setId(id);
+            newCategory.setProductsAmount(category.get().getProductsAmount());
             newCategory.setSubcategories(subcategoryRepository.findByCategoryId(id));
         }
         
@@ -43,13 +44,13 @@ public class CategoryService {
     
     public Optional<CompleteCategoryDTO> findByName(String name) {
         Optional<Category> category = categoryRepository.findByName(name);
-        Optional<CompleteCategoryDTO> newCategory = Optional.empty();
+        CompleteCategoryDTO newCategory = new CompleteCategoryDTO();
         if (category.isPresent()) {
-            newCategory.get().setName(category.get().getName());
-            newCategory.get().setId(category.get().getId());
-            newCategory.get().setSubcategories(subcategoryRepository.findByCategoryId(category.get().getId()));
+            newCategory.setName(category.get().getName());
+            newCategory.setId(category.get().getId());
+            newCategory.setSubcategories(subcategoryRepository.findByCategoryId(category.get().getId()));
         }
-        return newCategory;
+        return Optional.of(newCategory);
     }
     
     public void update(String name, Long id) {
