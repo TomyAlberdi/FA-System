@@ -10,7 +10,7 @@ export const StockCard = ({ stock }: { stock: PartialProductStock }) => {
 
   return (
     <Card
-      className="ProductCard relative bg-primary-foreground h-[200px] w-[24.2%] max-w-[400px] p-2 cursor-pointer flex flex-row items-center justify-start"
+      className="ProductCard relative bg-primary-foreground h-[200px] w-[24.2%] max-w-[400px] min-w-[300px] p-2 cursor-pointer flex flex-row items-center justify-start"
       onClick={() => navigate(`/catalog/stock/${stock?.productId}`)}
     >
       <div className="stockImage h-[182px] w-[182px] bg-contain bg-center bg-no-repeat" style={{ backgroundImage: `url(${stock?.productImage})` }}></div>
