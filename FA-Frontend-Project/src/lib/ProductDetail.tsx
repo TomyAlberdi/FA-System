@@ -81,10 +81,30 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ Product }) => {
     } else {
       lastTextItemY = lastTextItemY + 30;
     }
-    Product?.tags?.forEach((tag) => {
-      lastTextItemY = lastTextItemY + 5;
-      doc.text(`${tag.tagKey}: ${tag.value}`, 20, lastTextItemY);
-    });
+    if (Product?.color) {
+      doc.text(`Color: ${Product?.color}`, 20, lastTextItemY + 30);
+      lastTextItemY = lastTextItemY + 30;
+    }
+    if (Product?.origen) {
+      doc.text(`Origen: ${Product?.origen}`, 20, lastTextItemY + 30);
+      lastTextItemY = lastTextItemY + 30;
+    }
+    if (Product?.borde) {
+      doc.text(`Borde: ${Product?.borde}`, 20, lastTextItemY + 30);
+      lastTextItemY = lastTextItemY + 30;
+    }
+    if (Product?.aspecto) {
+      doc.text(`Aspecto: ${Product?.aspecto}`, 20, lastTextItemY + 30);
+      lastTextItemY = lastTextItemY + 30;
+    }
+    if (Product?.textura) {
+      doc.text(`Textura: ${Product?.textura}`, 20, lastTextItemY + 30);
+      lastTextItemY = lastTextItemY + 30;
+    }
+    if (Product?.transito) {
+      doc.text(`Transito: ${Product?.transito}`, 20, lastTextItemY + 30);
+      lastTextItemY = lastTextItemY + 30;
+    }
 
     // Save the PDF
     doc.save(`${Product?.name}_detalle.pdf`);
