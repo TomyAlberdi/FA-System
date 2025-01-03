@@ -7,14 +7,20 @@ import { KindeProvider } from "@kinde-oss/kinde-auth-react";
 import CatalogContextComponent from "@/Context/CatalogContextComponent.tsx";
 import { ThemeProvider } from "@/Context/theme-provider.tsx";
 
+const clientId = import.meta.env.VITE_KINDE_CLIENT_ID;
+const domain = import.meta.env.VITE_KINDE_DOMAIN;
+const redirectUri = import.meta.env.VITE_KINDE_REDIRECT_URI;
+const logoutUri = import.meta.env.VITE_KINDE_LOGOUT_URI;
+const audience = import.meta.env.VITE_KINDE_AUDIENCE;
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <KindeProvider
-      clientId="3ca097572fbe4ab29308c9f21c78b1c5"
-      domain="https://fasa.kinde.com"
-      redirectUri="http://localhost:5173"
-      logoutUri="http://localhost:5173"
-      audience="fa-backend-api"
+      clientId={clientId}
+      domain={domain}
+      redirectUri={redirectUri}
+      logoutUri={logoutUri}
+      audience={audience}
     >
       <CatalogContextComponent>
         <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
