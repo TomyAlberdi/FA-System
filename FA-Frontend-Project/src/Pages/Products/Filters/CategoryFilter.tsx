@@ -77,8 +77,14 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
     >
       <AccordionTrigger>Subcategorías</AccordionTrigger>
       <AccordionContent>
-        {Data &&
-          Data?.map((category: CategoryCheck) => {
+        {Data && Data?.every((category) => category.productsAmount === 0) ? (
+          <div>
+            <p className="text-sm text-gray-400">
+              No hay subcategorías disponibles
+            </p>
+          </div>
+        ) : (
+          Data && Data?.map((category: CategoryCheck) => {
             return (
               category.productsAmount > 0 && (
                 <div
@@ -102,7 +108,8 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
                 </div>
               )
             );
-          })}
+          })
+        )}
       </AccordionContent>
     </AccordionItem>
   );

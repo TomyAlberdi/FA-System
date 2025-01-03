@@ -67,28 +67,36 @@ export const PricesFilter: React.FC<PricesFilterProps> = ({
     >
       <AccordionTrigger>Precios</AccordionTrigger>
       <AccordionContent className="pb-6 flex flex-col gap-5">
-        {Data && (
-          <>
-            <div className="pricesData w-full flex justify-between">
-              <span>{DisplaySelectedMinPrice}</span>
-              <span>{DisplaySelectedMaxPrice}</span>
-            </div>
-            <Slider
-              min={Data.minPrice}
-              max={Data.maxPrice}
-              step={1}
-              defaultValue={[Data.minPrice, Data.maxPrice]}
-              minStepsBetweenThumbs={10}
-              onValueChange={(value) => {
-                setDisplaySelectedMinPrice(value[0]);
-                setDisplaySelectedMaxPrice(value[1]);
-              }}
-              onValueCommit={(value) => {
-                setSelectedMinPrice(value[0]);
-                setSelectedMaxPrice(value[1]);
-              }}
-            />
-          </>
+        {Data && Data?.minPrice === Data?.maxPrice ? (
+          <div>
+            <span className="text-sm text-gray-400">
+              No hay precios disponibles
+            </span>
+          </div>
+        ) : (
+          Data && (
+            <>
+              <div className="pricesData w-full flex justify-between">
+                <span>{DisplaySelectedMinPrice}</span>
+                <span>{DisplaySelectedMaxPrice}</span>
+              </div>
+              <Slider
+                min={Data.minPrice}
+                max={Data.maxPrice}
+                step={1}
+                defaultValue={[Data.minPrice, Data.maxPrice]}
+                minStepsBetweenThumbs={10}
+                onValueChange={(value) => {
+                  setDisplaySelectedMinPrice(value[0]);
+                  setDisplaySelectedMaxPrice(value[1]);
+                }}
+                onValueCommit={(value) => {
+                  setSelectedMinPrice(value[0]);
+                  setSelectedMaxPrice(value[1]);
+                }}
+              />
+            </>
+          )
         )}
       </AccordionContent>
     </AccordionItem>

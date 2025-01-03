@@ -20,7 +20,8 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({
 }) => {
   const { toast } = useToast();
 
-  const BASE_URL = "http://localhost:8081";
+  //const BASE_URL = "http://localhost:8081";
+  const BASE_URL = "http://18.230.242.4:8081";
 
   const { getToken } = useKindeAuth();
 

@@ -79,8 +79,14 @@ export const MeasureFilter: React.FC<MeasureFilterProps> = ({
     >
       <AccordionTrigger>Medidas</AccordionTrigger>
       <AccordionContent>
-        {Data &&
-          Data?.map((measure: MeasureCheck) => {
+        {Data && Data?.every((measure) => measure.productsAmount === 0) ? (
+          <div>
+            <span className="text-sm text-gray-400">
+              No hay medidas disponibles
+            </span>
+          </div>
+        ) : (
+          Data && Data?.map((measure: MeasureCheck) => {
             return (
               measure.measure && (
                 <div
@@ -104,7 +110,8 @@ export const MeasureFilter: React.FC<MeasureFilterProps> = ({
                 </div>
               )
             );
-          })}
+          })
+        )}
       </AccordionContent>
     </AccordionItem>
   );

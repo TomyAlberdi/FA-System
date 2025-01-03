@@ -77,7 +77,13 @@ export const ProviderFilter: React.FC<ProviderFilterProps> = ({
     >
       <AccordionTrigger>Proveedores</AccordionTrigger>
       <AccordionContent>
-        {Data &&
+        {Data && Data?.every((provider) => provider.productsAmount === 0) ? (
+          <div>
+            <p className="text-sm text-gray-400">
+              No hay proveedores disponibles
+            </p>
+          </div>
+        ) : (
           Data?.map((provider: ProviderCheck) => {
             return (
               provider.productsAmount > 0 && (
@@ -102,7 +108,8 @@ export const ProviderFilter: React.FC<ProviderFilterProps> = ({
                 </div>
               )
             );
-          })}
+          })
+        )}
       </AccordionContent>
     </AccordionItem>
   );
