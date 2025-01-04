@@ -58,7 +58,7 @@ const formSchema = z.object({
 
 export const Provider = () => {
   const { id } = useParams();
-  const { BASE_URL, fetchProvider, fetchProviderProducts } =
+  const { BASE_URL, fetchProvider, fetchProviderProducts, fetchProviders } =
     useCatalogContext();
   const [Provider, setProvider] = useState<ProviderInterface | null>(null);
   const [Products, setProducts] = useState<Array<StockProduct> | null>([]);
@@ -176,6 +176,7 @@ export const Provider = () => {
         title: "Proveedor eliminado",
         description: "El proveedor ha sido eliminado con éxito",
       });
+      fetchProviders();
       navigate("/catalog/providers");
     } catch (error) {
       console.error("Error: ", error);
@@ -240,7 +241,7 @@ export const Provider = () => {
                   </span>
                 </CardDescription>
               </CardContent>
-{/*               {Provider && Provider.productsDiscount > 0 && (
+              {/*               {Provider && Provider.productsDiscount > 0 && (
                 <CardContent className="flex flex-row gap-2">
                   <h3 className="text-xl font-semibold">
                     Descuento actual:{" "}
@@ -261,7 +262,7 @@ export const Provider = () => {
                   setReload={setReload}
                   Reload={Reload}
                 />
-{/*                 <UpdateDiscountProvider
+                {/*                 <UpdateDiscountProvider
                   provider={Provider}
                   setReload={setReload}
                   Reload={Reload}

@@ -59,7 +59,7 @@ export const UpdateProvider = ({
   const [LoadingRequest, setLoadingRequest] = useState(false);
   const [Open, setOpen] = useState(false);
 
-  const { BASE_URL } = useCatalogContext();
+  const { BASE_URL, fetchProviders } = useCatalogContext();
   const { toast } = useToast();
   const { getToken } = useKindeAuth();
 
@@ -109,6 +109,7 @@ export const UpdateProvider = ({
         title: "Proveedor actualizado",
         description: "El proveedor ha sido actualizada con éxito",
       });
+      fetchProviders();
       setReload(!Reload);
     } catch (error) {
       console.error("Error: ", error);

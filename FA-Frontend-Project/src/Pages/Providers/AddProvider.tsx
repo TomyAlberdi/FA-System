@@ -39,18 +39,12 @@ const formSchema = z.object({
 });
 
 interface CategoriesHeaderProps {
-  setUpdateData?: (value: boolean) => void;
-  UpdateData?: boolean;
   setOpen: (value: boolean) => void;
 }
 
-export const AddProvider: React.FC<CategoriesHeaderProps> = ({
-  setUpdateData,
-  UpdateData,
-  setOpen,
-}) => {
+export const AddProvider: React.FC<CategoriesHeaderProps> = ({ setOpen }) => {
   const [LoadingRequest, setLoadingRequest] = useState(false);
-  const { BASE_URL } = useCatalogContext();
+  const { BASE_URL, fetchProviders } = useCatalogContext();
   const { getToken } = useKindeAuth();
   const { toast } = useToast();
 
@@ -95,9 +89,7 @@ export const AddProvider: React.FC<CategoriesHeaderProps> = ({
         title: "Proveedor creado",
         description: "El proveedor ha sido creado con éxito",
       });
-      if (setUpdateData) {
-        setUpdateData(!UpdateData);
-      }
+      fetchProviders();
     } catch (error) {
       console.error("Error: ", error);
       toast({

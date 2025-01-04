@@ -10,15 +10,7 @@ import { CirclePlus } from "lucide-react";
 import { useState } from "react";
 import { AddProvider } from "@/Pages/Providers/AddProvider";
 
-interface ProvidersHeaderProps {
-  setUpdateData: (value: boolean) => void;
-  UpdateData: boolean;
-}
-
-export const ProvidersHeader: React.FC<ProvidersHeaderProps> = ({
-  setUpdateData,
-  UpdateData,
-}) => {
+export const ProvidersHeader = () => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -40,11 +32,7 @@ export const ProvidersHeader: React.FC<ProvidersHeaderProps> = ({
               Añadir Proveedor
             </DialogTitle>
           </DialogHeader>
-          <AddProvider
-            setUpdateData={setUpdateData}
-            UpdateData={UpdateData}
-            setOpen={setOpen}
-          />
+          <AddProvider setOpen={setOpen} />
         </DialogContent>
       </Dialog>
     </section>
