@@ -18,7 +18,7 @@ export const ProviderFilter: React.FC<ProviderFilterProps> = ({
   setFilter,
   Loading,
 }) => {
-  const { fetchProviders } = useCatalogContext();
+  const { Providers } = useCatalogContext();
   const [Data, setData] = useState<Array<ProviderCheck> | null>([]);
 
   const handleCheckboxChange = (id: number) => {
@@ -50,12 +50,16 @@ export const ProviderFilter: React.FC<ProviderFilterProps> = ({
   };
 
   useEffect(() => {
-    fetchProviders().then((result) => {
-      if (Filter && Filter.length !== 0) {
+    if (
+      !Providers?.Loading &&
+      Array.isArray(Providers?.data) &&
+      Providers?.data?.length > 0
+    ) {
+      if (Filter?.find((filter) => filter?.type === "providerId")) {
         return;
       }
       const checkedProviders: Array<ProviderCheck> = [];
-      result?.forEach((provider: Provider) => {
+      (Providers?.data as Provider[]).forEach((provider: Provider) => {
         const newItem: ProviderCheck = {
           id: provider.id,
           name: provider.name,
@@ -65,9 +69,8 @@ export const ProviderFilter: React.FC<ProviderFilterProps> = ({
         checkedProviders.push(newItem);
       });
       setData(checkedProviders ?? null);
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [Filter]);
+    }
+  }, [Filter, Providers]);
 
   return (
     <AccordionItem
