@@ -1,7 +1,6 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { useEffect, useState } from "react";
 import { AlertCircle } from "lucide-react";
 import { useCatalogContext } from "@/Context/UseCatalogContext";
 import { CategoriesHeader } from "@/Pages/Categories/CategoriesHeader";
@@ -12,25 +11,13 @@ import { Category } from "@/hooks/CatalogInterfaces";
 export const Categories = () => {
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
-  const { fetchCategories } = useCatalogContext();
-
-  const [Data, setData] = useState<Array<Category>>([]);
-  const [Loading, setLoading] = useState<boolean>(true);
-
-  const [UpdateData, setUpdateData] = useState(false);
-
-  useEffect(() => {
-    fetchCategories()
-      .then((result) => setData(result ?? []))
-      .finally(() => setLoading(false));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [UpdateData]);
+  const { Categories: Data } = useCatalogContext();
 
   return (
     <div className="Categories">
-      <CategoriesHeader setUpdateData={setUpdateData} UpdateData={UpdateData} />
+      <CategoriesHeader />
       <section className="listBody">
-        {Loading ? (
+        {Data?.Loading ? (
           Array.from({ length: 9 }, (_, i) => {
             return isDesktop ? (
               <Skeleton
@@ -41,7 +28,7 @@ export const Categories = () => {
               <Skeleton className="skeletonCard h-[100px] w-full" key={i} />
             );
           })
-        ) : !Loading && Data.length === 0 ? (
+        ) : Array.isArray(Data?.data) && Data?.data.length === 0 ? (
           <Alert variant="destructive" className="w-auto">
             <AlertCircle className="w-5 pt-1" />
             <AlertTitle className="text-xl">Error</AlertTitle>
@@ -50,7 +37,8 @@ export const Categories = () => {
             </AlertDescription>
           </Alert>
         ) : (
-          Data?.map((category: Category) => {
+          Array.isArray(Data?.data) &&
+          (Data?.data as Category[]).map((category: Category) => {
             return isDesktop ? (
               <Button
                 asChild

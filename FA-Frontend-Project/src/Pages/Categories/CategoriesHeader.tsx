@@ -10,16 +10,7 @@ import {
 import { useState } from "react";
 import { AddCategory } from "@/Pages/Categories/AddCategory";
 
-interface CategoriesHeaderProps {
-  setUpdateData: (value: boolean) => void;
-  UpdateData: boolean;
-}
-
-export const CategoriesHeader: React.FC<CategoriesHeaderProps> = ({
-  setUpdateData,
-  UpdateData,
-}) => {
-
+export const CategoriesHeader = () => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -41,7 +32,7 @@ export const CategoriesHeader: React.FC<CategoriesHeaderProps> = ({
               Añadir Categoría
             </DialogTitle>
           </DialogHeader>
-          <AddCategory setUpdateData={setUpdateData} UpdateData={UpdateData} setOpen={setOpen} />
+          <AddCategory setOpen={setOpen} />
         </DialogContent>
       </Dialog>
     </section>

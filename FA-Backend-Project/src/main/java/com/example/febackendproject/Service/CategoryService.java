@@ -15,7 +15,7 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class CategoryService {
-
+    
     private final CategoryRepository categoryRepository;
     private final SubcategoryRepository subcategoryRepository;
     private final ProductRepository productRepository;
@@ -44,12 +44,13 @@ public class CategoryService {
     
     public Optional<CompleteCategoryDTO> findByName(String name) {
         Optional<Category> category = categoryRepository.findByName(name);
-        CompleteCategoryDTO newCategory = new CompleteCategoryDTO();
-        if (category.isPresent()) {
-            newCategory.setName(category.get().getName());
-            newCategory.setId(category.get().getId());
-            newCategory.setSubcategories(subcategoryRepository.findByCategoryId(category.get().getId()));
+        if (category.isEmpty()) {
+            return Optional.empty();
         }
+        CompleteCategoryDTO newCategory = new CompleteCategoryDTO();
+        newCategory.setName(category.get().getName());
+        newCategory.setId(category.get().getId());
+        newCategory.setSubcategories(subcategoryRepository.findByCategoryId(category.get().getId()));
         return Optional.of(newCategory);
     }
     

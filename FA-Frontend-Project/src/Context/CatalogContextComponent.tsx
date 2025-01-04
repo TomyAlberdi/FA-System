@@ -1,12 +1,14 @@
 import { CatalogContext, CatalogContextType } from "@/Context/CatalogContext";
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import {
   Category,
   CompleteProduct,
   Measure,
   Price,
   ProductStock,
-  Provider, Subcategory
+  Provider,
+  ReturnData,
+  Subcategory,
 } from "@/hooks/CatalogInterfaces";
 import { useToast } from "@/hooks/use-toast";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
@@ -19,12 +21,28 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({
   children,
 }) => {
   const { toast } = useToast();
-
+  const { getToken } = useKindeAuth();
   const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-  const { getToken } = useKindeAuth();
+  useEffect(() => {
+    const fetchData = async () => {
+      if (getToken) {
+        const accessToken = await getToken();
+        if (accessToken) {
+          fetchCategories();
+        }
+      }
+    };
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [getToken]);
 
   /// CATEGORY GET /////
+
+  const [Categories, setCategories] = useState<ReturnData>({
+    Loading: true,
+    data: Array<Category>(),
+  });
 
   const fetchCategories = async () => {
     try {
@@ -43,9 +61,13 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({
         return;
       }
       const result: Array<Category> = await response.json();
-      return result;
+      setCategories({ Loading: false, data: result });
+      console.log("Loaded categories");
+      return;
     } catch (error) {
-      console.error("Error fetching data: ", error);
+      console.error("Error fetching categories: ", error);
+      setCategories({ Loading: false, data: [] });
+      return;
     }
   };
 
@@ -72,18 +94,25 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({
     }
   };
 
-  const fetchCategoryProducts = async (id: number, page: number, size: number) => {
+  const fetchCategoryProducts = async (
+    id: number,
+    page: number,
+    size: number
+  ) => {
     try {
       if (!getToken) {
         console.error("getToken is undefined");
         return;
       }
       const accessToken = await getToken();
-      const response = await fetch(`${BASE_URL}/category/${id}/products?page=${page}&size=${size}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await fetch(
+        `${BASE_URL}/category/${id}/products?page=${page}&size=${size}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
       if (!response.ok) {
         console.error("Error fetching Category: ", response.statusText);
         toast({
@@ -170,7 +199,11 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({
     }
   };
 
-  const fetchSubcategoryProducts = async (id: number, page: number, size: number) => {
+  const fetchSubcategoryProducts = async (
+    id: number,
+    page: number,
+    size: number
+  ) => {
     try {
       if (!getToken) {
         console.error("getToken is undefined");
@@ -249,18 +282,25 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({
     }
   };
 
-  const fetchProviderProducts = async (id: number, page: number, size: number) => {
+  const fetchProviderProducts = async (
+    id: number,
+    page: number,
+    size: number
+  ) => {
     try {
       if (!getToken) {
         console.error("getToken is undefined");
         return;
       }
       const accessToken = await getToken();
-      const response = await fetch(`${BASE_URL}/provider/${id}/products?page=${page}&size=${size}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await fetch(
+        `${BASE_URL}/provider/${id}/products?page=${page}&size=${size}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
       if (!response.ok) {
         console.error(
           "Error fetching Provider products: ",
@@ -415,23 +455,28 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({
     }
   };
 
-  /// EXPORT DATA /////
-
   const exportData: CatalogContextType = {
     BASE_URL,
+    // Categories
+    Categories,
     fetchCategories,
     fetchCategory,
     fetchCategoryProducts,
+    // Subcategories
     fetchSubcategoriesByCategoryId,
     fetchSubcategories,
     fetchSubcategoryById,
     fetchSubcategoryProducts,
+    // Providers
     fetchProviders,
     fetchProvider,
     fetchProviderProducts,
+    // Product filters
     fetchMeasures,
     fetchPrices,
+    // Product
     fetchProduct,
+    // Stock
     fetchProductStock,
     fetchStockListByKeyword,
   };

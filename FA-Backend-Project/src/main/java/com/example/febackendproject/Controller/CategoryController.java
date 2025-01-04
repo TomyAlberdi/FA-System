@@ -67,6 +67,8 @@ public class CategoryController {
     @PostMapping("/{name}")
     public ResponseEntity<?> save(@PathVariable String name) {
         Optional<CompleteCategoryDTO> repeatedCategory = categoryService.findByName(name);
+        System.out.println("Category name: " + name);
+        System.out.println("Optional: " + repeatedCategory.isPresent());
         if (repeatedCategory.isPresent()) {
             return existingAttribute("Name", name);
         }

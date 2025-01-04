@@ -66,7 +66,7 @@ const Category = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { BASE_URL, fetchCategory, fetchCategoryProducts } =
+  const { BASE_URL, fetchCategory, fetchCategoryProducts, fetchCategories } =
     useCatalogContext();
   const { getToken } = useKindeAuth();
   const [Category, setCategory] = useState<CategoryInterface | null>(null);
@@ -113,6 +113,7 @@ const Category = () => {
           title: "Categoría actualizada",
           description: "La categoría ha sido actualizada con éxito",
         });
+        fetchCategories();
       } catch (error) {
         console.error("Error: ", error);
         toast({
@@ -267,6 +268,7 @@ const Category = () => {
         title: "Categoría eliminada",
         description: "La categoría ha sido eliminada con éxito",
       });
+      fetchCategories();
       navigate("/catalog/categories");
     } catch (error) {
       console.error("Error: ", error);

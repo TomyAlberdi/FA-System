@@ -1,3 +1,8 @@
+export interface ReturnData {
+  Loading: boolean;
+  data: Array<unknown> | Price;
+}
+
 export interface Category {
   id: number;
   name: string;

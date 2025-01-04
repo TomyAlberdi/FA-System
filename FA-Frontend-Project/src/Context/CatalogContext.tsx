@@ -1,10 +1,11 @@
 import { createContext } from 'react';
-import { Category, CompleteProduct, Measure, PaginationResponse, Price, ProductStock, Provider, Subcategory } from "@/hooks/CatalogInterfaces";
+import { Category, CompleteProduct, Measure, PaginationResponse, Price, ProductStock, Provider, ReturnData, Subcategory } from "@/hooks/CatalogInterfaces";
 
 export interface CatalogContextType {
   BASE_URL: string;
   // CATEGORY GET
-  fetchCategories: () => Promise<Array<Category> | undefined>;
+  Categories: ReturnData;
+  fetchCategories: () => Promise<void>;
   fetchCategory: (id: number) => Promise<Category | undefined>;
   fetchCategoryProducts: (id: number, page: number, size: number) => Promise<PaginationResponse>;
   // SUBCATEGORY GET

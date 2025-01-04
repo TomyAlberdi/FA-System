@@ -24,19 +24,13 @@ const formSchema = z.object({
 });
 
 interface CategoriesHeaderProps {
-  setUpdateData?: (value: boolean) => void;
-  UpdateData?: boolean;
   setOpen: (value: boolean) => void;
 }
 
-export const AddCategory: React.FC<CategoriesHeaderProps> = ({
-  setUpdateData,
-  UpdateData,
-  setOpen,
-}) => {
+export const AddCategory: React.FC<CategoriesHeaderProps> = ({ setOpen }) => {
   const [LoadingRequest, setLoadingRequest] = useState(false);
 
-  const { BASE_URL } = useCatalogContext();
+  const { BASE_URL, fetchCategories } = useCatalogContext();
   const { getToken } = useKindeAuth();
 
   const { toast } = useToast();
@@ -68,7 +62,7 @@ export const AddCategory: React.FC<CategoriesHeaderProps> = ({
         toast({
           variant: "destructive",
           title: `Error ${response.status}`,
-          description: `Ocurrió un error al crear la categoría.`,
+          description: `Ocurrió un error al completar la creación de la categoría.`,
         });
         return;
       }
@@ -76,9 +70,7 @@ export const AddCategory: React.FC<CategoriesHeaderProps> = ({
         title: "Categoría creada",
         description: "La categoría ha sido creada con éxito",
       });
-      if (setUpdateData) {
-        setUpdateData(!UpdateData);
-      }
+      fetchCategories();
     } catch (error) {
       console.error("Error: ", error);
       toast({
