@@ -35,8 +35,8 @@ export interface Measure {
 }
 
 export interface Price {
-  "minPrice": number;
-  "maxPrice": number;
+  minPrice: number;
+  maxPrice: number;
 }
 
 export interface CardProduct {

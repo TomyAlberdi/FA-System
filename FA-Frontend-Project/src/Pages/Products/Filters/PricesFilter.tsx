@@ -16,7 +16,7 @@ export const PricesFilter: React.FC<PricesFilterProps> = ({
   setFilter,
   Loading,
 }) => {
-  const { fetchPrices } = useCatalogContext();
+  const { Prices } = useCatalogContext();
 
   const [Data, setData] = useState<PriceCheck | null>(null);
 
@@ -29,19 +29,12 @@ export const PricesFilter: React.FC<PricesFilterProps> = ({
     useState<number>(0);
 
   useEffect(() => {
-    fetchPrices().then((result) => {
-      if (Filter && Filter.length !== 0) {
-        setData(result ?? null);
-        return;
-      }
-      setData(result ?? null);
-      setSelectedMinPrice(result?.minPrice ?? 0);
-      setSelectedMaxPrice(result?.maxPrice ?? 0);
-      setDisplaySelectedMinPrice(result?.minPrice ?? 0);
-      setDisplaySelectedMaxPrice(result?.maxPrice ?? 0);
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [Filter]);
+    setData(Prices ?? null);
+    setSelectedMinPrice(Prices?.minPrice ?? 0);
+    setSelectedMaxPrice(Prices?.maxPrice ?? 0);
+    setDisplaySelectedMinPrice(Prices?.minPrice ?? 0);
+    setDisplaySelectedMaxPrice(Prices?.maxPrice ?? 0);
+  }, [Prices]);
 
   useEffect(() => {
     const newAppliedFilters = Filter?.filter(

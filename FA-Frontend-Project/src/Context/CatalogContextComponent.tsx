@@ -32,6 +32,7 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({
           fetchCategories();
           fetchProviders();
           fetchMeasures();
+          fetchPrices();
         }
       }
     };
@@ -359,6 +360,8 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({
 
   /// PRICES GET /////
 
+  const [Prices, setPrices] = useState<Price>();
+
   const fetchPrices = async () => {
     try {
       if (!getToken) {
@@ -376,7 +379,7 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({
         return;
       }
       const result: Price = await response.json();
-      return result;
+      setPrices(result);
     } catch (error) {
       console.error("Error fetching Prices: ", error);
     }
@@ -482,6 +485,7 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({
     // Product filters
     Measures,
     fetchMeasures,
+    Prices,
     fetchPrices,
     // Product
     fetchProduct,

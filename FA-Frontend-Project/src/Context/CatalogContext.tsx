@@ -22,7 +22,8 @@ export interface CatalogContextType {
   Measures: Array<Measure>;
   fetchMeasures: () => Promise<void>;
   // PRICE GET
-  fetchPrices: () => Promise<Price | undefined>;
+  Prices: Price | undefined,
+  fetchPrices: () => Promise<void>;
   // PRODUCT GET
   fetchProduct: (id: number) => Promise<CompleteProduct | undefined>;
   // STOCK GET

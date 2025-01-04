@@ -66,7 +66,6 @@ export const MeasureFilter: React.FC<MeasureFilterProps> = ({
           checkedMeasures.push(newItem);
         }
       });
-      console.log("Measures :", Measures);
       setData(checkedMeasures ?? null);
     }
   }, [Filter, Measures]);
