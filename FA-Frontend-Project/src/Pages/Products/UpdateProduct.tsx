@@ -25,10 +25,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useCatalogContext } from "@/Context/UseCatalogContext";
-import {
-  Category, Provider,
-  Subcategory
-} from "@/hooks/CatalogInterfaces";
+import { Category, Provider, Subcategory } from "@/hooks/CatalogInterfaces";
 import { useToast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
@@ -82,6 +79,9 @@ export const UpdateProduct = () => {
     fetchProviders,
     fetchCategories,
     fetchSubcategoriesByCategoryId,
+    // Re fetch the filter data when updating a product
+    fetchMeasures,
+    fetchPrices,
   } = useCatalogContext();
   const { getToken } = useKindeAuth();
   const { toast } = useToast();
@@ -238,6 +238,8 @@ export const UpdateProduct = () => {
         title: "Producto actualizado",
         description: "El producto ha sido actualizado con éxito",
       });
+      fetchMeasures();
+      fetchPrices();
       navigate(-1);
     } catch (error) {
       console.error("Error creando el producto: ", error);

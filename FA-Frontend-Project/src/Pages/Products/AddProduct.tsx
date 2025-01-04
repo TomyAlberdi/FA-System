@@ -24,10 +24,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useCatalogContext } from "@/Context/UseCatalogContext";
-import {
-  Category, Provider,
-  Subcategory
-} from "@/hooks/CatalogInterfaces";
+import { Category, Provider, Subcategory } from "@/hooks/CatalogInterfaces";
 import { useToast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
@@ -79,6 +76,9 @@ export const AddProduct = () => {
     fetchProviders,
     fetchCategories,
     fetchSubcategoriesByCategoryId,
+    // Re fetch the filter data when creating a product
+    fetchMeasures,
+    fetchPrices,
   } = useCatalogContext();
 
   const navigate = useNavigate();
@@ -234,6 +234,8 @@ export const AddProduct = () => {
         title: "Producto creado",
         description: "El producto ha sido creado con éxito",
       });
+      fetchMeasures();
+      fetchPrices();
       navigate(-1);
     } catch (error) {
       console.error("Error creando el producto: ", error);

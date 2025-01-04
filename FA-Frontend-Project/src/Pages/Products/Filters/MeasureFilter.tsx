@@ -18,7 +18,7 @@ export const MeasureFilter: React.FC<MeasureFilterProps> = ({
   setFilter,
   Loading,
 }) => {
-  const { fetchMeasures } = useCatalogContext();
+  const { Measures } = useCatalogContext();
   const [Data, setData] = useState<Array<MeasureCheck> | null>([]);
 
   const handleCheckboxChange = (id: number) => {
@@ -50,12 +50,12 @@ export const MeasureFilter: React.FC<MeasureFilterProps> = ({
   };
 
   useEffect(() => {
-    fetchMeasures().then((result) => {
-      if (Filter && Filter.length !== 0) {
+    if (Measures && Measures?.length > 0) {
+      if (Filter?.find((filter) => filter?.type === "measures")) {
         return;
       }
       const checkedMeasures: Array<MeasureCheck> = [];
-      result?.forEach((measure: Measure, i: number) => {
+      Measures?.forEach((measure: Measure, i: number) => {
         if (measure.measure !== null) {
           const newItem: MeasureCheck = {
             id: i,
@@ -66,10 +66,10 @@ export const MeasureFilter: React.FC<MeasureFilterProps> = ({
           checkedMeasures.push(newItem);
         }
       });
+      console.log("Measures :", Measures);
       setData(checkedMeasures ?? null);
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [Filter]);
+    }
+  }, [Filter, Measures]);
 
   return (
     <AccordionItem
@@ -86,7 +86,8 @@ export const MeasureFilter: React.FC<MeasureFilterProps> = ({
             </span>
           </div>
         ) : (
-          Data && Data?.map((measure: MeasureCheck) => {
+          Data &&
+          Data?.map((measure: MeasureCheck) => {
             return (
               measure.measure && (
                 <div

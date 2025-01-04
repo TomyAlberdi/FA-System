@@ -14,11 +14,13 @@ export interface CatalogContextType {
   fetchSubcategoryById: (id: number) => Promise<Subcategory | undefined>;
   fetchSubcategoryProducts: (id: number, page: number, size: number) => Promise<PaginationResponse>;
   // PROVIDER GET
-  fetchProviders: () => Promise<Array<Provider> | undefined>;
+  Providers: ReturnData;
+  fetchProviders: () => Promise<void>;
   fetchProvider: (id: number) => Promise<Provider | undefined>;
   fetchProviderProducts: (id: number, page: number, size: number) => Promise<PaginationResponse>;
   // MEASURE GET
-  fetchMeasures: () => Promise<Array<Measure> | undefined>;
+  Measures: Array<Measure>;
+  fetchMeasures: () => Promise<void>;
   // PRICE GET
   fetchPrices: () => Promise<Price | undefined>;
   // PRODUCT GET

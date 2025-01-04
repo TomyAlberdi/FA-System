@@ -30,6 +30,8 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({
         const accessToken = await getToken();
         if (accessToken) {
           fetchCategories();
+          fetchProviders();
+          fetchMeasures();
         }
       }
     };
@@ -62,12 +64,9 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({
       }
       const result: Array<Category> = await response.json();
       setCategories({ Loading: false, data: result });
-      console.log("Loaded categories");
-      return;
     } catch (error) {
       console.error("Error fetching categories: ", error);
       setCategories({ Loading: false, data: [] });
-      return;
     }
   };
 
@@ -231,6 +230,11 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({
 
   /// PROVIDER GET /////
 
+  const [Providers, setProviders] = useState<ReturnData>({
+    Loading: true,
+    data: Array<Provider>(),
+  });
+
   const fetchProviders = async () => {
     try {
       if (!getToken) {
@@ -248,9 +252,10 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({
         return;
       }
       const result: Array<Provider> = await response.json();
-      return result;
+      setProviders({ Loading: false, data: result });
     } catch (error) {
       console.error("Error fetching data: ", error);
+      setProviders({ Loading: false, data: [] });
     }
   };
 
@@ -322,6 +327,8 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({
 
   /// MEASURE GET /////
 
+  const [Measures, setMeasures] = useState<Array<Measure>>([]);
+
   const fetchMeasures = async () => {
     try {
       if (!getToken) {
@@ -344,7 +351,7 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({
         return;
       }
       const result: Array<Measure> = await response.json();
-      return result;
+      setMeasures(result);
     } catch (error) {
       console.error("Error fetching Measures: ", error);
     }
@@ -468,10 +475,12 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({
     fetchSubcategoryById,
     fetchSubcategoryProducts,
     // Providers
+    Providers,
     fetchProviders,
     fetchProvider,
     fetchProviderProducts,
     // Product filters
+    Measures,
     fetchMeasures,
     fetchPrices,
     // Product

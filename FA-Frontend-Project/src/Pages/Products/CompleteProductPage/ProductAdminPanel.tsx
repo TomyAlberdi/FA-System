@@ -17,7 +17,12 @@ export const ProductPageAdminPanel = ({
   ReloadProduct: boolean;
   setReloadProduct: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { BASE_URL } = useCatalogContext();
+  const {
+    BASE_URL,
+    // Re fetch the filter data when deleting a product
+    fetchMeasures,
+    fetchPrices,
+  } = useCatalogContext();
   const { getToken } = useKindeAuth();
   const navigate = useNavigate();
 
@@ -136,6 +141,8 @@ export const ProductPageAdminPanel = ({
         title: "Producto eliminado",
         description: "El producto ha sido eliminado con éxito",
       });
+      fetchMeasures();
+      fetchPrices();
       navigate(-1);
     } catch (error) {
       console.error("Error: ", error);
