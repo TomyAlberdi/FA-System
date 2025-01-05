@@ -76,9 +76,9 @@ export const UpdateProduct = () => {
   const {
     BASE_URL,
     fetchProduct,
-    fetchProviders,
-    fetchCategories,
     fetchSubcategoriesByCategoryId,
+    Providers,
+    Categories,
     // Re fetch the filter data when updating a product
     fetchMeasures,
     fetchPrices,
@@ -114,14 +114,7 @@ export const UpdateProduct = () => {
   });
 
   // Static form data setting
-  const [Providers, setProviders] = useState<Array<Provider>>([]);
-  const [Categories, setCategories] = useState<Array<Category>>([]);
   const [Subcategories, setSubcategories] = useState<Array<Subcategory>>([]);
-  useEffect(() => {
-    fetchProviders().then((result) => setProviders(result ?? []));
-    fetchCategories().then((result) => setCategories(result ?? []));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   // Dynamic form data setting
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
@@ -387,23 +380,30 @@ export const UpdateProduct = () => {
               render={({ field }) => (
                 <FormItem className="col-span-1 row-span-1 row-start-4 row-end-5">
                   <FormLabel>Proveedor</FormLabel>
-                  <Select value={field.value} onValueChange={field.onChange}>
+                  <Select
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    disabled={Providers?.Loading}
+                  >
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {Providers?.map((provider: Provider, index: number) => {
-                        return (
-                          <SelectItem
-                            value={provider.id.toString()}
-                            key={index}
-                          >
-                            {provider.name}
-                          </SelectItem>
-                        );
-                      })}
+                      {Array.isArray(Providers?.data) &&
+                        (Providers?.data as Provider[]).map(
+                          (provider: Provider, index: number) => {
+                            return (
+                              <SelectItem
+                                value={provider.id.toString()}
+                                key={index}
+                              >
+                                {provider.name}
+                              </SelectItem>
+                            );
+                          }
+                        )}
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -424,6 +424,7 @@ export const UpdateProduct = () => {
                       setSelectedCategoryId(value);
                       field.onChange(value);
                     }}
+                    disabled={Categories?.Loading}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -431,16 +432,19 @@ export const UpdateProduct = () => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {Categories?.map((category: Category, index: number) => {
-                        return (
-                          <SelectItem
-                            value={category.id.toString()}
-                            key={index}
-                          >
-                            {category.name}
-                          </SelectItem>
-                        );
-                      })}
+                      {Array.isArray(Categories?.data) &&
+                        (Categories?.data as Category[]).map(
+                          (category: Category, index: number) => {
+                            return (
+                              <SelectItem
+                                value={category.id.toString()}
+                                key={index}
+                              >
+                                {category.name}
+                              </SelectItem>
+                            );
+                          }
+                        )}
                     </SelectContent>
                   </Select>
                   <FormMessage />
