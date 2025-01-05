@@ -55,8 +55,12 @@ const formSchema = z.object({
 
 export const Subcategory = () => {
   const { id } = useParams();
-  const { fetchSubcategoryById, fetchSubcategoryProducts, BASE_URL } =
-    useCatalogContext();
+  const {
+    fetchSubcategoryById,
+    fetchSubcategoryProducts,
+    BASE_URL,
+    fetchSubcategories,
+  } = useCatalogContext();
   const navigate = useNavigate();
   const { getToken } = useKindeAuth();
   const [Loading, setLoading] = useState(true);
@@ -98,6 +102,7 @@ export const Subcategory = () => {
           });
           return;
         }
+        fetchSubcategories();
         toast({
           title: "Categoría actualizada",
           description: "La subcategoría ha sido actualizada con éxito",
@@ -197,6 +202,7 @@ export const Subcategory = () => {
         });
         return;
       }
+      fetchSubcategories();
       toast({
         title: "Subcategoría eliminada",
         description: "La subcategoría ha sido eliminada con éxito",
