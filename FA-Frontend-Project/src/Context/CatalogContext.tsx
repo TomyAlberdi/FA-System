@@ -9,7 +9,8 @@ export interface CatalogContextType {
   fetchCategory: (id: number) => Promise<Category | undefined>;
   fetchCategoryProducts: (id: number, page: number, size: number) => Promise<PaginationResponse>;
   // SUBCATEGORY GET
-  fetchSubcategories: () => Promise<Array<Subcategory> | undefined >;
+  Subcategories: Array<Subcategory>;
+  fetchSubcategories: () => Promise<void>;
   fetchSubcategoriesByCategoryId: (id: number) => Promise<Array<Subcategory> | undefined>;
   fetchSubcategoryById: (id: number) => Promise<Subcategory | undefined>;
   fetchSubcategoryProducts: (id: number, page: number, size: number) => Promise<PaginationResponse>;

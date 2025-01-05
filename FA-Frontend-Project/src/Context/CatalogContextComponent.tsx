@@ -33,6 +33,7 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({
           fetchProviders();
           fetchMeasures();
           fetchPrices();
+          fetchSubcategories();
         }
       }
     };
@@ -131,6 +132,8 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({
 
   /// SUBCATEGORY GET /////
 
+  const [Subcategories, setSubcategories] = useState<Array<Subcategory>>([]);
+
   const fetchSubcategories = async () => {
     try {
       if (!getToken) {
@@ -147,7 +150,7 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({
         console.error("Error fetching data: ", response.statusText);
       }
       const result: Array<Subcategory> = await response.json();
-      return result;
+      setSubcategories(result);
     } catch (error) {
       console.error("Error fetching subcategories: ", error);
     }
@@ -474,6 +477,7 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({
     fetchCategoryProducts,
     // Subcategories
     fetchSubcategoriesByCategoryId,
+    Subcategories,
     fetchSubcategories,
     fetchSubcategoryById,
     fetchSubcategoryProducts,

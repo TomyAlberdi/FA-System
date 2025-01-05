@@ -18,7 +18,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   setFilter,
   Loading,
 }) => {
-  const { fetchSubcategories } = useCatalogContext();
+  const { Subcategories } = useCatalogContext();
   const [Data, setData] = useState<Array<CategoryCheck> | null>([]);
 
   const handleCheckboxChange = (id: number) => {
@@ -50,12 +50,12 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   };
 
   useEffect(() => {
-    fetchSubcategories().then((result) => {
-      if (Filter && Filter.length !== 0) {
+    if (Subcategories && Subcategories?.length > 0) {
+      if (Filter?.find((filter) => filter?.type === "subcategoryId")) {
         return;
       }
       const checkedCategories: Array<CategoryCheck> = [];
-      result?.forEach((category: Subcategory) => {
+      Subcategories?.forEach((category: Subcategory) => {
         const newItem: CategoryCheck = {
           id: category.id,
           name: category.name,
@@ -65,9 +65,8 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
         checkedCategories.push(newItem);
       });
       setData(checkedCategories ?? null);
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [Filter]);
+    }
+  }, [Filter, Subcategories]);
 
   return (
     <AccordionItem
@@ -84,7 +83,8 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
             </p>
           </div>
         ) : (
-          Data && Data?.map((category: CategoryCheck) => {
+          Data &&
+          Data?.map((category: CategoryCheck) => {
             return (
               category.productsAmount > 0 && (
                 <div
