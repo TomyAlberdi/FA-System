@@ -59,7 +59,8 @@ public class ProductSpecifications {
             String likePattern = "%" + keyword + "%";
             return builder.or(
                     builder.like(builder.lower(root.get("name")), likePattern),
-                    builder.like(builder.lower(root.get("description")), likePattern)
+                    builder.like(builder.lower(root.get("description")), likePattern),
+                    builder.like(builder.lower(root.get("code")), likePattern)
             );
         };
     }

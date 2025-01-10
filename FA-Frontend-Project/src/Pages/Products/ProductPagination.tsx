@@ -107,24 +107,24 @@ export const ProductPagination: React.FC<ProductPaginationProps> = ({
 
   return (
     <section className="ProductPagination col-span-6">
-      <section className="listHeader">
-        <Button onClick={handleRefresh} className="text-lg">
+      <section className="listHeader flex flex-row items-center justify-between">
+        <Button onClick={handleRefresh} className="text-lg w-[19.2%] max-w-[300px] min-w-[225px]">
           <RefreshCcw />
           Recargar productos
         </Button>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit((data) => handleKeyword(data.keyword))}
-            className="flex flex-row items-start justify-start gap-2"
+            className="flex flex-row items-start justify-start gap-2 w-1/2"
           >
             <FormField
               control={form.control}
               name="keyword"
               render={({ field }) => (
                 <Input
-                  placeholder="Buscar por nombre o descripción"
+                  placeholder="Buscar por nombre, código o descripción"
                   type="text"
-                  className="w-96 text-lg"
+                  className="w-full text-lg"
                   {...field}
                 />
               )}
@@ -135,7 +135,7 @@ export const ProductPagination: React.FC<ProductPaginationProps> = ({
           </form>
         </Form>
         <Link to={"/catalog/products/add"}>
-          <Button className="text-lg">
+          <Button className="text-lg w-[19.2%] max-w-[300px] min-w-[225px]">
             <CirclePlus />
             Nuevo Producto
           </Button>
