@@ -221,16 +221,24 @@ const Category = () => {
   }, [LastLoadedPage]);
 
   const onDeletePres = () => {
-    toast({
-      variant: "destructive",
-      title: "Confirmación",
-      description: "¿Desea eliminar la categoría?",
-      action: (
-        <ToastAction altText="Eliminar" onClick={deleteCategory}>
-          Eliminar
-        </ToastAction>
-      ),
-    });
+    if (Category && Category?.productsAmount > 0) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "La categoría tiene productos asociados.",
+      });
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Confirmación",
+        description: "¿Desea eliminar la categoría?",
+        action: (
+          <ToastAction altText="Eliminar" onClick={deleteCategory}>
+            Eliminar
+          </ToastAction>
+        ),
+      });
+    }
   };
 
   const deleteCategory = async () => {
