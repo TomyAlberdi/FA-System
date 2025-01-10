@@ -42,7 +42,10 @@ const formSchema = z.object({
   description: z.string().min(5, {
     message: "La descripción debe contar con al menos 5 caracteres.",
   }),
-  quality: z.string() || null,
+  quality: z.string(),
+  code: z.string().min(1, {
+    message: "El código no puede estar vacío.",
+  }),
   // Measure data
   measureType: z.string().min(1, {
     message: "La unidad de medida no puede estar vacía.",
@@ -77,6 +80,8 @@ export const AddProduct = () => {
     Providers,
     Categories,
     // Re fetch the filter data when creating a product
+    fetchCategories,
+    fetchProviders,
     fetchMeasures,
     fetchPrices,
   } = useCatalogContext();
@@ -91,6 +96,7 @@ export const AddProduct = () => {
       name: "",
       description: "",
       quality: "",
+      code: "",
       measureType: "M2",
       measures: "",
       saleUnit: "Caja",
@@ -227,6 +233,8 @@ export const AddProduct = () => {
         title: "Producto creado",
         description: "El producto ha sido creado con éxito",
       });
+      fetchCategories();
+      fetchProviders();
       fetchMeasures();
       fetchPrices();
       navigate(-1);
@@ -277,19 +285,34 @@ export const AddProduct = () => {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="quality"
-            render={({ field }) => (
-              <FormItem className="col-span-1 row-span-1 row-start-3">
-                <FormLabel>Calidad (Opcional)</FormLabel>
-                <FormControl>
-                  <Input placeholder="Ej: 1ra" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="col-span-1 row-start-3 p-3 bg-primary-foreground rounded h-[100px] flex flex-row gap-4">
+            <FormField
+              control={form.control}
+              name="quality"
+              render={({ field }) => (
+                <FormItem className="w-1/2">
+                  <FormLabel>Calidad (Opcional)</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Ej: 1ra" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="code"
+              render={({ field }) => (
+                <FormItem className="w-1/2">
+                  <FormLabel>Código</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Ej: 17629" {...field} type="number" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
           {/* Provider, Category and Subcategory data */}
           <FormField
             control={form.control}
@@ -466,7 +489,7 @@ export const AddProduct = () => {
             />
           </div>
           {/* Measures data */}
-          <div className="measureSection row-span-3 row-start-3 row-end-6 col-start-2 p-4 bg-primary-foreground rounded">
+          <div className="measureSection row-span-3 row-start-3 row-end-6 col-start-2 p-4 bg-primary-foreground rounded flex flex-col justify-evenly">
             <FormField
               control={form.control}
               name="measureType"
@@ -549,7 +572,7 @@ export const AddProduct = () => {
             />
           </div>
           {/* Discount data */}
-          <div className="col-start-2 row-start-6 row-end-7 p-4 bg-primary-foreground rounded">
+          <div className="col-start-2 row-start-6 row-end-7 px-4 py-2 bg-primary-foreground rounded">
             <FormField
               control={form.control}
               name="discountPercentage"
@@ -577,7 +600,7 @@ export const AddProduct = () => {
           </div>
           {/* Images */}
           <div className="col-span-2 row-start-7 row-end-9 p-4 bg-primary-foreground rounded h-[100px]">
-            <Label htmlFor="file-input">Imágenes</Label>
+            <Label htmlFor="file-input">Imágenes (Opcional)</Label>
             <Input
               type="file"
               multiple
@@ -588,7 +611,7 @@ export const AddProduct = () => {
           {/* Tags */}
           <div className="col-span-2 row-start-9 row-end-11 p-4 bg-primary-foreground rounded flex flex-col gap-4">
             <div className="characteristicsHeader flex flex-row justify-between w-full">
-              <h3 className="text-xl font-semibold">Agregar Características</h3>
+              <h3 className="text-xl font-semibold">Agregar Características (Opcional)</h3>
             </div>
             <div className="characteristicsContainer flex flex-col gap-2">
               <FormField

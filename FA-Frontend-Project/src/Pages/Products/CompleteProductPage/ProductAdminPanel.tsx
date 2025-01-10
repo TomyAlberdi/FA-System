@@ -20,6 +20,8 @@ export const ProductPageAdminPanel = ({
   const {
     BASE_URL,
     // Re fetch the filter data when deleting a product
+    fetchCategories,
+    fetchProviders,
     fetchMeasures,
     fetchPrices,
   } = useCatalogContext();
@@ -143,6 +145,8 @@ export const ProductPageAdminPanel = ({
       });
       fetchMeasures();
       fetchPrices();
+      fetchCategories();
+      fetchProviders();
       navigate(-1);
     } catch (error) {
       console.error("Error: ", error);

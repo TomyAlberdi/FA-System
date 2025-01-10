@@ -39,7 +39,7 @@ export const ProductMainInfo = ({
       </Button>
       <p className="px-4">{Product?.description}</p>
       <span className="absolute right-0 top-2 px-4 py-1 bg-chart-1 rounded-l-md text-lg font-semibold text-white">
-        ID {Product?.id}
+        {Product?.code}
       </span>
       {Product?.disabled && (
         <span className="absolute right-0 top-14 px-4 py-1 bg-destructive rounded-l-md text-lg font-semibold text-white">

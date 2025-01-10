@@ -44,7 +44,10 @@ const formSchema = z.object({
   description: z.string().min(5, {
     message: "La descripción debe contar con al menos 5 caracteres.",
   }),
-  quality: z.string() || null,
+  quality: z.string(),
+  code: z.string().min(1, {
+    message: "El código no puede estar vacío.",
+  }),
   disabled: z.boolean(),
   // Measure data
   measureType: z.string({ required_error: "Seleccione una unidad de medida" }),
@@ -80,6 +83,8 @@ export const UpdateProduct = () => {
     Providers,
     Categories,
     // Re fetch the filter data when updating a product
+    fetchCategories,
+    fetchProviders,
     fetchMeasures,
     fetchPrices,
   } = useCatalogContext();
@@ -94,6 +99,7 @@ export const UpdateProduct = () => {
       name: "",
       description: "",
       quality: "",
+      code: "",
       measureType: "",
       measures: "",
       saleUnit: "",
@@ -231,6 +237,8 @@ export const UpdateProduct = () => {
         title: "Producto actualizado",
         description: "El producto ha sido actualizado con éxito",
       });
+      fetchCategories();
+      fetchProviders();
       fetchMeasures();
       fetchPrices();
       navigate(-1);
@@ -257,6 +265,7 @@ export const UpdateProduct = () => {
           name: result?.name ?? "",
           description: result?.description ?? "",
           quality: result?.quality ?? "",
+          code: result?.code ?? "",
           disabled: result?.disabled ?? false,
           measureType: result?.measureType ?? "",
           measures: result?.measures ?? "",
@@ -359,19 +368,34 @@ export const UpdateProduct = () => {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="quality"
-            render={({ field }) => (
-              <FormItem className="col-span-1 row-span-1 row-start-3">
-                <FormLabel>Calidad (Opcional)</FormLabel>
-                <FormControl>
-                  <Input placeholder="Ej: 1ra" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="col-span-1 row-start-3 p-3 bg-primary-foreground rounded h-[100px] flex flex-row gap-4">
+            <FormField
+              control={form.control}
+              name="quality"
+              render={({ field }) => (
+                <FormItem className="w-1/2">
+                  <FormLabel>Calidad (Opcional)</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Ej: 1ra" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="code"
+              render={({ field }) => (
+                <FormItem className="w-1/2">
+                  <FormLabel>Código</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Ej: 17629" {...field} type="number" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
           {/* Provider, Category and Subcategory data */}
           {form.watch("providerId") !== "" && (
             <FormField
@@ -554,7 +578,7 @@ export const UpdateProduct = () => {
             />
           </div>
           {/* Measures data */}
-          <div className="measureSection row-span-3 row-start-3 row-end-6 col-start-2 p-4 bg-primary-foreground rounded">
+          <div className="measureSection row-span-3 row-start-3 row-end-6 col-start-2 p-4 bg-primary-foreground rounded flex flex-col justify-evenly">
             <FormField
               control={form.control}
               name="measureType"
@@ -638,7 +662,7 @@ export const UpdateProduct = () => {
           </div>
           {/* Discount data */}
           {form.watch("discountPercentage") !== undefined && (
-            <div className="col-start-2 row-start-6 row-end-7 p-4 bg-primary-foreground rounded">
+            <div className="col-start-2 row-start-6 row-end-7 px-4 py-2 bg-primary-foreground rounded">
               <FormField
                 control={form.control}
                 name="discountPercentage"
@@ -669,7 +693,7 @@ export const UpdateProduct = () => {
           {/* Images */}
           <div className="col-span-2 row-start-7 p-4 bg-primary-foreground rounded flex flex-col gap-4">
             <section className="loadImages">
-              <Label htmlFor="file-input">Agregar Imágenes</Label>
+              <Label htmlFor="file-input">Agregar Imágenes (Opcional)</Label>
               <Input
                 type="file"
                 multiple
@@ -702,7 +726,7 @@ export const UpdateProduct = () => {
           {/* Tags */}
           <div className="col-span-2 row-start-8 row-end-11 p-4 bg-primary-foreground rounded flex flex-col gap-4">
             <div className="characteristicsHeader flex flex-row justify-between w-full">
-              <h3 className="text-xl font-semibold">Características</h3>
+              <h3 className="text-xl font-semibold">Características (Opcional)</h3>
             </div>
             <div className="characteristicsContainer flex flex-col gap-2">
               <FormField

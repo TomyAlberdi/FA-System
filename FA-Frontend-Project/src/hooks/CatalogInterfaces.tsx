@@ -70,6 +70,7 @@ export interface StockProduct {
 export interface CompleteProduct extends StockProduct {
   description: string;
   quality: string;
+  code: string;
   measures: string;
   discountedMeasurePrice: number,
   images: Array<string>;
