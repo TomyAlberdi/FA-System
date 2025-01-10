@@ -1,3 +1,4 @@
 FA-Backend-Project/.env
 FA-Backend-Project/src/main/resources/application.properties
 FA-Frontend-Project/.env
+fa-key-pair.pem
