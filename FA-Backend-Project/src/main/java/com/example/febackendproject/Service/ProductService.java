@@ -42,7 +42,8 @@ public class ProductService {
         if (product.getSaleUnit().equals(product.getMeasureType())) {
             product.setMeasurePerSaleUnit(1.0);
             product.setMeasurePrice(truncateToTwoDecimals(parsedSaleUnitPrice));
-        } else if (product.getMeasurePerSaleUnit() > 0) {
+        }
+        else if (product.getMeasurePerSaleUnit() > 0) {
             double measurePrice = parsedSaleUnitPrice / product.getMeasurePerSaleUnit();
             product.setMeasurePrice(truncateToTwoDecimals(measurePrice));
         }
@@ -52,13 +53,15 @@ public class ProductService {
             double discountedMeasurePrice = product.getMeasurePrice() * discountFactor;
             product.setDiscountedPrice(truncateToTwoDecimals(discountedPrice));
             product.setDiscountedMeasurePrice(truncateToTwoDecimals(discountedMeasurePrice));
-        } else {
+        }
+        else {
             product.setDiscountedPrice(0.0);
             product.setDiscountedMeasurePrice(0.0);
         }
         if (!product.getImages().isEmpty()) {
             product.setMainImage(product.getImages().get(0));
-        } else {
+        }
+        else {
             product.setMainImage("");
         }
         if (product.getId() != null) {
@@ -91,7 +94,8 @@ public class ProductService {
             } else {
                 throw new IllegalArgumentException("Product with ID " + product.getId() + " does not exist.");
             }
-        } else {
+        }
+        else {
             if (product.getCategoryId() != null) {
                 categoryRepository.incrementProductsAmount(product.getCategoryId());
             }
@@ -118,6 +122,7 @@ public class ProductService {
             double parsedSaleUnitPrice = Double.parseDouble(product.get().getSaleUnitPrice());
             returnProduct.setId(product.get().getId());
             returnProduct.setName(product.get().getName());
+            returnProduct.setCode(product.get().getCode());
             returnProduct.setDisabled(product.get().getDisabled());
             returnProduct.setDescription(product.get().getDescription());
             returnProduct.setQuality(product.get().getQuality());

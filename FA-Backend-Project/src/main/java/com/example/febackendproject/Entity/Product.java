@@ -24,6 +24,9 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
+    @NotNull
+    private String code;
+    
     @NotBlank
     @Column(unique = true)
     private String name;

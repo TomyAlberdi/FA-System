@@ -16,6 +16,7 @@ public class CompleteProductDTO {
     
     private Long id;
     private String name;
+    private String code;
     private Boolean disabled = false;
     private String description;
     private String quality;
