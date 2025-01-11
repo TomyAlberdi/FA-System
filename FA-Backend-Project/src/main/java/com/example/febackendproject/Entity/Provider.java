@@ -23,9 +23,7 @@ public class Provider {
     @Column(unique = true)
     private String name;
     
-    @NotBlank
     private String locality;
-    
     private String address;
     private String phone;
     private String email;
