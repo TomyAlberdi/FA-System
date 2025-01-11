@@ -30,21 +30,11 @@ const formSchema = z.object({
   name: z.string().min(3, {
     message: "El nombre debe contar con al menos 3 caracteres.",
   }),
-  locality: z.string().min(3, {
-    message: "La localidad debe contar con al menos 3 caracteres.",
-  }),
-  address: z.string().min(3, {
-    message: "La dirección debe contar con al menos 3 caracteres.",
-  }),
-  phone: z.string().min(10, {
-    message: "El teléfono debe contar con al menos 10 caracteres.",
-  }),
-  email: z.string().email({
-    message: "El email no es válido.",
-  }),
-  cuit: z.string().length(11, {
-    message: "El CUIT debe contar con 11 caracteres.",
-  }),
+  locality: z.string().optional(),
+  address: z.string().optional(),
+  phone: z.string().optional(),
+  email: z.string().optional(),
+  cuit: z.string().optional(),
 });
 
 export const UpdateProvider = ({
@@ -164,7 +154,7 @@ export const UpdateProvider = ({
               name="locality"
               render={({ field }) => (
                 <FormItem className="col-start-1 row-start-2">
-                  <FormLabel>Localidad</FormLabel>
+                  <FormLabel>Localidad (Opcional)</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
@@ -177,7 +167,7 @@ export const UpdateProvider = ({
               name="address"
               render={({ field }) => (
                 <FormItem className="col-start-1 row-start-3">
-                  <FormLabel>Dirección</FormLabel>
+                  <FormLabel>Dirección (Opcional)</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
@@ -190,7 +180,7 @@ export const UpdateProvider = ({
               name="phone"
               render={({ field }) => (
                 <FormItem className="col-start-2 row-start-1">
-                  <FormLabel>Teléfono</FormLabel>
+                  <FormLabel>Teléfono (Opcional)</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
@@ -203,7 +193,7 @@ export const UpdateProvider = ({
               name="email"
               render={({ field }) => (
                 <FormItem className="col-start-2 row-start-2">
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>Email (Opcional)</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
@@ -216,7 +206,7 @@ export const UpdateProvider = ({
               name="cuit"
               render={({ field }) => (
                 <FormItem className="col-start-2 row-start-3">
-                  <FormLabel>CUIT</FormLabel>
+                  <FormLabel>CUIT (Opcional)</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
