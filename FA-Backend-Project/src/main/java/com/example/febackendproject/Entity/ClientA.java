@@ -13,15 +13,18 @@ import lombok.Setter;
 @Table
 @AllArgsConstructor
 @NoArgsConstructor
-public class Client {
+public class ClientA {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
     @NotBlank
-    private String name;
-    
-    
+    private String commercialName;
+    private String commercialAddress;
+    private String factura = "A";
+    private String cuit;
+    private String email;
+    private String phone;
     
 }
