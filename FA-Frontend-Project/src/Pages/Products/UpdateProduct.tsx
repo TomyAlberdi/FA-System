@@ -123,18 +123,15 @@ export const UpdateProduct = () => {
   const [Subcategories, setSubcategories] = useState<Array<Subcategory>>([]);
 
   // Dynamic form data setting
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
   useEffect(() => {
+    const selectedCategoryId = form.watch("categoryId");
     if (selectedCategoryId) {
       fetchSubcategoriesByCategoryId(parseInt(selectedCategoryId)).then(
         (result) => setSubcategories(result ?? [])
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCategoryId]);
-
-  const [SelectedSaleUnit, setSelectedSaleUnit] = useState("Caja");
-  const [SelectedMeasureType, setSelectedMeasureType] = useState("M2");
+  }, [form.watch("categoryId")]);
 
   // Image uploading
   const [SelectedFiles, setSelectedFiles] = useState<Array<File>>([]);
@@ -305,8 +302,6 @@ export const UpdateProduct = () => {
         fetchSubcategoriesByCategoryId(
           parseInt(result?.categoryId.toString() ?? "")
         ).then((result) => setSubcategories(result ?? []));
-        setSelectedSaleUnit(result?.saleUnit ?? "");
-        setSelectedMeasureType(result?.measureType ?? "");
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -444,10 +439,7 @@ export const UpdateProduct = () => {
                   <FormLabel>Categoría</FormLabel>
                   <Select
                     value={field.value}
-                    onValueChange={(value) => {
-                      setSelectedCategoryId(value);
-                      field.onChange(value);
-                    }}
+                    onValueChange={field.onChange}
                     disabled={Categories?.Loading}
                   >
                     <FormControl>
@@ -522,13 +514,7 @@ export const UpdateProduct = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Unidad de venta</FormLabel>
-                  <Select
-                    value={field.value}
-                    onValueChange={(value) => {
-                      setSelectedSaleUnit(value);
-                      field.onChange(value);
-                    }}
-                  >
+                  <Select value={field.value} onValueChange={field.onChange}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue />
@@ -550,7 +536,7 @@ export const UpdateProduct = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex justify-start align-center pt-2">
-                    Precio por {SelectedSaleUnit}
+                    Precio
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
@@ -584,14 +570,11 @@ export const UpdateProduct = () => {
               name="measureType"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Unidad de medida del producto</FormLabel>
+                  <FormLabel>Unidad de medida</FormLabel>
                   <Select
                     defaultValue="M2"
                     value={field.value}
-                    onValueChange={(value) => {
-                      setSelectedMeasureType(value);
-                      field.onChange(value);
-                    }}
+                    onValueChange={field.onChange}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -615,7 +598,7 @@ export const UpdateProduct = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex justify-start align-center pt-2">
-                    Cantidad de {SelectedMeasureType} por {SelectedSaleUnit}
+                    Cantidad
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
@@ -624,23 +607,14 @@ export const UpdateProduct = () => {
                         <TooltipContent>
                           Ejemplos: <br />
                           - M2 por Caja: 25 <br />
-                          - Unidades por Juego: 5 <br />
+                          - Unidades por Juego: 5 <br />- Si se vende por
+                          unidad: 1
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="Ej: 100"
-                      {...field}
-                      disabled={SelectedMeasureType === SelectedSaleUnit}
-                      value={
-                        SelectedMeasureType === SelectedSaleUnit
-                          ? 1
-                          : field.value
-                      }
-                      type="number"
-                    />
+                    <Input placeholder="Ej: 2.35" {...field} type="number" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -679,9 +653,8 @@ export const UpdateProduct = () => {
                         min={0}
                         max={100}
                         step={1}
-                        defaultValue={[0]}
-                        value={[field.value ? field.value : 0]}
-                        onValueChange={(values) => field.onChange(values[0])}
+                        value={[field.value]}
+                        onValueChange={field.onChange}
                       />
                     </FormControl>
                     <FormMessage />
@@ -726,7 +699,9 @@ export const UpdateProduct = () => {
           {/* Tags */}
           <div className="col-span-2 row-start-8 row-end-11 p-4 bg-primary-foreground rounded flex flex-col gap-4">
             <div className="characteristicsHeader flex flex-row justify-between w-full">
-              <h3 className="text-xl font-semibold">Características (Opcional)</h3>
+              <h3 className="text-xl font-semibold">
+                Características (Opcional)
+              </h3>
             </div>
             <div className="characteristicsContainer flex flex-col gap-2">
               <FormField
