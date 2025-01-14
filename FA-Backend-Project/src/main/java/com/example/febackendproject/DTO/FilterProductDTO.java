@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class FilterDTO {
+public class FilterProductDTO {
     
     private Long subcategoryId;
     private Long providerId;
