@@ -1,8 +1,6 @@
 import { SalesContext, SalesContextType } from "@/Context/SalesContext";
-import { ReturnData } from "@/hooks/CatalogInterfaces";
-import { CompleteClient, PartialClient } from "@/hooks/SalesInterfaces";
+import { CompleteClient } from "@/hooks/SalesInterfaces";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { useEffect, useState } from "react";
 
 interface SalesContextComponentProps {
   children: React.ReactNode;
@@ -14,7 +12,7 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
   const { getToken } = useKindeAuth();
   const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-  useEffect(() => {
+/*   useEffect(() => {
     const fetchData = async () => {
       if (getToken) {
         const accessToken = await getToken();
@@ -25,38 +23,9 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
     };
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getToken]);
+  }, [getToken]); */
 
   /// CLIENT GET ///
-
-  const [Clients, setClients] = useState<ReturnData>({
-    Loading: true,
-    data: Array<PartialClient>(),
-  });
-
-  const fetchClients = async () => {
-    try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(`${BASE_URL}/clients`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      if (!response.ok) {
-        console.error("Error fetching data: ", response.statusText);
-        return;
-      }
-      const result: Array<PartialClient> = await response.json();
-      setClients({ Loading: false, data: result });
-    } catch (error) {
-      console.error("Error fetching data: ", error);
-      setClients({ Loading: false, data: [] });
-    }
-  };
 
   const fetchClient = async (id: number) => {
     try {
@@ -83,8 +52,6 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
 
   const exportData: SalesContextType = {
     BASE_URL,
-    Clients,
-    fetchClients,
     fetchClient,
   };
 
