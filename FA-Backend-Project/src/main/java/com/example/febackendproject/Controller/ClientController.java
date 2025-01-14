@@ -1,6 +1,7 @@
 package com.example.febackendproject.Controller;
 
 
+import com.example.febackendproject.DTO.FilterClientDTO;
 import com.example.febackendproject.DTO.PartialClientDTO;
 import com.example.febackendproject.Entity.Client;
 import com.example.febackendproject.Service.ClientService;
@@ -36,21 +37,13 @@ public class ClientController {
         return notFound("ID", id.toString());
     }
     
-    @GetMapping
+    @GetMapping("/search")
     public ResponseEntity<Page<PartialClientDTO>> list(
+            FilterClientDTO filter,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size
     ) {
-        return ResponseEntity.ok(clientService.getPartialClients(page, size));
-    }
-    
-    @GetMapping("/{type}")
-    public ResponseEntity<?> getClientByType(
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size,
-            @PathVariable String type
-    ) {
-        return ResponseEntity.ok(clientService.getPartialClientsByType(page, size, type));
+        return ResponseEntity.ok(clientService.getPartialClients(filter, page, size));
     }
     
     @PostMapping
