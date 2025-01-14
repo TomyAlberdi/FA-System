@@ -30,10 +30,10 @@ public class JwtAuthenticationFilter  extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String token = request.getHeader("Authorization");
+        logger.debug("Token: " + token);
         if (token != null && token.startsWith("Bearer ")) {
             try {
                 DecodedJWT jwt = verifier.verify(token.substring(7));
-                
                 // Extract roles from token
                 List<GrantedAuthority> authorities = jwt.getClaim("roles").asList(Map.class).stream()
                         .map(role -> new SimpleGrantedAuthority("ROLE_" + role.get("key").toString()))
