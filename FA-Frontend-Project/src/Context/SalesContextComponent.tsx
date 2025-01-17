@@ -34,11 +34,11 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
         return;
       }
       const accessToken = await getToken();
-      const response = await fetch(`${BASE_URL}/clients/${id}`, {
+      const response = await fetch(`${BASE_URL}/client/${id}`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
-      });
+      }); 
       if (!response.ok) {
         console.error("Error fetching data: ", response.statusText);
         return;

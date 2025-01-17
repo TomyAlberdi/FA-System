@@ -8,7 +8,7 @@ export interface CompleteClient extends PartialClient {
   address: string;
   phone: string;
   email: string;
-  cuit_dni: string;
+  cuitDni: string;
 }
 
 export interface AddClient {

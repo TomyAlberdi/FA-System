@@ -1,11 +1,20 @@
-import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogHeader,
 } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Loader2, Pencil } from "lucide-react";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CompleteClient } from "@/hooks/SalesInterfaces";
+import { useSalesContext } from "@/Context/UseSalesContext";
+import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import { useToast } from "@/hooks/use-toast";
 import {
   Form,
   FormControl,
@@ -15,54 +24,48 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useSalesContext } from "@/Context/UseSalesContext";
-import { useToast } from "@/hooks/use-toast";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { CirclePlus, Loader2 } from "lucide-react";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { Label } from "@/components/ui/label";
 
 const formSchema = z.object({
+  id: z.number(),
   name: z.string().min(3, {
     message: "El nombre debe contar con al menos 3 caracteres.",
   }),
   type: z.enum(["A", "B"], {
     required_error: "Seleccione un tipo de cliente.",
   }),
-  address: z.string(),
-  phone: z.string(),
-  email: z.string(),
-  cuitDni: z.string(),
+  address: z.string().optional(),
+  phone: z.string().optional(),
+  email: z.string().optional(),
+  cuitDni: z.string().optional(),
 });
 
-interface AddClientProps {
-  handleRefresh: () => void;
-}
-
-export const AddClient = ({ handleRefresh }: AddClientProps) => {
+export const UpdateClient = ({ client, Reload, setReload }: { client: CompleteClient, Reload: boolean, setReload: (value: boolean) => void }) => {
   const [Open, setOpen] = useState(false);
   const [LoadingRequest, setLoadingRequest] = useState(false);
-  const { BASE_URL } = useSalesContext();
   const { getToken } = useKindeAuth();
+  const { BASE_URL } = useSalesContext();
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      address: "",
-      phone: "",
-      email: "",
-      cuitDni: "",
-    },
   });
 
-  async function onSubmit(data: z.infer<typeof formSchema>) {
-    const url = `${BASE_URL}/client`;
+  useEffect(() => {
+    form.reset({
+      id: client?.id ?? 0,
+      name: client?.name ?? "",
+      type: (client?.type as "A" | "B") ?? "A",
+      address: client?.address ?? "",
+      phone: client?.phone ?? "",
+      email: client?.email ?? "",
+      cuitDni: client?.cuitDni ?? "",
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [client]);
+
+  const updateClient = async (data: z.infer<typeof formSchema>) => {
     setLoadingRequest(true);
     try {
       if (!getToken) {
@@ -70,8 +73,8 @@ export const AddClient = ({ handleRefresh }: AddClientProps) => {
         return;
       }
       const accessToken = await getToken();
-      const response = await fetch(url, {
-        method: "POST",
+      const response = await fetch(`${BASE_URL}/client`, {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
@@ -83,34 +86,34 @@ export const AddClient = ({ handleRefresh }: AddClientProps) => {
         toast({
           variant: "destructive",
           title: `Error ${response.status}`,
-          description: `Ocurrió un error al crear el cliente.`,
+          description: `Ocurrió un error al actualizar el cliente.`,
         });
         return;
       }
       toast({
-        title: "Cliente creado",
-        description: "El cliente ha sido creado con éxito",
+        title: "Cliente actualizado",
+        description: "El cliente ha sido actualizado con éxito",
       });
+      setReload(!Reload);
     } catch (error) {
-      console.error("Error: ", error);
+      console.log(error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Ocurrió un error al crear el cliente",
+        description: "Ocurrió un error al actualizar el cliente",
       });
     } finally {
-      setOpen(false);
       setLoadingRequest(false);
-      handleRefresh();
+      setOpen(false);
     }
-  }
+  };
 
   return (
     <Dialog open={Open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="text-lg">
-          <CirclePlus />
-          Nuevo Cliente
+        <Button className="w-full mb-2">
+          <Pencil />
+          Editar
         </Button>
       </DialogTrigger>
       <DialogContent
@@ -119,12 +122,12 @@ export const AddClient = ({ handleRefresh }: AddClientProps) => {
       >
         <DialogHeader>
           <DialogTitle className="text-xl font-bold">
-            Añadir Cliente
+            Editar Cliente
           </DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(onSubmit)}
+            onSubmit={form.handleSubmit(updateClient)}
             className="w-full grid grid-cols-2 grid-rows-5 gap-4"
           >
             <FormField
@@ -160,10 +163,7 @@ export const AddClient = ({ handleRefresh }: AddClientProps) => {
                 <FormItem className="col-start-2 row-start-1">
                   <FormLabel>Teléfono (Opcional)</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
-                      {...field}
-                    />
+                    <Input type="number" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -176,10 +176,7 @@ export const AddClient = ({ handleRefresh }: AddClientProps) => {
                 <FormItem className="col-start-2 row-start-2">
                   <FormLabel>Email (Opcional)</FormLabel>
                   <FormControl>
-                    <Input
-                      type="email"
-                      {...field}
-                    />
+                    <Input type="email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -192,10 +189,7 @@ export const AddClient = ({ handleRefresh }: AddClientProps) => {
                 <FormItem className="col-start-1 row-start-3 col-span-2">
                   <FormLabel>CUIT / DNI (Opcional)</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
-                      {...field}
-                    />
+                    <Input type="number" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -22,7 +22,6 @@ public class Client {
     @NotBlank
     private String type;
     @NotBlank
-    @Column(unique = true)
     private String name;
     
     private String address;

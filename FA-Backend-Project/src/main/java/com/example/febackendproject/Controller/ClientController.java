@@ -48,18 +48,12 @@ public class ClientController {
     
     @PostMapping
     public ResponseEntity<?> addClient(@Validated @RequestBody Client client) {
-        if (clientService.existsByName(client.getName())) {
-            return existingAttribute("Name", client.getName());
-        }
         Client newClient = clientService.save(client);
         return ResponseEntity.ok(newClient);
     }
     
     @PatchMapping
     public ResponseEntity<?> updateClient(@Validated @RequestBody Client client) {
-        if (clientService.existsByName(client.getName())) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Client with " + client.getName() + " already exists");
-        }
         if (clientService.existsById(client.getId())) {
             Client result = clientService.save(client);
             return ResponseEntity.ok(result);
