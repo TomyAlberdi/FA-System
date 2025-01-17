@@ -1,5 +1,6 @@
 import { PaginationInfo } from "@/hooks/CatalogInterfaces";
-import { PartialClient } from "@/hooks/SalesInterfaces"
+import { PartialClient } from "@/hooks/SalesInterfaces";
+import { ClientCard } from "@/Pages/Clients/ClientCard";
 
 interface ClientsPaginationProps {
   Clients: Array<PartialClient>;
@@ -19,8 +20,8 @@ export const ClientsPagination: React.FC<ClientsPaginationProps> = ({
   return (
     <div>
       {Clients?.map((client: PartialClient, i) => {
-        return <div key={i}>{client.name}</div>
+        return <ClientCard client={client} key={i} />;
       })}
     </div>
-  )
-}
+  );
+};

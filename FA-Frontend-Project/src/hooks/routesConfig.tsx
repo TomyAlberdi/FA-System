@@ -13,6 +13,7 @@ import { StockList } from "@/Pages/Stock/StockList";
 import { UpdateProduct } from "@/Pages/Products/UpdateProduct";
 import { Sales } from "@/Pages/Sales/Sales";
 import { Clients } from "@/Pages/Clients/Clients";
+import { Client } from "@/Pages/Clients/Client";
 
 export const routesConfig = [
   { index: true, element: <Home /> },
@@ -32,4 +33,5 @@ export const routesConfig = [
   // Sales
   { path: "/sales", element: <Sales /> },
   { path: "/sales/clients", element: <Clients /> },
+  { path: "/sales/clients/:id", element: <Client /> },
 ];
