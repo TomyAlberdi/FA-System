@@ -74,7 +74,7 @@ export const ClientsPagination: React.FC<ClientsPaginationProps> = ({
           <AlertCircle className="w-5 pt-1" />
           <AlertTitle className="text-xl">Error</AlertTitle>
           <AlertDescription className="text-lg">
-            No se encontraron productos.
+            No se encontraron clientes.
           </AlertDescription>
         </Alert>
       ) : (

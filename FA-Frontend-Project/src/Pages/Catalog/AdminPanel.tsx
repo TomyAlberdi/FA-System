@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -29,11 +28,8 @@ export const AdminPanel = () => {
     <Card className="col-start-1 col-span-8 row-start-11 row-end-16">
       <CardHeader>
         <CardTitle>Atajos</CardTitle>
-        <CardDescription>
-          Añadir productos, proveedores y categorías.
-        </CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-row space-x-4 h-2/3">
+      <CardContent className="flex flex-row space-x-1 h-2/3">
         <Button
           className="h-full text-lg w-1/3"
           onClick={() => navigate("/catalog/products/add")}
