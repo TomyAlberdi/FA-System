@@ -16,7 +16,7 @@ export const ProductCard = ({ product }: { product: CardProduct }) => {
     <Card
       onClick={() => navigate(`/catalog/products/${product.id}`)}
       className={
-        "ProductCard relative bg-primary-foreground h-[400px] w-[19.2%] max-w-[300px] min-w-[225px] p-2 grid grid-cols-1 grid-rows-9 cursor-pointer" +
+        "ProductCard relative bg-primary-foreground h-[400px] w-[24.2%] max-w-[300px] min-w-[220px] p-2 grid grid-cols-1 grid-rows-9 cursor-pointer" +
         (product.disabled ? " opacity-50 border-red-700" : "")
       }
     >
