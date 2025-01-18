@@ -51,7 +51,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         // disable security for testing ignore otherwise
-                        .requestMatchers(HttpMethod.GET).permitAll()
+                        //.requestMatchers(HttpMethod.GET).permitAll()
                         //.anyRequest().hasAnyAuthority("ROLE_admin"))
                         .anyRequest().authenticated())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))

@@ -76,10 +76,8 @@ export const Clients = () => {
       }
     };
     handleSearch();
-    console.log(Filters.keyword, " ", Filters.type, " ", CurrentPage);
-    console.log(Clients);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [Filters, CurrentPage]);
+  }, [Filters, CurrentPage, BASE_URL]);
 
   return (
     <div className="Clients">
