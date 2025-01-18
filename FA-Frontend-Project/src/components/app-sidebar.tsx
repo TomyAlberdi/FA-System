@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Activity, ShoppingCart } from "lucide-react";
+import { Activity, ShoppingCart, UserSearch } from "lucide-react";
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
 import {
@@ -35,9 +35,21 @@ const data = [
       {
         title: "Stock",
         url: "/stock",
-      }
+      },
     ],
-  }
+  },
+  {
+    title: "Ventas",
+    url: "/sales",
+    icon: UserSearch,
+    isActive: true,
+    items: [
+      {
+        title: "Clientes",
+        url: "/clients",
+      },
+    ],
+  },
 ];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -52,9 +64,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <Activity className="size-4" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">
-                    F&A S.A.
-                  </span>
+                  <span className="truncate font-semibold">F&A S.A.</span>
                 </div>
               </Link>
             </SidebarMenuButton>

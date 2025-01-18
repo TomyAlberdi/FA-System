@@ -260,18 +260,18 @@ public class ProductService {
         return productRepository.findById(productId);
     }
     
-    public Page<PartialProductDTO> getFilteredPartialProducts(FilterDTO filterDTO, int page, int size) {
+    public Page<PartialProductDTO> getFilteredPartialProducts(FilterProductDTO filterProductDTO, int page, int size) {
         
         Pageable pageable = PageRequest.of(page, size);
         
         Specification<Product> spec = Specification
-                .where(ProductSpecifications.hasSubcategory(filterDTO.getSubcategoryId()))
-                .and(ProductSpecifications.hasProvider(filterDTO.getProviderId()))
-                .and(ProductSpecifications.hasMeasure(filterDTO.getMeasures()))
-                .and(ProductSpecifications.priceBetween(filterDTO.getMinPrice(), filterDTO.getMaxPrice()))
-                .and(ProductSpecifications.hasDiscount(filterDTO.getDiscount()))
-                .and(ProductSpecifications.isDiscontinued(filterDTO.getDiscontinued()))
-                .and(ProductSpecifications.hasKeyword(filterDTO.getKeyword()));
+                .where(ProductSpecifications.hasSubcategory(filterProductDTO.getSubcategoryId()))
+                .and(ProductSpecifications.hasProvider(filterProductDTO.getProviderId()))
+                .and(ProductSpecifications.hasMeasure(filterProductDTO.getMeasures()))
+                .and(ProductSpecifications.priceBetween(filterProductDTO.getMinPrice(), filterProductDTO.getMaxPrice()))
+                .and(ProductSpecifications.hasDiscount(filterProductDTO.getDiscount()))
+                .and(ProductSpecifications.isDiscontinued(filterProductDTO.getDiscontinued()))
+                .and(ProductSpecifications.hasKeyword(filterProductDTO.getKeyword()));
         
         return productPaginationRepository.findAll(spec, pageable).map(product -> {
             return new PartialProductDTO(

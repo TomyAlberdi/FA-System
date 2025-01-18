@@ -11,10 +11,13 @@ import { ProductPage } from "@/Pages/Products/CompleteProductPage/ProductPage";
 import { Stock } from "@/Pages/Stock/Stock";
 import { StockList } from "@/Pages/Stock/StockList";
 import { UpdateProduct } from "@/Pages/Products/UpdateProduct";
+import { Sales } from "@/Pages/Sales/Sales";
+import { Clients } from "@/Pages/Clients/Clients";
+import { Client } from "@/Pages/Clients/Client";
 
 export const routesConfig = [
   { index: true, element: <Home /> },
-  // { path: "/user", element: <User /> },
+  // Catalog
   { path: "/catalog", element: <Catalog /> },
   { path: "/catalog/products", element: <Products /> },
   { path: "/catalog/products/:id", element: <ProductPage /> },
@@ -27,4 +30,8 @@ export const routesConfig = [
   { path: "/catalog/categories", element: <Categories /> },
   { path: "/catalog/categories/:id", element: <Category /> },
   { path: "/catalog/subcategory/:id", element: <Subcategory /> },
+  // Sales
+  { path: "/sales", element: <Sales /> },
+  { path: "/sales/clients", element: <Clients /> },
+  { path: "/sales/clients/:id", element: <Client /> },
 ];

@@ -58,7 +58,7 @@ const formSchema = z.object({
   saleUnitPrice: z.string(),
   measurePerSaleUnit: z.string() || null,
   // Discount data
-  discountPercentage: z.number().max(100).min(0) || null,
+  discountPercentage: z.array(z.number()).or(z.number()) || null,
   // External data
   providerId: z.string(),
   categoryId: z.string(),
@@ -189,6 +189,9 @@ export const AddProduct = () => {
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsSubmitting(true);
     try {
+      if (data.discountPercentage && Array.isArray(data.discountPercentage)) {
+        data.discountPercentage = Number(data.discountPercentage[0]);
+      }
       const fileInput = SelectedFiles;
       if (fileInput && fileInput.length > 0) {
         const uploadedUrls = await uploadImages(fileInput);
@@ -568,7 +571,6 @@ export const AddProduct = () => {
                       min={0}
                       max={100}
                       step={1}
-                      value={[field.value]}
                       onValueChange={field.onChange}
                     />
                   </FormControl>

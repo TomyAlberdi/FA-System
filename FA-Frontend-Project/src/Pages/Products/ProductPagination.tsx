@@ -108,7 +108,7 @@ export const ProductPagination: React.FC<ProductPaginationProps> = ({
   return (
     <section className="ProductPagination col-span-6">
       <section className="listHeader flex flex-row items-center justify-between">
-        <Button onClick={handleRefresh} className="text-lg w-[19.2%] max-w-[300px] min-w-[225px]">
+        <Button onClick={handleRefresh} className="text-lg w-[19.2%] max-w-[300px] min-w-[200px]">
           <RefreshCcw />
           Recargar productos
         </Button>
@@ -135,7 +135,7 @@ export const ProductPagination: React.FC<ProductPaginationProps> = ({
           </form>
         </Form>
         <Link to={"/catalog/products/add"}>
-          <Button className="text-lg w-[19.2%] max-w-[300px] min-w-[225px]">
+          <Button className="text-lg w-[19.2%] max-w-[300px] min-w-[200px]">
             <CirclePlus />
             Nuevo Producto
           </Button>

@@ -9,15 +9,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class FilterDTO {
+public class FilterClientDTO {
     
-    private Long subcategoryId;
-    private Long providerId;
-    private String measures;
-    private Double minPrice;
-    private Double maxPrice;
-    private Boolean discount;
-    private Boolean discontinued;
+    private String type;
     private String keyword;
     
 }
