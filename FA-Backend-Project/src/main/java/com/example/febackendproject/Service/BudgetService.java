@@ -1,6 +1,7 @@
 package com.example.febackendproject.Service;
 
 import com.example.febackendproject.DTO.BudgetDTO;
+import com.example.febackendproject.DTO.PartialBudgetDTO;
 import com.example.febackendproject.Entity.Budget;
 import com.example.febackendproject.Entity.ProductBudget;
 import com.example.febackendproject.Repository.BudgetRepository;
@@ -22,7 +23,7 @@ public class BudgetService {
         return budgetRepository.findById(id);
     }
 
-    public List<Budget> getByClientId(Long clientId) {
+    public List<PartialBudgetDTO> getByClientId(Long clientId) {
         return budgetRepository.findByClientId(clientId);
     }
 
@@ -50,7 +51,7 @@ public class BudgetService {
         }
     }
 
-    public List<Budget> getByDate(LocalDate date) {
+    public List<PartialBudgetDTO> getByDate(LocalDate date) {
         return budgetRepository.findByDate(date);
     }
 

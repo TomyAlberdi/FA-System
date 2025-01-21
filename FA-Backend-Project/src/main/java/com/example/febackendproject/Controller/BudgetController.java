@@ -1,6 +1,7 @@
 package com.example.febackendproject.Controller;
 
 import com.example.febackendproject.DTO.BudgetDTO;
+import com.example.febackendproject.DTO.PartialBudgetDTO;
 import com.example.febackendproject.Entity.Budget;
 import com.example.febackendproject.Service.BudgetService;
 import com.example.febackendproject.Service.ClientService;
@@ -31,7 +32,7 @@ public class BudgetController {
     }
 
     @GetMapping("/client/{clientId}")
-    public ResponseEntity<List<Budget>> getBudgetByClientId(@PathVariable("clientId") Long clientId) {
+    public ResponseEntity<List<PartialBudgetDTO>> getBudgetByClientId(@PathVariable("clientId") Long clientId) {
         if (clientService.existsById(clientId)) {
             return ResponseEntity.ok(budgetService.getByClientId(clientId));
         }
@@ -39,7 +40,7 @@ public class BudgetController {
     }
 
     @GetMapping("/{date}")
-    public ResponseEntity<List<Budget>> getBudgetByDate(@PathVariable LocalDate date) {
+    public ResponseEntity<List<PartialBudgetDTO>> getBudgetByDate(@PathVariable LocalDate date) {
         return ResponseEntity.ok(budgetService.getByDate(date));
     }
 
