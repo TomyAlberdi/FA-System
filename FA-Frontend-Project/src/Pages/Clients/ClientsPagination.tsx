@@ -65,7 +65,7 @@ export const ClientsPagination: React.FC<ClientsPaginationProps> = ({
           return (
             <Skeleton
               key={i}
-              className="skeletonCard h-[350px] w-[24.25%] max-w-[400px]"
+              className="skeletonCard h-[100px] w-[19.2%] min-w-[300px] max-w-[400px]"
             />
           );
         })
