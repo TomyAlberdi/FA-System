@@ -4,7 +4,7 @@ import { CompleteClient } from "@/hooks/SalesInterfaces";
 import { useToast } from "@/hooks/use-toast";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -13,7 +13,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CircleX } from "lucide-react";
+import { CirclePlus, CircleX } from "lucide-react";
 import { UpdateClient } from "./UpdateClient";
 import { ToastAction } from "@/components/ui/toast";
 import { ClientBudgets } from "@/Pages/Clients/ClientBudgets";
@@ -29,7 +29,6 @@ export const Client = () => {
   const [Reload, setReload] = useState(false);
 
   // Future implementation
-
 
   useEffect(() => {
     if (id) {
@@ -146,6 +145,12 @@ export const Client = () => {
                 </CardDescription>
               </CardContent>
               <CardContent>
+                <Button asChild className="w-full mb-2">
+                  <Link to={`/sales/budgets/add`}>
+                    <CirclePlus />
+                    Crear Presupuesto
+                  </Link>
+                </Button>
                 <UpdateClient
                   client={Client}
                   setReload={setReload}
