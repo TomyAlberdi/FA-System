@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { CircleX } from "lucide-react";
 import { UpdateClient } from "./UpdateClient";
 import { ToastAction } from "@/components/ui/toast";
+import { ClientBudgets } from "@/Pages/Clients/ClientBudgets";
 
 export const Client = () => {
   const { id } = useParams();
@@ -28,8 +29,7 @@ export const Client = () => {
   const [Reload, setReload] = useState(false);
 
   // Future implementation
-  //const [Budgets, setBudgets] = useState<any>()
-  //const [IsLastPage, setIsLastPage] = useState(false)
+
 
   useEffect(() => {
     if (id) {
@@ -162,6 +162,7 @@ export const Client = () => {
               </CardContent>
             </Card>
           </div>
+          <ClientBudgets />
         </section>
       ) : null}
     </div>

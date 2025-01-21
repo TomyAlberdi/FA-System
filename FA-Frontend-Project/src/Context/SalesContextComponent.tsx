@@ -1,5 +1,5 @@
 import { SalesContext, SalesContextType } from "@/Context/SalesContext";
-import { CompleteClient } from "@/hooks/SalesInterfaces";
+import { CompleteBudget, CompleteClient } from "@/hooks/SalesInterfaces";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 
 interface SalesContextComponentProps {
@@ -50,9 +50,34 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
     }
   };
 
+  /// BUDGET GET ///
+  const fetchBudgetsByClient = async (id: number) => {
+    try {
+      if (!getToken) {
+        console.error("getToken is undefined")
+        return;
+      }
+      const accessToken = await getToken();
+      const response = await fetch(`${BASE_URL}/budget/client/${id}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      if (!response.ok) {
+        console.error("Error fetching client budgets: ", response.statusText)
+        return
+      }
+      const result: Array<CompleteBudget> = await response.json()
+      return result
+    } catch (error) {
+      console.error("Error fetching client budgets: ", error)
+    }
+  }
+
   const exportData: SalesContextType = {
     BASE_URL,
     fetchClient,
+    fetchBudgetsByClient,
   };
 
   return (
