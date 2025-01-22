@@ -15,7 +15,6 @@ import java.util.List;
 public class BudgetDTO {
 
     private Long clientId;
-    private String clientName;
     private List<ProductBudget> products;
 
 }

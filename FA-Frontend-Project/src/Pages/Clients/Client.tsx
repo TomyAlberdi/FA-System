@@ -146,12 +146,7 @@ export const Client = () => {
               </CardContent>
               <CardContent>
                 <Button asChild className="w-full mb-2">
-                  <Link
-                    to={`/sales/budgets/add`}
-                    state={{
-                      Client,
-                    }}
-                  >
+                  <Link to={`/sales/budgets/add`}>
                     <CirclePlus />
                     Crear Presupuesto
                   </Link>

@@ -31,6 +31,6 @@ public class ProductBudget {
     // not own column, extra data
     private String productSaleUnit;
     private String productMeasureUnit;
-
+    private Double saleUnitPrice;
 
 }

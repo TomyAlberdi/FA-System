@@ -25,7 +25,7 @@ export interface ClientsFilter {
   type: string;
 }
 
-enum BudgetStatus {
+export enum BudgetStatus {
   PENDIENTE = "PENDIENTE",
   PAGO = "PAGO",
   ENVIADO = "ENVIADO",
@@ -45,7 +45,7 @@ export interface ProductBudget {
   id: number;
   productCode: string;
   productIdentification: string; // Provider + name
-  productQuantity: string;
+  productQuality: string;
   productMeasures: string;
   productMeasurePrice: number;
   measureUnitQuantity: number;
@@ -53,6 +53,7 @@ export interface ProductBudget {
   subtotal: number;
   productSaleUnit: string;
   productMeasureUnit: string;
+  saleUnitPrice: number;
 }
 
 export interface CompleteBudget extends PartialBudget {

@@ -1,5 +1,5 @@
 import { SalesContext, SalesContextType } from "@/Context/SalesContext";
-import { CompleteBudget, CompleteClient } from "@/hooks/SalesInterfaces";
+import { CompleteBudget, CompleteClient, PartialClient } from "@/hooks/SalesInterfaces";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 
 interface SalesContextComponentProps {
@@ -11,19 +11,6 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
 }) => {
   const { getToken } = useKindeAuth();
   const BASE_URL = import.meta.env.VITE_BASE_URL;
-
-/*   useEffect(() => {
-    const fetchData = async () => {
-      if (getToken) {
-        const accessToken = await getToken();
-        if (accessToken) {
-          fetchClients();
-        }
-      }
-    };
-    fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getToken]); */
 
   /// CLIENT GET ///
 
@@ -49,6 +36,29 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
       console.error("Error fetching data: ", error);
     }
   };
+
+  const fetchListOfClients = async () => {
+    try {
+      if (!getToken) {
+        console.error("getToken is undefined")
+        return;
+      }
+      const accessToken = await getToken();
+      const response = await fetch(`${BASE_URL}/client/list`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      if (!response.ok) {
+        console.error("Error fetching clients: ", response.statusText);
+        return;
+      }
+      const result: Array<PartialClient> = await response.json();
+      return result;
+    } catch (error) {
+      console.error("Error fetching clients: ", error);
+    }
+  }
 
   /// BUDGET GET ///
   const fetchBudgetsByClient = async (id: number) => {
@@ -78,6 +88,7 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
     BASE_URL,
     fetchClient,
     fetchBudgetsByClient,
+    fetchListOfClients,
   };
 
   return (

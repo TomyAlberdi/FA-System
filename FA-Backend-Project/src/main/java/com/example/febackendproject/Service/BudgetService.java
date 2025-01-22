@@ -18,6 +18,7 @@ import java.util.Optional;
 public class BudgetService {
 
     private final BudgetRepository budgetRepository;
+    private final ClientService clientService;
 
     public Optional<Budget> getById(Long id) {
         return budgetRepository.findById(id);
@@ -29,9 +30,12 @@ public class BudgetService {
 
     public Budget save(BudgetDTO budgetDTO) {
         Budget budget = new Budget();
-        budget.setClientId(budgetDTO.getClientId());
+        if (clientService.existsById(budgetDTO.getClientId())) {
+            budget.setClientId(budgetDTO.getClientId());
+            String clientName = clientService.getNameById(budgetDTO.getClientId());
+            budget.setClientName(clientName);
+        }
         budget.setDate(LocalDateTime.now());
-        budget.setClientName(budgetDTO.getClientName());
         budget.setStatus(Budget.Status.PENDIENTE);
         budget.setProducts(budgetDTO.getProducts());
         Double finalAmount = budgetDTO.getProducts().stream()
