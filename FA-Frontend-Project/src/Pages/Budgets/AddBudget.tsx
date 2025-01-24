@@ -1,3 +1,4 @@
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -27,29 +28,31 @@ import { useSalesContext } from "@/Context/UseSalesContext";
 import { PartialClient } from "@/hooks/SalesInterfaces";
 import { useToast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
+import { AlertCircle, CirclePlus, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 const formSchema = z.object({
   clientId: z.number(),
-  products: z.array(
-    z.object({
-      id: z.number(),
-      productCode: z.string(),
-      productIdentification: z.string(),
-      productQuantity: z.string(),
-      productMeasures: z.string(),
-      productMeasurePrice: z.number(),
-      measureUnitQuantity: z.number(),
-      saleUnitQuantity: z.number(),
-      subtotal: z.number(),
-      productSaleUnit: z.string(),
-      productMeasureUnit: z.string(),
-      saleUnitPrice: z.number(),
-    })
-  ),
+  products: z
+    .array(
+      z.object({
+        id: z.number(),
+        productCode: z.string(),
+        productIdentification: z.string(),
+        productQuantity: z.string(),
+        productMeasures: z.string(),
+        productMeasurePrice: z.number(),
+        measureUnitQuantity: z.number(),
+        saleUnitQuantity: z.number(),
+        subtotal: z.number(),
+        productSaleUnit: z.string(),
+        productMeasureUnit: z.string(),
+        saleUnitPrice: z.number(),
+      })
+    )
+    .optional(),
 });
 
 export const AddBudget = () => {
@@ -58,10 +61,24 @@ export const AddBudget = () => {
 
   // Form logic
   const [LoadingRequest, setLoadingRequest] = useState(false);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      products: [],
+    },
   });
   const submitBudget = async (data: z.infer<typeof formSchema>) => {
+    setLoadingRequest(true);
+    if (data.products?.length === 0) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "El presupuesto no tiene productos asociados.",
+      });
+      setLoadingRequest(false);
+      return;
+    }
     console.log(data);
   };
 
@@ -115,7 +132,7 @@ export const AddBudget = () => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(submitBudget)}
-          className="w-full grid grid-cols-3 grid-rows-9 gap-4 px-5 pt-2"
+          className="w-full grid grid-cols-3 grid-rows-6 gap-4 px-5 pt-2 h-[calc(100svh-9rem)]"
         >
           <Card className="col-start-1 row-start-1 row-span-4">
             <CardHeader>
@@ -192,8 +209,25 @@ export const AddBudget = () => {
               Crear Presupuesto
             </Button>
           </div>
-          <ScrollArea className="col-start-2 col-span-2 row-start-1 row-span-9 border border-red-500">
-            <Label>Productos</Label>
+          <ScrollArea className="col-start-2 col-span-2 row-start-1 row-span-9">
+            <Label className="text-2xl">Productos</Label>
+            {form.watch("products")?.length === 0 ? (
+              <>
+                <Alert variant="destructive" className="w-auto mt-2">
+                  <AlertCircle className="w-5 pt-1" />
+                  <AlertTitle className="text-xl">Vacío</AlertTitle>
+                  <AlertDescription className="text-lg">
+                    El presupuesto no tiene productos asociados.
+                  </AlertDescription>
+                </Alert>
+                <Button className="w-full mt-2">
+                  <CirclePlus />
+                  Añadir producto
+                </Button>
+              </>
+            ) : (
+              <span>tiene</span>
+            )}
           </ScrollArea>
         </form>
       </Form>
