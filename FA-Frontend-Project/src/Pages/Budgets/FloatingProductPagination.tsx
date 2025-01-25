@@ -7,11 +7,20 @@ import { ProductCard } from "@/Pages/Budgets/ProductCard";
 import { CardProduct } from "@/hooks/CatalogInterfaces";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Search } from "lucide-react";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormField } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 
 interface FloatingProductPaginationProps {
   setOpen: (value: boolean) => void;
 }
+
+const formSchema = z.object({
+  keyword: z.string(),
+});
 
 export const FloatingProductPagination = ({
   setOpen,
@@ -25,6 +34,10 @@ export const FloatingProductPagination = ({
   const [IsLastPage, setIsLastPage] = useState(false);
   const [Keyword, setKeyword] = useState("");
   const [Loading, setLoading] = useState(true);
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+  });
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -69,7 +82,7 @@ export const FloatingProductPagination = ({
     };
     fetchProducts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [LastLoadedPage]);
+  }, [LastLoadedPage, Keyword]);
 
   return (
     <ScrollArea className="w-full h-full">
@@ -81,13 +94,35 @@ export const FloatingProductPagination = ({
         </div>
       ) : (
         <div className="w-full h-full flex flex-col items-center">
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit((data) => setKeyword(data.keyword))}
+              className="w-full pb-2 flex flex-row items-center"
+            >
+              <FormField
+                control={form.control}
+                name="keyword"
+                render={({ field }) => (
+                  <Input
+                    placeholder="Buscar por nombre, código o descripción"
+                    type="text"
+                    className="w-1/3 text-lg"
+                    {...field}
+                  />
+                )}
+              />
+              <Button type="submit" className="ml-2">
+                <Search className="bigger-icon" />
+              </Button>
+            </form>
+          </Form>
           <div className="w-full h-full flex flex-row flex-wrap justify-left gap-3">
             {Products?.map((product: CardProduct, i: number) => {
               return <ProductCard key={i} product={product} />;
             })}
           </div>
           {!IsLastPage && (
-            <div className="flex justify-center align-center">
+            <div className="flex justify-center align-center mt-2">
               <Button
                 onClick={() => {
                   setLastLoadedPage(LastLoadedPage + 1);
