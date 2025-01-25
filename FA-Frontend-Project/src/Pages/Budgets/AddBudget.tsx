@@ -10,6 +10,12 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
   Form,
   FormControl,
   FormField,
@@ -32,6 +38,7 @@ import { AlertCircle, CirclePlus, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { FloatingProductPagination } from "@/Pages/Budgets/FloatingProductPagination";
 
 const formSchema = z.object({
   clientId: z.number(),
@@ -125,6 +132,7 @@ export const AddBudget = () => {
   }, [form]);
 
   // Product list for selection
+  const [OpenProductPagination, setOpenProductPagination] = useState(false);
 
   return (
     <div>
@@ -134,7 +142,7 @@ export const AddBudget = () => {
           onSubmit={form.handleSubmit(submitBudget)}
           className="w-full grid grid-cols-3 grid-rows-6 gap-4 px-5 pt-2 h-[calc(100svh-9rem)]"
         >
-          <Card className="col-start-1 row-start-1 row-span-3">
+          <Card className="col-start-1 row-start-1 row-span-2">
             <CardHeader>
               <CardTitle>Información del Presupuesto</CardTitle>
             </CardHeader>
@@ -192,18 +200,20 @@ export const AddBudget = () => {
                 )}
               />
             </CardContent>
-            <CardContent>
-              <Label className="text-lg">Fecha de emisión:</Label>
-              <br />
-              <span className="text-xl font-semibold">{formattedDate}</span>
-            </CardContent>
-            <CardContent>
-              <Label className="text-lg">Monto final:</Label>
-              <br />
-              <span className="text-xl font-semibold">$ {FinalAmount}</span>
+            <CardContent className="flex flex-row justify-evenly">
+              <div>
+                <Label className="text-lg">Fecha de emisión:</Label>
+                <br />
+                <span className="text-xl font-semibold">{formattedDate}</span>
+              </div>
+              <div>
+                <Label className="text-lg">Monto final:</Label>
+                <br />
+                <span className="text-xl font-semibold">$ {FinalAmount}</span>
+              </div>
             </CardContent>
           </Card>
-          <div className="buttonDiv col-start-1 row-start-4 row-span-1">
+          <div className="buttonDiv col-start-1 row-start-3 row-span-1">
             <Button type="submit" className="w-full" disabled={LoadingRequest}>
               {LoadingRequest && <Loader2 className="animate-spin" />}
               Crear Presupuesto
@@ -220,10 +230,25 @@ export const AddBudget = () => {
                     El presupuesto no tiene productos asociados.
                   </AlertDescription>
                 </Alert>
-                <Button className="w-2/6 mt-2">
-                  <CirclePlus />
-                  Añadir producto
-                </Button>
+                <Dialog
+                  open={OpenProductPagination}
+                  onOpenChange={setOpenProductPagination}
+                >
+                  <DialogTrigger asChild>
+                    <Button className="w-2/6 mt-2">
+                      <CirclePlus />
+                      Añadir producto
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-[80vw] w-full max-h-[90vh] h-full flex flex-col">
+                    <DialogTitle className="text-xl font-bold">
+                      Añadir Producto
+                    </DialogTitle>
+                    <FloatingProductPagination
+                      setOpen={setOpenProductPagination}
+                    />
+                  </DialogContent>
+                </Dialog>
               </div>
             ) : (
               <span>tiene</span>
