@@ -219,40 +219,36 @@ export const AddBudget = () => {
               Crear Presupuesto
             </Button>
           </div>
-          <ScrollArea className="col-start-2 col-span-2 row-start-1 row-span-6">
+          <ScrollArea className="col-start-2 col-span-2 row-start-1 row-span-6 flex flex-col items-center justify-center">
             <Label className="text-2xl">Productos</Label>
             {form.watch("products")?.length === 0 ? (
-              <div className="flex flex-col items-center justify-center">
-                <Alert variant="destructive" className="w-full mt-2">
-                  <AlertCircle className="w-5 pt-1" />
-                  <AlertTitle className="text-xl">Vacío</AlertTitle>
-                  <AlertDescription className="text-lg">
-                    El presupuesto no tiene productos asociados.
-                  </AlertDescription>
-                </Alert>
-                <Dialog
-                  open={OpenProductPagination}
-                  onOpenChange={setOpenProductPagination}
-                >
-                  <DialogTrigger asChild>
-                    <Button className="w-2/6 mt-2">
-                      <CirclePlus />
-                      Añadir producto
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="max-w-[80vw] w-full max-h-[90vh] h-full flex flex-col">
-                    <DialogTitle className="text-xl font-bold">
-                      Añadir Producto
-                    </DialogTitle>
-                    <FloatingProductPagination
-                      setOpen={setOpenProductPagination}
-                    />
-                  </DialogContent>
-                </Dialog>
-              </div>
+              <Alert variant="destructive" className="w-full mt-2">
+                <AlertCircle className="w-5 pt-1" />
+                <AlertTitle className="text-xl">Vacío</AlertTitle>
+                <AlertDescription className="text-lg">
+                  El presupuesto no tiene productos asociados.
+                </AlertDescription>
+              </Alert>
             ) : (
               <span>tiene</span>
             )}
+            <Dialog
+              open={OpenProductPagination}
+              onOpenChange={setOpenProductPagination}
+            >
+              <DialogTrigger asChild>
+                <Button className="w-2/6 mt-2">
+                  <CirclePlus />
+                  Añadir producto
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-[80vw] w-full max-h-[90vh] h-full flex flex-col">
+                <DialogTitle className="text-xl font-bold">
+                  Añadir Producto
+                </DialogTitle>
+                <FloatingProductPagination setOpen={setOpenProductPagination} />
+              </DialogContent>
+            </Dialog>
           </ScrollArea>
         </form>
       </Form>
