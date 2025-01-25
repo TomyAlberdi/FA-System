@@ -134,7 +134,7 @@ export const AddBudget = () => {
           onSubmit={form.handleSubmit(submitBudget)}
           className="w-full grid grid-cols-3 grid-rows-6 gap-4 px-5 pt-2 h-[calc(100svh-9rem)]"
         >
-          <Card className="col-start-1 row-start-1 row-span-4">
+          <Card className="col-start-1 row-start-1 row-span-3">
             <CardHeader>
               <CardTitle>Información del Presupuesto</CardTitle>
             </CardHeader>
@@ -203,28 +203,28 @@ export const AddBudget = () => {
               <span className="text-xl font-semibold">$ {FinalAmount}</span>
             </CardContent>
           </Card>
-          <div className="buttonDiv col-start-1 row-start-5 row-span-1">
+          <div className="buttonDiv col-start-1 row-start-4 row-span-1">
             <Button type="submit" className="w-full" disabled={LoadingRequest}>
               {LoadingRequest && <Loader2 className="animate-spin" />}
               Crear Presupuesto
             </Button>
           </div>
-          <ScrollArea className="col-start-2 col-span-2 row-start-1 row-span-9">
+          <ScrollArea className="col-start-2 col-span-2 row-start-1 row-span-6">
             <Label className="text-2xl">Productos</Label>
             {form.watch("products")?.length === 0 ? (
-              <>
-                <Alert variant="destructive" className="w-auto mt-2">
+              <div className="flex flex-col items-center justify-center">
+                <Alert variant="destructive" className="w-full mt-2">
                   <AlertCircle className="w-5 pt-1" />
                   <AlertTitle className="text-xl">Vacío</AlertTitle>
                   <AlertDescription className="text-lg">
                     El presupuesto no tiene productos asociados.
                   </AlertDescription>
                 </Alert>
-                <Button className="w-full mt-2">
+                <Button className="w-2/6 mt-2">
                   <CirclePlus />
                   Añadir producto
                 </Button>
-              </>
+              </div>
             ) : (
               <span>tiene</span>
             )}
