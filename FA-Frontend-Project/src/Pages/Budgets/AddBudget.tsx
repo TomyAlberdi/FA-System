@@ -31,7 +31,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { useSalesContext } from "@/Context/UseSalesContext";
-import { PartialClient, ProductBudget } from "@/hooks/SalesInterfaces";
+import { PartialClient } from "@/hooks/SalesInterfaces";
 import { useToast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, CirclePlus, Loader2 } from "lucide-react";
@@ -161,7 +161,7 @@ export const AddBudget = () => {
           onSubmit={form.handleSubmit(submitBudget)}
           className="w-full grid grid-cols-3 grid-rows-6 gap-4 px-5 pt-2 h-[calc(100svh-9rem)]"
         >
-          <Card className="col-start-1 row-start-1 row-span-2">
+          <Card className="col-start-1 row-start-1 row-span-3">
             <CardHeader>
               <CardTitle>Información del Presupuesto</CardTitle>
             </CardHeader>
@@ -232,7 +232,7 @@ export const AddBudget = () => {
               </div>
             </CardContent>
           </Card>
-          <div className="buttonDiv col-start-1 row-start-3 row-span-1">
+          <div className="buttonDiv col-start-1 row-span-1">
             <Button type="submit" className="w-full" disabled={LoadingRequest}>
               {LoadingRequest && <Loader2 className="animate-spin" />}
               Crear Presupuesto
@@ -261,12 +261,14 @@ export const AddBudget = () => {
                   Añadir producto
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-[80vw] w-full max-h-[90vh] h-full flex flex-col">
+              <DialogContent
+                className="max-w-[80vw] w-full max-h-[90vh] h-full flex flex-col"
+                aria-describedby={undefined}
+              >
                 <DialogTitle className="text-xl font-bold">
                   Añadir Producto
                 </DialogTitle>
                 <FloatingProductPagination
-                  setOpen={setOpenProductPagination}
                   handleAddProduct={handleAddProduct}
                 />
               </DialogContent>

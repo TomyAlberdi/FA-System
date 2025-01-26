@@ -15,8 +15,12 @@ import { Form, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
 interface FloatingProductPaginationProps {
-  setOpen: (value: boolean) => void;
-  handleAddProduct: (product: CardProduct, measureUnitQuantity: number, saleUnitQuantity: number, subtotal: number) => void;
+  handleAddProduct: (
+    product: CardProduct,
+    measureUnitQuantity: number,
+    saleUnitQuantity: number,
+    subtotal: number
+  ) => void;
 }
 
 const formSchema = z.object({
@@ -24,7 +28,6 @@ const formSchema = z.object({
 });
 
 export const FloatingProductPagination = ({
-  setOpen,
   handleAddProduct,
 }: FloatingProductPaginationProps) => {
   const { BASE_URL } = useSalesContext();
@@ -61,6 +64,11 @@ export const FloatingProductPagination = ({
         });
         if (!response.ok) {
           console.error("Error fetching products: ", response.status);
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Ocurrió un error al buscar productos.",
+          });
           return;
         }
         const result = await response.json();
@@ -120,7 +128,13 @@ export const FloatingProductPagination = ({
           </Form>
           <div className="w-full h-full flex flex-row flex-wrap justify-left gap-3">
             {Products?.map((product: CardProduct, i: number) => {
-              return <ProductCard key={i} product={product} handleAddProduct={handleAddProduct} />;
+              return (
+                <ProductCard
+                  key={i}
+                  product={product}
+                  handleAddProduct={handleAddProduct}
+                />
+              );
             })}
           </div>
           {!IsLastPage && (
