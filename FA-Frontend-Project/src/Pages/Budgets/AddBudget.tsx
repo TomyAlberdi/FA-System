@@ -28,10 +28,18 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { useSalesContext } from "@/Context/UseSalesContext";
-import { PartialClient } from "@/hooks/SalesInterfaces";
+import { PartialClient, ProductBudget } from "@/hooks/SalesInterfaces";
 import { useToast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, CirclePlus, Loader2 } from "lucide-react";
@@ -249,7 +257,45 @@ export const AddBudget = () => {
                 </AlertDescription>
               </Alert>
             ) : (
-              <span>tiene</span>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-3/12">
+                      Cantidad solicitada
+                    </TableHead>
+                    <TableHead className="w-3/12">
+                      Cantidad de unidades
+                    </TableHead>
+                    <TableHead className="w-3/12">Nombre</TableHead>
+                    <TableHead className="w-2/12">Precio unitario</TableHead>
+                    <TableHead className="w-1/12">Subtotal</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {form.watch("products")?.map((product: ProductBudget) => {
+                    return (
+                      <TableRow key={product.id}>
+                        <TableCell className="font-medium">
+                          {product.measureUnitQuantity} {product.productMeasureUnit}
+                        </TableCell>
+                        <TableCell className="font-medium">
+                          {product.saleUnitQuantity} {product.productSaleUnit}
+                        </TableCell>
+                        <TableCell>{product.productName}</TableCell>
+                        <TableCell>$ {product.productMeasurePrice}</TableCell>
+                        <TableCell>
+                          ${" "}
+                          {Math.round(
+                            (product.saleUnitQuantity * product.saleUnitPrice +
+                              Number.EPSILON) *
+                              100
+                          ) / 100}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
             )}
             <Dialog
               open={OpenProductPagination}

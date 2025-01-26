@@ -141,7 +141,7 @@ export const ProductCard = ({
                           product.measurePerSaleUnit +
                           Number.EPSILON) *
                           100
-                      ) / 100}
+                      ) / 100} {" "}
                       {product.measureType}
                     </span>
                   </FormLabel>
