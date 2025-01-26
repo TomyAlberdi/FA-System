@@ -43,10 +43,7 @@ export interface PartialBudget {
 
 export interface ProductBudget {
   id: number;
-  productCode: string;
-  productIdentification: string; // Provider + name
-  productQuality: string;
-  productMeasures: string;
+  productName: string;
   productMeasurePrice: number;
   measureUnitQuantity: number;
   saleUnitQuantity: number;

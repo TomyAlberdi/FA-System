@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 
 interface FloatingProductPaginationProps {
   setOpen: (value: boolean) => void;
+  handleAddProduct: (product: CardProduct, measureUnitQuantity: number, saleUnitQuantity: number, subtotal: number) => void;
 }
 
 const formSchema = z.object({
@@ -24,6 +25,7 @@ const formSchema = z.object({
 
 export const FloatingProductPagination = ({
   setOpen,
+  handleAddProduct,
 }: FloatingProductPaginationProps) => {
   const { BASE_URL } = useSalesContext();
   const { getToken } = useKindeAuth();
@@ -118,7 +120,7 @@ export const FloatingProductPagination = ({
           </Form>
           <div className="w-full h-full flex flex-row flex-wrap justify-left gap-3">
             {Products?.map((product: CardProduct, i: number) => {
-              return <ProductCard key={i} product={product} />;
+              return <ProductCard key={i} product={product} handleAddProduct={handleAddProduct} />;
             })}
           </div>
           {!IsLastPage && (

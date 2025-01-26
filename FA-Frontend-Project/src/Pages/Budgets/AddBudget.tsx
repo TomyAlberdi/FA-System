@@ -31,7 +31,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { useSalesContext } from "@/Context/UseSalesContext";
-import { PartialClient } from "@/hooks/SalesInterfaces";
+import { PartialClient, ProductBudget } from "@/hooks/SalesInterfaces";
 import { useToast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, CirclePlus, Loader2 } from "lucide-react";
@@ -39,6 +39,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { FloatingProductPagination } from "@/Pages/Budgets/FloatingProductPagination";
+import { CardProduct } from "@/hooks/CatalogInterfaces";
 
 const formSchema = z.object({
   clientId: z.number(),
@@ -46,10 +47,7 @@ const formSchema = z.object({
     .array(
       z.object({
         id: z.number(),
-        productCode: z.string(),
-        productIdentification: z.string(),
-        productQuantity: z.string(),
-        productMeasures: z.string(),
+        productName: z.string(),
         productMeasurePrice: z.number(),
         measureUnitQuantity: z.number(),
         saleUnitQuantity: z.number(),
@@ -133,6 +131,27 @@ export const AddBudget = () => {
 
   // Product list for selection
   const [OpenProductPagination, setOpenProductPagination] = useState(false);
+
+  const handleAddProduct = (
+    product: CardProduct,
+    measureUnitQuantity: number,
+    saleUnitQuantity: number,
+    subtotal: number
+  ) => {
+    const newBudgetProduct = {
+      id: product.id,
+      productName: product.name,
+      productMeasurePrice: product.measurePrice,
+      measureUnitQuantity: measureUnitQuantity,
+      saleUnitQuantity: saleUnitQuantity,
+      subtotal: subtotal,
+      productSaleUnit: product.saleUnit,
+      productMeasureUnit: product.measureType,
+      saleUnitPrice: product.saleUnitPrice,
+    };
+    const existingProducts = form.getValues("products") || [];
+    form.setValue("products", [...existingProducts, newBudgetProduct]);
+  };
 
   return (
     <div>
@@ -246,7 +265,10 @@ export const AddBudget = () => {
                 <DialogTitle className="text-xl font-bold">
                   Añadir Producto
                 </DialogTitle>
-                <FloatingProductPagination setOpen={setOpenProductPagination} />
+                <FloatingProductPagination
+                  setOpen={setOpenProductPagination}
+                  handleAddProduct={handleAddProduct}
+                />
               </DialogContent>
             </Dialog>
           </ScrollArea>
