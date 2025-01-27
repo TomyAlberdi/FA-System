@@ -6,8 +6,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { CardProduct } from "@/hooks/CatalogInterfaces";
 import { useToast } from "@/hooks/use-toast";
 import { CirclePlus } from "lucide-react";
@@ -102,10 +102,10 @@ export const ProductCard = ({
               Añadir {product.name} al presupuesto
             </DialogTitle>
             <div>
-              <FormItem>
-                <FormLabel className="text-lg">
+              <div>
+                <Label className="text-lg">
                   Cantidad de unidades ({product.saleUnit})
-                </FormLabel>
+                </Label>
                 <Input
                   type="number"
                   value={data.saleUnitQuantity}
@@ -116,9 +116,9 @@ export const ProductCard = ({
                     })
                   }
                 />
-              </FormItem>
-              <FormItem className="mt-2">
-                <FormLabel className="text-lg">
+              </div>
+              <div className="mt-2">
+                <Label className="text-lg">
                   Equivale a:
                   <span className="text-xl font-semibold px-2">
                     {Math.round(
@@ -128,10 +128,10 @@ export const ProductCard = ({
                     ) / 100}{" "}
                     {product.measureType}
                   </span>
-                </FormLabel>
-              </FormItem>
-              <FormItem className="my-3">
-                <FormLabel className="text-lg">
+                </Label>
+              </div>
+              <div className="my-3">
+                <Label className="text-lg">
                   Subtotal:
                   <span className="text-xl font-semibold px-2">
                     ${" "}
@@ -141,8 +141,8 @@ export const ProductCard = ({
                         100
                     ) / 100}
                   </span>
-                </FormLabel>
-              </FormItem>
+                </Label>
+              </div>
               <Button
                 type="submit"
                 className="w-full"
