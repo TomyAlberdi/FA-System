@@ -21,6 +21,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Label } from "@/components/ui/label";
 import {
@@ -36,13 +37,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { useSalesContext } from "@/Context/UseSalesContext";
 import { PartialClient, ProductBudget } from "@/hooks/SalesInterfaces";
 import { useToast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AlertCircle, CirclePlus, Loader2 } from "lucide-react";
+import { AlertCircle, Ban, CirclePlus, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -50,7 +50,11 @@ import { FloatingProductPagination } from "@/Pages/Budgets/FloatingProductPagina
 import { CardProduct } from "@/hooks/CatalogInterfaces";
 
 const formSchema = z.object({
-  clientId: z.number(),
+  clientId: z
+    .number({
+      required_error: "Seleccione un cliente",
+    })
+    .optional(),
   products: z
     .array(
       z.object({
@@ -82,7 +86,7 @@ export const AddBudget = () => {
     },
   });
   const submitBudget = async (data: z.infer<typeof formSchema>) => {
-    setLoadingRequest(true);
+    console.log("lmao");
     if (data.products?.length === 0) {
       toast({
         variant: "destructive",
@@ -121,21 +125,13 @@ export const AddBudget = () => {
   useEffect(() => {
     let total = 0;
     form.watch("products")?.forEach((product) => {
-      const amountOfProducts = product.saleUnitQuantity;
-      const saleUnitPrice = product.saleUnitPrice;
-      if (product.measureUnitQuantity > 0) {
-        const subtotal =
-          Math.round(
-            (amountOfProducts * saleUnitPrice + Number.EPSILON) * 100
-          ) / 100;
-        product.subtotal = subtotal;
-      }
       if (product.subtotal > 0) {
         total += product.subtotal;
       }
     });
-    setFinalAmount(total);
-  }, [form]);
+    setFinalAmount(Math.round(total * 100) / 100);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form.watch("products")]);
 
   // Product list for selection
   const [OpenProductPagination, setOpenProductPagination] = useState(false);
@@ -167,18 +163,18 @@ export const AddBudget = () => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(submitBudget)}
-          className="w-full grid grid-cols-3 grid-rows-6 gap-4 px-5 pt-2 h-[calc(100svh-9rem)]"
+          className="w-full px-5 pt-2 h-[calc(100svh-9rem)] flex flex-col gap-4"
         >
-          <Card className="col-start-1 row-start-1 row-span-3">
+          <Card className="flex flex-col">
             <CardHeader>
               <CardTitle>Información del Presupuesto</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="flex flex-row justify-start gap-4">
               <FormField
                 control={form.control}
                 name="clientId"
                 render={({ field }) => (
-                  <FormItem className="flex flex-col gap-2">
+                  <FormItem className="flex flex-col gap-2 w-1/6">
                     <FormLabel className="text-lg">Cliente:</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
@@ -223,31 +219,74 @@ export const AddBudget = () => {
                         </Command>
                       </PopoverContent>
                     </Popover>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
-            </CardContent>
-            <CardContent className="flex flex-row justify-evenly">
-              <div>
-                <Label className="text-lg">Fecha de emisión:</Label>
-                <br />
-                <span className="text-xl font-semibold">{formattedDate}</span>
-              </div>
-              <div>
-                <Label className="text-lg">Monto final:</Label>
-                <br />
-                <span className="text-xl font-semibold">$ {FinalAmount}</span>
-              </div>
+              <section className="flex flex-row justify-evenly align-center w-2/6">
+                <div className="flex flex-col align-center justify-center">
+                  <Label className="text-lg">Fecha de emisión:</Label>
+                  <span className="text-3xl font-semibold">
+                    {formattedDate}
+                  </span>
+                </div>
+                <div className="flex flex-col align-center justify-center">
+                  <Label className="text-lg">Monto final:</Label>
+                  <span className="text-3xl font-semibold">
+                    $ {FinalAmount}
+                  </span>
+                </div>
+              </section>
+              <section className="w-3/6 flex flex-col justify-evenly gap-4">
+                <div>
+                  <Button
+                    type="submit"
+                    className="w-1/2"
+                    disabled={LoadingRequest}
+                  >
+                    {LoadingRequest && <Loader2 className="animate-spin" />}
+                    Crear Presupuesto
+                  </Button>
+                </div>
+                <div>
+                  <Button
+                    className="w-1/2"
+                    onClick={() => form.reset()}
+                    variant="destructive"
+                  >
+                    <Ban />
+                    Cancelar
+                  </Button>
+                </div>
+              </section>
             </CardContent>
           </Card>
-          <div className="buttonDiv col-start-1 row-span-1">
-            <Button type="submit" className="w-full" disabled={LoadingRequest}>
-              {LoadingRequest && <Loader2 className="animate-spin" />}
-              Crear Presupuesto
-            </Button>
-          </div>
-          <ScrollArea className="col-start-2 col-span-2 row-start-1 row-span-6 flex flex-col items-center justify-center">
-            <Label className="text-2xl">Productos</Label>
+          <div className="flex flex-col items-start justify-center">
+            <section className="mb-2">
+              <Label className="text-2xl mr-6">Productos</Label>
+              <Dialog
+                open={OpenProductPagination}
+                onOpenChange={setOpenProductPagination}
+              >
+                <DialogTrigger asChild>
+                  <Button className="mt-2">
+                    <CirclePlus />
+                    Añadir producto
+                  </Button>
+                </DialogTrigger>
+                <DialogContent
+                  className="max-w-[80vw] w-full max-h-[90vh] h-full flex flex-col"
+                  aria-describedby={undefined}
+                >
+                  <DialogTitle className="text-xl font-bold">
+                    Añadir Producto
+                  </DialogTitle>
+                  <FloatingProductPagination
+                    handleAddProduct={handleAddProduct}
+                  />
+                </DialogContent>
+              </Dialog>
+            </section>
             {form.watch("products")?.length === 0 ? (
               <Alert variant="destructive" className="w-full mt-2">
                 <AlertCircle className="w-5 pt-1" />
@@ -272,54 +311,36 @@ export const AddBudget = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {form.watch("products")?.map((product: ProductBudget) => {
-                    return (
-                      <TableRow key={product.id}>
-                        <TableCell className="font-medium">
-                          {product.measureUnitQuantity} {product.productMeasureUnit}
-                        </TableCell>
-                        <TableCell className="font-medium">
-                          {product.saleUnitQuantity} {product.productSaleUnit}
-                        </TableCell>
-                        <TableCell>{product.productName}</TableCell>
-                        <TableCell>$ {product.productMeasurePrice}</TableCell>
-                        <TableCell>
-                          ${" "}
-                          {Math.round(
-                            (product.saleUnitQuantity * product.saleUnitPrice +
-                              Number.EPSILON) *
-                              100
-                          ) / 100}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
+                  {form
+                    .watch("products")
+                    ?.map((product: ProductBudget, index: number) => {
+                      return (
+                        <TableRow key={index}>
+                          <TableCell className="font-medium">
+                            {product.measureUnitQuantity}{" "}
+                            {product.productMeasureUnit}
+                          </TableCell>
+                          <TableCell className="font-medium">
+                            {product.saleUnitQuantity} {product.productSaleUnit}
+                          </TableCell>
+                          <TableCell>{product.productName}</TableCell>
+                          <TableCell>$ {product.productMeasurePrice}</TableCell>
+                          <TableCell>
+                            ${" "}
+                            {Math.round(
+                              (product.saleUnitQuantity *
+                                product.saleUnitPrice +
+                                Number.EPSILON) *
+                                100
+                            ) / 100}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                 </TableBody>
               </Table>
             )}
-            <Dialog
-              open={OpenProductPagination}
-              onOpenChange={setOpenProductPagination}
-            >
-              <DialogTrigger asChild>
-                <Button className="w-2/6 mt-2">
-                  <CirclePlus />
-                  Añadir producto
-                </Button>
-              </DialogTrigger>
-              <DialogContent
-                className="max-w-[80vw] w-full max-h-[90vh] h-full flex flex-col"
-                aria-describedby={undefined}
-              >
-                <DialogTitle className="text-xl font-bold">
-                  Añadir Producto
-                </DialogTitle>
-                <FloatingProductPagination
-                  handleAddProduct={handleAddProduct}
-                />
-              </DialogContent>
-            </Dialog>
-          </ScrollArea>
+          </div>
         </form>
       </Form>
     </div>
