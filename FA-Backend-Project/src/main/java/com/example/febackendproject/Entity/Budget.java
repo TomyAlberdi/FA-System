@@ -23,7 +23,7 @@ public class Budget {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     private LocalDateTime date;
@@ -36,9 +36,9 @@ public class Budget {
 
     private Status status;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "budget_id")
-    private List<ProductBudget> products = new ArrayList<>();
+    @ElementCollection
+    @CollectionTable(name = "budget_products", joinColumns = @JoinColumn(name = "budget_id"))
+    private List<ProductBudget> products;
 
     private Double finalAmount;
 

@@ -1,6 +1,5 @@
 package com.example.febackendproject.Controller;
 
-import com.example.febackendproject.DTO.BudgetDTO;
 import com.example.febackendproject.DTO.PartialBudgetDTO;
 import com.example.febackendproject.Entity.Budget;
 import com.example.febackendproject.Service.BudgetService;
@@ -45,8 +44,11 @@ public class BudgetController {
     }
 
     @PostMapping
-    public ResponseEntity<Budget> createBudget(@RequestBody @Valid BudgetDTO budgetDTO) {
-        return ResponseEntity.ok(budgetService.save(budgetDTO));
+    public ResponseEntity<Budget> createBudget(@RequestBody @Valid Budget budget) {
+        if (clientService.existsById(budget.getClientId())) {
+            return ResponseEntity.ok(budgetService.save(budget));
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @PatchMapping
