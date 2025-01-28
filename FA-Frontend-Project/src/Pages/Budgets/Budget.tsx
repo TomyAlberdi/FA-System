@@ -18,10 +18,13 @@ import { CircleX, Pencil } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { UpdateBudgetStatus } from "@/Pages/Budgets/UpdateBudgetStatus";
+import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import { ToastAction } from "@/components/ui/toast";
 
 export const Budget = () => {
   const { id } = useParams();
-  const { fetchCompleteBudget } = useSalesContext();
+  const { BASE_URL, fetchCompleteBudget } = useSalesContext();
+  const { getToken } = useKindeAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [Budget, setBudget] = useState<CompleteBudget | null>(null);
@@ -51,6 +54,61 @@ export const Budget = () => {
   }, [id, Reload]);
 
   const [OpenUpdateStatus, setOpenUpdateStatus] = useState(false);
+
+  const onDeletePres = () => {
+    if (Budget && Budget?.id) {
+      toast({
+        variant: "destructive",
+        title: "Confirmación",
+        description: "¿Desea eliminar el presupuesto?",
+        action: (
+          <ToastAction altText="Eliminar" onClick={deleteBudget}>
+            Eliminar
+          </ToastAction>
+        ),
+      });
+    }
+  };
+
+  const deleteBudget = async () => {
+    try {
+      if (!getToken) {
+        console.error("getToken is undefined");
+        return;
+      }
+      const accessToken = await getToken();
+      const response = await fetch(`${BASE_URL}/budget/${Budget?.id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (!response.ok) {
+        console.error("Error: ", response.statusText);
+        toast({
+          variant: "destructive",
+          title: `Error ${response.status}`,
+          description: `Ocurrió un error al eliminar el presupuesto.`,
+        });
+        return;
+      }
+      toast({
+        title: "Presupuesto eliminado",
+        description: "El presupuesto ha sido eliminado con éxito",
+      });
+      navigate("/sales/budgets");
+    } catch (error) {
+      console.error("Error: ", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Ocurrió un error al eliminar el presupuesto",
+      });
+    } finally {
+      navigate("/sales/budgets");
+    }
+  };
 
   return Loading ? (
     <div className="flex flex-row gap-4 h-full">
@@ -117,7 +175,11 @@ export const Budget = () => {
             <Pencil />
             Editar
           </Button>
-          <Button className="w-full" variant="destructive">
+          <Button
+            className="w-full"
+            variant="destructive"
+            onClick={onDeletePres}
+          >
             <CircleX />
             Eliminar
           </Button>
