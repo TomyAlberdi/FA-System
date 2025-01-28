@@ -1,5 +1,5 @@
 import { SalesContext, SalesContextType } from "@/Context/SalesContext";
-import { CompleteBudget, CompleteClient, PartialClient } from "@/hooks/SalesInterfaces";
+import { CompleteClient, PartialBudget, PartialClient } from "@/hooks/SalesInterfaces";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 
 interface SalesContextComponentProps {
@@ -77,7 +77,7 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
         console.error("Error fetching client budgets: ", response.statusText)
         return
       }
-      const result: Array<CompleteBudget> = await response.json()
+      const result: Array<PartialBudget> = await response.json()
       return result
     } catch (error) {
       console.error("Error fetching client budgets: ", error)

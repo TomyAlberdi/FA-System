@@ -1,4 +1,4 @@
-import { CompleteBudget, CompleteClient, PartialClient } from "@/hooks/SalesInterfaces";
+import { CompleteClient, PartialBudget, PartialClient } from "@/hooks/SalesInterfaces";
 import { createContext } from "react";
 
 export interface SalesContextType {
@@ -7,7 +7,7 @@ export interface SalesContextType {
   fetchClient: (id: number) => Promise<CompleteClient | undefined>;
   fetchListOfClients: () => Promise<Array<PartialClient> | undefined>;
   // Budgets
-  fetchBudgetsByClient: (id: number) => Promise<Array<CompleteBudget> | undefined>;
+  fetchBudgetsByClient: (id: number) => Promise<Array<PartialBudget> | undefined>;
 }
 
 export const SalesContext = createContext<SalesContextType | null>(null);
