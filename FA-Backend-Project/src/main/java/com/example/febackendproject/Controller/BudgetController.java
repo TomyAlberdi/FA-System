@@ -29,6 +29,19 @@ public class BudgetController {
     public ResponseEntity<Optional<Budget>> getBudgetById(@PathVariable Long id) {
         return ResponseEntity.ok(budgetService.getById(id));
     }
+    
+    @PatchMapping("/{id}")
+    public ResponseEntity<Optional<Budget>> updateBudgetStatus(
+            @PathVariable Long id,
+            @RequestParam(value = "status") Budget.Status status
+    ) {
+        if (budgetService.existsById(id)) {
+            budgetService.updateStatus(status, id);
+            return ResponseEntity.ok(budgetService.getById(id));
+        }
+        return ResponseEntity.notFound().build();
+    }
+    
 
     @GetMapping("/client/{clientId}")
     public ResponseEntity<List<PartialBudgetDTO>> getBudgetByClientId(@PathVariable("clientId") Long clientId) {

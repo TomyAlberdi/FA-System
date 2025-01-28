@@ -18,6 +18,10 @@ public class BudgetService {
     private final BudgetRepository budgetRepository;
     private final ClientService clientService;
     
+    public Boolean existsById(Long id) {
+        return budgetRepository.existsById(id);
+    }
+    
     public Optional<Budget> getById(Long id) {
         return budgetRepository.findById(id);
     }
@@ -48,6 +52,10 @@ public class BudgetService {
     
     public List<PartialBudgetDTO> getByDate(LocalDate date) {
         return budgetRepository.findByDate(date);
+    }
+    
+    public void updateStatus(Budget.Status status, Long id) {
+        budgetRepository.updateStatus(status, id);
     }
     
 }

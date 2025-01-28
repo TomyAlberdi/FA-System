@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -17,6 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import { CircleX, Pencil } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { UpdateBudgetStatus } from "@/Pages/Budgets/UpdateBudgetStatus";
 
 export const Budget = () => {
   const { id } = useParams();
@@ -25,6 +26,7 @@ export const Budget = () => {
   const navigate = useNavigate();
   const [Budget, setBudget] = useState<CompleteBudget | null>(null);
   const [Loading, setLoading] = useState(true);
+  const [Reload, setReload] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -46,7 +48,7 @@ export const Budget = () => {
         });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [id, Reload]);
 
   const [OpenUpdateStatus, setOpenUpdateStatus] = useState(false);
 
@@ -97,7 +99,12 @@ export const Budget = () => {
               <DialogTrigger asChild>
                 <Button>Actualizar estado</Button>
               </DialogTrigger>
-              <DialogContent>Actualizar estado</DialogContent>
+              <UpdateBudgetStatus
+                id={Budget?.id}
+                setOpenUpdateStatus={setOpenUpdateStatus}
+                Reload={Reload}
+                setReload={setReload}
+              />
             </Dialog>
           </div>
           <div className="flex flex-col gap-2">
