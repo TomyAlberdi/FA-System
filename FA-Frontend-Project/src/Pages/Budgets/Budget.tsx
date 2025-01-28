@@ -1,8 +1,20 @@
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { useSalesContext } from "@/Context/UseSalesContext";
-import { CompleteBudget } from "@/hooks/SalesInterfaces";
+import { CompleteBudget, ProductBudget } from "@/hooks/SalesInterfaces";
 import { useToast } from "@/hooks/use-toast";
+import { CircleX, Pencil } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -16,6 +28,7 @@ export const Budget = () => {
 
   useEffect(() => {
     if (id) {
+      setLoading(true);
       fetchCompleteBudget(Number.parseInt(id))
         .then((result) => {
           if (!result) {
@@ -28,12 +41,21 @@ export const Budget = () => {
           }
           setBudget(result ?? null);
         })
-        .finally(() => setLoading(false));
+        .finally(() => {
+          setLoading(false);
+        });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
-  return (
+  const [OpenUpdateStatus, setOpenUpdateStatus] = useState(false);
+
+  return Loading ? (
+    <div className="flex flex-row gap-4 h-full">
+      <Skeleton className="w-1/3 h-full" />
+      <Skeleton className="w-2/3 h-full" />
+    </div>
+  ) : (
     <div className="flex flex-row gap-4">
       <Card className="w-1/3">
         <CardHeader>
@@ -64,17 +86,73 @@ export const Budget = () => {
         </CardContent>
         <CardContent className="flex flex-col gap-4">
           <Separator />
-          <div className="flex flex-col gap-2">
-            <span className="text-lg">Estado:</span>
-            <span className="text-2xl">{Budget?.status}</span>
+          <div className="flex flex-row justify-between items-center">
+            <div>
+              <span className="text-lg">Estado:</span>
+              <span className="text-2xl flex flex-row gap-2 items-center">
+                {Budget?.status}
+              </span>
+            </div>
+            <Dialog open={OpenUpdateStatus} onOpenChange={setOpenUpdateStatus}>
+              <DialogTrigger asChild>
+                <Button>Actualizar estado</Button>
+              </DialogTrigger>
+              <DialogContent>Actualizar estado</DialogContent>
+            </Dialog>
           </div>
           <div className="flex flex-col gap-2">
             <span className="text-lg">Monto final:</span>
             <span className="text-2xl">$ {Budget?.finalAmount}</span>
           </div>
         </CardContent>
+        <CardContent className="flex flex-col gap-4">
+          <Button className="w-full">
+            <Pencil />
+            Editar
+          </Button>
+          <Button className="w-full" variant="destructive">
+            <CircleX />
+            Eliminar
+          </Button>
+        </CardContent>
       </Card>
-      <div className="w-2/3"></div>
+      <div className="w-2/3">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-2/12">Cantidad solicitada</TableHead>
+              <TableHead className="w-3/12">Cantidad de unidades</TableHead>
+              <TableHead className="w-3/12">Nombre</TableHead>
+              <TableHead className="w-2/12">Precio unitario</TableHead>
+              <TableHead className="w-2/12">Subtotal</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {Budget?.products?.map((product: ProductBudget, index: number) => {
+              return (
+                <TableRow key={index}>
+                  <TableCell className="font-medium">
+                    {product.measureUnitQuantity} {product.productMeasureUnit}
+                  </TableCell>
+                  <TableCell className="font-medium">
+                    {product.saleUnitQuantity} {product.productSaleUnit}
+                  </TableCell>
+                  <TableCell>{product.productName}</TableCell>
+                  <TableCell>$ {product.productMeasurePrice}</TableCell>
+                  <TableCell>
+                    ${" "}
+                    {Math.round(
+                      (product.saleUnitQuantity * product.saleUnitPrice +
+                        Number.EPSILON) *
+                        100
+                    ) / 100}
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 };
