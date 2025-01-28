@@ -1,5 +1,10 @@
 import { SalesContext, SalesContextType } from "@/Context/SalesContext";
-import { CompleteClient, PartialBudget, PartialClient } from "@/hooks/SalesInterfaces";
+import {
+  CompleteBudget,
+  CompleteClient,
+  PartialBudget,
+  PartialClient,
+} from "@/hooks/SalesInterfaces";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 
 interface SalesContextComponentProps {
@@ -25,7 +30,7 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
-      }); 
+      });
       if (!response.ok) {
         console.error("Error fetching data: ", response.statusText);
         return;
@@ -40,7 +45,7 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
   const fetchListOfClients = async () => {
     try {
       if (!getToken) {
-        console.error("getToken is undefined")
+        console.error("getToken is undefined");
         return;
       }
       const accessToken = await getToken();
@@ -48,7 +53,7 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
-      })
+      });
       if (!response.ok) {
         console.error("Error fetching clients: ", response.statusText);
         return;
@@ -58,13 +63,13 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
     } catch (error) {
       console.error("Error fetching clients: ", error);
     }
-  }
+  };
 
   /// BUDGET GET ///
   const fetchBudgetsByClient = async (id: number) => {
     try {
       if (!getToken) {
-        console.error("getToken is undefined")
+        console.error("getToken is undefined");
         return;
       }
       const accessToken = await getToken();
@@ -72,23 +77,47 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
-      })
+      });
       if (!response.ok) {
-        console.error("Error fetching client budgets: ", response.statusText)
-        return
+        console.error("Error fetching client budgets: ", response.statusText);
+        return;
       }
-      const result: Array<PartialBudget> = await response.json()
-      return result
+      const result: Array<PartialBudget> = await response.json();
+      return result;
     } catch (error) {
-      console.error("Error fetching client budgets: ", error)
+      console.error("Error fetching client budgets: ", error);
     }
-  }
+  };
+
+  const fetchCompleteBudget = async (id: number) => {
+    try {
+      if (!getToken) {
+        console.error("getToken is undefined");
+        return;
+      }
+      const accessToken = await getToken();
+      const response = await fetch(`${BASE_URL}/budget/${id}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (!response.ok) {
+        console.error("Error fetching budget: ", response.statusText);
+        return;
+      }
+      const result: CompleteBudget = await response.json();
+      return result;
+    } catch (error) {
+      console.error("Error fetching budget: ", error);
+    }
+  };
 
   const exportData: SalesContextType = {
     BASE_URL,
     fetchClient,
     fetchBudgetsByClient,
     fetchListOfClients,
+    fetchCompleteBudget,
   };
 
   return (

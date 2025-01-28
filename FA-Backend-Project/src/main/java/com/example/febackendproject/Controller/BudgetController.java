@@ -38,7 +38,7 @@ public class BudgetController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
-    @GetMapping("/{date}")
+    @GetMapping("/date/{date}")
     public ResponseEntity<List<PartialBudgetDTO>> getBudgetByDate(@PathVariable LocalDate date) {
         return ResponseEntity.ok(budgetService.getByDate(date));
     }

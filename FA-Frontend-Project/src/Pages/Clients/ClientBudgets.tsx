@@ -41,7 +41,7 @@ export const ClientBudgets = () => {
       <h1 className="text-xl text-muted-foreground text-left pb-5">
         Lista de Presupuestos
       </h1>
-      {!Budgets ? (
+      {!Budgets || Budgets.length === 0 ? (
         <Alert variant="destructive" className="w-full mt-2">
           <AlertCircle className="w-5 pt-1" />
           <AlertTitle className="text-xl">Vacío</AlertTitle>
