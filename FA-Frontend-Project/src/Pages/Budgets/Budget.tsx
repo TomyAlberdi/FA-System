@@ -171,10 +171,6 @@ export const Budget = () => {
           </div>
         </CardContent>
         <CardContent className="flex flex-col gap-4">
-          <Button className="w-full">
-            <Pencil />
-            Editar
-          </Button>
           <Button
             className="w-full"
             variant="destructive"

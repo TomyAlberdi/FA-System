@@ -89,7 +89,10 @@ export const UpdateBudgetStatus = ({
   };
 
   return (
-    <DialogContent>
+    <DialogContent
+      className="sm:max-w-[500px] w-full"
+      aria-describedby={undefined}
+    >
       <DialogTitle>Actualizar estado del presupuesto</DialogTitle>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
