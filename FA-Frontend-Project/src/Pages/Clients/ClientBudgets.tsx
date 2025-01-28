@@ -18,11 +18,12 @@ import {
   Ban,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export const ClientBudgets = () => {
   const { id } = useParams();
   const { fetchBudgetsByClient } = useSalesContext();
+  const navigate = useNavigate();
 
   const [Budgets, setBudgets] = useState<Array<PartialBudget> | undefined>([]);
 
@@ -60,7 +61,11 @@ export const ClientBudgets = () => {
           <TableBody>
             {Budgets?.map((budget: PartialBudget, i) => {
               return (
-                <TableRow key={i} className="text-lg cursor-pointer">
+                <TableRow
+                  key={i}
+                  className="text-lg cursor-pointer"
+                  onClick={() => navigate(`/sales/budgets/${budget.id}`)}
+                >
                   <TableCell>
                     {new Date(budget.date).toLocaleDateString("es-ES", {
                       day: "numeric",

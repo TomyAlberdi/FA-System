@@ -28,7 +28,7 @@ const breadcrumbsHandles = [
 export const BreadcrumbsHeader = () => {
   const location = useLocation();
 
-  const BASE_URL = "localhost:5173";
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
 
   const getBreadcrumbs = () => {
     const currentPath = location.pathname
