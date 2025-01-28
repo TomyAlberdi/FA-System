@@ -61,66 +61,68 @@ export const StockPagination: React.FC<StockPaginationProps> = ({
           })}
         </TooltipProvider>
       </section>
-      <Pagination className="mt-5">
-        <PaginationContent>
-          <PaginationItem
-            className="cursor-pointer"
-            onClick={() => handlePrev()}
-          >
-            <PaginationPrevious />
-          </PaginationItem>
-          {CurrentPage - 1 >= 0 ? (
+      {!PaginationInfo?.last && (
+        <Pagination className="mt-5">
+          <PaginationContent>
             <PaginationItem
               className="cursor-pointer"
-              onClick={() => handleClick(CurrentPage - 1)}
+              onClick={() => handlePrev()}
             >
-              <PaginationLink>{CurrentPage}</PaginationLink>
+              <PaginationPrevious />
             </PaginationItem>
-          ) : null}
-          <PaginationItem>
-            <DropdownMenu
-              open={PaginationDropdownOpen}
-              onOpenChange={setPaginationDropdownOpen}
-            >
-              <DropdownMenuTrigger>
-                <PaginationLink>{CurrentPage + 1}</PaginationLink>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="center" className="inset-x-1/4">
-                <DropdownMenuLabel>Páginas</DropdownMenuLabel>
-                {Array.from(
-                  { length: PaginationInfo?.totalPages ?? 0 },
-                  (_, i) => {
-                    return (
-                      <DropdownMenuItem
-                        key={i}
-                        onClick={() => handleClick(i)}
-                        className="cursor-pointer flex items-center justify-center"
-                      >
-                        {i + 1}
-                      </DropdownMenuItem>
-                    );
-                  }
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </PaginationItem>
-          {PaginationInfo?.totalPages &&
-          CurrentPage + 1 < PaginationInfo?.totalPages ? (
+            {CurrentPage - 1 >= 0 ? (
+              <PaginationItem
+                className="cursor-pointer"
+                onClick={() => handleClick(CurrentPage - 1)}
+              >
+                <PaginationLink>{CurrentPage}</PaginationLink>
+              </PaginationItem>
+            ) : null}
+            <PaginationItem>
+              <DropdownMenu
+                open={PaginationDropdownOpen}
+                onOpenChange={setPaginationDropdownOpen}
+              >
+                <DropdownMenuTrigger>
+                  <PaginationLink>{CurrentPage + 1}</PaginationLink>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="center" className="inset-x-1/4">
+                  <DropdownMenuLabel>Páginas</DropdownMenuLabel>
+                  {Array.from(
+                    { length: PaginationInfo?.totalPages ?? 0 },
+                    (_, i) => {
+                      return (
+                        <DropdownMenuItem
+                          key={i}
+                          onClick={() => handleClick(i)}
+                          className="cursor-pointer flex items-center justify-center"
+                        >
+                          {i + 1}
+                        </DropdownMenuItem>
+                      );
+                    }
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </PaginationItem>
+            {PaginationInfo?.totalPages &&
+            CurrentPage + 1 < PaginationInfo?.totalPages ? (
+              <PaginationItem
+                className="cursor-pointer"
+                onClick={() => handleClick(CurrentPage + 1)}
+              >
+                <PaginationLink>{CurrentPage + 2}</PaginationLink>
+              </PaginationItem>
+            ) : null}
             <PaginationItem
               className="cursor-pointer"
-              onClick={() => handleClick(CurrentPage + 1)}
+              onClick={() => handleNext()}
             >
-              <PaginationLink>{CurrentPage + 2}</PaginationLink>
+              <PaginationNext />
             </PaginationItem>
-          ) : null}
-          <PaginationItem
-            className="cursor-pointer"
-            onClick={() => handleNext()}
-          >
-            <PaginationNext />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+          </PaginationContent>
+        </Pagination>
+      )}
     </section>
   );
 };
