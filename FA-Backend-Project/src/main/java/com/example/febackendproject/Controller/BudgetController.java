@@ -55,6 +55,14 @@ public class BudgetController {
     public ResponseEntity<List<PartialBudgetDTO>> getBudgetByDate(@PathVariable LocalDate date) {
         return ResponseEntity.ok(budgetService.getByDate(date));
     }
+    
+    @GetMapping("/range")
+    public ResponseEntity<List<PartialBudgetDTO>> getBudgetByRange(
+            @RequestParam(value = "start") LocalDate start,
+            @RequestParam(value = "end") LocalDate end
+    ) {
+        return ResponseEntity.ok(budgetService.getByDateRange(start, end));
+    }
 
     @PostMapping
     public ResponseEntity<Budget> createBudget(@RequestBody @Valid Budget budget) {

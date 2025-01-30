@@ -54,6 +54,10 @@ public class BudgetService {
         return budgetRepository.findByDate(date);
     }
     
+    public List<PartialBudgetDTO> getByDateRange(LocalDate start, LocalDate end) {
+        return budgetRepository.findByDateBetween(start, end);
+    }
+    
     public void updateStatus(Budget.Status status, Long id) {
         budgetRepository.updateStatus(status, id);
     }
