@@ -30,9 +30,11 @@ export const Budgets = () => {
 
   useEffect(() => {
     setLoading(true);
-    const formattedFromDate = format(Dates.from!, "yyyy-MM-dd");
-    const formattedToDate = format(Dates.to!, "yyyy-MM-dd");
-    console.log(formattedFromDate, " ", formattedToDate);
+    const fromDate = Dates.from || new Date();
+    const toDate = Dates.to || new Date();
+
+    const formattedFromDate = format(fromDate, "yyyy-MM-dd");
+    const formattedToDate = format(toDate, "yyyy-MM-dd");
     fetchBudgetsByDateRange(formattedFromDate, formattedToDate)
       .then((result) => {
         setBudgets(result);
@@ -89,9 +91,11 @@ export const Budgets = () => {
               mode="range"
               defaultMonth={Dates?.from}
               selected={Dates}
-              onSelect={(range) =>
-                setDates(range ?? { from: new Date(), to: new Date() })
-              }
+              onSelect={(range) => {
+                if (range) {
+                  setDates(range ?? { from: new Date(), to: new Date() });
+                }
+              }}
               numberOfMonths={2}
             />
           </PopoverContent>
