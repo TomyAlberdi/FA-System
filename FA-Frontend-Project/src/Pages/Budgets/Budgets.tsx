@@ -11,10 +11,11 @@ import { PartialBudget } from "@/hooks/SalesInterfaces";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { format, subDays } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, PlusCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
 import { BudgetCard } from "@/Pages/Budgets/BudgetCard";
+import { Link } from "react-router-dom";
 
 export const Budgets = () => {
   const { fetchBudgetsByDateRange } = useSalesContext();
@@ -59,47 +60,57 @@ export const Budgets = () => {
     </div>
   ) : (
     <div className="flex flex-col gap-4">
-      <section className="flex flex-col gap-2">
-        <h1 className="sectionTitle">Presupuestos</h1>
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              className={cn(
-                "w-[300px] justify-start text-left font-normal",
-                !Dates && "text-muted-foreground"
-              )}
-            >
-              <CalendarIcon />
-              {Dates?.from ? (
-                Dates.to ? (
-                  <>
-                    {format(Dates.from, "LLL dd, y")} -{" "}
-                    {format(Dates.to, "LLL dd, y")}
-                  </>
+      <section className="flex flex-row justify-between items-center">
+        <div className="flex flex-col gap-2">
+          <h1 className="sectionTitle">Presupuestos</h1>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className={cn(
+                  "w-[300px] justify-start text-left font-normal",
+                  !Dates && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon />
+                {Dates?.from ? (
+                  Dates.to ? (
+                    <>
+                      {format(Dates.from, "LLL dd, y")} -{" "}
+                      {format(Dates.to, "LLL dd, y")}
+                    </>
+                  ) : (
+                    format(Dates.from, "LLL dd, y")
+                  )
                 ) : (
-                  format(Dates.from, "LLL dd, y")
-                )
-              ) : (
-                <span>Pick a date</span>
-              )}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="start">
-            <Calendar
-              initialFocus
-              mode="range"
-              defaultMonth={Dates?.from}
-              selected={Dates}
-              onSelect={(range) => {
-                if (range) {
-                  setDates(range ?? { from: new Date(), to: new Date() });
-                }
-              }}
-              numberOfMonths={2}
-            />
-          </PopoverContent>
-        </Popover>
+                  <span>Pick a date</span>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                initialFocus
+                mode="range"
+                defaultMonth={Dates?.from}
+                selected={Dates}
+                onSelect={(range) => {
+                  if (range) {
+                    setDates(range ?? { from: new Date(), to: new Date() });
+                  }
+                }}
+                numberOfMonths={2}
+              />
+            </PopoverContent>
+          </Popover>
+        </div>
+        <div>
+          <Button asChild>
+            <Link to="/sales/budgets/add">
+              <PlusCircle />
+              Crear presupuesto
+            </Link>
+          </Button>
+        </div>
       </section>
       <section className="listBody">
         {Budgets?.map((budget: PartialBudget, i) => {
