@@ -10,6 +10,7 @@ export interface SalesContextType {
   fetchBudgetsByClient: (id: number) => Promise<Array<PartialBudget> | undefined>;
   fetchCompleteBudget: (id: number) => Promise<CompleteBudget | undefined>;
   fetchBudgetsByDate: (date: string) => Promise<Array<PartialBudget> | undefined>;
+  fetchBudgetsByDateRange: (start: string, end: string) => Promise<Array<PartialBudget> | undefined>;
 }
 
 export const SalesContext = createContext<SalesContextType | null>(null);

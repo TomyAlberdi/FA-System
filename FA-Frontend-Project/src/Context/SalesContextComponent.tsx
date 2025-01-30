@@ -136,6 +136,30 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
     }
   };
 
+  const fetchBudgetsByDateRange = async (start: string, end: string) => {
+    const url = `${BASE_URL}/budget/range?start=${start}&end=${end}`;
+    try {
+      if (!getToken) {
+        console.error("getToken is undefined");
+        return;
+      }
+      const accessToken = await getToken();
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (!response.ok) {
+        console.error("Error fetching budgets: ", response.statusText);
+        return;
+      }
+      const result: Array<PartialBudget> = await response.json();
+      return result;
+    } catch (error) {
+      console.error("Error fetching budgets: ", error);
+    }
+  };
+
   const exportData: SalesContextType = {
     BASE_URL,
     fetchClient,
@@ -143,6 +167,7 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
     fetchListOfClients,
     fetchCompleteBudget,
     fetchBudgetsByDate,
+    fetchBudgetsByDateRange,
   };
 
   return (
