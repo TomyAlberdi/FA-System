@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -40,13 +41,16 @@ public class ClientService {
         });
     }
     
+    public List<PartialClientDTO> list() {
+        return clientRepository.list();
+    }
+    
     public Boolean existsById(Long id) {
         return clientRepository.existsById(id);
     }
     
-    public Boolean existsByName(String name) {
-        Optional<Client> client = clientRepository.findByName(name);
-        return client.isPresent();
+    public String getNameById(Long id) {
+        return clientRepository.findNameById(id);
     }
     
     public Client save(Client client) {

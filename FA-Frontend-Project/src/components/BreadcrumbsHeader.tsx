@@ -22,12 +22,13 @@ const breadcrumbsHandles = [
   // Sales Pages
   { label: "clients", handle: "Clientes" },
   { label: "client", handle: "Cliente" },
+  { label: "budgets", handle: "Presupuestos" },
 ];
 
 export const BreadcrumbsHeader = () => {
   const location = useLocation();
 
-  const BASE_URL = "localhost:5173";
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
 
   const getBreadcrumbs = () => {
     const currentPath = location.pathname

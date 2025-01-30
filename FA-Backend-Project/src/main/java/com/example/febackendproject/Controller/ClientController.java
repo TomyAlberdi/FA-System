@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @AllArgsConstructor
 @RestController
 @RestControllerAdvice
@@ -44,6 +46,11 @@ public class ClientController {
             @RequestParam(value = "size", defaultValue = "10") int size
     ) {
         return ResponseEntity.ok(clientService.getPartialClients(filter, page, size));
+    }
+    
+    @GetMapping("/list")
+    public ResponseEntity<List<PartialClientDTO>> listComplete() {
+        return ResponseEntity.ok(clientService.list());
     }
     
     @PostMapping

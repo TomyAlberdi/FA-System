@@ -1,10 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { PartialProductStock } from "@/hooks/CatalogInterfaces";
 import { CircleEllipsis } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -14,11 +9,11 @@ export const StockCard = ({ stock }: { stock: PartialProductStock }) => {
 
   return (
     <Card
-      className="ProductCard relative bg-primary-foreground h-[200px] w-[24.2%] max-w-[400px] min-w-[300px] p-2 cursor-pointer flex flex-row items-center justify-start"
+      className="ProductCard relative bg-primary-foreground h-[400px] w-[19.2%] max-w-[300px] min-w-[220px] p-2 grid grid-rows-9 cursor-pointer"
       onClick={() => navigate(`/catalog/stock/${stock?.productId}`)}
     >
       <div
-        className="stockImage h-[182px] w-[182px] bg-contain bg-center bg-no-repeat"
+        className="stockImage w-full row-span-5 bg-contain bg-center bg-no-repeat"
         style={
           stock?.productImage === "" || stock?.productImage === null
             ? {
@@ -35,20 +30,15 @@ export const StockCard = ({ stock }: { stock: PartialProductStock }) => {
               }
         }
       ></div>
-      <div className="stockData h-full w-1/2 pl-2 flex flex-col justify-between items-start">
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <CardTitle className="text-xl font-semibold overflow-hidden line-clamp-2">
-              {stock?.productName}
-            </CardTitle>
-          </TooltipTrigger>
-          <TooltipContent>{stock?.productName}</TooltipContent>
-        </Tooltip>
-        <div className="w-full bg-destructive rounded-md flex flex-row items-center justify-center py-2 text-lg text-white font-semibold">
+      <div className="stockData w-full pl-2 flex flex-col justify-between items-center row-span-4">
+        <CardTitle className="text-2xl font-semibold overflow-hidden line-clamp-2 h-2/4 w-full flex flex-row items-center justify-center text-center">
+          {stock?.productName}
+        </CardTitle>
+        <div className="w-full bg-destructive rounded-md flex flex-row items-center justify-center py-2 text-lg text-white font-semibold h-1/4 mb-2">
           {stock?.quantity} {stock?.productSaleUnit}s
         </div>
         <Button
-          className="w-full text-md"
+          className="w-full text-md h-1/4"
           onClick={() => navigate(`/catalog/stock/${stock?.productId}`)}
         >
           <CircleEllipsis className="bigger-icon" />

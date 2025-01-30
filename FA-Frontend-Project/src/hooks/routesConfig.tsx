@@ -14,6 +14,9 @@ import { UpdateProduct } from "@/Pages/Products/UpdateProduct";
 import { Sales } from "@/Pages/Sales/Sales";
 import { Clients } from "@/Pages/Clients/Clients";
 import { Client } from "@/Pages/Clients/Client";
+import { Budgets } from "@/Pages/Budgets/Budgets";
+import { AddBudget } from "@/Pages/Budgets/AddBudget";
+import { Budget } from "@/Pages/Budgets/Budget";
 
 export const routesConfig = [
   { index: true, element: <Home /> },
@@ -34,4 +37,7 @@ export const routesConfig = [
   { path: "/sales", element: <Sales /> },
   { path: "/sales/clients", element: <Clients /> },
   { path: "/sales/clients/:id", element: <Client /> },
+  { path: "/sales/budgets", element: <Budgets /> },
+  { path: "/sales/budgets/:id", element: <Budget /> },
+  { path: "/sales/budgets/add", element: <AddBudget /> },
 ];

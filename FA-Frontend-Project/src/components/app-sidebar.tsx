@@ -48,6 +48,10 @@ const data = [
         title: "Clientes",
         url: "/clients",
       },
+      {
+        title: "Presupuestos",
+        url: "/budgets",
+      }
     ],
   },
 ];

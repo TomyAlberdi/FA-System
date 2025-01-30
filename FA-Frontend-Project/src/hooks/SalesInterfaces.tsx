@@ -24,3 +24,36 @@ export interface ClientsFilter {
   keyword: string;
   type: string;
 }
+
+export enum BudgetStatus {
+  PENDIENTE = "PENDIENTE",
+  PAGO = "PAGO",
+  ENVIADO = "ENVIADO",
+  ENTREGADO = "ENTREGADO",
+  CANCELADO = "CANCELADO",
+}
+
+export interface PartialBudget {
+  id: number;
+  clientName: string;
+  status: BudgetStatus;
+  finalAmount: number;
+  date: string;
+}
+
+export interface ProductBudget {
+  id: number;
+  productName: string;
+  productMeasurePrice: number;
+  measureUnitQuantity: number;
+  saleUnitQuantity: number;
+  subtotal: number;
+  productSaleUnit: string;
+  productMeasureUnit: string;
+  saleUnitPrice: number;
+}
+
+export interface CompleteBudget extends PartialBudget {
+  clientId: number;
+  products: Array<ProductBudget>;
+}
