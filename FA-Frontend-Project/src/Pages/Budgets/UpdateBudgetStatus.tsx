@@ -14,7 +14,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ToastAction } from "@/components/ui/toast";
 import { useSalesContext } from "@/Context/UseSalesContext";
+import { BudgetStatus } from "@/hooks/SalesInterfaces";
 import { useToast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
@@ -47,6 +49,28 @@ export const UpdateBudgetStatus = ({
     },
   });
 
+  const onUpdatePres = (data: z.infer<typeof formSchema>) => {
+    if (
+      data.status === BudgetStatus.PAGO ||
+      data.status === BudgetStatus.ENVIADO ||
+      data.status === BudgetStatus.ENTREGADO
+    ) {
+      toast({
+        variant: "destructive",
+        title: "¿Confirmar actualización?",
+        description: `Actualizar el presupuesto a ${data.status} modificará el stock de los productos.`,
+        action: (
+          <ToastAction altText="Actualizar" onClick={() => onSubmit(data)}>
+            Actualizar
+          </ToastAction>
+        ),
+      });
+    } else {
+      console.log(data)
+      onSubmit(data);
+    }
+  };
+
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     const url = `${BASE_URL}/budget/${id}?status=${data.status}`;
     try {
@@ -63,7 +87,17 @@ export const UpdateBudgetStatus = ({
         },
       });
       if (!response.ok) {
-        console.error("Error: ", response.statusText);
+        if (response.status === 409) {
+          const responseData = await response.json();
+          toast({
+            variant: "destructive",
+            title: "Conflicto de Inventario",
+            description: `Los siguientes productos no tienen stock suficiente: ${responseData.join(
+              ", "
+            )}`,
+          });
+          return;
+        }
         toast({
           variant: "destructive",
           title: `Error ${response.status}`,
@@ -95,7 +129,7 @@ export const UpdateBudgetStatus = ({
     >
       <DialogTitle>Actualizar estado del presupuesto</DialogTitle>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form onSubmit={form.handleSubmit(onUpdatePres)}>
           <FormField
             control={form.control}
             name="status"

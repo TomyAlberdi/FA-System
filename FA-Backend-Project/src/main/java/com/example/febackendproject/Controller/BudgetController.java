@@ -31,13 +31,17 @@ public class BudgetController {
     }
     
     @PatchMapping("/{id}")
-    public ResponseEntity<Optional<Budget>> updateBudgetStatus(
+    public ResponseEntity<Optional<List<String>>> updateBudgetStatus(
             @PathVariable Long id,
             @RequestParam(value = "status") Budget.Status status
     ) {
         if (budgetService.existsById(id)) {
-            budgetService.updateStatus(status, id);
-            return ResponseEntity.ok(budgetService.getById(id));
+            Optional<List<String>> unavailableProducts = budgetService.updateStatus(status, id);
+            if (unavailableProducts.isPresent() && !unavailableProducts.get().isEmpty()) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(unavailableProducts);
+            } else {
+                return ResponseEntity.ok(budgetService.updateStatus(status, id));
+            }
         }
         return ResponseEntity.notFound().build();
     }

@@ -13,6 +13,7 @@ import lombok.Setter;
 @Embeddable
 public class ProductBudget {
 
+    private Long id;
     private String productName;
     private Double productMeasurePrice;
     private Double measureUnitQuantity;

@@ -4,10 +4,12 @@ import com.example.febackendproject.DTO.PartialBudgetDTO;
 import com.example.febackendproject.Entity.Budget;
 import com.example.febackendproject.Entity.ProductBudget;
 import com.example.febackendproject.Repository.BudgetRepository;
+import com.example.febackendproject.Repository.StockRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +19,8 @@ public class BudgetService {
     
     private final BudgetRepository budgetRepository;
     private final ClientService clientService;
+    private final StockService stockService;
+    private final StockRepository stockRepository;
     
     public Boolean existsById(Long id) {
         return budgetRepository.existsById(id);
@@ -58,8 +62,29 @@ public class BudgetService {
         return budgetRepository.findByDateBetween(start, end);
     }
     
-    public void updateStatus(Budget.Status status, Long id) {
-        budgetRepository.updateStatus(status, id);
+    public Optional<List<String>> updateStatus(Budget.Status status, Long id) {
+        List<String> unavailableProducts = new ArrayList<>();
+        Optional<Budget> budget = budgetRepository.findById(id);
+        List<ProductBudget> budgetProducts = new ArrayList<>();
+        if (budget.isPresent()) {
+            budgetProducts = budget.get().getProducts();
+        }
+        if (status.equals(Budget.Status.PAGO) || status.equals(Budget.Status.ENVIADO) || status.equals(Budget.Status.ENTREGADO)) {
+            budgetProducts.forEach(product -> {
+                Integer stockAvailable = stockRepository.getQuantityByProductId(product.getId());
+                if (stockAvailable < product.getSaleUnitQuantity()) {
+                    unavailableProducts.add(product.getProductName());
+                }
+            });
+        }
+        if (unavailableProducts.isEmpty()) {
+            budgetProducts.forEach(product -> {
+                stockService.decreaseStockById(product.getId(), product.getSaleUnitQuantity());
+            });
+            budgetRepository.updateStatus(status, id);
+            return Optional.empty();
+        }
+        return Optional.of(unavailableProducts);
     }
     
 }
