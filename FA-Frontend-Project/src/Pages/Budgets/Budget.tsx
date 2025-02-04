@@ -25,6 +25,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { DownloadBudgetDetail } from "@/Pages/Budgets/DownloadBudgetDetail";
 
 export const Budget = () => {
   const { id } = useParams();
@@ -203,6 +204,7 @@ export const Budget = () => {
             <CircleX />
             Eliminar
           </Button>
+          <DownloadBudgetDetail />
         </CardContent>
       </Card>
       <div className="w-2/3">
