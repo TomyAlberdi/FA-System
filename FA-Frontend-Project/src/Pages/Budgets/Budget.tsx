@@ -195,7 +195,11 @@ export const Budget = () => {
           <TableBody>
             {Budget?.products?.map((product: ProductBudget, index: number) => {
               return (
-                <TableRow key={index}>
+                <TableRow
+                  key={index}
+                  className="cursor-pointer"
+                  onClick={() => navigate(`/catalog/products/${product.id}`)}
+                >
                   <TableCell className="font-medium">
                     {product.measureUnitQuantity} {product.productMeasureUnit}
                   </TableCell>

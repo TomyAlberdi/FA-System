@@ -40,7 +40,7 @@ public class BudgetController {
             if (unavailableProducts.isPresent() && !unavailableProducts.get().isEmpty()) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body(unavailableProducts);
             } else {
-                return ResponseEntity.ok(budgetService.updateStatus(status, id));
+                return ResponseEntity.ok(unavailableProducts);
             }
         }
         return ResponseEntity.notFound().build();
