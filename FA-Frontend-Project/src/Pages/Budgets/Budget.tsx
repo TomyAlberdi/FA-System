@@ -159,6 +159,7 @@ export const Budget = () => {
               </DialogTrigger>
               <UpdateBudgetStatus
                 id={Budget?.id}
+                stockDecreased={Budget?.stockDecreased}
                 setOpenUpdateStatus={setOpenUpdateStatus}
                 Reload={Reload}
                 setReload={setReload}

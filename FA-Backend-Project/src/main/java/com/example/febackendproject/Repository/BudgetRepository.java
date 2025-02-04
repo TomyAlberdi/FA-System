@@ -28,5 +28,10 @@ public interface BudgetRepository extends JpaRepository<Budget, Long> {
     @Transactional
     @Query("UPDATE Budget SET status = ?1 WHERE id = ?2")
     void updateStatus(Budget.Status status, Long id);
+    
+    @Modifying
+    @Transactional
+    @Query("UPDATE Budget SET stockDecreased = true WHERE id = ?1")
+    void updateStockDecreased(Long id);
 
 }

@@ -29,11 +29,13 @@ const formSchema = z.object({
 
 export const UpdateBudgetStatus = ({
   id,
+  stockDecreased,
   setOpenUpdateStatus,
   Reload,
   setReload,
 }: {
   id: number | undefined;
+  stockDecreased: boolean | undefined;
   setOpenUpdateStatus: (value: boolean) => void;
   Reload: boolean;
   setReload: (value: boolean) => void;
@@ -51,9 +53,10 @@ export const UpdateBudgetStatus = ({
 
   const onUpdatePres = (data: z.infer<typeof formSchema>) => {
     if (
-      data.status === BudgetStatus.PAGO ||
-      data.status === BudgetStatus.ENVIADO ||
-      data.status === BudgetStatus.ENTREGADO
+      (data.status === BudgetStatus.PAGO ||
+        data.status === BudgetStatus.ENVIADO ||
+        data.status === BudgetStatus.ENTREGADO) &&
+      !stockDecreased
     ) {
       toast({
         variant: "destructive",
@@ -66,7 +69,7 @@ export const UpdateBudgetStatus = ({
         ),
       });
     } else {
-      console.log(data)
+      console.log(data);
       onSubmit(data);
     }
   };

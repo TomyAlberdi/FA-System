@@ -56,4 +56,5 @@ export interface ProductBudget {
 export interface CompleteBudget extends PartialBudget {
   clientId: number;
   products: Array<ProductBudget>;
+  stockDecreased: boolean;
 }

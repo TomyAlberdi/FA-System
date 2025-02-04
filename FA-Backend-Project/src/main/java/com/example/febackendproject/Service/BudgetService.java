@@ -69,7 +69,7 @@ public class BudgetService {
         if (budget.isPresent()) {
             budgetProducts = budget.get().getProducts();
         }
-        if (status.equals(Budget.Status.PAGO) || status.equals(Budget.Status.ENVIADO) || status.equals(Budget.Status.ENTREGADO)) {
+        if (budget.isPresent() && !budget.get().getStockDecreased() && (status.equals(Budget.Status.PAGO) || status.equals(Budget.Status.ENVIADO) || status.equals(Budget.Status.ENTREGADO))) {
             budgetProducts.forEach(product -> {
                 Integer stockAvailable = stockRepository.getQuantityByProductId(product.getId());
                 if (stockAvailable < product.getSaleUnitQuantity()) {
@@ -82,6 +82,7 @@ public class BudgetService {
                 stockService.decreaseStockById(product.getId(), product.getSaleUnitQuantity());
             });
             budgetRepository.updateStatus(status, id);
+            budgetRepository.updateStockDecreased(id);
             return Optional.empty();
         }
         return Optional.of(unavailableProducts);
