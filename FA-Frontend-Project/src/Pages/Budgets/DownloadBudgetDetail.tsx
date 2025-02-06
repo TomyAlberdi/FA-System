@@ -1,8 +1,28 @@
 import { Button } from "@/components/ui/button";
+import { CompleteBudget, ProductBudget } from "@/hooks/SalesInterfaces";
 import jsPDF from "jspdf";
 import { ReceiptText } from "lucide-react";
 
-export const DownloadBudgetDetail = () => {
+export const DownloadBudgetDetail = ({
+  budget,
+}: {
+  budget: CompleteBudget | null;
+}) => {
+  const formatDateTime = (isoDate: string) => {
+    if (!isoDate) {
+      return "";
+    }
+    const date = new Date(isoDate);
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    const seconds = date.getSeconds().toString().padStart(2, "0");
+
+    return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+  };
+
   const generatePDF = () => {
     const doc = new jsPDF();
 
@@ -19,13 +39,17 @@ export const DownloadBudgetDetail = () => {
     // Date and Company Info
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
-    doc.text("14/01/2025 13:57:21", 15, 30);
+    doc.text(formatDateTime(budget?.date ?? ""), 15, 30);
     doc.text("Calle 122 y 54 - Tel. 412-3001 Lineas Rotativas", 15, 40);
     doc.text("email: consultas@ceramicoslaplata.com.ar", 15, 45);
 
     // Budget Number
     doc.setFont("helvetica", "bold");
-    doc.text("Presupuesto: 0000125415", 15, 55);
+    doc.text(
+      `Presupuesto: ${budget?.id?.toString().padStart(10, "0")}`,
+      15,
+      55
+    );
 
     // Client Information
     doc.setFont("helvetica", "normal");
@@ -37,26 +61,10 @@ export const DownloadBudgetDetail = () => {
     // Table Headers
     const headers = [
       "Cantidad Solicitada",
-      "Cantidad en Unidades",
+      "Unidades",
       "Nombre",
       "Precio Unitario",
       "Subtotal",
-    ];
-    const data = [
-      [
-        "10,10 M2",
-        "5,00 CAJA",
-        "ALBERDI AXELLA BLANCO",
-        "15.260,00 M2",
-        "154.126,00",
-      ],
-      [
-        "31,68 M2",
-        "11,00 CAJA",
-        "ALBERDI PORCE.METROPOLITAN GREY REC FIT",
-        "17.534,37 M2",
-        "555.489,00",
-      ],
     ];
 
     // Draw Table
@@ -75,10 +83,17 @@ export const DownloadBudgetDetail = () => {
     doc.setFont("helvetica", "normal");
     startY += 10;
 
-    data.forEach((row) => {
+    budget?.products?.forEach((product: ProductBudget) => {
       let rowHeight = 0;
       const cellY = startY;
-      row.forEach((text, index) => {
+      const rowData = [
+        `${product.measureUnitQuantity} ${product.productMeasureUnit}`,
+        `${product.saleUnitQuantity} ${product.productSaleUnit}`,
+        product.productName,
+        `$ ${product.productMeasurePrice} / ${product.productMeasureUnit}`,
+        `$ ${product.subtotal}`,
+      ];
+      rowData.forEach((text, index) => {
         const xPos =
           15 + columnWidths.slice(0, index).reduce((a, b) => a + b, 0);
         const splitText = doc.splitTextToSize(text, columnWidths[index] - 2);
@@ -93,16 +108,16 @@ export const DownloadBudgetDetail = () => {
     doc.setFontSize(10); // Restore font size
     doc.text("Precios sujetos a modificación sin previo aviso.", 15, startY);
     startY += 10;
-    doc.text("Importe Final: 709.614,98", 15, startY);
-    doc.text("Per./Ret. Ingresos Brutos: 0,00", 15, startY + 5);
-    doc.text("Importe Total: 709.614,98", 15, startY + 10);
+    doc.text(`Importe Final: $ ${budget?.finalAmount}`, 15, startY);
+    doc.text("Per./Ret. Ingresos Brutos: $ 0,00", 15, startY + 5);
+    doc.text(`Importe Total: $ ${budget?.finalAmount}`, 15, startY + 10);
 
     // Save PDF
-    doc.save("Presupuesto.pdf");
+    doc.save(`Presupuesto_${budget?.id}.pdf`);
   };
 
   return (
-    <Button className="w-full" onClick={generatePDF}>
+    <Button className="w-full" onClick={generatePDF} disabled={budget === null}>
       <ReceiptText />
       Descargar Detalle
     </Button>

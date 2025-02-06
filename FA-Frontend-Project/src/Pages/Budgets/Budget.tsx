@@ -125,7 +125,9 @@ export const Budget = () => {
     <div className="flex flex-row gap-4">
       <Card className="w-1/3">
         <CardHeader>
-          <CardTitle className="text-3xl">Presupuesto</CardTitle>
+          <CardTitle className="text-3xl">
+            Presupuesto {Budget?.id?.toString().padStart(10, "0")}
+          </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           <Separator />
@@ -204,7 +206,7 @@ export const Budget = () => {
             <CircleX />
             Eliminar
           </Button>
-          <DownloadBudgetDetail />
+          <DownloadBudgetDetail budget={Budget} />
         </CardContent>
       </Card>
       <div className="w-2/3">
