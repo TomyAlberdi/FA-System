@@ -14,12 +14,18 @@ import {
 import { useSalesContext } from "@/Context/UseSalesContext";
 import { CompleteBudget, ProductBudget } from "@/hooks/SalesInterfaces";
 import { useToast } from "@/hooks/use-toast";
-import { CircleX } from "lucide-react";
+import { CircleX, Info } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { UpdateBudgetStatus } from "@/Pages/Budgets/UpdateBudgetStatus";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { ToastAction } from "@/components/ui/toast";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { DownloadBudgetDetail } from "@/Pages/Budgets/DownloadBudgetDetail";
 
 export const Budget = () => {
   const { id } = useParams();
@@ -119,7 +125,9 @@ export const Budget = () => {
     <div className="flex flex-row gap-4">
       <Card className="w-1/3">
         <CardHeader>
-          <CardTitle className="text-3xl">Presupuesto</CardTitle>
+          <CardTitle className="text-3xl">
+            Presupuesto {Budget?.id?.toString().padStart(10, "0")}
+          </CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           <Separator />
@@ -146,12 +154,30 @@ export const Budget = () => {
         </CardContent>
         <CardContent className="flex flex-col gap-4">
           <Separator />
-          <div className="flex flex-row justify-between items-center">
-            <div>
-              <span className="text-lg">Estado:</span>
-              <span className="text-2xl flex flex-row gap-2 items-center">
-                {Budget?.status}
-              </span>
+          <div className="flex flex-row justify-between items-start">
+            <div className="flex flex-col gap-1">
+              <div className="flex flex-col mb-2">
+                <span className="text-lg">Estado del Presupuesto:</span>
+                <span className="text-2xl">{Budget?.status}</span>
+              </div>
+              <div>
+                <span className="text-lg">Estado del Stock:</span>
+                <span className="text-2xl flex flex-row gap-2 items-center">
+                  {Budget?.stockDecreased ? "RESERVADO" : "DISPONIBLE"}
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="w-5 h-5" />
+                    </TooltipTrigger>
+                    <TooltipContent className="w-[250px]">
+                      Cuando el stock de un presupuesto se encuentra RESERVADO,
+                      indica que los productos ya fueron registrados y retirados
+                      del sistema. Esto ocurre cuando el estado del presupuesto
+                      se cambia a PAGO, ENVIADO o ENTREGADO, y no puede
+                      deshacerse.
+                    </TooltipContent>
+                  </Tooltip>
+                </span>
+              </div>
             </div>
             <Dialog open={OpenUpdateStatus} onOpenChange={setOpenUpdateStatus}>
               <DialogTrigger asChild>
@@ -159,6 +185,7 @@ export const Budget = () => {
               </DialogTrigger>
               <UpdateBudgetStatus
                 id={Budget?.id}
+                stockDecreased={Budget?.stockDecreased}
                 setOpenUpdateStatus={setOpenUpdateStatus}
                 Reload={Reload}
                 setReload={setReload}
@@ -179,6 +206,7 @@ export const Budget = () => {
             <CircleX />
             Eliminar
           </Button>
+          <DownloadBudgetDetail budget={Budget} />
         </CardContent>
       </Card>
       <div className="w-2/3">
@@ -195,7 +223,11 @@ export const Budget = () => {
           <TableBody>
             {Budget?.products?.map((product: ProductBudget, index: number) => {
               return (
-                <TableRow key={index}>
+                <TableRow
+                  key={index}
+                  className="cursor-pointer"
+                  onClick={() => navigate(`/catalog/products/${product.id}`)}
+                >
                   <TableCell className="font-medium">
                     {product.measureUnitQuantity} {product.productMeasureUnit}
                   </TableCell>

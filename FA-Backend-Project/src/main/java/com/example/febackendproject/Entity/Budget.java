@@ -41,5 +41,7 @@ public class Budget {
     private List<ProductBudget> products;
 
     private Double finalAmount;
+    
+    private Boolean stockDecreased = false;
 
 }

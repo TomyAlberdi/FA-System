@@ -11,11 +11,12 @@ import { PartialBudget } from "@/hooks/SalesInterfaces";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { format, subDays } from "date-fns";
-import { CalendarIcon, PlusCircle } from "lucide-react";
+import { AlertCircle, CalendarIcon, PlusCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
 import { BudgetCard } from "@/Pages/Budgets/BudgetCard";
 import { Link } from "react-router-dom";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export const Budgets = () => {
   const { fetchBudgetsByDateRange } = useSalesContext();
@@ -113,9 +114,19 @@ export const Budgets = () => {
         </div>
       </section>
       <section className="listBody">
-        {Budgets?.map((budget: PartialBudget, i) => {
-          return <BudgetCard key={i} budget={budget} />;
-        })}
+        {Budgets?.length === 0 ? (
+          <Alert variant="destructive" className="w-auto">
+            <AlertCircle className="w-5 pt-1" />
+            <AlertTitle className="text-xl">Error</AlertTitle>
+            <AlertDescription className="text-lg">
+              No se encontraron presupuestos en las fechas seleccionadas.
+            </AlertDescription>
+          </Alert>
+        ) : (
+          Budgets?.map((budget: PartialBudget, i) => {
+            return <BudgetCard key={i} budget={budget} />;
+          })
+        )}
       </section>
     </div>
   );
