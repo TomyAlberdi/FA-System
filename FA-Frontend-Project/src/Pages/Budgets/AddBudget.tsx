@@ -80,6 +80,13 @@ export const AddBudget = () => {
         description: "El presupuesto no tiene productos asociados.",
       });
       return;
+    } else if (Budget?.client.id === 0) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "El presupuesto no tiene cliente asociado.",
+      });
+      return;
     }
     try {
       if (!getToken) {
