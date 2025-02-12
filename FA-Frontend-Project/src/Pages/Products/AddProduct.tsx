@@ -56,6 +56,7 @@ const formSchema = z.object({
     message: "La unidad de venta no puede estar vacía.",
   }),
   saleUnitPrice: z.string(),
+  saleUnitCost: z.string(),
   measurePerSaleUnit: z.string() || null,
   // Discount data
   discountPercentage: z.array(z.number()).or(z.number()) || null,
@@ -101,6 +102,7 @@ export const AddProduct = () => {
       measures: "",
       saleUnit: "Caja",
       saleUnitPrice: "",
+      saleUnitCost: "",
       measurePerSaleUnit: "",
       discountPercentage: 0,
       providerId: "",
@@ -121,7 +123,7 @@ export const AddProduct = () => {
 
   // Dynamic form data setting
   useEffect(() => {
-    const selectedCategoryId = form.watch("categoryId")
+    const selectedCategoryId = form.watch("categoryId");
     if (selectedCategoryId) {
       fetchSubcategoriesByCategoryId(parseInt(selectedCategoryId)).then(
         (result) => setSubcategories(result ?? [])
@@ -449,38 +451,71 @@ export const AddProduct = () => {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="saleUnitPrice"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex justify-start align-center pt-2">
-                    Precio
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Info className="w-4 h-4 ml-2" />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          Ejemplos: <br />
-                          - $ 10000 por Caja <br />
-                          - $ 5000 por Pieza <br />
-                          - $ 1000 por Juego <br />
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Ej: 10000.50"
-                      {...field}
-                      type="number"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="flex justify-between align-center">
+              <FormField
+                control={form.control}
+                name="saleUnitCost"
+                render={({ field }) => (
+                  <FormItem className="w-[49%]">
+                    <FormLabel className="flex justify-start align-center pt-2">
+                      Costo de compra
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Info className="w-4 h-4 ml-2" />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            El costo de compra al proveedor
+                            <br />
+                            Ejemplos: <br />
+                            - $ 10000 por Caja <br />
+                            - $ 5000 por Pieza <br />
+                            - $ 1000 por Juego <br />
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </FormLabel>
+                    <FormControl>
+                      <Input placeholder="Ej: 8000" {...field} type="number" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="saleUnitPrice"
+                render={({ field }) => (
+                  <FormItem className="w-[49%]">
+                    <FormLabel className="flex justify-start align-center pt-2">
+                      Precio de venta
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Info className="w-4 h-4 ml-2" />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            El precio de venta al cliente. <br />
+                            Ejemplos: <br />
+                            - $ 10000 por Caja <br />
+                            - $ 5000 por Pieza <br />
+                            - $ 1000 por Juego <br />
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Ej: 10000.5"
+                        {...field}
+                        type="number"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
           </div>
           {/* Measures data */}
           <div className="measureSection row-span-3 row-start-3 row-end-6 col-start-2 p-4 bg-primary-foreground rounded flex flex-col justify-evenly">
@@ -526,8 +561,8 @@ export const AddProduct = () => {
                         <TooltipContent>
                           Ejemplos: <br />
                           - M2 por Caja: 2.35 <br />
-                          - Unidades por Juego: 5 <br />
-                          - Si se vende por unidad: 1
+                          - Unidades por Juego: 5 <br />- Si se vende por
+                          unidad: 1
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>

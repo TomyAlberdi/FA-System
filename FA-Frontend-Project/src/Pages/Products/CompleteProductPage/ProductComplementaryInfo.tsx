@@ -12,6 +12,11 @@ export const ProductComplementaryInfo = ({
 }: {
   Product: CompleteProduct | null;
 }) => {
+  const getRentabilidad = (saleUnitCost: number, saleUnitPrice: number) => {
+    const profitMargin = ((saleUnitPrice - saleUnitCost) / saleUnitCost) * 100;
+    return Math.trunc(profitMargin * 100) / 100;
+  };
+
   return (
     <div className="complementaryInfo row-start-5 row-end-16 col-start-5 col-end-16 productGridItem px-2 py-4">
       <Accordion
@@ -33,7 +38,7 @@ export const ProductComplementaryInfo = ({
                   </span>
                 </CardContent>
               </Card>
-            ): null}
+            ) : null}
             {Product?.saleUnitPrice && Product?.saleUnit && (
               <Card
                 className={
@@ -43,7 +48,9 @@ export const ProductComplementaryInfo = ({
                 }
               >
                 <CardHeader>
-                  <CardTitle className="text-center">Precio por {Product?.saleUnit}</CardTitle>
+                  <CardTitle className="text-center">
+                    Precio por {Product?.saleUnit}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="text-center">
                   {Product?.discountPercentage &&
@@ -66,7 +73,9 @@ export const ProductComplementaryInfo = ({
                 }
               >
                 <CardHeader>
-                  <CardTitle className="text-center">Precio por {Product?.measureType}</CardTitle>
+                  <CardTitle className="text-center">
+                    Precio por {Product?.measureType}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="text-center">
                   {Product?.discountPercentage &&
@@ -121,20 +130,62 @@ export const ProductComplementaryInfo = ({
           <AccordionItem value="tags">
             <AccordionTrigger>Características</AccordionTrigger>
             <AccordionContent className="flex flex-row items-center gap-2 flex-wrap">
-              {Product?.characteristics?.map((tag: characteristic, index: number) => {
-                return tag.value !== null && tag.value !== "" && (
-                  <Card key={index}>
-                    <CardHeader>
-                      <CardTitle className="text-center">
-                        {tag.key}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="text-center">
-                      <span className="text-xl">{tag.value}</span>
-                    </CardContent>
-                  </Card>
-                );
-              })}
+              {Product?.characteristics?.map(
+                (tag: characteristic, index: number) => {
+                  return (
+                    tag.value !== null &&
+                    tag.value !== "" && (
+                      <Card key={index}>
+                        <CardHeader>
+                          <CardTitle className="text-center">
+                            {tag.key}
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="text-center">
+                          <span className="text-xl">{tag.value}</span>
+                        </CardContent>
+                      </Card>
+                    )
+                  );
+                }
+              )}
+            </AccordionContent>
+          </AccordionItem>
+        )}
+        {Product?.saleUnitCost && (
+          <AccordionItem value="saleUnitCost">
+            <AccordionTrigger>Costo</AccordionTrigger>
+            <AccordionContent className="flex flex-row items-center gap-2 flex-wrap">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-center">Costo de compra</CardTitle>
+                </CardHeader>
+                <CardContent className="text-center">
+                  <span className="text-xl">
+                    $ {Product?.saleUnitCost} por {Product?.saleUnit}
+                  </span>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-center">Rentabilidad</CardTitle>
+                </CardHeader>
+                <CardContent className="text-center">
+                  <span className="text-xl">
+                    %{" "}
+                    {Product?.discountPercentage &&
+                    Product?.discountPercentage > 0
+                      ? getRentabilidad(
+                          Product?.saleUnitCost,
+                          Product?.discountedPrice
+                        )
+                      : getRentabilidad(
+                          Product?.saleUnitCost,
+                          Product?.saleUnitPrice
+                        )}
+                  </span>
+                </CardContent>
+              </Card>
             </AccordionContent>
           </AccordionItem>
         )}

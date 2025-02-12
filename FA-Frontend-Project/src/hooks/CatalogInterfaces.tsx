@@ -88,6 +88,7 @@ export interface CompleteProduct extends StockProduct {
   aspecto: string;
   textura: string;
   transito: string;
+  saleUnitCost: number;
 }
 
 export interface PartialProductStock {

@@ -120,6 +120,7 @@ public class ProductService {
         if (productRepository.existsById(id)) {
             Optional<Product> product = productRepository.findById(id);
             double parsedSaleUnitPrice = Double.parseDouble(product.get().getSaleUnitPrice());
+            double parsedSaleUnitCost = Double.parseDouble(product.get().getSaleUnitCost());
             returnProduct.setId(product.get().getId());
             returnProduct.setName(product.get().getName());
             returnProduct.setCode(product.get().getCode());
@@ -132,6 +133,7 @@ public class ProductService {
             returnProduct.setMeasurePrice(product.get().getMeasurePrice());
             
             returnProduct.setSaleUnit(product.get().getSaleUnit());
+            returnProduct.setSaleUnitCost(parsedSaleUnitCost);
             returnProduct.setSaleUnitPrice(parsedSaleUnitPrice);
             returnProduct.setMeasurePerSaleUnit(product.get().getMeasurePerSaleUnit());
             
