@@ -26,6 +26,7 @@ public class CompleteProductDTO {
     private Double measurePrice;
     
     private String saleUnit;
+    private Double saleUnitCost;
     private Double saleUnitPrice;
     private Double measurePerSaleUnit;
     
