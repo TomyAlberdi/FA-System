@@ -152,7 +152,7 @@ export const ProductComplementaryInfo = ({
             </AccordionContent>
           </AccordionItem>
         )}
-        {Product?.saleUnitCost && (
+        {Product?.saleUnitCost && Product?.saleUnitCost > 0 ? (
           <AccordionItem value="saleUnitCost">
             <AccordionTrigger>Costo</AccordionTrigger>
             <AccordionContent className="flex flex-row items-center gap-2 flex-wrap">
@@ -188,7 +188,7 @@ export const ProductComplementaryInfo = ({
               </Card>
             </AccordionContent>
           </AccordionItem>
-        )}
+        ) : null}
       </Accordion>
     </div>
   );

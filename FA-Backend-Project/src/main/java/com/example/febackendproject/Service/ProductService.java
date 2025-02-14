@@ -119,8 +119,6 @@ public class ProductService {
         CompleteProductDTO returnProduct = new CompleteProductDTO();
         if (productRepository.existsById(id)) {
             Optional<Product> product = productRepository.findById(id);
-            double parsedSaleUnitPrice = Double.parseDouble(product.get().getSaleUnitPrice());
-            double parsedSaleUnitCost = Double.parseDouble(product.get().getSaleUnitCost());
             returnProduct.setId(product.get().getId());
             returnProduct.setName(product.get().getName());
             returnProduct.setCode(product.get().getCode());
@@ -133,7 +131,15 @@ public class ProductService {
             returnProduct.setMeasurePrice(product.get().getMeasurePrice());
             
             returnProduct.setSaleUnit(product.get().getSaleUnit());
+            double parsedSaleUnitCost = 0.0;
+            if (product.get().getSaleUnitCost() != null) {
+                parsedSaleUnitCost = Double.parseDouble(product.get().getSaleUnitCost());
+            }
             returnProduct.setSaleUnitCost(parsedSaleUnitCost);
+            double parsedSaleUnitPrice = 0.0;
+            if (product.get().getSaleUnitPrice() != null) {
+                parsedSaleUnitPrice = Double.parseDouble(product.get().getSaleUnitPrice());
+            }
             returnProduct.setSaleUnitPrice(parsedSaleUnitPrice);
             returnProduct.setMeasurePerSaleUnit(product.get().getMeasurePerSaleUnit());
             
