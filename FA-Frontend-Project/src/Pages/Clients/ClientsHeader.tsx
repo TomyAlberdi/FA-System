@@ -6,9 +6,17 @@ import { AddClient } from "@/Pages/Clients/AddClient";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
+import { CirclePlus, Search } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { useState } from "react";
 
 const formSchema = z.object({
   keyword: z.string(),
@@ -34,6 +42,8 @@ export const ClientsHeader = ({
     setFilters(data);
     form.reset();
   }
+
+  const [Open, setOpen] = useState(false);
 
   return (
     <section className="listHeader">
@@ -83,7 +93,25 @@ export const ClientsHeader = ({
           />
         </form>
       </Form>
-      <AddClient handleRefresh={handleRefresh} />
+      <Dialog open={Open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <Button className="text-lg">
+            <CirclePlus />
+            Nuevo Cliente
+          </Button>
+        </DialogTrigger>
+        <DialogContent
+          className="sm:max-w-[500px] w-full"
+          aria-describedby={undefined}
+        >
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold">
+              Añadir Cliente
+            </DialogTitle>
+          </DialogHeader>
+          <AddClient handleRefresh={handleRefresh} setOpen={setOpen} />
+        </DialogContent>
+      </Dialog>
     </section>
   );
 };

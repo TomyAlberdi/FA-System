@@ -1,12 +1,5 @@
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
   Form,
   FormControl,
   FormField,
@@ -21,7 +14,7 @@ import { useSalesContext } from "@/Context/UseSalesContext";
 import { useToast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { CirclePlus, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -41,11 +34,11 @@ const formSchema = z.object({
 });
 
 interface AddClientProps {
-  handleRefresh: () => void;
+  handleRefresh?: () => void;
+  setOpen: (value: boolean) => void;
 }
 
-export const AddClient = ({ handleRefresh }: AddClientProps) => {
-  const [Open, setOpen] = useState(false);
+export const AddClient = ({ handleRefresh, setOpen }: AddClientProps) => {
   const [LoadingRequest, setLoadingRequest] = useState(false);
   const { BASE_URL } = useSalesContext();
   const { getToken } = useKindeAuth();
@@ -105,134 +98,112 @@ export const AddClient = ({ handleRefresh }: AddClientProps) => {
     } finally {
       setOpen(false);
       setLoadingRequest(false);
-      handleRefresh();
+      if (handleRefresh) {
+        handleRefresh();
+      }
     }
   }
 
   return (
-    <Dialog open={Open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="text-lg">
-          <CirclePlus />
-          Nuevo Cliente
-        </Button>
-      </DialogTrigger>
-      <DialogContent
-        className="sm:max-w-[500px] w-full"
-        aria-describedby={undefined}
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="w-full grid grid-cols-2 grid-rows-5 gap-4"
       >
-        <DialogHeader>
-          <DialogTitle className="text-xl font-bold">
-            Añadir Cliente
-          </DialogTitle>
-        </DialogHeader>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="w-full grid grid-cols-2 grid-rows-5 gap-4"
-          >
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem className="col-start-1 row-start-1">
-                  <FormLabel>Nombre</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="address"
-              render={({ field }) => (
-                <FormItem className="col-start-1 row-start-2">
-                  <FormLabel>Dirección (Opcional)</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem className="col-start-2 row-start-1">
-                  <FormLabel>Teléfono (Opcional)</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem className="col-start-2 row-start-2">
-                  <FormLabel>Email (Opcional)</FormLabel>
-                  <FormControl>
-                    <Input type="email" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="cuitDni"
-              render={({ field }) => (
-                <FormItem className="col-start-1 row-start-3 col-span-2">
-                  <FormLabel>CUIT / DNI (Opcional)</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="type"
-              render={({ field }) => (
-                <FormItem className="col-start-1 row-start-4 col-span-2">
-                  <FormLabel>Tipo</FormLabel>
-                  <FormControl>
-                    <RadioGroup onValueChange={field.onChange}>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="A" id="A" />
-                        <Label htmlFor="A">
-                          Responsable Inscripto (Tipo A)
-                        </Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="B" id="B" />
-                        <Label htmlFor="B">Consumidor Final (Tipo B)</Label>
-                      </div>
-                    </RadioGroup>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="col-span-2 col-start-1 flex justify-center items-center">
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={LoadingRequest}
-              >
-                {LoadingRequest && <Loader2 className="animate-spin" />}
-                Guardar
-              </Button>
-            </div>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem className="col-start-1 row-start-1">
+              <FormLabel>Nombre</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="address"
+          render={({ field }) => (
+            <FormItem className="col-start-1 row-start-2">
+              <FormLabel>Dirección (Opcional)</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="phone"
+          render={({ field }) => (
+            <FormItem className="col-start-2 row-start-1">
+              <FormLabel>Teléfono (Opcional)</FormLabel>
+              <FormControl>
+                <Input type="number" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem className="col-start-2 row-start-2">
+              <FormLabel>Email (Opcional)</FormLabel>
+              <FormControl>
+                <Input type="email" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="cuitDni"
+          render={({ field }) => (
+            <FormItem className="col-start-1 row-start-3 col-span-2">
+              <FormLabel>CUIT / DNI (Opcional)</FormLabel>
+              <FormControl>
+                <Input type="number" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="type"
+          render={({ field }) => (
+            <FormItem className="col-start-1 row-start-4 col-span-2">
+              <FormLabel>Tipo</FormLabel>
+              <FormControl>
+                <RadioGroup onValueChange={field.onChange}>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="A" id="A" />
+                    <Label htmlFor="A">Responsable Inscripto (Tipo A)</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="B" id="B" />
+                    <Label htmlFor="B">Consumidor Final (Tipo B)</Label>
+                  </div>
+                </RadioGroup>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <div className="col-span-2 col-start-1 flex justify-center items-center">
+          <Button type="submit" className="w-full" disabled={LoadingRequest}>
+            {LoadingRequest && <Loader2 className="animate-spin" />}
+            Guardar
+          </Button>
+        </div>
+      </form>
+    </Form>
   );
 };
