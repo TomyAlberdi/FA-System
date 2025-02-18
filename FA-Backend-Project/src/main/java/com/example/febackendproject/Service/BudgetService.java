@@ -1,5 +1,6 @@
 package com.example.febackendproject.Service;
 
+import com.example.febackendproject.DTO.BudgetReportMonthDTO;
 import com.example.febackendproject.DTO.PartialBudgetDTO;
 import com.example.febackendproject.Entity.Budget;
 import com.example.febackendproject.Entity.ProductBudget;
@@ -9,9 +10,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -86,6 +87,55 @@ public class BudgetService {
             return Optional.empty();
         }
         return Optional.of(unavailableProducts);
+    }
+    
+    public List<PartialBudgetDTO> getLastBudgets() {
+        return budgetRepository.getLastBudgets();
+    }
+    
+    public List<BudgetReportMonthDTO> getReportBudget() {
+        List<Object[]> rawData = budgetRepository.getBudgetsByMonth();
+        Map<String, BudgetReportMonthDTO> reportMap = new LinkedHashMap<>();
+        
+        Locale spanishLocale = new Locale("es", "ES");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM", spanishLocale);
+        
+        LocalDate now = LocalDate.now();
+        for (int i = 0; i < 6; i++) {
+            String month = now.minusMonths(i).format(formatter);
+            reportMap.put(month, new BudgetReportMonthDTO(month, 0, 0, 0, 0, 0));
+        }
+        
+        for (Object[] record : rawData) {
+            String rawMonth = (String) record[0];
+            Byte status = (Byte) record[1];
+            Integer total = ((Number) record[2]).intValue();
+            
+            YearMonth yearMonth = YearMonth.parse(rawMonth, DateTimeFormatter.ofPattern("yyyy-MM"));
+            String month = yearMonth.format(formatter);
+            
+            BudgetReportMonthDTO report = reportMap.get(month);
+            if (report != null) {
+                switch (status) {
+                    case 0:
+                        report.setPENDIENTE(total);
+                        break;
+                    case 1:
+                        report.setPAGO(total);
+                        break;
+                    case 2:
+                        report.setENVIADO(total);
+                        break;
+                    case 3:
+                        report.setENTREGADO(total);
+                        break;
+                    case 4:
+                        report.setCANCELADO(total);
+                        break;
+                }
+            }
+        }
+        return new ArrayList<>(reportMap.values());
     }
     
 }

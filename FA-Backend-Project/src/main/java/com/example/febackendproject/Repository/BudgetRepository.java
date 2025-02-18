@@ -14,10 +14,10 @@ import java.util.List;
 
 @Repository
 public interface BudgetRepository extends JpaRepository<Budget, Long> {
-
+    
     @Query("SELECT new com.example.febackendproject.DTO.PartialBudgetDTO(b.id, b.clientName, b.date, b.status, b.finalAmount) FROM Budget b WHERE b.clientId = ?1")
     List<PartialBudgetDTO> findByClientId(Long clientId);
-
+    
     @Query("SELECT new com.example.febackendproject.DTO.PartialBudgetDTO(b.id, b.clientName, b.date, b.status, b.finalAmount) FROM Budget b WHERE DATE(b.date) = :date")
     List<PartialBudgetDTO> findByDate(LocalDate date);
     
@@ -33,5 +33,20 @@ public interface BudgetRepository extends JpaRepository<Budget, Long> {
     @Transactional
     @Query("UPDATE Budget SET stockDecreased = true WHERE id = ?1")
     void updateStockDecreased(Long id);
-
+    
+    @Query("SELECT new com.example.febackendproject.DTO.PartialBudgetDTO(b.id, b.clientName, b.date, b.status, b.finalAmount) FROM Budget b ORDER BY b.date DESC LIMIT 12")
+    List<PartialBudgetDTO> getLastBudgets();
+    
+    @Query(value = """
+                SELECT
+                    DATE_FORMAT(date, '%Y-%m') AS month,
+                    status,
+                    COUNT(status) as status
+                FROM budget
+                WHERE date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+                GROUP BY month, budget.status
+                ORDER BY month DESC
+            """, nativeQuery = true)
+    List<Object[]> getBudgetsByMonth();
+    
 }

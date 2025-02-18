@@ -70,7 +70,7 @@ public class BudgetController {
 
     @PostMapping
     public ResponseEntity<Budget> createBudget(@RequestBody @Valid Budget budget) {
-        if (clientService.existsById(budget.getClientId())) {
+        if (clientService.existsById(b udget.getClientId())) {
             return ResponseEntity.ok(budgetService.save(budget));
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -85,6 +85,16 @@ public class BudgetController {
     public ResponseEntity<Void> deleteBudget(@PathVariable Long id) {
         budgetService.delete(id);
         return ResponseEntity.ok().build();
+    }
+    
+    @GetMapping("/lastBudgets")
+    public ResponseEntity<List<PartialBudgetDTO>> getLastBudgets() {
+        return ResponseEntity.ok(budgetService.getLastBudgets());
+    }
+    
+    @GetMapping("/report")
+    public ResponseEntity<?> getReportBudgets() {
+        return ResponseEntity.ok(budgetService.getReportBudget());
     }
 
 }

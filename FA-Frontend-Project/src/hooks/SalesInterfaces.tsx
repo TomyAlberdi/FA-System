@@ -58,3 +58,12 @@ export interface CompleteBudget extends PartialBudget {
   products: Array<ProductBudget>;
   stockDecreased: boolean;
 }
+
+export interface BudgetReport {
+  month: string;
+  PENDIENTE: number;
+  PAGO: number;
+  ENVIADO: number;
+  ENTREGADO: number;
+  CANCELADO: number;
+}
