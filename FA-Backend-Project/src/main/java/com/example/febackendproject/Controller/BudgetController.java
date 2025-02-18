@@ -70,7 +70,7 @@ public class BudgetController {
 
     @PostMapping
     public ResponseEntity<Budget> createBudget(@RequestBody @Valid Budget budget) {
-        if (clientService.existsById(b udget.getClientId())) {
+        if (clientService.existsById(budget.getClientId())) {
             return ResponseEntity.ok(budgetService.save(budget));
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
