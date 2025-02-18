@@ -24,6 +24,7 @@ import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { CirclePlus, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 
 const formSchema = z.object({
@@ -49,6 +50,7 @@ export const AddClient = ({ handleRefresh }: AddClientProps) => {
   const { BASE_URL } = useSalesContext();
   const { getToken } = useKindeAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -91,6 +93,8 @@ export const AddClient = ({ handleRefresh }: AddClientProps) => {
         title: "Cliente creado",
         description: "El cliente ha sido creado con éxito",
       });
+      const responseData = await response.json();
+      navigate(`/sales/clients/${responseData.id}`);
     } catch (error) {
       console.error("Error: ", error);
       toast({
@@ -160,10 +164,7 @@ export const AddClient = ({ handleRefresh }: AddClientProps) => {
                 <FormItem className="col-start-2 row-start-1">
                   <FormLabel>Teléfono (Opcional)</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
-                      {...field}
-                    />
+                    <Input type="number" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -176,10 +177,7 @@ export const AddClient = ({ handleRefresh }: AddClientProps) => {
                 <FormItem className="col-start-2 row-start-2">
                   <FormLabel>Email (Opcional)</FormLabel>
                   <FormControl>
-                    <Input
-                      type="email"
-                      {...field}
-                    />
+                    <Input type="email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -192,10 +190,7 @@ export const AddClient = ({ handleRefresh }: AddClientProps) => {
                 <FormItem className="col-start-1 row-start-3 col-span-2">
                   <FormLabel>CUIT / DNI (Opcional)</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
-                      {...field}
-                    />
+                    <Input type="number" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

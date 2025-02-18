@@ -15,6 +15,7 @@ import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 
 const formSchema = z.object({
@@ -32,8 +33,8 @@ export const AddCategory: React.FC<CategoriesHeaderProps> = ({ setOpen }) => {
 
   const { BASE_URL, fetchCategories } = useCatalogContext();
   const { getToken } = useKindeAuth();
-
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -71,6 +72,8 @@ export const AddCategory: React.FC<CategoriesHeaderProps> = ({ setOpen }) => {
         description: "La categoría ha sido creada con éxito",
       });
       fetchCategories();
+      const responseData = await response.json();
+      navigate(`/catalog/categories/${responseData.id}`);
     } catch (error) {
       console.error("Error: ", error);
       toast({

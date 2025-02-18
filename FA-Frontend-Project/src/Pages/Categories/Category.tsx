@@ -162,6 +162,8 @@ const Category = () => {
           title: "Subcategoría creada",
           description: "La subcategoría ha sido creada con éxito",
         });
+        const responseData = await response.json();
+        navigate(`/catalog/subcategory/${responseData.id}`);
       } catch (error) {
         console.error("Error: ", error);
         toast({
