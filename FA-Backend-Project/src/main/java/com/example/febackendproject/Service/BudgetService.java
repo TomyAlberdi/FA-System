@@ -63,14 +63,14 @@ public class BudgetService {
         return budgetRepository.findByDateBetween(start, end);
     }
     
-    public Optional<List<String>> updateStatus(Budget.Status status, Long id) {
-        List<String> unavailableProducts = new ArrayList<>();
-        Optional<Budget> budget = budgetRepository.findById(id);
-        List<ProductBudget> budgetProducts = new ArrayList<>();
-        if (budget.isPresent()) {
-            budgetProducts = budget.get().getProducts();
+    public Optional<List<String>> updateStatus(Budget budget, Budget.Status status) {
+        if (budget.getStockDecreased()) {
+            budgetRepository.updateStatus(status, budget.getId());
+            return Optional.empty();
         }
-        if (budget.isPresent() && !budget.get().getStockDecreased() && (status.equals(Budget.Status.PAGO) || status.equals(Budget.Status.ENVIADO) || status.equals(Budget.Status.ENTREGADO))) {
+        List<String> unavailableProducts = new ArrayList<>();
+        List<ProductBudget> budgetProducts = budget.getProducts();
+        if ((status.equals(Budget.Status.PAGO) || status.equals(Budget.Status.ENVIADO) || status.equals(Budget.Status.ENTREGADO))) {
             budgetProducts.forEach(product -> {
                 Integer stockAvailable = stockRepository.getQuantityByProductId(product.getId());
                 if (stockAvailable < product.getSaleUnitQuantity()) {
@@ -82,8 +82,8 @@ public class BudgetService {
             budgetProducts.forEach(product -> {
                 stockService.decreaseStockById(product.getId(), product.getSaleUnitQuantity());
             });
-            budgetRepository.updateStatus(status, id);
-            budgetRepository.updateStockDecreased(id);
+            budgetRepository.updateStatus(status, budget.getId());
+            budgetRepository.updateStockDecreased(budget.getId());
             return Optional.empty();
         }
         return Optional.of(unavailableProducts);
