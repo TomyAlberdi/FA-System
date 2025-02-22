@@ -35,8 +35,9 @@ public class BudgetController {
             @PathVariable Long id,
             @RequestParam(value = "status") Budget.Status status
     ) {
-        if (budgetService.existsById(id)) {
-            Optional<List<String>> unavailableProducts = budgetService.updateStatus(status, id);
+        Optional<Budget> budget = budgetService.getById(id);
+        if (budget.isPresent()) {
+            Optional<List<String>> unavailableProducts = budgetService.updateStatus(budget.get(), status);
             if (unavailableProducts.isPresent() && !unavailableProducts.get().isEmpty()) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body(unavailableProducts);
             } else {
@@ -85,6 +86,16 @@ public class BudgetController {
     public ResponseEntity<Void> deleteBudget(@PathVariable Long id) {
         budgetService.delete(id);
         return ResponseEntity.ok().build();
+    }
+    
+    @GetMapping("/lastBudgets")
+    public ResponseEntity<List<PartialBudgetDTO>> getLastBudgets() {
+        return ResponseEntity.ok(budgetService.getLastBudgets());
+    }
+    
+    @GetMapping("/report")
+    public ResponseEntity<?> getReportBudgets() {
+        return ResponseEntity.ok(budgetService.getReportBudget());
     }
 
 }

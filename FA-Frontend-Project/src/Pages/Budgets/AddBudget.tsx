@@ -29,11 +29,13 @@ import { CardProduct } from "@/hooks/CatalogInterfaces";
 import { FloatingClientPagination } from "@/Pages/Budgets/FloatingClientPagination";
 import { useSalesContext } from "@/Context/UseSalesContext";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import { useNavigate } from "react-router-dom";
 
 export const AddBudget = () => {
   const { BASE_URL } = useSalesContext();
   const { getToken } = useKindeAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const BUDGET_STORAGE_KEY = "currentBudget";
 
   // budget logic
@@ -102,7 +104,6 @@ export const AddBudget = () => {
         products: Budget.products,
         finalAmount: FinalAmount,
       });
-      console.log(JSON.parse(body));
       const response = await fetch(`${BASE_URL}/budget`, {
         method: "POST",
         headers: {
@@ -125,6 +126,8 @@ export const AddBudget = () => {
         description: "El presupuesto se ha creado correctamente.",
       });
       clearBudget();
+      const responseData = await response.json();
+      navigate(`/sales/budgets/${responseData.id}`);
     } catch (error) {
       console.error("Error submitting budget: ", error);
       toast({

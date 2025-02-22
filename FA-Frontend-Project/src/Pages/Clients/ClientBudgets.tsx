@@ -46,7 +46,7 @@ export const ClientBudgets = () => {
           <AlertCircle className="w-5 pt-1" />
           <AlertTitle className="text-xl">Vacío</AlertTitle>
           <AlertDescription className="text-lg">
-            El presupuesto no tiene productos asociados.
+            El cliente no tiene presupuestos asociados.
           </AlertDescription>
         </Alert>
       ) : (

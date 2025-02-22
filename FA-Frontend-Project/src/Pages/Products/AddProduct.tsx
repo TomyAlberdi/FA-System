@@ -239,7 +239,8 @@ export const AddProduct = () => {
       fetchProviders();
       fetchMeasures();
       fetchPrices();
-      navigate(-1);
+      const responseData = await response.json();
+      navigate(`/catalog/products/${responseData.id}`);
     } catch (error) {
       console.error("Error creando el producto: ", error);
       toast({
