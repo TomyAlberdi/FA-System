@@ -22,7 +22,7 @@ import {
   ProductBudget,
 } from "@/hooks/SalesInterfaces";
 import { useToast } from "@/hooks/use-toast";
-import { AlertCircle, Ban, CirclePlus, Loader2 } from "lucide-react";
+import { AlertCircle, Ban, CirclePlus, Loader2, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { FloatingProductPagination } from "@/Pages/Budgets/FloatingProductPagination";
 import { CardProduct } from "@/hooks/CatalogInterfaces";
@@ -196,6 +196,15 @@ export const AddBudget = () => {
     setFinalAmount(Math.round(total * 100) / 100);
   }, [Budget]);
 
+  const removeProductFromBudget = (product: ProductBudget) => {
+    setBudget({
+      ...Budget,
+      products: Budget.products.filter(
+        (budgetProduct) => budgetProduct.id !== product.id
+      ),
+    });
+  };
+
   return (
     <div>
       <h1 className="sectionTitle">Crear Presupuesto</h1>
@@ -314,10 +323,11 @@ export const AddBudget = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-3/12">Cantidad solicitada</TableHead>
-                  <TableHead className="w-3/12">Cantidad de unidades</TableHead>
+                  <TableHead className="w-2/12">Cantidad de unidades</TableHead>
                   <TableHead className="w-3/12">Nombre</TableHead>
                   <TableHead className="w-2/12">Precio unitario</TableHead>
                   <TableHead className="w-1/12">Subtotal</TableHead>
+                  <TableHead className="w-1/12"></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -341,6 +351,13 @@ export const AddBudget = () => {
                               Number.EPSILON) *
                               100
                           ) / 100}
+                        </TableCell>
+                        <TableCell>
+                          <Button
+                            onClick={() => removeProductFromBudget(product)}
+                          >
+                            <Trash2 className="bigger-icon" color="red" />
+                          </Button>
                         </TableCell>
                       </TableRow>
                     );
