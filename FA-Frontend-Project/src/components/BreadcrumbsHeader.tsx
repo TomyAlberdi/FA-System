@@ -1,8 +1,10 @@
 import {
   Breadcrumb,
-  BreadcrumbItem, BreadcrumbList,
-  BreadcrumbSeparator
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import React from "react";
 import { useLocation } from "react-router-dom";
 
 const breadcrumbsHandles = [
@@ -52,10 +54,12 @@ export const BreadcrumbsHeader = () => {
     <Breadcrumb>
       <BreadcrumbList>
         {breadcrumbs.map((crumb, index) => (
-          <BreadcrumbItem key={index} className="select-none">
-            {crumb.label}
+          <React.Fragment key={index}>
+            <BreadcrumbItem className="select-none">
+              {crumb.label}
+            </BreadcrumbItem>
             {index < breadcrumbs.length - 1 && <BreadcrumbSeparator />}
-          </BreadcrumbItem>
+          </React.Fragment>
         ))}
       </BreadcrumbList>
     </Breadcrumb>
