@@ -244,11 +244,19 @@ export const Budget = () => {
                   <TableCell>{product.discountPercentage}%</TableCell>
                   <TableCell>
                     ${" "}
-                    {Math.round(
-                      (product.saleUnitQuantity * product.saleUnitPrice +
-                        Number.EPSILON) *
-                        100
-                    ) / 100}
+                    {product.discountPercentage === 0
+                      ? Math.round(
+                          (product.saleUnitQuantity * product.saleUnitPrice +
+                            Number.EPSILON) *
+                            100
+                        ) / 100
+                      : Math.round(
+                          (product.saleUnitQuantity *
+                            product.saleUnitPrice *
+                            (1 - product.discountPercentage / 100) +
+                            Number.EPSILON) *
+                            100
+                        ) / 100}
                   </TableCell>
                 </TableRow>
               );

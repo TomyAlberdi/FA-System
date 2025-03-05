@@ -103,7 +103,7 @@ export const AddBudget = () => {
         clientName: Budget.client.name,
         status: BudgetStatus.PENDIENTE,
         products: Budget.products,
-        discount: Discount[0],
+        discount: Discount[0] ?? 0,
         finalAmount: FinalAmount,
       });
       const response = await fetch(`${BASE_URL}/budget`, {
