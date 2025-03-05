@@ -35,6 +35,8 @@ public class Budget {
     private String clientName;
 
     private Status status;
+    
+    private Integer discount;
 
     @ElementCollection
     @CollectionTable(name = "budget_products", joinColumns = @JoinColumn(name = "budget_id"))

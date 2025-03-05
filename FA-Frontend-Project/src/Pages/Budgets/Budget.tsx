@@ -193,6 +193,10 @@ export const Budget = () => {
             </Dialog>
           </div>
           <div className="flex flex-col gap-2">
+            <span className="text-lg">Descuento:</span>
+            <span className="text-2xl">{Budget?.discount}%</span>
+          </div>
+          <div className="flex flex-col gap-2">
             <span className="text-lg">Monto final:</span>
             <span className="text-2xl">$ {Budget?.finalAmount}</span>
           </div>
@@ -235,7 +239,7 @@ export const Budget = () => {
                   <TableCell className="font-medium">
                     {product.saleUnitQuantity} {product.productSaleUnit}
                   </TableCell>
-                  <TableCell>Nopmbre larguísimo para probar un nombre de propducto muy largo</TableCell>
+                  <TableCell>{product.productName}</TableCell>
                   <TableCell>$ {product.productMeasurePrice}</TableCell>
                   <TableCell>{product.discountPercentage}%</TableCell>
                   <TableCell>

@@ -39,6 +39,7 @@ export interface PartialBudget {
   status: BudgetStatus;
   finalAmount: number;
   date: string;
+  discount: number;
 }
 
 export interface ProductBudget {

@@ -30,6 +30,7 @@ import { FloatingClientPagination } from "@/Pages/Budgets/FloatingClientPaginati
 import { useSalesContext } from "@/Context/UseSalesContext";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useNavigate } from "react-router-dom";
+import { Slider } from "@/components/ui/slider";
 
 export const AddBudget = () => {
   const { BASE_URL } = useSalesContext();
@@ -102,6 +103,7 @@ export const AddBudget = () => {
         clientName: Budget.client.name,
         status: BudgetStatus.PENDIENTE,
         products: Budget.products,
+        discount: Discount[0],
         finalAmount: FinalAmount,
       });
       const response = await fetch(`${BASE_URL}/budget`, {
@@ -188,6 +190,7 @@ export const AddBudget = () => {
   ).padStart(2, "0")}`;
   // Final Amount calculation
   const [FinalAmount, setFinalAmount] = useState(0);
+  const [Discount, setDiscount] = useState<Array<number>>([0]);
   useEffect(() => {
     let total = 0;
     Budget?.products?.forEach((product: ProductBudget) => {
@@ -195,8 +198,15 @@ export const AddBudget = () => {
         total += product.subtotal;
       }
     });
-    setFinalAmount(Math.round(total * 100) / 100);
-  }, [Budget]);
+    if (Discount[0] === 0) {
+      setFinalAmount(Math.round(total * 100) / 100);
+      return;
+    }
+    const discountedFinalAmount =
+      Math.round((total * (1 - Discount[0] / 100) + Number.EPSILON) * 100) /
+      100;
+    setFinalAmount(discountedFinalAmount);
+  }, [Budget, Discount]);
 
   const removeProductFromBudget = (product: ProductBudget) => {
     setBudget({
@@ -242,30 +252,43 @@ export const AddBudget = () => {
                 </DialogContent>
               </Dialog>
             </div>
-            <section className="flex flex-row justify-evenly align-center w-3/6">
-              <div className="flex flex-col align-center justify-center">
-                <Label className="text-lg">Fecha de emisión:</Label>
-                <span className="text-3xl font-semibold">
-                  {new Date(formattedDate).toLocaleDateString("es-ES", {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    second: "2-digit",
-                  })}
-                </span>
+            <section className="flex flex-row justify-evenly align-center w-4/6">
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col align-center justify-center">
+                  <Label className="text-lg">Fecha de emisión:</Label>
+                  <span className="text-3xl font-semibold">
+                    {new Date(formattedDate).toLocaleDateString("es-ES", {
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      second: "2-digit",
+                    })}
+                  </span>
+                </div>
+                <div className="flex flex-col align-center justify-center">
+                  <Label className="text-lg">Descuento: {Discount[0]}%</Label>
+                  <Slider
+                    className="my-4"
+                    min={0}
+                    max={100}
+                    step={1}
+                    onValueChange={(value) => setDiscount(value)}
+                  />
+                </div>
               </div>
+
               <div className="flex flex-col align-center justify-center">
                 <Label className="text-lg">Monto final:</Label>
                 <span className="text-3xl font-semibold">$ {FinalAmount}</span>
               </div>
             </section>
-            <section className="w-2/6 flex flex-col justify-evenly gap-4">
+            <section className="w-1/6 flex flex-col justify-evenly gap-4">
               <div>
                 <Button
                   type="submit"
-                  className="w-1/2"
+                  className="w-full"
                   disabled={LoadingRequest}
                   onClick={submitBudget}
                 >
@@ -275,7 +298,7 @@ export const AddBudget = () => {
               </div>
               <div>
                 <Button
-                  className="w-1/2"
+                  className="w-full"
                   onClick={clearBudget}
                   variant="destructive"
                 >
@@ -350,11 +373,20 @@ export const AddBudget = () => {
                         <TableCell>{product.discountPercentage}%</TableCell>
                         <TableCell>
                           ${" "}
-                          {Math.round(
-                            (product.saleUnitQuantity * product.saleUnitPrice +
-                              Number.EPSILON) *
-                              100
-                          ) / 100}
+                          {product.discountPercentage === 0
+                            ? Math.round(
+                                (product.saleUnitQuantity *
+                                  product.saleUnitPrice +
+                                  Number.EPSILON) *
+                                  100
+                              ) / 100
+                            : Math.round(
+                                (product.saleUnitQuantity *
+                                  product.saleUnitPrice *
+                                  (1 - product.discountPercentage / 100) +
+                                  Number.EPSILON) *
+                                  100
+                              ) / 100}
                         </TableCell>
                         <TableCell>
                           <Button
