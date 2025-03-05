@@ -18,6 +18,7 @@ public class ProductBudget {
     private Double productMeasurePrice;
     private Double measureUnitQuantity;
     private Integer saleUnitQuantity;
+    private Integer discount;
     private Double subtotal;
     private String productSaleUnit;
     private String productMeasureUnit;

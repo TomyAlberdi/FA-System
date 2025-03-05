@@ -156,6 +156,7 @@ export const AddBudget = () => {
     product: CardProduct,
     measureUnitQuantity: number,
     saleUnitQuantity: number,
+    discountPercentage: number,
     subtotal: number
   ) => {
     const newBudgetProduct = {
@@ -164,6 +165,7 @@ export const AddBudget = () => {
       productMeasurePrice: product.measurePrice,
       measureUnitQuantity: measureUnitQuantity,
       saleUnitQuantity: saleUnitQuantity,
+      discountPercentage: discountPercentage,
       subtotal: subtotal,
       productSaleUnit: product.saleUnit,
       productMeasureUnit: product.measureType,
@@ -322,10 +324,11 @@ export const AddBudget = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-3/12">Cantidad solicitada</TableHead>
+                  <TableHead className="w-2/12">Cantidad solicitada</TableHead>
                   <TableHead className="w-2/12">Cantidad de unidades</TableHead>
                   <TableHead className="w-3/12">Nombre</TableHead>
                   <TableHead className="w-2/12">Precio unitario</TableHead>
+                  <TableHead className="w-1/12">Descuento</TableHead>
                   <TableHead className="w-1/12">Subtotal</TableHead>
                   <TableHead className="w-1/12"></TableHead>
                 </TableRow>
@@ -344,6 +347,7 @@ export const AddBudget = () => {
                         </TableCell>
                         <TableCell>{product.productName}</TableCell>
                         <TableCell>$ {product.productMeasurePrice}</TableCell>
+                        <TableCell>{product.discountPercentage}%</TableCell>
                         <TableCell>
                           ${" "}
                           {Math.round(

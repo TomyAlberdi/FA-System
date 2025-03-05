@@ -47,6 +47,7 @@ export interface ProductBudget {
   productMeasurePrice: number;
   measureUnitQuantity: number;
   saleUnitQuantity: number;
+  discountPercentage: number;
   subtotal: number;
   productSaleUnit: string;
   productMeasureUnit: string;
