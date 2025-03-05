@@ -115,6 +115,10 @@ export const DownloadBudgetDetail = ({
       startY
     );
     startY += 10;
+    if (budget?.discount && budget?.discount > 0) {
+      doc.text(`Descuento: ${budget?.discount}%`, rightAlignX, startY);
+      startY += 5;
+    }
     doc.text(`Importe Final: $ ${budget?.finalAmount}`, rightAlignX, startY);
     doc.text("Per./Ret. Ingresos Brutos: $ 0,00", rightAlignX, startY + 5);
     doc.text(
