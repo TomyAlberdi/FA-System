@@ -215,8 +215,9 @@ export const Budget = () => {
             <TableRow>
               <TableHead className="w-2/12">Cantidad solicitada</TableHead>
               <TableHead className="w-3/12">Cantidad de unidades</TableHead>
-              <TableHead className="w-3/12">Nombre</TableHead>
+              <TableHead className="w-2/12">Nombre</TableHead>
               <TableHead className="w-2/12">Precio unitario</TableHead>
+              <TableHead className="w-1/12">Descuento</TableHead>
               <TableHead className="w-2/12">Subtotal</TableHead>
             </TableRow>
           </TableHeader>
@@ -234,8 +235,9 @@ export const Budget = () => {
                   <TableCell className="font-medium">
                     {product.saleUnitQuantity} {product.productSaleUnit}
                   </TableCell>
-                  <TableCell>{product.productName}</TableCell>
+                  <TableCell>Nopmbre larguísimo para probar un nombre de propducto muy largo</TableCell>
                   <TableCell>$ {product.productMeasurePrice}</TableCell>
+                  <TableCell>{product.discountPercentage}%</TableCell>
                   <TableCell>
                     ${" "}
                     {Math.round(
