@@ -1,0 +1,134 @@
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { TabsContent } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { useCatalogContext } from "@/Context/UseCatalogContext";
+import {
+  Category,
+  CreateProductDTO,
+  Provider,
+  Subcategory,
+} from "@/hooks/CatalogInterfaces";
+import { ArrowRight } from "lucide-react";
+import { useEffect, useState } from "react";
+
+interface BasicDataTabProps {
+  onNext: () => void;
+  Product: CreateProductDTO;
+  setProduct: React.Dispatch<React.SetStateAction<CreateProductDTO>>;
+}
+
+const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
+  const { fetchSubcategoriesByCategoryId, Providers, Categories } =
+    useCatalogContext();
+
+  const [Subcategories, setSubcategories] = useState<Array<Subcategory>>([]);
+
+  useEffect(() => {
+    const selectedCategoryId = Product?.categoryId;
+    if (selectedCategoryId) {
+      fetchSubcategoriesByCategoryId(selectedCategoryId).then((result) =>
+        setSubcategories(result ?? [])
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [Product?.categoryId]);
+
+  return (
+    <TabsContent
+      value="basicData"
+      className="h-[91%] w-full grid grid-cols-4 grid-rows-9 gap-2"
+    >
+      <Input
+        placeholder="Nombre del producto"
+        className="row-start-1 col-span-2 h-full"
+      />
+      <Input placeholder="Código" className="row-start-1 col-start-3 h-full" />
+      <Input
+        placeholder="Calidad (Opcional)"
+        className="row-start-1 col-start-4 h-full"
+      />
+      <Textarea
+        placeholder="Descripción"
+        className="row-start-2 row-end-6 col-span-4"
+      />
+      <Select
+        disabled={Providers?.Loading}
+        onValueChange={(value) =>
+          setProduct((prev) => ({ ...prev, providerId: Number(value) }))
+        }
+      >
+        <SelectTrigger className="row-start-6 col-span-4 h-full">
+          <SelectValue placeholder="Proveedor" />
+        </SelectTrigger>
+        <SelectContent>
+          {Array.isArray(Providers?.data) &&
+            (Providers?.data as Provider[]).map(
+              (provider: Provider, index: number) => {
+                return (
+                  <SelectItem value={provider.id.toString()} key={index}>
+                    {provider.name}
+                  </SelectItem>
+                );
+              }
+            )}
+        </SelectContent>
+      </Select>
+      <Select
+        disabled={Categories?.Loading}
+        onValueChange={(value) =>
+          setProduct((prev) => ({ ...prev, categoryId: Number(value) }))
+        }
+      >
+        <SelectTrigger className="row-start-7 col-span-4 h-full">
+          <SelectValue placeholder="Categoría" />
+        </SelectTrigger>
+        <SelectContent>
+          {Array.isArray(Categories?.data) &&
+            (Categories?.data as Category[]).map(
+              (category: Category, index: number) => {
+                return (
+                  <SelectItem value={category.id.toString()} key={index}>
+                    {category.name}
+                  </SelectItem>
+                );
+              }
+            )}
+        </SelectContent>
+      </Select>
+      <Select
+        disabled={Subcategories?.length === 0}
+        onValueChange={(value) =>
+          setProduct((prev) => ({ ...prev, subcategoryId: Number(value) }))
+        }
+      >
+        <SelectTrigger className="row-start-8 col-span-4 h-full">
+          <SelectValue placeholder="Subcategoría" />
+        </SelectTrigger>
+        <SelectContent>
+          {Subcategories?.map((subcategory: Subcategory, index: number) => {
+            return (
+              <SelectItem value={subcategory.id.toString()} key={index}>
+                {subcategory.name}
+              </SelectItem>
+            );
+          })}
+        </SelectContent>
+      </Select>
+      <div className="row-start-9 col-span-4 flex flex-row justify-center items-end">
+        <Button onClick={onNext} className="gap-2 w-1/4">
+          Siguiente
+          <ArrowRight size={16} />
+        </Button>
+      </div>
+    </TabsContent>
+  );
+};
+export default BasicDataTab;

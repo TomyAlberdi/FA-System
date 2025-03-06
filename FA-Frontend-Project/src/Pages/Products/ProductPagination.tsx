@@ -32,6 +32,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import CreateProduct from "@/Pages/Products/CreateProduct/CreateProduct";
 
 interface ProductPaginationProps {
   Products: Array<CardProduct>;
@@ -137,12 +138,13 @@ export const ProductPagination: React.FC<ProductPaginationProps> = ({
             </Button>
           </form>
         </Form>
-        <Link to={"/catalog/products/add"}>
+        {/*         <Link to={"/catalog/products/add"}>
           <Button className="text-lg w-[19.2%] max-w-[300px] min-w-[200px]">
             <CirclePlus />
             Nuevo Producto
           </Button>
-        </Link>
+        </Link> */}
+        <CreateProduct />
       </section>
       <section className="listBody">
         {Loading ? (
