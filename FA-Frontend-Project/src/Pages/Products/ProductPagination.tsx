@@ -21,9 +21,8 @@ import {
   FilterData,
   PaginationInfo,
 } from "@/hooks/CatalogInterfaces";
-import { AlertCircle, CirclePlus, Search } from "lucide-react";
+import { AlertCircle, Search } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { ProductCard } from "@/Pages/Products/ProductCard";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { RefreshCcw } from "lucide-react";
