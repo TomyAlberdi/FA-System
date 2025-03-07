@@ -16,7 +16,7 @@ import {
   Provider,
   Subcategory,
 } from "@/hooks/CatalogInterfaces";
-import { ArrowRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface BasicDataTabProps {
@@ -41,6 +41,27 @@ const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [Product?.categoryId]);
 
+  const [DisableNext, setDisableNext] = useState(true);
+  useEffect(() => {
+    if (
+      Product?.name &&
+      Product?.code &&
+      Product?.providerId &&
+      Product?.categoryId &&
+      Product?.subcategoryId
+    ) {
+      setDisableNext(false);
+    } else {
+      setDisableNext(true);
+    }
+  }, [
+    Product?.name,
+    Product?.code,
+    Product?.providerId,
+    Product?.categoryId,
+    Product?.subcategoryId,
+  ]);
+
   return (
     <TabsContent
       value="basicData"
@@ -49,15 +70,31 @@ const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
       <Input
         placeholder="Nombre del producto"
         className="row-start-1 col-span-2 h-full"
+        onChange={(e) =>
+          setProduct((prev) => ({ ...prev, name: e.target.value }))
+        }
       />
-      <Input placeholder="Código" className="row-start-1 col-start-3 h-full" />
+      <Input
+        placeholder="Código"
+        className="row-start-1 col-start-3 h-full"
+        type="number"
+        onChange={(e) =>
+          setProduct((prev) => ({ ...prev, code: e.target.value }))
+        }
+      />
       <Input
         placeholder="Calidad (Opcional)"
         className="row-start-1 col-start-4 h-full"
+        onChange={(e) =>
+          setProduct((prev) => ({ ...prev, quality: e.target.value }))
+        }
       />
       <Textarea
         placeholder="Descripción"
         className="row-start-2 row-end-6 col-span-4"
+        onChange={(e) =>
+          setProduct((prev) => ({ ...prev, description: e.target.value }))
+        }
       />
       <Select
         disabled={Providers?.Loading}
@@ -123,9 +160,9 @@ const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
         </SelectContent>
       </Select>
       <div className="row-start-9 col-span-4 flex flex-row justify-center items-center">
-        <Button onClick={onNext} className="gap-2 w-1/4">
+        <Button onClick={onNext} className="gap-2 w-1/4" disabled={DisableNext}>
           Siguiente
-          <ArrowRight size={16} />
+          <ChevronRight size={16} />
         </Button>
       </div>
     </TabsContent>
