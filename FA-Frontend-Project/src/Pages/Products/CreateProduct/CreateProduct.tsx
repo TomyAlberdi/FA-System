@@ -51,16 +51,20 @@ const CreateProduct = ({ ProductProp }: { ProductProp?: CreateProductDTO }) => {
   useEffect(() => {
     switch (currentTab) {
       case "basicData":
-        setProgress(33);
+        setProgress(0);
         break;
       case "saleData":
-        setProgress(66);
+        setProgress(33);
         break;
       case "extraData":
-        setProgress(100);
+        setProgress(66);
         break;
     }
   }, [currentTab]);
+
+  const completeProgress = () => {
+    setProgress(100);
+  };
 
   const handleNextTab = () => {
     switch (currentTab) {
@@ -114,6 +118,7 @@ const CreateProduct = ({ ProductProp }: { ProductProp?: CreateProductDTO }) => {
             setProduct={setProduct}
           />
           <SaleDataTab
+            onPrevious={handlePreviousTab}
             onNext={handleNextTab}
             Product={Product}
             setProduct={setProduct}
