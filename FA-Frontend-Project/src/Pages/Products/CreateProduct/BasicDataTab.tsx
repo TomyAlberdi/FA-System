@@ -44,7 +44,7 @@ const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
   return (
     <TabsContent
       value="basicData"
-      className="h-[91%] w-full grid grid-cols-4 grid-rows-9 gap-2"
+      className="h-full w-full grid grid-cols-4 grid-rows-9 gap-2"
     >
       <Input
         placeholder="Nombre del producto"
@@ -122,7 +122,7 @@ const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
           })}
         </SelectContent>
       </Select>
-      <div className="row-start-9 col-span-4 flex flex-row justify-center items-end">
+      <div className="row-start-9 col-span-4 flex flex-row justify-center items-center">
         <Button onClick={onNext} className="gap-2 w-1/4">
           Siguiente
           <ArrowRight size={16} />

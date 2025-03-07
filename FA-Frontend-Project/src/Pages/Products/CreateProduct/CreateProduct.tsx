@@ -5,13 +5,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs } from "@/components/ui/tabs";
 import { CirclePlus } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BasicDataTab from "@/Pages/Products/CreateProduct/BasicDataTab";
 import SaleDataTab from "@/Pages/Products/CreateProduct/SaleDataTab";
 import ExtraDataTab from "@/Pages/Products/CreateProduct/ExtraDataTab";
 import { CreateProductDTO } from "@/hooks/CatalogInterfaces";
+import { Progress } from "@/components/ui/progress";
 
 const CreateProduct = () => {
   const [Product, setProduct] = useState<CreateProductDTO>({
@@ -43,6 +44,22 @@ const CreateProduct = () => {
   // Tabs management
   const [currentTab, setCurrentTab] = useState("basicData");
   const tabs = ["basicData", "saleData", "extraData"];
+  const [progress, setProgress] = useState(33)
+
+  useEffect(() => {
+    switch (currentTab) {
+      case "basicData":
+        setProgress(33);
+        break;
+      case "saleData":
+        setProgress(66);
+        break;
+      case "extraData":
+        setProgress(100);
+        break;
+    }
+  }, [currentTab])
+  
 
   const handleNextTab = () => {
     const currentIndex = tabs.indexOf(currentTab);
@@ -64,17 +81,15 @@ const CreateProduct = () => {
         aria-describedby={undefined}
         className="lg:w-[70vw] xl:max-w-[1344px] h-[80vh] flex flex-col justify-start "
       >
-        <DialogTitle className="text-2xl font-bold">Crear Producto</DialogTitle>
+        <div className="flex flex-row items-center">
+          <DialogTitle className="text-3xl font-bold">Crear Producto</DialogTitle>
+          <Progress value={progress} max={100} className="w-[50%] ml-[3%]" />
+        </div>
         <Tabs
           className="w-full h-full"
           value={currentTab}
           onValueChange={setCurrentTab}
         >
-          <TabsList className="grid w-full grid-cols-3 mb-5">
-            <TabsTrigger value="basicData">Datos Básicos</TabsTrigger>
-            <TabsTrigger value="saleData">Datos de Venta</TabsTrigger>
-            <TabsTrigger value="extraData">Datos Adicionales</TabsTrigger>
-          </TabsList>
           <BasicDataTab
             onNext={handleNextTab}
             Product={Product}
