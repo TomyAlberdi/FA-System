@@ -65,8 +65,8 @@ const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
 
   return (
     <TabsContent value="basicData" className="h-full w-full">
-      <div className="h-full w-full grid grid-cols-4 grid-rows-9 gap-2">
-        <div className="row-start-1 col-span-2 h-full">
+      <div className="h-full w-full grid grid-cols-6 grid-rows-9 gap-2">
+        <div className="row-start-1 col-span-4">
           <Label className="text-md">Nombre</Label>
           <Input
             value={Product?.name}
@@ -75,7 +75,7 @@ const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
             }
           />
         </div>
-        <div className="row-start-1 col-start-3 h-full">
+        <div className="row-start-1 col-start-5">
           <Label className="text-md">Código</Label>
           <Input
             value={Product?.code}
@@ -86,7 +86,7 @@ const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
             }
           />
         </div>
-        <div className="row-start-1 col-start-4 h-full">
+        <div className="row-start-1 col-start-6">
           <Label className="text-md">Calidad</Label>
           <Input
             value={Product?.quality}
@@ -95,7 +95,7 @@ const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
             }
           />
         </div>
-        <div className="row-start-2 row-end-6 col-span-4">
+        <div className="row-start-2 row-end-6 col-span-6">
           <Label className="text-md">Descripción</Label>
           <Textarea
             value={Product?.description}
@@ -105,7 +105,7 @@ const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
             }
           />
         </div>
-        <div className="row-start-6 col-span-4 h-full">
+        <div className="row-start-6 col-span-6">
           <Label className="text-md">Proveedor</Label>
           <Select
             disabled={Providers?.Loading}
@@ -131,7 +131,7 @@ const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
             </SelectContent>
           </Select>
         </div>
-        <div className="row-start-7 col-span-4 h-full">
+        <div className="row-start-7 col-span-6">
           <Label className="text-md">Categoría</Label>
           <Select
             disabled={Categories?.Loading}
@@ -157,7 +157,7 @@ const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
             </SelectContent>
           </Select>
         </div>
-        <div className="row-start-8 col-span-4 h-full">
+        <div className="row-start-8 col-span-6">
           <Label className="text-md">Subcategoría</Label>
           <Select
             disabled={Subcategories?.length === 0}
@@ -180,10 +180,10 @@ const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
             </SelectContent>
           </Select>
         </div>
-        <div className="row-start-9 col-span-4 flex flex-row justify-center items-center">
+        <div className="row-start-9 col-span-2 col-start-3 flex flex-row justify-center items-center">
           <Button
             onClick={onNext}
-            className="gap-2 w-1/4" /* disabled={DisableNext} */
+            className="gap-2 w-full" /* disabled={DisableNext} */
           >
             Siguiente
             <ChevronRight size={16} />
