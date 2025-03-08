@@ -30,8 +30,8 @@ const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
   const { fetchSubcategoriesByCategoryId, Providers, Categories } =
     useCatalogContext();
 
+  //#green Fetch subcategories by category id if product has category id
   const [Subcategories, setSubcategories] = useState<Array<Subcategory>>([]);
-
   useEffect(() => {
     const selectedCategoryId = Product?.categoryId;
     if (selectedCategoryId) {
@@ -41,7 +41,9 @@ const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [Product?.categoryId]);
+  //#
 
+  //#blue disable next button if product lacks required data
   const [DisableNext, setDisableNext] = useState(true);
   useEffect(() => {
     if (
@@ -62,6 +64,7 @@ const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
     Product?.categoryId,
     Product?.subcategoryId,
   ]);
+  //#
 
   return (
     <TabsContent value="basicData" className="h-full w-full">
