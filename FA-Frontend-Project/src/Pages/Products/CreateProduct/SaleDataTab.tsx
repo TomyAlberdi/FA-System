@@ -85,6 +85,27 @@ const SaleDataTab = ({
     }
   }, [Product?.saleUnitPrice, Product?.measurePerSaleUnit]);
 
+  const [DisableNext, setDisableNext] = useState(true);
+  useEffect(() => {
+    if (
+      Product?.saleUnit &&
+      Product?.saleUnitCost &&
+      Product?.saleUnitPrice &&
+      Product?.measurePerSaleUnit &&
+      Product?.measureType
+    ) {
+      setDisableNext(false);
+    } else {
+      setDisableNext(true);
+    }
+  }, [
+    Product?.saleUnit,
+    Product?.saleUnitCost,
+    Product?.saleUnitPrice,
+    Product?.measurePerSaleUnit,
+    Product?.measureType,
+  ]);
+
   return (
     <TabsContent value="saleData" className="h-full w-full">
       <div className="h-full w-full grid grid-cols-6 grid-rows-8 gap-4">
@@ -211,7 +232,8 @@ const SaleDataTab = ({
         </div>
         <div className="row-start-3 row-span-2 col-start-1 col-span-6 flex flex-col justify-center items-center">
           <Label className="text-lg">
-            Descuento por {Product?.saleUnit}: % {Product?.discountPercentage}
+            Descuento por {Product?.saleUnit}: % {Product?.discountPercentage}{" "}
+            (Opcional)
           </Label>
           <Slider
             className="w-1/3 my-4"
@@ -294,7 +316,11 @@ const SaleDataTab = ({
             <ChevronLeft size={16} />
             Anterior
           </Button>
-          <Button onClick={onNext} className="gap-2 w-1/2">
+          <Button
+            onClick={onNext}
+            className="gap-2 w-1/2"
+            // disabled={DisableNext}
+          >
             Siguiente
             <ChevronRight size={16} />
           </Button>

@@ -65,7 +65,7 @@ const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
 
   return (
     <TabsContent value="basicData" className="h-full w-full">
-      <div className="h-full w-full grid grid-cols-6 grid-rows-9 gap-2" >
+      <div className="h-full w-full grid grid-cols-6 grid-rows-9 gap-2">
         <div className="row-start-1 col-span-4">
           <Label className="text-md">Nombre</Label>
           <Input
@@ -123,7 +123,11 @@ const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
                 (Providers?.data as Provider[]).map(
                   (provider: Provider, index: number) => {
                     return (
-                      <SelectItem value={provider.id.toString()} key={index} className="cursor-pointer">
+                      <SelectItem
+                        value={provider.id.toString()}
+                        key={index}
+                        className="cursor-pointer"
+                      >
                         {provider.name}
                       </SelectItem>
                     );
@@ -149,7 +153,11 @@ const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
                 (Categories?.data as Category[]).map(
                   (category: Category, index: number) => {
                     return (
-                      <SelectItem value={category.id.toString()} key={index} className="cursor-pointer">
+                      <SelectItem
+                        value={category.id.toString()}
+                        key={index}
+                        className="cursor-pointer"
+                      >
                         {category.name}
                       </SelectItem>
                     );
@@ -173,7 +181,11 @@ const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
             <SelectContent>
               {Subcategories?.map((subcategory: Subcategory, index: number) => {
                 return (
-                  <SelectItem value={subcategory.id.toString()} key={index} className="cursor-pointer">
+                  <SelectItem
+                    value={subcategory.id.toString()}
+                    key={index}
+                    className="cursor-pointer"
+                  >
                     {subcategory.name}
                   </SelectItem>
                 );
@@ -184,7 +196,8 @@ const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
         <div className="row-start-9 col-span-2 col-start-3 flex flex-row justify-center items-center">
           <Button
             onClick={onNext}
-            className="gap-2 w-full" /* disabled={DisableNext} */
+            className="gap-2 w-full"
+            // disabled={DisableNext}
           >
             Siguiente
             <ChevronRight size={16} />
