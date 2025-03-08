@@ -44,10 +44,29 @@ const CreateProduct = ({ ProductProp }: { ProductProp?: CreateProductDTO }) => {
 
   const [DialogOpen, setDialogOpen] = useState(false);
 
-  // Tabs management
+  //#green Tabs management
   const [currentTab, setCurrentTab] = useState("basicData");
+  const handleNextTab = () => {
+    switch (currentTab) {
+      case "basicData":
+        setCurrentTab("saleData");
+        break;
+      case "saleData":
+        setCurrentTab("extraData");
+        break;
+    }
+  };
+  const handlePreviousTab = () => {
+    switch (currentTab) {
+      case "saleData":
+        setCurrentTab("basicData");
+        break;
+      case "extraData":
+        setCurrentTab("saleData");
+        break;
+    }
+  };
   const [progress, setProgress] = useState(33);
-
   useEffect(() => {
     switch (currentTab) {
       case "basicData":
@@ -61,32 +80,22 @@ const CreateProduct = ({ ProductProp }: { ProductProp?: CreateProductDTO }) => {
         break;
     }
   }, [currentTab]);
+  //#
 
-  const completeProgress = () => {
-    setProgress(100);
-  };
-
-  const handleNextTab = () => {
-    switch (currentTab) {
-      case "basicData":
-        setCurrentTab("saleData");
-        break;
-      case "saleData":
-        setCurrentTab("extraData");
-        break;
+  //#orange Complete creation style utils
+  const [LoadingRequest, setLoadingRequest] = useState(false);
+  useEffect(() => {
+    if (LoadingRequest) {
+      setProgress(100);
+    } else {
+      setProgress(66);
     }
-  };
+  }, [LoadingRequest]);
+  //#
 
-  const handlePreviousTab = () => {
-    switch (currentTab) {
-      case "saleData":
-        setCurrentTab("basicData");
-        break;
-      case "extraData":
-        setCurrentTab("saleData");
-        break;
-    }
-  };
+  //#blue Submit creation logic
+
+  //#
 
   return (
     <Dialog open={DialogOpen} onOpenChange={setDialogOpen}>
@@ -123,7 +132,11 @@ const CreateProduct = ({ ProductProp }: { ProductProp?: CreateProductDTO }) => {
             Product={Product}
             setProduct={setProduct}
           />
-          <ExtraDataTab onNext={handleNextTab} />
+          <ExtraDataTab
+            onPrevious={handlePreviousTab}
+            Product={Product}
+            setProduct={setProduct}
+          />
         </Tabs>
       </DialogContent>
     </Dialog>

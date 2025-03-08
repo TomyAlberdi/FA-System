@@ -34,7 +34,7 @@ const SaleDataTab = ({
   Product,
   setProduct,
 }: SaleDataTabProps) => {
-  // Calculate profit margin if product has sale unit price and sale unit cost
+  //#indigo Calculate profit margin if product has sale unit price and sale unit cost
   const [Rentabilidad, setRentabilidad] = useState(0);
   useEffect(() => {
     if (Product?.saleUnitPrice && Product?.saleUnitCost) {
@@ -48,7 +48,9 @@ const SaleDataTab = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  // Calculate and set sale unit price if product has sale unit cost and profit margin
+  //#
+
+  //#green Calculate and set sale unit price if product has sale unit cost and profit margin
   const getSalePrice = (profitability: number, saleUnitCost: number) => {
     const markup = profitability / 100;
     const salePrice = saleUnitCost * (1 + markup);
@@ -68,7 +70,9 @@ const SaleDataTab = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [Rentabilidad, Product?.saleUnitCost]);
-  // Calculate and set measure price if product has measure per sale unit and sale unit price
+  //#
+
+  //#yellow Calculate and set measure price if product has measure per sale unit and sale unit price
   const [MeasurePrice, setMeasurePrice] = useState(0);
   const getMeasurePrice = (
     measurePerSaleUnit: number,
@@ -84,7 +88,9 @@ const SaleDataTab = ({
       );
     }
   }, [Product?.saleUnitPrice, Product?.measurePerSaleUnit]);
+  //#
 
+  //#blue disable next button if product lacks required data
   const [DisableNext, setDisableNext] = useState(true);
   useEffect(() => {
     if (
@@ -105,6 +111,7 @@ const SaleDataTab = ({
     Product?.measurePerSaleUnit,
     Product?.measureType,
   ]);
+  //#
 
   return (
     <TabsContent value="saleData" className="h-full w-full">
