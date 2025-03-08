@@ -65,7 +65,7 @@ const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
 
   return (
     <TabsContent value="basicData" className="h-full w-full">
-      <div className="h-full w-full grid grid-cols-6 grid-rows-9 gap-2">
+      <div className="h-full w-full grid grid-cols-6 grid-rows-9 gap-2" >
         <div className="row-start-1 col-span-4">
           <Label className="text-md">Nombre</Label>
           <Input
@@ -93,6 +93,7 @@ const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
             onChange={(e) =>
               setProduct((prev) => ({ ...prev, quality: e.target.value }))
             }
+            placeholder="Ej: 1ra"
           />
         </div>
         <div className="row-start-2 row-end-6 col-span-6">
