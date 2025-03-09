@@ -90,6 +90,18 @@ const SaleDataTab = ({
   }, [Product?.saleUnitPrice, Product?.measurePerSaleUnit]);
   //#
 
+  //#orange set product measurePerSaleUnit to 1 if product saleUnit and measureType are equals
+  useEffect(() => {
+    if (Product?.saleUnit === Product?.measureType) {
+      setProduct((prev) => ({
+        ...prev,
+        measurePerSaleUnit: 1,
+      }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [Product?.saleUnit, Product?.measureType]);
+  //#
+
   //#blue disable next button if product lacks required data
   const [DisableNext, setDisableNext] = useState(true);
   useEffect(() => {
@@ -326,7 +338,7 @@ const SaleDataTab = ({
           <Button
             onClick={onNext}
             className="gap-2 w-1/2"
-            // disabled={DisableNext}
+            disabled={DisableNext}
           >
             Siguiente
             <ChevronRight size={16} />

@@ -200,7 +200,7 @@ const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
           <Button
             onClick={onNext}
             className="gap-2 w-full"
-            // disabled={DisableNext}
+            disabled={DisableNext}
           >
             Siguiente
             <ChevronRight size={16} />
