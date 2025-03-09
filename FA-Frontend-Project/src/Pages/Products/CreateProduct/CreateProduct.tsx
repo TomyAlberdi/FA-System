@@ -44,7 +44,7 @@ const CreateProduct = ({ ProductProp }: { ProductProp?: CreateProductDTO }) => {
 
   const [DialogOpen, setDialogOpen] = useState(false);
 
-  //#green Tabs management
+  //#green Tabs & Loading Request state management
   const [currentTab, setCurrentTab] = useState("basicData");
   const handleNextTab = () => {
     switch (currentTab) {
@@ -67,22 +67,6 @@ const CreateProduct = ({ ProductProp }: { ProductProp?: CreateProductDTO }) => {
     }
   };
   const [progress, setProgress] = useState(33);
-  useEffect(() => {
-    switch (currentTab) {
-      case "basicData":
-        setProgress(0);
-        break;
-      case "saleData":
-        setProgress(33);
-        break;
-      case "extraData":
-        setProgress(66);
-        break;
-    }
-  }, [currentTab]);
-  //#
-
-  //#orange Complete creation style utils
   const [LoadingRequest, setLoadingRequest] = useState(false);
   useEffect(() => {
     if (LoadingRequest) {
@@ -100,12 +84,13 @@ const CreateProduct = ({ ProductProp }: { ProductProp?: CreateProductDTO }) => {
           break;
       }
     }
-  }, [LoadingRequest]);
+  }, [currentTab, LoadingRequest]);
   //#
 
   //#blue Submit creation logic
   const createProduct = async () => {
     console.log(Product);
+    // At the end
     setLoadingRequest(false);
     setDialogOpen(false);
   };
