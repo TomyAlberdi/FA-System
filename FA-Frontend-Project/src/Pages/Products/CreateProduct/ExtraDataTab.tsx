@@ -120,7 +120,7 @@ const ExtraDataTab = ({
       <div className="h-full w-full grid grid-cols-6 grid-rows-8 gap-4">
         <div className="row-start-1 row-end-8 col-start-1 col-end-4 flex flex-col justify-start">
           <section className="flex flex-col gap-4">
-            <Label className="text-md">Imágenes (Opcional)</Label>
+            <Label className="text-xl">Imágenes (Opcional)</Label>
             <Input
               type="file"
               multiple
@@ -160,8 +160,62 @@ const ExtraDataTab = ({
           </section>
         </div>
         <div className="row-start-1 row-end-8 col-start-4 col-end-7 flex flex-col justify-start">
-          <section className="flex flex-col gap-4">
-            <Label className="text-md">Características (Opcional)</Label>
+          <Label className="text-xl">Características (Opcional)</Label>
+          <section className="flex flex-col justify-evenly h-full">
+            <div className="flex flex-col gap-2">
+              <Label className="text-md">Color</Label>
+              <Input
+                value={Product?.color}
+                onChange={(e) =>
+                  setProduct((prev) => ({ ...prev, color: e.target.value }))
+                }
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label className="text-md">Origen</Label>
+              <Input
+                value={Product?.origen}
+                onChange={(e) =>
+                  setProduct((prev) => ({ ...prev, origen: e.target.value }))
+                }
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label className="text-md">Borde</Label>
+              <Input
+                value={Product?.borde}
+                onChange={(e) =>
+                  setProduct((prev) => ({ ...prev, borde: e.target.value }))
+                }
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label className="text-md">Aspecto</Label>
+              <Input
+                value={Product?.aspecto}
+                onChange={(e) =>
+                  setProduct((prev) => ({ ...prev, aspecto: e.target.value }))
+                }
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label className="text-md">Textura</Label>
+              <Input
+                value={Product?.textura}
+                onChange={(e) =>
+                  setProduct((prev) => ({ ...prev, textura: e.target.value }))
+                }
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label className="text-md">Tránsito</Label>
+              <Input
+                value={Product?.transito}
+                onChange={(e) =>
+                  setProduct((prev) => ({ ...prev, transito: e.target.value }))
+                }
+              />
+            </div>
           </section>
         </div>
         <div className="row-start-8 col-span-2 col-start-3 flex flex-row justify-between items-center gap-2">
