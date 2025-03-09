@@ -168,7 +168,7 @@ const SaleDataTab = ({
             onChange={(e) =>
               setProduct((prev) => ({
                 ...prev,
-                saleUnitCost: parseFloat(e.target.value),
+                saleUnitCost: e.target.value ? parseFloat(e.target.value) : 0,
               }))
             }
           />
@@ -234,7 +234,9 @@ const SaleDataTab = ({
             onChange={(e) =>
               setProduct((prev) => ({
                 ...prev,
-                measurePerSaleUnit: parseFloat(e.target.value),
+                measurePerSaleUnit: e.target.value
+                  ? parseFloat(e.target.value)
+                  : 1,
               }))
             }
           />

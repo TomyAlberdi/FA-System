@@ -2,24 +2,29 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { TabsContent } from "@/components/ui/tabs";
-import { ToastAction } from "@/components/ui/toast";
 import { useSalesContext } from "@/Context/UseSalesContext";
 import { CreateProductDTO } from "@/hooks/CatalogInterfaces";
 import { useToast } from "@/hooks/use-toast";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { CheckCircle2, ChevronLeft, ChevronRight, Trash2 } from "lucide-react";
+import { CheckCircle2, ChevronLeft, Loader2, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface ExtraDataTabProps {
   onPrevious: () => void;
   Product: CreateProductDTO;
   setProduct: React.Dispatch<React.SetStateAction<CreateProductDTO>>;
+  loading: boolean;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  createProduct: () => void;
 }
 
 const ExtraDataTab = ({
   onPrevious,
   Product,
   setProduct,
+  loading,
+  setLoading,
+  createProduct,
 }: ExtraDataTabProps) => {
   const { BASE_URL } = useSalesContext();
   const { getToken } = useKindeAuth();
@@ -29,7 +34,7 @@ const ExtraDataTab = ({
     toast({
       variant: "destructive",
       title: `Error`,
-      description: `Ocurrió un error al crear el producto.`,
+      description: `Ocurrió un error al cargar las imágenes.`,
     });
   };
 
@@ -58,7 +63,7 @@ const ExtraDataTab = ({
       if (!getToken) {
         console.error("Token is undefined");
         toastDefaultError();
-        return;
+        return [];
       }
       const uploadPromises = files.map(async (file) => {
         const accessToken = await getToken();
@@ -87,13 +92,11 @@ const ExtraDataTab = ({
         return uploadUrl.split("?")[0];
       });
       const uploadedUrls = await Promise.all(uploadPromises);
-      setProduct((prev) => ({
-        ...prev,
-        images: [...(prev.images || []), ...uploadedUrls],
-      }));
+      return uploadedUrls;
     } catch (error) {
       console.error("Error during Image Upload: ", error);
       toastDefaultError();
+      return [];
     }
   };
   //#
@@ -111,6 +114,26 @@ const ExtraDataTab = ({
       URL.revokeObjectURL(url);
       setPreviewUrls((prev) => prev.filter((_, i) => i !== index));
       setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
+    }
+  };
+  //#
+
+  //#blue kickstart product creation
+  const onSubmit = async () => {
+    setLoading(true);
+    try {
+      const fileInput = SelectedFiles;
+      if (fileInput && fileInput.length > 0) {
+        const newUrls = await uploadImages(fileInput);
+        setProduct((prev) => ({
+          ...prev,
+          images: [...(prev.images || []), ...newUrls],
+        }));
+      }
+      createProduct();
+    } catch (error) {
+      console.error("Error during Image Upload: ", error);
+      toastDefaultError();
     }
   };
   //#
@@ -219,14 +242,20 @@ const ExtraDataTab = ({
           </section>
         </div>
         <div className="row-start-8 col-span-2 col-start-3 flex flex-row justify-between items-center gap-2">
-          <Button onClick={onPrevious} className="gap-2 w-1/2">
+          <Button
+            onClick={onPrevious}
+            className="gap-2 w-1/2"
+            disabled={loading}
+          >
             <ChevronLeft size={16} />
             Anterior
           </Button>
           <Button
             className="gap-2 w-1/2 bg-chart-2"
-            // disabled={DisableComplete}
+            disabled={loading}
+            onClick={onSubmit}
           >
+            {loading && <Loader2 className="animate-spin" />}
             Crear
             <CheckCircle2 size={16} />
           </Button>

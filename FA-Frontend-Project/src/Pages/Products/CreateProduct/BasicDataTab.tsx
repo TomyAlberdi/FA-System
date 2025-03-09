@@ -90,7 +90,7 @@ const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
           />
         </div>
         <div className="row-start-1 col-start-6">
-          <Label className="text-md">Calidad</Label>
+          <Label className="text-md">Calidad (Opcional)</Label>
           <Input
             value={Product?.quality}
             onChange={(e) =>

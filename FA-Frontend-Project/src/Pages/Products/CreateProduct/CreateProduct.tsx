@@ -88,13 +88,27 @@ const CreateProduct = ({ ProductProp }: { ProductProp?: CreateProductDTO }) => {
     if (LoadingRequest) {
       setProgress(100);
     } else {
-      setProgress(66);
+      switch (currentTab) {
+        case "basicData":
+          setProgress(0);
+          break;
+        case "saleData":
+          setProgress(33);
+          break;
+        case "extraData":
+          setProgress(66);
+          break;
+      }
     }
   }, [LoadingRequest]);
   //#
 
   //#blue Submit creation logic
-
+  const createProduct = async () => {
+    console.log(Product);
+    setLoadingRequest(false);
+    setDialogOpen(false);
+  };
   //#
 
   return (
@@ -136,6 +150,9 @@ const CreateProduct = ({ ProductProp }: { ProductProp?: CreateProductDTO }) => {
             onPrevious={handlePreviousTab}
             Product={Product}
             setProduct={setProduct}
+            loading={LoadingRequest}
+            setLoading={setLoadingRequest}
+            createProduct={createProduct}
           />
         </Tabs>
       </DialogContent>
