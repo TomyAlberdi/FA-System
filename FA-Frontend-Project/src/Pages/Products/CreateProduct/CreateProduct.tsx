@@ -13,8 +13,23 @@ import SaleDataTab from "@/Pages/Products/CreateProduct/SaleDataTab";
 import ExtraDataTab from "@/Pages/Products/CreateProduct/ExtraDataTab";
 import { CreateProductDTO } from "@/hooks/CatalogInterfaces";
 import { Progress } from "@/components/ui/progress";
+import { useNavigate } from "react-router-dom";
+import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import { useToast } from "@/hooks/use-toast";
+import { useCatalogContext } from "@/Context/UseCatalogContext";
 
 const CreateProduct = ({ ProductProp }: { ProductProp?: CreateProductDTO }) => {
+  const navigate = useNavigate();
+  const { getToken } = useKindeAuth();
+  const { toast } = useToast();
+  const {
+    BASE_URL,
+    fetchProviders,
+    fetchCategories,
+    fetchMeasures,
+    fetchPrices,
+  } = useCatalogContext();
+
   const [Product, setProduct] = useState<CreateProductDTO>({
     // Tab 1
     name: ProductProp?.name ?? "",
@@ -88,11 +103,50 @@ const CreateProduct = ({ ProductProp }: { ProductProp?: CreateProductDTO }) => {
   //#
 
   //#blue Submit creation logic
-  const createProduct = async () => {
-    console.log(Product);
-    // At the end
-    setLoadingRequest(false);
-    setDialogOpen(false);
+  const createProduct = async (newProduct: CreateProductDTO) => {
+    setLoadingRequest(true);
+    try {
+      if (!getToken) {
+        console.error("Token is undefined");
+        return;
+      }
+      const accessToken = await getToken();
+      const response = await fetch(`${BASE_URL}/product`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(newProduct),
+      });
+      if (!response.ok) {
+        toast({
+          variant: "destructive",
+          title: `Error ${response.status}`,
+          description: `Ocurrió un error al crear el producto.`,
+        });
+        return;
+      }
+      toast({
+        title: "Producto creado",
+        description: "El producto ha sido creado con éxito",
+      });
+      fetchCategories();
+      fetchProviders();
+      fetchMeasures();
+      fetchPrices();
+      const responseData = await response.json();
+      navigate(`/catalog/products/${responseData.id}`);
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: `Error ${error}`,
+        description: `Ocurrió un error al crear el producto.`,
+      });
+    } finally {
+      setLoadingRequest(false);
+      setDialogOpen(false);
+    }
   };
   //#
 

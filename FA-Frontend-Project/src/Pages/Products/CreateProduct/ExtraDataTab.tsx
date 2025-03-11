@@ -15,7 +15,7 @@ interface ExtraDataTabProps {
   setProduct: React.Dispatch<React.SetStateAction<CreateProductDTO>>;
   loading: boolean;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  createProduct: () => void;
+  createProduct: (productToCreate: CreateProductDTO) => void;
 }
 
 const ExtraDataTab = ({
@@ -125,12 +125,14 @@ const ExtraDataTab = ({
       const fileInput = SelectedFiles;
       if (fileInput && fileInput.length > 0) {
         const newUrls = await uploadImages(fileInput);
-        setProduct((prev) => ({
-          ...prev,
-          images: [...(prev.images || []), ...newUrls],
-        }));
+        const updatedProduct = {
+          ...Product,
+          images: [...(Product.images || []), ...newUrls],
+        };
+        createProduct(updatedProduct);
+      } else {
+        createProduct(Product);
       }
-      createProduct();
     } catch (error) {
       console.error("Error during Image Upload: ", error);
       toastDefaultError();
