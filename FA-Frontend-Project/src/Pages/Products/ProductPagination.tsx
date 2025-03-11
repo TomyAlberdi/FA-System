@@ -21,7 +21,7 @@ import {
   FilterData,
   PaginationInfo,
 } from "@/hooks/CatalogInterfaces";
-import { AlertCircle, Search } from "lucide-react";
+import { AlertCircle, CirclePlus, Search } from "lucide-react";
 import { useState } from "react";
 import { ProductCard } from "@/Pages/Products/ProductCard";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -143,7 +143,7 @@ export const ProductPagination: React.FC<ProductPaginationProps> = ({
             Nuevo Producto
           </Button>
         </Link> */}
-        <CreateProduct />
+        <CreateProduct TriggerTitle="Nuevo Producto" TriggerIcon={CirclePlus} />
       </section>
       <section className="listBody">
         {Loading ? (

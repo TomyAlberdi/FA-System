@@ -6,19 +6,27 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Tabs } from "@/components/ui/tabs";
-import { CirclePlus } from "lucide-react";
-import { useEffect, useState } from "react";
+import { LucideProps } from "lucide-react";
+import { FC, useEffect, useState } from "react";
 import BasicDataTab from "@/Pages/Products/CreateProduct/BasicDataTab";
 import SaleDataTab from "@/Pages/Products/CreateProduct/SaleDataTab";
 import ExtraDataTab from "@/Pages/Products/CreateProduct/ExtraDataTab";
-import { CreateProductDTO } from "@/hooks/CatalogInterfaces";
+import { CompleteProduct, CreateProductDTO } from "@/hooks/CatalogInterfaces";
 import { Progress } from "@/components/ui/progress";
 import { useNavigate } from "react-router-dom";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useToast } from "@/hooks/use-toast";
 import { useCatalogContext } from "@/Context/UseCatalogContext";
 
-const CreateProduct = ({ ProductProp }: { ProductProp?: CreateProductDTO }) => {
+const CreateProduct = ({
+  ProductProp,
+  TriggerTitle,
+  TriggerIcon,
+}: {
+  ProductProp?: CompleteProduct | null;
+  TriggerTitle: string;
+  TriggerIcon: FC<LucideProps>;
+}) => {
   const navigate = useNavigate();
   const { getToken } = useKindeAuth();
   const { toast } = useToast();
@@ -56,6 +64,21 @@ const CreateProduct = ({ ProductProp }: { ProductProp?: CreateProductDTO }) => {
     textura: ProductProp?.textura ?? "",
     transito: ProductProp?.transito ?? "",
   });
+
+  useEffect(() => {
+    if (ProductProp) {
+      const mappedProduct = {
+        ...ProductProp,
+        color: ProductProp.characteristics.find(c => c.key === "Color")?.value ?? "",
+        origen: ProductProp.characteristics.find(c => c.key === "Origen")?.value ?? "",
+        borde: ProductProp.characteristics.find(c => c.key === "Borde")?.value ?? "",
+        aspecto: ProductProp.characteristics.find(c => c.key === "Aspecto")?.value ?? "",
+        textura: ProductProp.characteristics.find(c => c.key === "Textura")?.value ?? "",
+        transito: ProductProp.characteristics.find(c => c.key === "Transito")?.value ?? "",
+      };
+      setProduct(mappedProduct);
+    }
+  }, [ProductProp]);
 
   const [DialogOpen, setDialogOpen] = useState(false);
 
@@ -153,9 +176,15 @@ const CreateProduct = ({ ProductProp }: { ProductProp?: CreateProductDTO }) => {
   return (
     <Dialog open={DialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
-        <Button className="text-lg w-[19.2%] max-w-[300px] min-w-[200px]">
-          <CirclePlus />
-          Crear Producto
+        <Button
+          className={
+            TriggerTitle == "Nuevo Producto"
+              ? "text-lg w-[19.2%] max-w-[300px] min-w-[200px]"
+              : "w-10/12 text-md"
+          }
+        >
+          <TriggerIcon />
+          {TriggerTitle}
         </Button>
       </DialogTrigger>
       <DialogContent
