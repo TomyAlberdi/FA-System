@@ -39,6 +39,7 @@ export interface PartialBudget {
   status: BudgetStatus;
   finalAmount: number;
   date: string;
+  discount: number;
 }
 
 export interface ProductBudget {
@@ -47,6 +48,7 @@ export interface ProductBudget {
   productMeasurePrice: number;
   measureUnitQuantity: number;
   saleUnitQuantity: number;
+  discountPercentage: number;
   subtotal: number;
   productSaleUnit: string;
   productMeasureUnit: string;

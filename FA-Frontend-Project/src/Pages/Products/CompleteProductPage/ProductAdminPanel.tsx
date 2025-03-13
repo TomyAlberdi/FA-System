@@ -7,6 +7,7 @@ import { ProductDetail } from "@/lib/ProductDetail";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { CircleX, ListPlus, ListX, Package, Pencil } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import CreateProduct from "@/Pages/Products/CreateProduct/CreateProduct";
 
 export const ProductPageAdminPanel = ({
   Product,
@@ -160,12 +161,13 @@ export const ProductPageAdminPanel = ({
 
   return (
     <div className="adminPanel productGridItem row-start-8 row-end-16 col-start-1 col-end-5 p-2 flex flex-col justify-start items-center gap-4">
-      <Button className="w-10/12 text-md" asChild>
-        <Link to={`/catalog/products/${Product?.id}/update`}>
-          <Pencil />
-          Editar Producto
-        </Link>
-      </Button>
+      <CreateProduct
+        ProductProp={Product}
+        TriggerTitle="Editar Producto"
+        TriggerIcon={Pencil}
+        ReloadProduct={ReloadProduct}
+        setReloadProduct={setReloadProduct}
+      />
       <Button
         className="w-10/12 text-md"
         variant="destructive"

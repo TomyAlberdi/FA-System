@@ -19,6 +19,7 @@ interface FloatingProductPaginationProps {
     product: CardProduct,
     measureUnitQuantity: number,
     saleUnitQuantity: number,
+    discountPercentage: number,
     subtotal: number
   ) => void;
 }

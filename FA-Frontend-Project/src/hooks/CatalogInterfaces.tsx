@@ -91,6 +91,30 @@ export interface CompleteProduct extends StockProduct {
   saleUnitCost: number;
 }
 
+export interface CreateProductDTO {
+  name: string;
+  description: string;
+  quality: string;
+  code: string;
+  measureType: string;
+  measures: string;
+  saleUnit: string;
+  saleUnitPrice: number;
+  saleUnitCost: number;
+  measurePerSaleUnit: number;
+  discountPercentage: number;
+  providerId: number;
+  categoryId: number;
+  subcategoryId: number;
+  images: Array<string>;
+  color: string;
+  origen: string;
+  borde: string;
+  aspecto: string;
+  textura: string;
+  transito: string;
+}
+
 export interface PartialProductStock {
   id: number;
   productId: number;

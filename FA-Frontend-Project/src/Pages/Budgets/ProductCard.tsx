@@ -8,10 +8,11 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
 import { CardProduct } from "@/hooks/CatalogInterfaces";
 import { useToast } from "@/hooks/use-toast";
 import { CirclePlus } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const ProductCard = ({
   product,
@@ -22,18 +23,37 @@ export const ProductCard = ({
     product: CardProduct,
     measureUnitQuantity: number,
     saleUnitQuantity: number,
+    discountPercentage: number,
     subtotal: number
   ) => void;
 }) => {
   const [Open, setOpen] = useState(false);
   const { toast } = useToast();
 
+  const [Discount, setDiscount] = useState<Array<number>>([0]);
+  const [Subtotal, setSubtotal] = useState(0);
   const [data, setData] = useState({
     product: undefined,
     saleUnitQuantity: 0,
     measureUnitQuantity: 0,
-    subtotal: 0,
   });
+
+  useEffect(() => {
+    const subtotal =
+      Math.round(
+        (data.saleUnitQuantity * product.saleUnitPrice + Number.EPSILON) * 100
+      ) / 100;
+    if (Discount[0] === 0) {
+      setSubtotal(subtotal);
+      return;
+    }
+    // Calculate discounted subtotal with 2 decimals
+    const discountedSubtotal =
+      Math.round((subtotal * (1 - Discount[0] / 100) + Number.EPSILON) * 100) /
+      100;
+    setSubtotal(discountedSubtotal);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data.saleUnitQuantity, Discount]);
 
   const addProductToBudget = () => {
     if (data.saleUnitQuantity === 0) {
@@ -49,15 +69,12 @@ export const ProductCard = ({
         (data.saleUnitQuantity * product.measurePerSaleUnit + Number.EPSILON) *
           100
       ) / 100;
-    const subtotal =
-      Math.round(
-        (data.saleUnitQuantity * product.saleUnitPrice + Number.EPSILON) * 100
-      ) / 100;
     handleAddProduct(
       product,
       measureUnitQuantity,
       data.saleUnitQuantity,
-      subtotal
+      Discount[0],
+      Subtotal
     );
     setOpen(false);
   };
@@ -118,7 +135,7 @@ export const ProductCard = ({
                 />
               </div>
               <div className="mt-2">
-                <Label className="text-lg">
+                <Label className="text-md">
                   Equivale a:
                   <span className="text-xl font-semibold px-2">
                     {Math.round(
@@ -130,16 +147,23 @@ export const ProductCard = ({
                   </span>
                 </Label>
               </div>
+              <div className="mt-2">
+                <Label className="text-lg">
+                  Descuento individual: %{Discount[0]}
+                </Label>
+                <Slider
+                  className="my-4"
+                  min={0}
+                  max={100}
+                  step={1}
+                  onValueChange={(value) => setDiscount(value)}
+                />
+              </div>
               <div className="my-3">
                 <Label className="text-lg">
                   Subtotal:
                   <span className="text-xl font-semibold px-2">
-                    ${" "}
-                    {Math.round(
-                      (data.saleUnitQuantity * product.saleUnitPrice +
-                        Number.EPSILON) *
-                        100
-                    ) / 100}
+                    $ {Subtotal}
                   </span>
                 </Label>
               </div>

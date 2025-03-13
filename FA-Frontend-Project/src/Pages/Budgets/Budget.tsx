@@ -193,6 +193,10 @@ export const Budget = () => {
             </Dialog>
           </div>
           <div className="flex flex-col gap-2">
+            <span className="text-lg">Descuento:</span>
+            <span className="text-2xl">{Budget?.discount}%</span>
+          </div>
+          <div className="flex flex-col gap-2">
             <span className="text-lg">Monto final:</span>
             <span className="text-2xl">$ {Budget?.finalAmount}</span>
           </div>
@@ -215,8 +219,9 @@ export const Budget = () => {
             <TableRow>
               <TableHead className="w-2/12">Cantidad solicitada</TableHead>
               <TableHead className="w-3/12">Cantidad de unidades</TableHead>
-              <TableHead className="w-3/12">Nombre</TableHead>
+              <TableHead className="w-2/12">Nombre</TableHead>
               <TableHead className="w-2/12">Precio unitario</TableHead>
+              <TableHead className="w-1/12">Descuento</TableHead>
               <TableHead className="w-2/12">Subtotal</TableHead>
             </TableRow>
           </TableHeader>
@@ -236,13 +241,22 @@ export const Budget = () => {
                   </TableCell>
                   <TableCell>{product.productName}</TableCell>
                   <TableCell>$ {product.productMeasurePrice}</TableCell>
+                  <TableCell>{product.discountPercentage}%</TableCell>
                   <TableCell>
                     ${" "}
-                    {Math.round(
-                      (product.saleUnitQuantity * product.saleUnitPrice +
-                        Number.EPSILON) *
-                        100
-                    ) / 100}
+                    {product.discountPercentage === 0
+                      ? Math.round(
+                          (product.saleUnitQuantity * product.saleUnitPrice +
+                            Number.EPSILON) *
+                            100
+                        ) / 100
+                      : Math.round(
+                          (product.saleUnitQuantity *
+                            product.saleUnitPrice *
+                            (1 - product.discountPercentage / 100) +
+                            Number.EPSILON) *
+                            100
+                        ) / 100}
                   </TableCell>
                 </TableRow>
               );

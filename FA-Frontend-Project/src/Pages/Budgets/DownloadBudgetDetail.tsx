@@ -30,7 +30,7 @@ export const DownloadBudgetDetail = ({
     doc.addImage(
       "https://fa-sa-bucket.s3.sa-east-1.amazonaws.com/logo_clp_2020.png",
       "JPEG",
-      10,
+      5,
       10,
       100,
       20
@@ -39,24 +39,24 @@ export const DownloadBudgetDetail = ({
     // Date and Company Info
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
-    doc.text(formatDateTime(budget?.date ?? ""), 15, 30);
-    doc.text("Calle 122 y 54 - Tel. 412-3001 Lineas Rotativas", 15, 40);
-    doc.text("email: consultas@ceramicoslaplata.com.ar", 15, 45);
+    doc.text(formatDateTime(budget?.date ?? ""), 10, 30);
+    doc.text("Calle 122 y 54 - Tel. 412-3001 Lineas Rotativas", 10, 40);
+    doc.text("email: consultas@ceramicoslaplata.com.ar", 10, 45);
 
     // Budget Number
     doc.setFont("helvetica", "bold");
     doc.text(
       `Presupuesto: ${budget?.id?.toString().padStart(10, "0")}`,
-      15,
+      10,
       55
     );
 
     // Client Information
     doc.setFont("helvetica", "normal");
-    doc.text("Sr.(es) PRESUPUESTO DISENO10", 15, 65);
-    doc.text("Condición frente al IVA: Consumidor Final", 15, 70);
-    doc.text("Domicilio: ALBERDI 486", 15, 75);
-    doc.text("Condicion de Venta: CONTADO", 15, 80);
+    doc.text("Sr.(es) PRESUPUESTO DISENO10", 10, 65);
+    doc.text("Condición frente al IVA: Consumidor Final", 10, 70);
+    doc.text("Domicilio: ALBERDI 486", 10, 75);
+    doc.text("Condicion de Venta: CONTADO", 10, 80);
 
     // Table Headers
     const headers = [
@@ -64,6 +64,7 @@ export const DownloadBudgetDetail = ({
       "Unidades",
       "Nombre",
       "Precio Unitario",
+      "Descuento",
       "Subtotal",
     ];
 
@@ -76,7 +77,7 @@ export const DownloadBudgetDetail = ({
     headers.forEach((header, index) => {
       doc.text(
         header,
-        15 + columnWidths.slice(0, index).reduce((a, b) => a + b, 0),
+        10 + columnWidths.slice(0, index).reduce((a, b) => a + b, 0),
         startY
       );
     });
@@ -91,11 +92,12 @@ export const DownloadBudgetDetail = ({
         `${product.saleUnitQuantity} ${product.productSaleUnit}`,
         product.productName,
         `$ ${product.productMeasurePrice} / ${product.productMeasureUnit}`,
+        `${product.discountPercentage}%`,
         `$ ${product.subtotal}`,
       ];
       rowData.forEach((text, index) => {
         const xPos =
-          15 + columnWidths.slice(0, index).reduce((a, b) => a + b, 0);
+          10 + columnWidths.slice(0, index).reduce((a, b) => a + b, 0);
         const splitText = doc.splitTextToSize(text, columnWidths[index] - 2);
         doc.text(splitText, xPos, cellY);
         rowHeight = Math.max(rowHeight, splitText.length * 4);
@@ -105,12 +107,25 @@ export const DownloadBudgetDetail = ({
 
     // Final Amounts
     startY += 10;
-    doc.setFontSize(10); // Restore font size
-    doc.text("Precios sujetos a modificación sin previo aviso.", 15, startY);
+    doc.setFontSize(10);
+    const rightAlignX = 125;
+    doc.text(
+      "Precios sujetos a modificación sin previo aviso.",
+      rightAlignX,
+      startY
+    );
     startY += 10;
-    doc.text(`Importe Final: $ ${budget?.finalAmount}`, 15, startY);
-    doc.text("Per./Ret. Ingresos Brutos: $ 0,00", 15, startY + 5);
-    doc.text(`Importe Total: $ ${budget?.finalAmount}`, 15, startY + 10);
+    if (budget?.discount && budget?.discount > 0) {
+      doc.text(`Descuento: ${budget?.discount}%`, rightAlignX, startY);
+      startY += 5;
+    }
+    doc.text(`Importe Final: $ ${budget?.finalAmount}`, rightAlignX, startY);
+    doc.text("Per./Ret. Ingresos Brutos: $ 0,00", rightAlignX, startY + 5);
+    doc.text(
+      `Importe Total: $ ${budget?.finalAmount}`,
+      rightAlignX,
+      startY + 10
+    );
 
     // Save PDF
     doc.save(`Presupuesto_${budget?.id}.pdf`);

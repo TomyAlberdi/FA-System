@@ -24,9 +24,9 @@ export const ProductPage = () => {
       fetchProduct(Number.parseInt(id))
         .then((result) => {
           if (!result) {
-            navigate(-1)
+            navigate(-1);
           }
-          setProduct(result ?? null)
+          setProduct(result ?? null);
         })
         .finally(() => setLoading(false));
     }
@@ -40,13 +40,17 @@ export const ProductPage = () => {
           <Skeleton className="row-start-1 row-end-7 col-start-1 col-end-5" />
           <Skeleton className="row-start-1 row-end-7 col-start-5 col-end-16" />
           <Skeleton className="row-start-7 row-end-16 col-start-1 col-end-5" />
-          <Skeleton className="row-start-7 row-end-16 col-start-5 col-end-16" /> 
+          <Skeleton className="row-start-7 row-end-16 col-start-5 col-end-16" />
         </>
       ) : (
         <>
           <ProductCarousel Product={Product} />
           <ProductMainInfo Product={Product} />
-          <ProductPageAdminPanel Product={Product} ReloadProduct={ReloadProduct} setReloadProduct={setReloadProduct} />
+          <ProductPageAdminPanel
+            Product={Product}
+            ReloadProduct={ReloadProduct}
+            setReloadProduct={setReloadProduct}
+          />
           <ProductComplementaryInfo Product={Product} />
         </>
       )}
