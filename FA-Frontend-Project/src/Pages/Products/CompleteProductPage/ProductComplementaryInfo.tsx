@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/accordion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { characteristic, CompleteProduct } from "@/hooks/CatalogInterfaces";
+import { useEffect, useState } from "react";
 
 export const ProductComplementaryInfo = ({
   Product,
@@ -13,12 +14,29 @@ export const ProductComplementaryInfo = ({
   Product: CompleteProduct | null;
 }) => {
   const getRentabilidad = (saleUnitCost: number, saleUnitPrice: number) => {
-    const profitMargin =
-    ((saleUnitPrice - saleUnitCost) /
-    saleUnitCost) *
-    100;
+    const profitMargin = ((saleUnitPrice - saleUnitCost) / saleUnitCost) * 100;
     return Math.round(profitMargin * 100) / 100;
   };
+
+  const [Rentabilidad, setRentabilidad] = useState(0);
+  useEffect(() => {
+    if (Product?.saleUnitCost && Product?.saleUnitPrice) {
+      if (Product?.discountPercentage > 0) {
+        setRentabilidad(
+          getRentabilidad(Product?.saleUnitCost, Product?.discountedPrice)
+        );
+      } else {
+        setRentabilidad(
+          getRentabilidad(Product?.saleUnitCost, Product?.saleUnitPrice)
+        );
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    Product?.saleUnitCost,
+    Product?.saleUnitPrice,
+    Product?.discountPercentage,
+  ]);
 
   return (
     <div className="complementaryInfo row-start-5 row-end-16 col-start-5 col-end-16 productGridItem px-2 py-4">
@@ -169,24 +187,12 @@ export const ProductComplementaryInfo = ({
                   </span>
                 </CardContent>
               </Card>
-              <Card>
+              <Card className={Rentabilidad < 0 ? "bg-destructive" : ""}>
                 <CardHeader>
                   <CardTitle className="text-center">Rentabilidad</CardTitle>
                 </CardHeader>
                 <CardContent className="text-center">
-                  <span className="text-xl">
-                    %{" "}
-                    {Product?.discountPercentage &&
-                    Product?.discountPercentage > 0
-                      ? getRentabilidad(
-                          Product?.saleUnitCost,
-                          Product?.discountedPrice
-                        )
-                      : getRentabilidad(
-                          Product?.saleUnitCost,
-                          Product?.saleUnitPrice
-                        )}
-                  </span>
+                  <span className="text-xl">% {Rentabilidad}</span>
                 </CardContent>
               </Card>
             </AccordionContent>

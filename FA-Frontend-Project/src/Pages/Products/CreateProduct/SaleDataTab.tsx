@@ -79,7 +79,7 @@ const SaleDataTab = ({
     saleUnitPrice: number
   ) => {
     const measurePrice = saleUnitPrice / measurePerSaleUnit;
-    return Math.round(measurePrice);
+    return Math.round(measurePrice * 100) / 100;
   };
   useEffect(() => {
     if (Product?.saleUnitPrice > 0 && Product?.measurePerSaleUnit) {
@@ -224,11 +224,7 @@ const SaleDataTab = ({
           <Input
             type="number"
             min={0}
-            value={
-              Product?.measureType === Product?.saleUnit
-                ? 1
-                : Product?.measurePerSaleUnit
-            }
+            value={Product?.measurePerSaleUnit}
             placeholder="Ej: 2.35"
             disabled={Product?.measureType === Product?.saleUnit}
             onChange={(e) =>
