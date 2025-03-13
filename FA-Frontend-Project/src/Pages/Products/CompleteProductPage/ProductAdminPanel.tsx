@@ -165,6 +165,8 @@ export const ProductPageAdminPanel = ({
         ProductProp={Product}
         TriggerTitle="Editar Producto"
         TriggerIcon={Pencil}
+        ReloadProduct={ReloadProduct}
+        setReloadProduct={setReloadProduct}
       />
       <Button
         className="w-10/12 text-md"

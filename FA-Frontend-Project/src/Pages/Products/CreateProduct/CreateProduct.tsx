@@ -22,10 +22,14 @@ const CreateProduct = ({
   ProductProp,
   TriggerTitle,
   TriggerIcon,
+  ReloadProduct,
+  setReloadProduct,
 }: {
   ProductProp?: CompleteProduct | null;
   TriggerTitle: string;
   TriggerIcon: FC<LucideProps>;
+  ReloadProduct?: boolean | null;
+  setReloadProduct?: React.Dispatch<React.SetStateAction<boolean>> | null;
 }) => {
   const navigate = useNavigate();
   const { getToken } = useKindeAuth();
@@ -69,12 +73,24 @@ const CreateProduct = ({
     if (ProductProp) {
       const mappedProduct = {
         ...ProductProp,
-        color: ProductProp.characteristics.find(c => c.key === "Color")?.value ?? "",
-        origen: ProductProp.characteristics.find(c => c.key === "Origen")?.value ?? "",
-        borde: ProductProp.characteristics.find(c => c.key === "Borde")?.value ?? "",
-        aspecto: ProductProp.characteristics.find(c => c.key === "Aspecto")?.value ?? "",
-        textura: ProductProp.characteristics.find(c => c.key === "Textura")?.value ?? "",
-        transito: ProductProp.characteristics.find(c => c.key === "Transito")?.value ?? "",
+        color:
+          ProductProp.characteristics.find((c) => c.key === "Color")?.value ??
+          "",
+        origen:
+          ProductProp.characteristics.find((c) => c.key === "Origen")?.value ??
+          "",
+        borde:
+          ProductProp.characteristics.find((c) => c.key === "Borde")?.value ??
+          "",
+        aspecto:
+          ProductProp.characteristics.find((c) => c.key === "Aspecto")?.value ??
+          "",
+        textura:
+          ProductProp.characteristics.find((c) => c.key === "Textura")?.value ??
+          "",
+        transito:
+          ProductProp.characteristics.find((c) => c.key === "Transito")
+            ?.value ?? "",
       };
       setProduct(mappedProduct);
     }
@@ -171,6 +187,53 @@ const CreateProduct = ({
       setDialogOpen(false);
     }
   };
+
+  const updateProduct = async (newProduct: CreateProductDTO) => {
+    setLoadingRequest(true);
+    try {
+      if (!getToken) {
+        console.error("Token is undefined");
+        return;
+      }
+      const accessToken = await getToken();
+      const response = await fetch(`${BASE_URL}/product`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(newProduct),
+      });
+      if (!response.ok) {
+        toast({
+          variant: "destructive",
+          title: `Error ${response.status}`,
+          description: `Ocurrió un error al actualizar el producto.`,
+        });
+        return;
+      }
+      toast({
+        title: "Producto actualizado",
+        description: "El producto ha sido actualizado con éxito.",
+      });
+      fetchCategories();
+      fetchProviders();
+      fetchMeasures();
+      fetchPrices();
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: `Error ${error}`,
+        description: "Ocurrió un error al actualizar el producto.",
+      });
+    } finally {
+      setLoadingRequest(false);
+      setDialogOpen(false);
+      if (ReloadProduct !== null && setReloadProduct) {
+        setReloadProduct(!ReloadProduct);
+      }
+    }
+  };
   //#
 
   return (
@@ -194,7 +257,9 @@ const CreateProduct = ({
       >
         <div className="flex flex-row items-center">
           <DialogTitle className="text-3xl font-bold">
-            Crear Producto
+            {TriggerTitle === "Nuevo Producto"
+              ? "Crear Producto"
+              : "Actualizar Producto"}
           </DialogTitle>
           <Progress value={progress} max={100} className="w-[50%] ml-[3%]" />
         </div>
@@ -220,7 +285,10 @@ const CreateProduct = ({
             setProduct={setProduct}
             loading={LoadingRequest}
             setLoading={setLoadingRequest}
-            createProduct={createProduct}
+            createProduct={
+              TriggerTitle == "Nuevo Producto" ? createProduct : updateProduct
+            }
+            triggerTitle={TriggerTitle}
           />
         </Tabs>
       </DialogContent>
