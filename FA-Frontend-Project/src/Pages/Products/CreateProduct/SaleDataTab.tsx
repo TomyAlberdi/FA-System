@@ -192,7 +192,7 @@ const SaleDataTab = ({
             className="my-4"
             min={0}
             max={200}
-            step={1}
+            step={0.1}
             value={[Rentabilidad]}
             onValueChange={(value) => setRentabilidad(value[0])}
           />
