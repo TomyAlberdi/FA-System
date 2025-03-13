@@ -191,7 +191,7 @@ const SaleDataTab = ({
           <Slider
             className="my-4"
             min={0}
-            max={100}
+            max={200}
             step={1}
             value={[Rentabilidad]}
             onValueChange={(value) => setRentabilidad(value[0])}

@@ -13,8 +13,11 @@ export const ProductComplementaryInfo = ({
   Product: CompleteProduct | null;
 }) => {
   const getRentabilidad = (saleUnitCost: number, saleUnitPrice: number) => {
-    const profitMargin = ((saleUnitPrice - saleUnitCost) / saleUnitCost) * 100;
-    return Math.trunc(profitMargin * 100) / 100;
+    const profitMargin =
+    ((saleUnitPrice - saleUnitCost) /
+    saleUnitCost) *
+    100;
+    return Math.round(profitMargin * 100) / 100;
   };
 
   return (
