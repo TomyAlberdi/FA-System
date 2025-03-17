@@ -10,7 +10,7 @@ export const ProductMainInfo = ({
   Product: CompleteProduct | null;
 }) => {
   return (
-    <Card className="p-2 flex flex-col justify-start items-start row-start-1 row-end-5 col-start-5 col-end-16 productGridItem relative">
+    <Card className="p-2 flex flex-col justify-start items-start relative w-3/4 h-full">
       <div className="categoryLinks flex flex-row justify-start items-center gap-2 font-semibold">
         <Button variant={"ghost"}>
           <Link to={`/catalog/categories/${Product?.categoryId}`}>
@@ -19,9 +19,7 @@ export const ProductMainInfo = ({
         </Button>
         <ChevronRight size={20} />
         <Button variant={"ghost"}>
-          <Link
-            to={`/catalog/subcategory/${Product?.subcategoryId}`}
-          >
+          <Link to={`/catalog/subcategory/${Product?.subcategoryId}`}>
             {Product?.subcategory}
           </Link>
         </Button>

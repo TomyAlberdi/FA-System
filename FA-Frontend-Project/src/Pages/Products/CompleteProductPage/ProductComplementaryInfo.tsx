@@ -39,11 +39,10 @@ export const ProductComplementaryInfo = ({
   ]);
 
   return (
-    <div className="complementaryInfo row-start-5 row-end-16 col-start-5 col-end-16 productGridItem px-2 py-4">
+    <div className="h-full w-3/4 px-2 py-4">
       <Accordion
         type="multiple"
         className="w-full"
-        defaultValue={["measures", "tags"]}
       >
         <AccordionItem value="measures">
           <AccordionTrigger>Información</AccordionTrigger>
