@@ -112,7 +112,7 @@ export const ProductCard = ({
             </Button>
           </DialogTrigger>
           <DialogContent
-            className="sm:max-w-[500px] w-full"
+            className="sm:max-w-[500px] w-full p-6"
             aria-describedby={undefined}
           >
             <DialogTitle className="text-xl font-bold">

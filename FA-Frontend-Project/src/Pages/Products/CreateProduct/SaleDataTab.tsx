@@ -127,7 +127,7 @@ const SaleDataTab = ({
 
   return (
     <TabsContent value="saleData" className="h-full w-full">
-      <div className="h-full w-full grid grid-cols-6 grid-rows-8 gap-4">
+      <div className="h-full w-full grid grid-cols-6 grid-rows-6 gap-4">
         <div className="row-start-1 col-start-1 col-span-2">
           <Label className="text-md">Unidad de venta</Label>
           <Select
@@ -247,7 +247,7 @@ const SaleDataTab = ({
             }
           />
         </div>
-        <div className="row-start-3 row-span-2 col-start-1 col-span-6 flex flex-col justify-center items-center">
+        <div className="row-start-3 row-span-1 col-start-1 col-span-6 flex flex-col justify-center items-center">
           <Label className="text-lg">
             Descuento por {Product?.saleUnit}: % {Product?.discountPercentage}{" "}
             (Opcional)
@@ -263,7 +263,7 @@ const SaleDataTab = ({
             }
           />
         </div>
-        <div className="row-start-5 row-span-3 col-span-6 rounded flex flex-col justify-start items-center">
+        <div className="row-start-4 row-span-2 col-span-6 rounded flex flex-col justify-start items-center">
           <h2 className="text-2xl font-semibold mb-4 text-center">
             Información de venta
           </h2>
@@ -328,7 +328,7 @@ const SaleDataTab = ({
             )}
           </div>
         </div>
-        <div className="row-start-8 col-span-2 col-start-3 flex flex-row justify-between items-center gap-2">
+        <div className="row-start-6 col-span-2 col-start-3 flex flex-row justify-between items-center gap-2">
           <Button onClick={onPrevious} className="gap-2 w-1/2">
             <ChevronLeft size={16} />
             Anterior

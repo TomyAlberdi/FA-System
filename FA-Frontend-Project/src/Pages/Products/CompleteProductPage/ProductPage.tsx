@@ -34,24 +34,32 @@ export const ProductPage = () => {
   }, [id, ReloadProduct]);
 
   return (
-    <div className="ProductPage w-full h-full">
+    <div className="w-full h-full flex flex-col gap-4">
       {Loading ? (
         <>
-          <Skeleton className="row-start-1 row-end-7 col-start-1 col-end-5" />
-          <Skeleton className="row-start-1 row-end-7 col-start-5 col-end-16" />
-          <Skeleton className="row-start-7 row-end-16 col-start-1 col-end-5" />
-          <Skeleton className="row-start-7 row-end-16 col-start-5 col-end-16" />
+          <div className="w-full h-[30vh] flex flex-row gap-4">
+            <Skeleton className="w-1/4 h-full" />
+            <Skeleton className="w-3/4 h-full" />
+          </div>
+          <div className="w-full h-[58vh] flex flex-row gap-4">
+            <Skeleton className="h-full w-1/4" />
+            <Skeleton className="h-full w-3/4" />
+          </div>
         </>
       ) : (
         <>
-          <ProductCarousel Product={Product} />
-          <ProductMainInfo Product={Product} />
-          <ProductPageAdminPanel
-            Product={Product}
-            ReloadProduct={ReloadProduct}
-            setReloadProduct={setReloadProduct}
-          />
-          <ProductComplementaryInfo Product={Product} />
+          <div className="w-full h-[30vh] flex flex-row gap-4">
+            <ProductCarousel Product={Product} />
+            <ProductMainInfo Product={Product} />
+          </div>
+          <div className="w-full min-h-[58vh] flex flex-row gap-4">
+            <ProductPageAdminPanel
+              Product={Product}
+              ReloadProduct={ReloadProduct}
+              setReloadProduct={setReloadProduct}
+            />
+            <ProductComplementaryInfo Product={Product} />
+          </div>
         </>
       )}
     </div>

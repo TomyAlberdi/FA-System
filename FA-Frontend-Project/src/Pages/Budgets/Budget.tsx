@@ -194,7 +194,9 @@ export const Budget = () => {
           </div>
           <div className="flex flex-col gap-2">
             <span className="text-lg">Descuento:</span>
-            <span className="text-2xl">{Budget?.discount}%</span>
+            <span className="text-2xl">
+              {Budget?.discount ? Budget?.discount : "0"}%
+            </span>
           </div>
           <div className="flex flex-col gap-2">
             <span className="text-lg">Monto final:</span>

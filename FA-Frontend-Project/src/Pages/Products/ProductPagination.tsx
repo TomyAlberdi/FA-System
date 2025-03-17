@@ -137,12 +137,6 @@ export const ProductPagination: React.FC<ProductPaginationProps> = ({
             </Button>
           </form>
         </Form>
-        {/*         <Link to={"/catalog/products/add"}>
-          <Button className="text-lg w-[19.2%] max-w-[300px] min-w-[200px]">
-            <CirclePlus />
-            Nuevo Producto
-          </Button>
-        </Link> */}
         <CreateProduct TriggerTitle="Nuevo Producto" TriggerIcon={CirclePlus} />
       </section>
       <section className="listBody">

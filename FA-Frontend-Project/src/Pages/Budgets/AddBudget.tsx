@@ -241,7 +241,7 @@ export const AddBudget = () => {
                 </DialogTrigger>
                 <DialogContent
                   aria-describedby={undefined}
-                  className="max-w-[50vw] w-full max-h-[90vh] h-full flex flex-col"
+                  className="max-w-[50vw] w-full max-h-[90vh] h-full flex flex-col p-6"
                 >
                   <DialogTitle className="text-xl font-bold">
                     Seleccionar cliente
@@ -323,7 +323,7 @@ export const AddBudget = () => {
                 </Button>
               </DialogTrigger>
               <DialogContent
-                className="max-w-[80vw] w-full max-h-[90vh] h-full flex flex-col"
+                className="max-w-[80vw] w-full max-h-[90vh] h-full flex flex-col p-6"
                 aria-describedby={undefined}
               >
                 <DialogTitle className="text-xl font-bold">
