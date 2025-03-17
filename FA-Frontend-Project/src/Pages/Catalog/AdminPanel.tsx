@@ -1,10 +1,5 @@
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -14,13 +9,11 @@ import {
 } from "@/components/ui/dialog";
 import { CirclePlus } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { AddProvider } from "@/Pages/Providers/AddProvider";
 import { AddCategory } from "@/Pages/Categories/AddCategory";
+import CreateProduct from "@/Pages/Products/CreateProduct/CreateProduct";
 
 export const AdminPanel = () => {
-  const navigate = useNavigate();
-
   const [ProviderOpen, setProviderOpen] = useState(false);
   const [CategoryOpen, setCategoryOpen] = useState(false);
 
@@ -30,13 +23,10 @@ export const AdminPanel = () => {
         <CardTitle>Atajos</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-row space-x-1 h-2/3">
-        <Button
-          className="h-full text-lg w-1/3"
-          onClick={() => navigate("/catalog/products/add")}
-        >
-          <CirclePlus className="bigger-icon" />
-          Añadir Producto
-        </Button>
+        <CreateProduct
+          TriggerTitle="Añadir Producto"
+          TriggerIcon={CirclePlus}
+        />
         <Dialog open={ProviderOpen} onOpenChange={setProviderOpen}>
           <DialogTrigger asChild>
             <Button className="h-full text-lg w-1/3">

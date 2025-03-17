@@ -244,17 +244,21 @@ const CreateProduct = ({
           className={
             TriggerTitle == "Nuevo Producto"
               ? "text-lg w-[19.2%] max-w-[300px] min-w-[200px]"
+              : TriggerTitle == "Añadir Producto"
+              ? "h-full text-lg w-1/3"
               : "w-10/12 text-md"
           }
         >
-          <TriggerIcon />
+          <TriggerIcon
+            className={TriggerTitle == "Añadir Producto" ? "bigger-icon" : ""}
+          />
           {TriggerTitle}
         </Button>
       </DialogTrigger>
       <DialogContent
         aria-label="modal"
         aria-describedby={undefined}
-        className="lg:w-[70vw] xl:max-w-[1344px] p-6"
+        className="lg:w-[70vw] xl:max-w-[1344px]"
       >
         <ScrollArea className="w-full max-h-[80vh] overflow-auto flex flex-col justify-start px-6 pt-6 pb-2">
           <div className="flex flex-row items-center">
@@ -288,7 +292,10 @@ const CreateProduct = ({
               loading={LoadingRequest}
               setLoading={setLoadingRequest}
               createProduct={
-                TriggerTitle == "Nuevo Producto" ? createProduct : updateProduct
+                TriggerTitle === "Nuevo Producto" ||
+                TriggerTitle === "Añadir Producto"
+                  ? createProduct
+                  : updateProduct
               }
               triggerTitle={TriggerTitle}
             />
