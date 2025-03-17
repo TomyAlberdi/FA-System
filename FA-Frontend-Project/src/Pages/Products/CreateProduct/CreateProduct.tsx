@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useToast } from "@/hooks/use-toast";
 import { useCatalogContext } from "@/Context/UseCatalogContext";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const CreateProduct = ({
   ProductProp,
@@ -253,44 +254,46 @@ const CreateProduct = ({
       <DialogContent
         aria-label="modal"
         aria-describedby={undefined}
-        className="lg:w-[70vw] xl:max-w-[1344px] h-[80vh] flex flex-col justify-start "
+        className="lg:w-[70vw] xl:max-w-[1344px]"
       >
-        <div className="flex flex-row items-center">
-          <DialogTitle className="text-3xl font-bold">
-            {TriggerTitle === "Nuevo Producto"
-              ? "Crear Producto"
-              : "Actualizar Producto"}
-          </DialogTitle>
-          <Progress value={progress} max={100} className="w-[50%] ml-[3%]" />
-        </div>
-        <Tabs
-          className="w-full h-full"
-          value={currentTab}
-          onValueChange={setCurrentTab}
-        >
-          <BasicDataTab
-            onNext={handleNextTab}
-            Product={Product}
-            setProduct={setProduct}
-          />
-          <SaleDataTab
-            onPrevious={handlePreviousTab}
-            onNext={handleNextTab}
-            Product={Product}
-            setProduct={setProduct}
-          />
-          <ExtraDataTab
-            onPrevious={handlePreviousTab}
-            Product={Product}
-            setProduct={setProduct}
-            loading={LoadingRequest}
-            setLoading={setLoadingRequest}
-            createProduct={
-              TriggerTitle == "Nuevo Producto" ? createProduct : updateProduct
-            }
-            triggerTitle={TriggerTitle}
-          />
-        </Tabs>
+        <ScrollArea className="w-full max-h-[80vh] overflow-auto flex flex-col justify-start px-6 pt-6 pb-2">
+          <div className="flex flex-row items-center">
+            <DialogTitle className="text-3xl font-bold">
+              {TriggerTitle === "Nuevo Producto"
+                ? "Crear Producto"
+                : "Actualizar Producto"}
+            </DialogTitle>
+            <Progress value={progress} max={100} className="w-[50%] ml-[3%]" />
+          </div>
+          <Tabs
+            className="w-full h-full"
+            value={currentTab}
+            onValueChange={setCurrentTab}
+          >
+            <BasicDataTab
+              onNext={handleNextTab}
+              Product={Product}
+              setProduct={setProduct}
+            />
+            <SaleDataTab
+              onPrevious={handlePreviousTab}
+              onNext={handleNextTab}
+              Product={Product}
+              setProduct={setProduct}
+            />
+            <ExtraDataTab
+              onPrevious={handlePreviousTab}
+              Product={Product}
+              setProduct={setProduct}
+              loading={LoadingRequest}
+              setLoading={setLoadingRequest}
+              createProduct={
+                TriggerTitle == "Nuevo Producto" ? createProduct : updateProduct
+              }
+              triggerTitle={TriggerTitle}
+            />
+          </Tabs>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );
