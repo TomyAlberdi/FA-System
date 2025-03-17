@@ -24,7 +24,7 @@ export const CategoriesHeader = () => {
           </Button>
         </DialogTrigger>
         <DialogContent
-          className="sm:max-w-[500px] w-full"
+          className="sm:max-w-[500px] w-full p-6"
           aria-describedby={undefined}
         >
           <DialogHeader>

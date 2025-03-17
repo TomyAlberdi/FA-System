@@ -117,7 +117,7 @@ export const UpdateClient = ({ client, Reload, setReload }: { client: CompleteCl
         </Button>
       </DialogTrigger>
       <DialogContent
-        className="sm:max-w-[500px] w-full"
+        className="sm:max-w-[500px] w-full p-6"
         aria-describedby={undefined}
       >
         <DialogHeader>

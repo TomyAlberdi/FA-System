@@ -254,7 +254,7 @@ const CreateProduct = ({
       <DialogContent
         aria-label="modal"
         aria-describedby={undefined}
-        className="lg:w-[70vw] xl:max-w-[1344px]"
+        className="lg:w-[70vw] xl:max-w-[1344px] p-6"
       >
         <ScrollArea className="w-full max-h-[80vh] overflow-auto flex flex-col justify-start px-6 pt-6 pb-2">
           <div className="flex flex-row items-center">

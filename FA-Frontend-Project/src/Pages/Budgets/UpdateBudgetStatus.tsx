@@ -127,7 +127,7 @@ export const UpdateBudgetStatus = ({
 
   return (
     <DialogContent
-      className="sm:max-w-[500px] w-full"
+      className="sm:max-w-[500px] w-full p-6"
       aria-describedby={undefined}
     >
       <DialogTitle>Actualizar estado del presupuesto</DialogTitle>
