@@ -27,6 +27,7 @@ export const DownloadBudgetDetail = ({
     const doc = new jsPDF();
 
     // Title
+    /* 
     doc.addImage(
       "https://fa-sa-bucket.s3.sa-east-1.amazonaws.com/logo_clp_2020.png",
       "JPEG",
@@ -35,28 +36,40 @@ export const DownloadBudgetDetail = ({
       100,
       20
     );
+    */
+    doc.setFontSize(25);
+    doc.setFont("helvetica", "bold");
+    doc.text("SB - Cerámicos Olavarría", 10, 20);
 
     // Date and Company Info
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
     doc.text(formatDateTime(budget?.date ?? ""), 10, 30);
+    /*     
     doc.text("Calle 122 y 54 - Tel. 412-3001 Lineas Rotativas", 10, 40);
     doc.text("email: consultas@ceramicoslaplata.com.ar", 10, 45);
-
+    */
     // Budget Number
     doc.setFont("helvetica", "bold");
     doc.text(
       `Presupuesto: ${budget?.id?.toString().padStart(10, "0")}`,
       10,
+      40
+    );
+    /* 
+    doc.text(
+      `Presupuesto: ${budget?.id?.toString().padStart(10, "0")}`,
+      10,
       55
     );
+    */
 
     // Client Information
-    doc.setFont("helvetica", "normal");
+    /*     doc.setFont("helvetica", "normal");
     doc.text("Sr.(es) PRESUPUESTO DISENO10", 10, 65);
     doc.text("Condición frente al IVA: Consumidor Final", 10, 70);
     doc.text("Domicilio: ALBERDI 486", 10, 75);
-    doc.text("Condicion de Venta: CONTADO", 10, 80);
+    doc.text("Condicion de Venta: CONTADO", 10, 80); */
 
     // Table Headers
     const headers = [
@@ -69,7 +82,8 @@ export const DownloadBudgetDetail = ({
     ];
 
     // Draw Table
-    let startY = 90;
+    let startY = 50;
+    // let startY = 90;
     const columnWidths = [30, 30, 60, 30, 30];
 
     doc.setFont("helvetica", "bold");
