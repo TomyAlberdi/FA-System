@@ -1,4 +1,3 @@
-import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "@/App.tsx";
 import { BrowserRouter } from "react-router-dom";
@@ -15,24 +14,22 @@ const logoutUri = import.meta.env.VITE_KINDE_LOGOUT_URI;
 const audience = import.meta.env.VITE_KINDE_AUDIENCE;
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <KindeProvider
-      clientId={clientId}
-      domain={domain}
-      redirectUri={redirectUri}
-      logoutUri={logoutUri}
-      audience={audience}
-    >
-      <CatalogContextComponent>
-        <SalesContextComponent>
-          <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-            <BrowserRouter>
-              <ScrollToHashElement />
-              <App />
-            </BrowserRouter>
-          </ThemeProvider>
-        </SalesContextComponent>
-      </CatalogContextComponent>
-    </KindeProvider>
-  </StrictMode>
+  <KindeProvider
+    clientId={clientId}
+    domain={domain}
+    redirectUri={redirectUri}
+    logoutUri={logoutUri}
+    audience={audience}
+  >
+    <CatalogContextComponent>
+      <SalesContextComponent>
+        <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+          <BrowserRouter>
+            <ScrollToHashElement />
+            <App />
+          </BrowserRouter>
+        </ThemeProvider>
+      </SalesContextComponent>
+    </CatalogContextComponent>
+  </KindeProvider>
 );

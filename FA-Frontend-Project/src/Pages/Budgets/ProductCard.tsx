@@ -39,6 +39,13 @@ export const ProductCard = ({
   });
 
   useEffect(() => {
+    if (product.discountPercentage > 0) {
+      Discount[0] = Discount[0] + product.discountPercentage;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     const subtotal =
       Math.round(
         (data.saleUnitQuantity * product.saleUnitPrice + Number.EPSILON) * 100
@@ -156,6 +163,11 @@ export const ProductCard = ({
                   min={0}
                   max={100}
                   step={1}
+                  defaultValue={
+                    product.discountPercentage > 0
+                      ? [product.discountPercentage]
+                      : [0]
+                  }
                   onValueChange={(value) => setDiscount(value)}
                 />
               </div>
