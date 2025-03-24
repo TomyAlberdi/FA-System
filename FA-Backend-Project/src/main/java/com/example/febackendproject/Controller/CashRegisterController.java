@@ -1,5 +1,6 @@
 package com.example.febackendproject.Controller;
 
+import com.example.febackendproject.DTO.LightCashRegisterDTO;
 import com.example.febackendproject.Entity.CashRegister;
 import com.example.febackendproject.Entity.CashRegisterRecord;
 import com.example.febackendproject.Service.CashRegisterService;
@@ -24,11 +25,11 @@ public class CashRegisterController {
     private final CashRegisterService cashRegisterService;
 
     @GetMapping()
-    public ResponseEntity<List<CashRegister>> getByMonth(@RequestParam(value = "yearMonth", required = false) String yearMonthStr) {
+    public ResponseEntity<List<LightCashRegisterDTO>> getByMonth(@RequestParam(value = "yearMonth", required = false) String yearMonthStr) {
         YearMonth yearMonth = (yearMonthStr != null && !yearMonthStr.isEmpty())
                 ? YearMonth.parse(yearMonthStr)
                 : YearMonth.now();
-        List<CashRegister> cashRegisterList = cashRegisterService.getByMonth(yearMonth);
+        List<LightCashRegisterDTO> cashRegisterList = cashRegisterService.getByMonth(yearMonth);
         return ResponseEntity.ok(cashRegisterList);
     }
 
@@ -39,6 +40,11 @@ public class CashRegisterController {
     ) {
         CashRegister updatedRegister = cashRegisterService.addRecord(record, date);
         return ResponseEntity.ok(updatedRegister);
+    }
+
+    @GetMapping("/total")
+    public ResponseEntity<Double> getTotal() {
+        return ResponseEntity.ok(cashRegisterService.getTotalAmount());
     }
 
 }

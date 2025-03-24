@@ -49,11 +49,11 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
+                //.authorizeHttpRequests(auth -> auth
                         // disable security for testing ignore otherwise
                         //.requestMatchers(HttpMethod.GET).permitAll()
                         //.anyRequest().hasAnyAuthority("ROLE_admin"))
-                        .anyRequest().authenticated())
+                        //.anyRequest().authenticated())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .addFilterBefore(new JwtAuthenticationFilter(jwtVerifier()), UsernamePasswordAuthenticationFilter.class);
         return http.build();
