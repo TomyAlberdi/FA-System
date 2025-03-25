@@ -17,6 +17,7 @@ import { Client } from "@/Pages/Clients/Client";
 import { Budgets } from "@/Pages/Budgets/Budgets";
 import { AddBudget } from "@/Pages/Budgets/AddBudget";
 import { Budget } from "@/Pages/Budgets/Budget";
+import CashRegister from "@/Pages/Register/CashRegister";
 
 export const routesConfig = [
   { index: true, element: <Home /> },
@@ -40,4 +41,5 @@ export const routesConfig = [
   { path: "/sales/budgets", element: <Budgets /> },
   { path: "/sales/budgets/:id", element: <Budget /> },
   { path: "/sales/budgets/add", element: <AddBudget /> },
+  { path: "/sales/register", element: <CashRegister /> },
 ];

@@ -25,6 +25,7 @@ const breadcrumbsHandles = [
   { label: "clients", handle: "Clientes" },
   { label: "client", handle: "Cliente" },
   { label: "budgets", handle: "Presupuestos" },
+  { label: "register", handle: "Caja Registradora" },
 ];
 
 export const BreadcrumbsHeader = () => {
