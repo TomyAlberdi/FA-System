@@ -70,8 +70,10 @@ export interface BudgetReport {
   CANCELADO: number;
 }
 
-export interface MonthlyRegisters {
+export interface RegisterRecord {
   id: number;
-  total: number;
   date: string;
+  amount: number;
+  type: number;
+  detail: string;
 }

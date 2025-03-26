@@ -2,11 +2,12 @@ import { SalesContext, SalesContextType } from "@/Context/SalesContext";
 import {
   CompleteBudget,
   CompleteClient,
-  MonthlyRegisters,
   PartialBudget,
   PartialClient,
+  RegisterRecord,
 } from "@/hooks/SalesInterfaces";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import { useEffect, useState } from "react";
 
 interface SalesContextComponentProps {
   children: React.ReactNode;
@@ -162,7 +163,8 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
   };
 
   /// CASH REGISTER GET ///
-  const fetchTotalAmount = async () => {
+  const [RegisterTotalAmount, setRegisterTotalAmount] = useState(0);
+  const fetchRegisterTotalAmount = async () => {
     const url = `${BASE_URL}/cash-register/total`;
     try {
       if (!getToken) {
@@ -180,18 +182,28 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
         return;
       }
       const result: number = await response.json();
-      return result;
+      setRegisterTotalAmount(result);
     } catch (error) {
       console.error("Error fetching cash register: ", error);
     }
   };
 
+  const [RegisterTypes, setRegisterTypes] = useState<Array<number>>([0, 0]);
   const fetchRegisterTypes = async () => {
-    return [14, 5];
+    setRegisterTypes([14, 5]);
   };
 
-  const fetchRegisterByMonth = async (yearMonth: string) => {
-    const url = `${BASE_URL}/cash-register?yearMonth=${yearMonth}`;
+  useEffect(() => {
+    const fetchData = async () => {
+      fetchRegisterTotalAmount();
+      fetchRegisterTypes();
+    };
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [getToken]);
+
+  const fetchRegisterByDate = async (date: string) => {
+    const url = `${BASE_URL}/cash-register/${date}`;
     try {
       if (!getToken) {
         console.error("getToken is undefined");
@@ -207,7 +219,7 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
         console.error("Error fetching cash register: ", response.statusText);
         return;
       }
-      const result: Array<MonthlyRegisters> = await response.json();
+      const result: Array<RegisterRecord> = await response.json();
       return result;
     } catch (error) {
       console.error("Error fetching cash register: ", error);
@@ -223,9 +235,11 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
     fetchCompleteBudget,
     fetchBudgetsByDate,
     fetchBudgetsByDateRange,
-    fetchTotalAmount,
+    fetchRegisterTotalAmount,
+    RegisterTotalAmount,
     fetchRegisterTypes,
-    fetchRegisterByMonth,
+    RegisterTypes,
+    fetchRegisterByDate,
   };
 
   return (
