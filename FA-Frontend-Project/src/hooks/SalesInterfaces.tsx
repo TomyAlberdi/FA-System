@@ -69,3 +69,9 @@ export interface BudgetReport {
   ENTREGADO: number;
   CANCELADO: number;
 }
+
+export interface MonthlyRegisters {
+  id: number;
+  total: number;
+  date: string;
+}

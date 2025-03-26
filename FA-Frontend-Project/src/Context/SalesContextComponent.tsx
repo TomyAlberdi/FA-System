@@ -2,6 +2,7 @@ import { SalesContext, SalesContextType } from "@/Context/SalesContext";
 import {
   CompleteBudget,
   CompleteClient,
+  MonthlyRegisters,
   PartialBudget,
   PartialClient,
 } from "@/hooks/SalesInterfaces";
@@ -36,7 +37,7 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
         return;
       }
       const result: CompleteClient = await response.json();
-      return result;
+      return result || [];
     } catch (error) {
       console.error("Error fetching data: ", error);
     }
@@ -59,7 +60,7 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
         return;
       }
       const result: Array<PartialClient> = await response.json();
-      return result;
+      return result || [];
     } catch (error) {
       console.error("Error fetching clients: ", error);
     }
@@ -160,6 +161,60 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
     }
   };
 
+  /// CASH REGISTER GET ///
+  const fetchTotalAmount = async () => {
+    const url = `${BASE_URL}/cash-register/total`;
+    try {
+      if (!getToken) {
+        console.error("getToken is undefined");
+        return;
+      }
+      const accessToken = await getToken();
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (!response.ok) {
+        console.error("Error fetching cash register: ", response.statusText);
+        return;
+      }
+      const result: number = await response.json();
+      return result;
+    } catch (error) {
+      console.error("Error fetching cash register: ", error);
+    }
+  };
+
+  const fetchRegisterTypes = async () => {
+    return [14, 5];
+  };
+
+  const fetchRegisterByMonth = async (yearMonth: string) => {
+    const url = `${BASE_URL}/cash-register?yearMonth=${yearMonth}`;
+    try {
+      if (!getToken) {
+        console.error("getToken is undefined");
+        return;
+      }
+      const accessToken = await getToken();
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (!response.ok) {
+        console.error("Error fetching cash register: ", response.statusText);
+        return;
+      }
+      const result: Array<MonthlyRegisters> = await response.json();
+      return result;
+    } catch (error) {
+      console.error("Error fetching cash register: ", error);
+      return;
+    }
+  };
+
   const exportData: SalesContextType = {
     BASE_URL,
     fetchClient,
@@ -168,6 +223,9 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
     fetchCompleteBudget,
     fetchBudgetsByDate,
     fetchBudgetsByDateRange,
+    fetchTotalAmount,
+    fetchRegisterTypes,
+    fetchRegisterByMonth,
   };
 
   return (
