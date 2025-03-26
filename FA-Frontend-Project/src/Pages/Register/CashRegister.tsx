@@ -1,7 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useSalesContext } from "@/Context/UseSalesContext";
-import { ChevronDown, ChevronUp, DollarSign } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronsLeft,
+  ChevronsRight,
+  ChevronUp,
+  DollarSign,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import CalendarTable from "@/Pages/Register/CalendarTable";
 
@@ -63,9 +69,17 @@ const CashRegister = () => {
         </CardContent>
       </Card>
       <div className="w-2/3 h-full flex flex-col justify-start items-center">
-        <h2 className="text-3xl font-semibold mb-4">
-          Registros {CurrentMonth} {CurrentYear}
-        </h2>
+        <section className="flex justify-center gap-4">
+          <Button>
+            <ChevronsLeft className="large-icon" />
+          </Button>
+          <h2 className="text-3xl font-semibold mb-4">
+            Registros {CurrentMonth} {CurrentYear}
+          </h2>
+          <Button>
+            <ChevronsRight className="large-icon" />
+          </Button>
+        </section>
         <CalendarTable
           year={CurrentYearMonth.split("-").map(Number)[0]}
           month={CurrentYearMonth.split("-").map(Number)[1] - 1}

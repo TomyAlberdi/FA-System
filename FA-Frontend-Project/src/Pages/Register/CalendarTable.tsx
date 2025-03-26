@@ -1,10 +1,10 @@
 import {
-  Table,
   TableBody,
   TableCell,
+  TableFullHeight,
   TableHead,
   TableHeader,
-  TableRow,
+  TableRow
 } from "@/components/ui/table";
 import { useEffect, useState } from "react";
 
@@ -37,7 +37,7 @@ const CalendarTable = ({ year, month }: { year: number; month: number }) => {
     for (let day = 1; day <= newDaysInMonth; day++) {
       row.push(
         <TableCell
-              className="text-center hover:bg-muted/50 hover:cursor-pointer"
+          className="text-center hover:bg-muted/50 hover:cursor-pointer text-xl"
           key={day}
         >
           {day}
@@ -57,7 +57,7 @@ const CalendarTable = ({ year, month }: { year: number; month: number }) => {
   }, [year, month]);
 
   return (
-    <Table className="border">
+    <TableFullHeight className="border h-full">
       <TableHeader>
         <TableRow>
           {adjustedDaysOfWeek.map((day) => (
@@ -68,7 +68,7 @@ const CalendarTable = ({ year, month }: { year: number; month: number }) => {
         </TableRow>
       </TableHeader>
       <TableBody>{days}</TableBody>
-    </Table>
+    </TableFullHeight>
   );
 };
 export default CalendarTable;
