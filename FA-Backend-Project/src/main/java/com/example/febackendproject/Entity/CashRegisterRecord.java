@@ -18,7 +18,7 @@ import java.time.LocalDate;
 public class CashRegisterRecord {
 
     public enum Type {
-        INGRESO, SALIDA
+        INGRESO, GASTO
     }
 
     @Id

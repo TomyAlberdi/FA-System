@@ -1,5 +1,6 @@
 package com.example.febackendproject.Service;
 
+import com.example.febackendproject.DTO.PricesDTO;
 import com.example.febackendproject.Entity.CashRegisterRecord;
 import com.example.febackendproject.Repository.CashRegisterRepository;
 import lombok.AllArgsConstructor;
@@ -28,5 +29,7 @@ public class CashRegisterService {
     public Double getTotalAmount() {
         return cashRegisterRepository.getTotalAmount();
     }
+
+    public Object getTypes() { return cashRegisterRepository.getTypes(); }
 
 }

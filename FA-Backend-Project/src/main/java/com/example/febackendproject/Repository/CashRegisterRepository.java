@@ -1,5 +1,6 @@
 package com.example.febackendproject.Repository;
 
+import com.example.febackendproject.DTO.PricesDTO;
 import com.example.febackendproject.Entity.CashRegisterRecord;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -19,5 +20,14 @@ public interface CashRegisterRepository extends JpaRepository<CashRegisterRecord
 
     @Query("SELECT SUM(c.amount) FROM CashRegisterRecord c")
     Double getTotalAmount();
+
+    //@Query("SELECT SUM(c.amount) FROM CashRegisterRecord c GROUP BY c.type")
+    @Query("""
+        SELECT
+            COALESCE(SUM(CASE WHEN c.type = com.example.febackendproject.Entity.CashRegisterRecord.Type.INGRESO THEN c.amount ELSE 0 END), 0),
+            COALESCE(SUM(CASE WHEN c.type = com.example.febackendproject.Entity.CashRegisterRecord.Type.GASTO THEN c.amount ELSE 0 END), 0)
+        FROM CashRegisterRecord c
+    """)
+    Object getTypes();
 
 }

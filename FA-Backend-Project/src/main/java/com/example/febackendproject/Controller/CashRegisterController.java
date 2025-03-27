@@ -1,5 +1,6 @@
 package com.example.febackendproject.Controller;
 
+import com.example.febackendproject.DTO.PricesDTO;
 import com.example.febackendproject.Entity.CashRegisterRecord;
 import com.example.febackendproject.Service.CashRegisterService;
 import lombok.AllArgsConstructor;
@@ -38,6 +39,11 @@ public class CashRegisterController {
     @GetMapping("/{date}")
     public ResponseEntity<List<CashRegisterRecord>> getByDate(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         return ResponseEntity.ok(cashRegisterService.getByDate(date));
+    }
+
+    @GetMapping("/types")
+    public ResponseEntity<Object> getTypes() {
+        return ResponseEntity.ok(cashRegisterService.getTypes());
     }
 
 }
