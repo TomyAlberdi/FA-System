@@ -18,16 +18,22 @@ public interface CashRegisterRepository extends JpaRepository<CashRegisterRecord
     @Query("SELECT c FROM CashRegisterRecord c WHERE c.date = :date")
     List<CashRegisterRecord> getByDate(@Param("date") LocalDate date);
 
-    @Query("SELECT SUM(c.amount) FROM CashRegisterRecord c")
+    @Query("""
+                SELECT
+                    COALESCE(SUM(CASE WHEN c.type = com.example.febackendproject.Entity.CashRegisterRecord.Type.INGRESO THEN c.amount ELSE 0 END), 0)
+                    -
+                    COALESCE(SUM(CASE WHEN c.type = com.example.febackendproject.Entity.CashRegisterRecord.Type.GASTO THEN c.amount ELSE 0 END), 0)
+                FROM CashRegisterRecord c
+            """)
     Double getTotalAmount();
 
-    //@Query("SELECT SUM(c.amount) FROM CashRegisterRecord c GROUP BY c.type")
     @Query("""
-        SELECT
-            COALESCE(SUM(CASE WHEN c.type = com.example.febackendproject.Entity.CashRegisterRecord.Type.INGRESO THEN c.amount ELSE 0 END), 0),
-            COALESCE(SUM(CASE WHEN c.type = com.example.febackendproject.Entity.CashRegisterRecord.Type.GASTO THEN c.amount ELSE 0 END), 0)
-        FROM CashRegisterRecord c
-    """)
+                SELECT
+                    COALESCE(SUM(CASE WHEN c.type = com.example.febackendproject.Entity.CashRegisterRecord.Type.INGRESO THEN c.amount ELSE 0 END), 0),
+                    COALESCE(SUM(CASE WHEN c.type = com.example.febackendproject.Entity.CashRegisterRecord.Type.GASTO THEN c.amount ELSE 0 END), 0)
+                FROM CashRegisterRecord c
+            """)
     Object getTypes();
+
 
 }
