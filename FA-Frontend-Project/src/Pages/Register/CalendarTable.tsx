@@ -4,11 +4,14 @@ import {
   TableFullHeight,
   TableHead,
   TableHeader,
-  TableRow
+  TableRow,
 } from "@/components/ui/table";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const CalendarTable = ({ year, month }: { year: number; month: number }) => {
+  const navigate = useNavigate();
+
   const [days, setDays] = useState<JSX.Element[]>([]);
 
   const daysOfWeek = [
@@ -39,6 +42,7 @@ const CalendarTable = ({ year, month }: { year: number; month: number }) => {
         <TableCell
           className="text-center hover:bg-muted/50 hover:cursor-pointer text-xl"
           key={day}
+          onClick={() => navigate(`/sales/register/${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`)}
         >
           {day}
         </TableCell>
@@ -54,6 +58,7 @@ const CalendarTable = ({ year, month }: { year: number; month: number }) => {
     }
 
     setDays(tempDays);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [year, month]);
 
   return (
