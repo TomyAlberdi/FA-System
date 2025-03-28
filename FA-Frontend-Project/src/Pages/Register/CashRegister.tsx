@@ -72,10 +72,10 @@ const CashRegister = () => {
             </span>
           </div>
           <div className="flex gap-2 items-center text-xl">
-            <ChevronDown className="text-chart-5 large-icon" />
+            <ChevronDown className="text-destructive large-icon" />
             <span className="font-medium">
               Gastos {CurrentMonth}:{" "}
-              <span className="text-chart-5">$ {RegisterTypes[1]}</span>
+              <span className="text-destructive">$ {RegisterTypes[1]}</span>
             </span>
           </div>
         </CardContent>
