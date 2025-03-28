@@ -188,6 +188,7 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
     }
   };
 
+  const [RegisterTypes, setRegisterTypes] = useState<Array<number>>([0, 0]);
   const fetchRegisterTypes = async (yearMonth: string) => {
     const url = `${BASE_URL}/cash-register/types/${yearMonth}`;
     try {
@@ -207,7 +208,7 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
       }
       const result: Array<number> = await response.json();
       const formattedResult = result.map((num) => Number(num.toFixed(2)));
-      return formattedResult;
+      setRegisterTypes(formattedResult);
     } catch (error) {
       console.error("Error fetching cash register: ", error);
     }
@@ -257,6 +258,7 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
     fetchRegisterTotalAmount,
     RegisterTotalAmount,
     fetchRegisterTypes,
+    RegisterTypes,
     fetchRegisterByDate,
   };
 

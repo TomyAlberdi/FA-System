@@ -74,6 +74,6 @@ export interface RegisterRecord {
   id?: number;
   date: string;
   amount: number;
-  type: number;
+  type: string;
   detail: string;
 }

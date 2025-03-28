@@ -5,16 +5,16 @@ import {
   ChevronDown,
   ChevronsLeft,
   ChevronsRight,
-  ChevronUp
+  ChevronUp,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import CalendarTable from "@/Pages/Register/CalendarTable";
 import AddRegister from "@/Pages/Register/AddRegister";
 
 const CashRegister = () => {
-  const { RegisterTotalAmount, fetchRegisterTypes } = useSalesContext();
+  const { RegisterTotalAmount, RegisterTypes, fetchRegisterTypes } =
+    useSalesContext();
 
-  const [RegisterTypes, setRegisterTypes] = useState<Array<number>>([0, 0]);
   const [CurrentYearMonth, setCurrentYearMonth] = useState<string>(
     new Date().toISOString().slice(0, 7)
   );
@@ -31,11 +31,7 @@ const CashRegister = () => {
       currentMonth.charAt(0).toUpperCase() + currentMonth.slice(1)
     );
     setCurrentYear(year);
-    fetchRegisterTypes(CurrentYearMonth).then((result) => {
-      if (result) {
-        setRegisterTypes(result);
-      }
-    });
+    fetchRegisterTypes(CurrentYearMonth);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [CurrentYearMonth]);
 
@@ -65,7 +61,7 @@ const CashRegister = () => {
           <span className="font-medium text-3xl">$ {RegisterTotalAmount}</span>
         </CardHeader>
         <CardContent>
-          <AddRegister />
+          <AddRegister yearMonth={CurrentYearMonth} />
         </CardContent>
         <CardContent className="flex flex-col gap-2">
           <div className="flex gap-2 items-center text-xl">
