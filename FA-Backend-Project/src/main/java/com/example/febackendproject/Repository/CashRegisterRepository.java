@@ -32,8 +32,9 @@ public interface CashRegisterRepository extends JpaRepository<CashRegisterRecord
                     COALESCE(SUM(CASE WHEN c.type = com.example.febackendproject.Entity.CashRegisterRecord.Type.INGRESO THEN c.amount ELSE 0 END), 0),
                     COALESCE(SUM(CASE WHEN c.type = com.example.febackendproject.Entity.CashRegisterRecord.Type.GASTO THEN c.amount ELSE 0 END), 0)
                 FROM CashRegisterRecord c
+                WHERE c.date BETWEEN :#{#yearMonth.atDay(1)} AND :#{#yearMonth.atEndOfMonth()}
             """)
-    Object getTypes();
+    Object getTypes(@Param("yearMonth") YearMonth yearMonth);
 
 
 }

@@ -30,6 +30,6 @@ public class CashRegisterService {
         return cashRegisterRepository.getTotalAmount();
     }
 
-    public Object getTypes() { return cashRegisterRepository.getTypes(); }
+    public Object getTypes(YearMonth yearMonth) { return cashRegisterRepository.getTypes(yearMonth); }
 
 }

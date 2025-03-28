@@ -41,9 +41,9 @@ public class CashRegisterController {
         return ResponseEntity.ok(cashRegisterService.getByDate(date));
     }
 
-    @GetMapping("/types")
-    public ResponseEntity<Object> getTypes() {
-        return ResponseEntity.ok(cashRegisterService.getTypes());
+    @GetMapping("/types/{yearMonth}")
+    public ResponseEntity<Object> getTypes(@PathVariable @DateTimeFormat(pattern = "yyyy-MM") YearMonth yearMonth) {
+        return ResponseEntity.ok(cashRegisterService.getTypes(yearMonth));
     }
 
 }
