@@ -27,8 +27,7 @@ export interface SalesContextType {
   // Cash Register
   fetchRegisterTotalAmount: () => Promise<void>;
   RegisterTotalAmount: number;
-  fetchRegisterTypes: () => Promise<void>;
-  RegisterTypes: Array<number>;
+  fetchRegisterTypes: (yearMonth: string) => Promise<Array<number> | undefined>;
   fetchRegisterByDate: (
     date: string
   ) => Promise<Array<RegisterRecord> | undefined>;

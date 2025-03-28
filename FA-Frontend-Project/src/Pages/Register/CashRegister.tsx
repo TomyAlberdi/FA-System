@@ -12,8 +12,9 @@ import { useEffect, useState } from "react";
 import CalendarTable from "@/Pages/Register/CalendarTable";
 
 const CashRegister = () => {
-  const { RegisterTotalAmount, RegisterTypes } = useSalesContext();
+  const { RegisterTotalAmount, fetchRegisterTypes } = useSalesContext();
 
+  const [RegisterTypes, setRegisterTypes] = useState<Array<number>>([0, 0]);
   const [CurrentYearMonth, setCurrentYearMonth] = useState<string>(
     new Date().toISOString().slice(0, 7)
   );
@@ -30,6 +31,12 @@ const CashRegister = () => {
       currentMonth.charAt(0).toUpperCase() + currentMonth.slice(1)
     );
     setCurrentYear(year);
+    fetchRegisterTypes(CurrentYearMonth).then((result) => {
+      if (result) {
+        setRegisterTypes(result);
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [CurrentYearMonth]);
 
   const nextYearMonth = () => {
@@ -38,7 +45,6 @@ const CashRegister = () => {
     const nextYear = nextMonth > 12 ? year + 1 : year;
     const adjustedMonth = nextMonth > 12 ? 1 : nextMonth;
     const formattedMonth = adjustedMonth.toString().padStart(2, "0");
-    console.log(`${nextYear}-${formattedMonth}`);
     setCurrentYearMonth(`${nextYear}-${formattedMonth}`);
   };
 
@@ -48,7 +54,6 @@ const CashRegister = () => {
     const prevYear = prevMonth < 1 ? year - 1 : year;
     const adjustedMonth = prevMonth < 1 ? 12 : prevMonth;
     const formattedMonth = adjustedMonth.toString().padStart(2, "0");
-    console.log(`${prevYear}-${formattedMonth}`);
     setCurrentYearMonth(`${prevYear}-${formattedMonth}`);
   };
 
