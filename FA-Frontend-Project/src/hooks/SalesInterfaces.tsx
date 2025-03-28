@@ -71,7 +71,7 @@ export interface BudgetReport {
 }
 
 export interface RegisterRecord {
-  id: number;
+  id?: number;
   date: string;
   amount: number;
   type: number;

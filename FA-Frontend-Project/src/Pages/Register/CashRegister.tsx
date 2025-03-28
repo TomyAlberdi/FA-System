@@ -5,11 +5,11 @@ import {
   ChevronDown,
   ChevronsLeft,
   ChevronsRight,
-  ChevronUp,
-  DollarSign,
+  ChevronUp
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import CalendarTable from "@/Pages/Register/CalendarTable";
+import AddRegister from "@/Pages/Register/AddRegister";
 
 const CashRegister = () => {
   const { RegisterTotalAmount, fetchRegisterTypes } = useSalesContext();
@@ -65,10 +65,7 @@ const CashRegister = () => {
           <span className="font-medium text-3xl">$ {RegisterTotalAmount}</span>
         </CardHeader>
         <CardContent>
-          <Button className="w-full text-lg">
-            <DollarSign className="big-icon" />
-            Modificar
-          </Button>
+          <AddRegister />
         </CardContent>
         <CardContent className="flex flex-col gap-2">
           <div className="flex gap-2 items-center text-xl">
