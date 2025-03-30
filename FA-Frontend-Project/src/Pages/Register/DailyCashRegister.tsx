@@ -67,6 +67,8 @@ const DailyCashRegister = () => {
     setDailyTotal(ingresos - gastos);
   }, [Records]);
 
+  //TODO: Implement delete register request function
+
   return (
     <div className="h-full flex justify-center items-start gap-3">
       <Card className="w-1/3">
@@ -97,6 +99,7 @@ const DailyCashRegister = () => {
                 <TableHead className="w-1/12">Tipo</TableHead>
                 <TableHead className="w-3/12">Cantidad</TableHead>
                 <TableHead className="w-8/12">Detalle</TableHead>
+                {/* TODO: Implement delete register button */}
               </TableRow>
             </TableHeader>
             <TableBody>

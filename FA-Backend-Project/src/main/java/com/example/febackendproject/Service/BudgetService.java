@@ -71,6 +71,7 @@ public class BudgetService {
         List<String> unavailableProducts = new ArrayList<>();
         List<ProductBudget> budgetProducts = budget.getProducts();
         if ((status.equals(Budget.Status.PAGO) || status.equals(Budget.Status.ENVIADO) || status.equals(Budget.Status.ENTREGADO))) {
+            //TODO: Create Cash Register Record on Budget Status Change (Budget ID as Record Detail)
             budgetProducts.forEach(product -> {
                 Integer stockAvailable = stockRepository.getQuantityByProductId(product.getId());
                 if (stockAvailable < product.getSaleUnitQuantity()) {

@@ -36,5 +36,7 @@ public interface CashRegisterRepository extends JpaRepository<CashRegisterRecord
             """)
     Object getTypes(@Param("yearMonth") YearMonth yearMonth);
 
+    //TODO: Implement delete register query
+
 
 }
