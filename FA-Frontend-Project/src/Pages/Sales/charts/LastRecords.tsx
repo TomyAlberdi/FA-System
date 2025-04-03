@@ -10,19 +10,17 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useSalesContext } from "@/Context/UseSalesContext";
-import { PartialBudget } from "@/hooks/SalesInterfaces";
+import { RegisterRecord } from "@/hooks/SalesInterfaces";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-//TODO: Change to show latest CashRegister Records
-export const LastBudgets = () => {
+export const LastRecords = () => {
   const { BASE_URL } = useSalesContext();
   const { getToken } = useKindeAuth();
-
-  const [Loading, setLoading] = useState(true);
-  const [Data, setData] = useState<Array<PartialBudget>>([]);
   const navigate = useNavigate();
+  const [Loading, setLoading] = useState(true);
+  const [Data, setData] = useState<Array<RegisterRecord>>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,7 +31,7 @@ export const LastBudgets = () => {
           return;
         }
         const accessToken = await getToken();
-        fetch(`${BASE_URL}/budget/lastBudgets`, {
+        fetch(`${BASE_URL}/cash-register/last`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -56,28 +54,22 @@ export const LastBudgets = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const formatDateTime = (input: string) => {
-    const parsedDate = new Date(input);
-    if (isNaN(parsedDate.getTime())) {
-      return "Error en formato de fecha";
+  const handleNavigateToBudget = (detail: string) => {
+    if (detail.startsWith("PRESUPUESTO")) {
+      const id = detail.split(" ")[1];
+      navigate(`/sales/budgets/${id}`);
     }
-    const day = String(parsedDate.getDate()).padStart(2, "0");
-    const month = String(parsedDate.getMonth() + 1).padStart(2, "0");
-    const year = String(parsedDate.getFullYear()).slice(-2);
-    const hours = String(parsedDate.getHours()).padStart(2, "0");
-    const minutes = String(parsedDate.getMinutes()).padStart(2, "0");
-    return `${day}/${month}/${year} ${hours}:${minutes}`;
   };
 
   if (Loading) {
     return (
       <Skeleton className="col-start-9 col-span-7 row-start-1 row-end-16" />
     );
-  } else if (Data.length === 0) {
+  } else if (Data?.length === 0) {
     return (
       <Card className="col-start-9 col-span-7 row-start-1 row-end-16 border border-input flex flex-col items-center justify-center text-center">
         <CardHeader className="items-center pb-0">
-          <CardTitle>No hay presupuestos recientes</CardTitle>
+          <CardTitle>No hay registros disponibles</CardTitle>
         </CardHeader>
       </Card>
     );
@@ -85,36 +77,50 @@ export const LastBudgets = () => {
     return (
       <Card className="col-start-9 col-span-7 row-start-1 row-end-16 flex flex-col">
         <CardHeader className="items-center pb-2 text-center">
-          <CardTitle>Últimos presupuestos</CardTitle>
+          <CardTitle>Últimos Registros en Caja</CardTitle>
         </CardHeader>
         <CardContent className="flex-1 pb-0 w-full">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-2/5">Cliente</TableHead>
-                <TableHead>Monto</TableHead>
-                <TableHead>Estado</TableHead>
-                <TableHead>Fecha</TableHead>
+                <TableHead className="w-1/5">Tipo</TableHead>
+                <TableHead className="w-1/5">Monto</TableHead>
+                <TableHead className="w-1/5">Fecha</TableHead>
+                <TableHead className="w-2/5">Detalle</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {Data?.map((data: PartialBudget, index: number) => {
+              {Data?.map((record: RegisterRecord, index: number) => {
                 return (
-                  <TableRow
-                    key={index}
-                    onClick={() => navigate(`/sales/budgets/${data.id}`)}
-                    className="cursor-pointer"
-                  >
-                    <TableCell>{data.clientName}</TableCell>
-                    <TableCell>{data.finalAmount}</TableCell>
-                    <TableCell>{data.status}</TableCell>
-                    <TableCell>{formatDateTime(data.date)}</TableCell>
+                  <TableRow key={index} className="cursor-pointer">
+                    <TableCell
+                      className={
+                        "font-medium " +
+                        (record.type === "INGRESO"
+                          ? "text-chart-2"
+                          : "text-destructive")
+                      }
+                    >
+                      {record.type === "INGRESO" ? "INGRESO" : "GASTO"}
+                    </TableCell>
+                    <TableCell>
+                      {record.type === "GASTO" && "- "} $ {record.amount}
+                    </TableCell>
+                    <TableCell>{record.date}</TableCell>
+                    <TableCell
+                      className="cursor-pointer"
+                      onClick={() => handleNavigateToBudget(record.detail)}
+                    >
+                      {record.detail
+                        ? record.detail
+                        : "No hay detalle disponible"}
+                    </TableCell>
                   </TableRow>
                 );
               })}
             </TableBody>
             <TableCaption className="text-center">
-              Últimos presupuestos registrados
+              Últimos Registros en Caja
             </TableCaption>
           </Table>
         </CardContent>

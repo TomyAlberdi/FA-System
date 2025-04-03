@@ -35,5 +35,9 @@ public class CashRegisterService {
     public void deleteById(Long id) {
         cashRegisterRepository.deleteById(id);
     }
+    
+    public List<CashRegisterRecord> getLastRecords() {
+        return cashRegisterRepository.getLastRecords();
+    }
 
 }

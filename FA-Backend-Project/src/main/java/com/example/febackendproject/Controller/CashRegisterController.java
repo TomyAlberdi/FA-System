@@ -51,5 +51,10 @@ public class CashRegisterController {
         cashRegisterService.deleteById(id);
         return ResponseEntity.ok().build();
     }
+    
+    @GetMapping("/last")
+    public ResponseEntity<List<CashRegisterRecord>> getLast() {
+        return ResponseEntity.ok(cashRegisterService.getLastRecords());
+    }
 
 }
