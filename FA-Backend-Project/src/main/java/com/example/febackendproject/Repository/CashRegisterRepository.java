@@ -35,5 +35,8 @@ public interface CashRegisterRepository extends JpaRepository<CashRegisterRecord
                 WHERE c.date BETWEEN :#{#yearMonth.atDay(1)} AND :#{#yearMonth.atEndOfMonth()}
             """)
     Object getTypes(@Param("yearMonth") YearMonth yearMonth);
+    
+    @Query("SELECT c FROM CashRegisterRecord c ORDER BY c.date DESC LIMIT 12")
+    List<CashRegisterRecord> getLastRecords();
 
 }

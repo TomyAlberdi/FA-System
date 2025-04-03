@@ -13,10 +13,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { useSalesContext } from "@/Context/UseSalesContext";
 import { RegisterRecord } from "@/hooks/SalesInterfaces";
 import { useToast } from "@/hooks/use-toast";
-import { CheckCircle2, DollarSign } from "lucide-react";
+import { CheckCircle2, CirclePlus, DollarSign } from "lucide-react";
 import { useEffect, useState } from "react";
 
-const AddRegister = ({ yearMonth }: { yearMonth: string }) => {
+const AddRegister = ({ yearMonth }: { yearMonth?: string }) => {
   const { BASE_URL, fetchRegisterTypes, fetchRegisterTotalAmount } =
     useSalesContext();
   const { toast } = useToast();
@@ -28,7 +28,7 @@ const AddRegister = ({ yearMonth }: { yearMonth: string }) => {
     type: "",
   });
 
-  const [LongDate, setLongDate] = useState<Date>(new Date()); 
+  const [LongDate, setLongDate] = useState<Date>(new Date());
   useEffect(() => {
     if (LongDate) {
       const date = new Date(LongDate?.toISOString());
@@ -61,7 +61,7 @@ const AddRegister = ({ yearMonth }: { yearMonth: string }) => {
         return;
       }
       setOpen(false);
-      fetchRegisterTypes(yearMonth);
+      fetchRegisterTypes(yearMonth ?? new Date().toISOString().slice(0, 7));
       fetchRegisterTotalAmount();
     } catch (error) {
       console.error("Error submitting register: ", error);
@@ -71,9 +71,22 @@ const AddRegister = ({ yearMonth }: { yearMonth: string }) => {
   return (
     <Dialog open={Open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="w-full text-lg">
-          <DollarSign className="big-icon" />
-          Modificar
+        <Button
+          className={`flex flex-row flex-wrap text-lg ${
+            yearMonth ? "w-full" : "h-full w-1/3"
+          }`}
+        >
+          {yearMonth ? (
+            <>
+              <DollarSign className="big-icon" />
+              Modificar
+            </>
+          ) : (
+            <>
+              <CirclePlus className="bigger-icon" />
+              Añadir Registro de Caja
+            </>
+          )}
         </Button>
       </DialogTrigger>
       <DialogContent aria-describedby={undefined} className="p-6 max-w-[60vw]">

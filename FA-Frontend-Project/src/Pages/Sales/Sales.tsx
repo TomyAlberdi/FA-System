@@ -1,12 +1,12 @@
 import { BudgetsByMonth } from "@/Pages/Sales/charts/BudgetsByMonth";
-import { LastBudgets } from "@/Pages/Sales/charts/LastBudgets";
+import { LastRecords } from "@/Pages/Sales/charts/LastRecords";
 import { AdminPanel } from "@/Pages/Sales/AdminPanel";
 
 export const Sales = () => {
   return (
     <div className="Saes h-full w-full ProductPage">
       <BudgetsByMonth />
-      <LastBudgets />
+      <LastRecords />
       <AdminPanel />
     </div>
   );

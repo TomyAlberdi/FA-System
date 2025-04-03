@@ -160,7 +160,6 @@ const DailyCashRegister = () => {
                 <TableHead className="w-3/12">Cantidad</TableHead>
                 <TableHead className="w-7/12">Detalle</TableHead>
                 <TableHead className="w-1/12"></TableHead>
-                {/* TODO: Implement delete register button */}
               </TableRow>
             </TableHeader>
             <TableBody>

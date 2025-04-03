@@ -11,6 +11,7 @@ import { CirclePlus } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AddClient } from "@/Pages/Clients/AddClient";
+import AddRegister from "@/Pages/Register/AddRegister";
 
 export const AdminPanel = () => {
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ export const AdminPanel = () => {
       <CardContent className="flex flex-row space-x-1 h-2/3">
         <Dialog open={ClientOpen} onOpenChange={setClientOpen}>
           <DialogTrigger asChild>
-            <Button className="h-full text-lg w-1/2">
+            <Button className="h-full text-lg w-1/3">
               <CirclePlus className="bigger-icon" />
               Crear Cliente
             </Button>
@@ -43,12 +44,13 @@ export const AdminPanel = () => {
           </DialogContent>
         </Dialog>
         <Button
-          className="h-full text-lg w-1/2"
+          className="h-full text-lg w-1/3"
           onClick={() => navigate("/sales/budgets/add")}
         >
           <CirclePlus className="bigger-icon" />
           Crear Presupuesto
         </Button>
+        <AddRegister />
       </CardContent>
     </Card>
   );
