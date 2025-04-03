@@ -84,7 +84,7 @@ const AddRegister = ({ yearMonth }: { yearMonth?: string }) => {
           ) : (
             <>
               <CirclePlus className="bigger-icon" />
-              Añadir Registro de Caja
+              Registrar en Caja
             </>
           )}
         </Button>
