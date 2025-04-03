@@ -16,6 +16,7 @@ export const AdminPanel = () => {
   const navigate = useNavigate();
 
   const [ClientOpen, setClientOpen] = useState(false);
+  //TODO: Add Create CashRegister Record button & Dialog
 
   return (
     <Card className="col-start-1 col-span-8 row-start-11 row-end-16">

@@ -15,6 +15,7 @@ import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+//TODO: Change to show latest CashRegister Records
 export const LastBudgets = () => {
   const { BASE_URL } = useSalesContext();
   const { getToken } = useKindeAuth();
