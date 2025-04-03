@@ -45,5 +45,11 @@ public class CashRegisterController {
     public ResponseEntity<Object> getTypes(@PathVariable @DateTimeFormat(pattern = "yyyy-MM") YearMonth yearMonth) {
         return ResponseEntity.ok(cashRegisterService.getTypes(yearMonth));
     }
+    
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteById(@PathVariable Long id) {
+        cashRegisterService.deleteById(id);
+        return ResponseEntity.ok().build();
+    }
 
 }

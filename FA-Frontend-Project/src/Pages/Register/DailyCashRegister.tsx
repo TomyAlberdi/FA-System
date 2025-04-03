@@ -1,4 +1,5 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -9,22 +10,74 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { ToastAction } from "@/components/ui/toast";
 import { useSalesContext } from "@/Context/UseSalesContext";
 import { RegisterRecord } from "@/hooks/SalesInterfaces";
+import { useToast } from "@/hooks/use-toast";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { AlertCircle, ChevronDown, ChevronUp } from "lucide-react";
+import { AlertCircle, ChevronDown, ChevronUp, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 const DailyCashRegister = () => {
   const { date } = useParams();
-  const { BASE_URL } = useSalesContext();
+  const { BASE_URL, fetchRegisterTotalAmount } = useSalesContext();
   const { getToken } = useKindeAuth();
+  const { toast } = useToast();
   const navigate = useNavigate();
 
   const [Records, setRecords] = useState<Array<RegisterRecord> | undefined>([]);
   const [DailyTypes, setDailyTypes] = useState<Array<number>>([0, 0]);
   const [DailyTotal, setDailyTotal] = useState<number>(0);
+
+  const onDeletePress = (id: number) => {
+    toast({
+      variant: "destructive",
+      title: "Confirmación",
+      description: "¿Desea eliminar el registro?",
+      action: (
+        <ToastAction
+          altText="Eliminar"
+          onClick={() => handleDeleteRegister(id)}
+        >
+          Desactivar
+        </ToastAction>
+      ),
+    });
+  };
+
+  const handleDeleteRegister = async (id: number) => {
+    const url = `${BASE_URL}/cash-register/${id}`;
+    try {
+      if (!getToken) {
+        console.error("getToken is undefined");
+        return;
+      }
+      const accessToken = await getToken();
+      const response = await fetch(url, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (!response.ok) {
+        console.error("Error deleting register: ", response.statusText);
+        return;
+      }
+      toast({
+        title: "Registro eliminado",
+        description: "El registro ha sido eliminado con éxito.",
+      });
+      fetchRegisterTotalAmount();
+    } catch (error) {
+      console.error("Error deleting register: ", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Ocurrió un error al eliminar el registro.",
+      });
+    }
+  };
 
   useEffect(() => {
     const fetchTotal = async () => {
@@ -52,7 +105,7 @@ const DailyCashRegister = () => {
     };
     fetchTotal();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [date]);
+  }, [date, handleDeleteRegister]);
 
   useEffect(() => {
     let ingresos = 0;
@@ -65,7 +118,7 @@ const DailyCashRegister = () => {
       }
     });
     setDailyTypes([ingresos, gastos]);
-    setDailyTotal(ingresos - gastos);
+    setDailyTotal(Number((ingresos - gastos).toFixed(2)));
   }, [Records]);
 
   const handleNavigateToBudget = (detail: string) => {
@@ -74,8 +127,6 @@ const DailyCashRegister = () => {
       navigate(`/sales/budgets/${id}`);
     }
   };
-
-  //TODO: Implement delete register request function
 
   return (
     <div className="h-full flex justify-center items-start gap-3">
@@ -107,17 +158,14 @@ const DailyCashRegister = () => {
               <TableRow>
                 <TableHead className="w-1/12">Tipo</TableHead>
                 <TableHead className="w-3/12">Cantidad</TableHead>
-                <TableHead className="w-8/12">Detalle</TableHead>
+                <TableHead className="w-7/12">Detalle</TableHead>
+                <TableHead className="w-1/12"></TableHead>
                 {/* TODO: Implement delete register button */}
               </TableRow>
             </TableHeader>
             <TableBody>
               {Records?.map((record, index) => (
-                <TableRow
-                  key={index}
-                  className="cursor-pointer"
-                  onClick={() => handleNavigateToBudget(record.detail)}
-                >
+                <TableRow key={index}>
                   <TableCell
                     className={
                       "font-medium " +
@@ -131,7 +179,17 @@ const DailyCashRegister = () => {
                   <TableCell>
                     {record.type === "GASTO" && "- "} $ {record.amount}
                   </TableCell>
-                  <TableCell>{record.detail}</TableCell>
+                  <TableCell
+                    className="cursor-pointer"
+                    onClick={() => handleNavigateToBudget(record.detail)}
+                  >
+                    {record.detail}
+                  </TableCell>
+                  <TableCell>
+                    <Button onClick={() => onDeletePress(record.id as number)}>
+                      <Trash2 className="bigger-icon" color="red" />
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

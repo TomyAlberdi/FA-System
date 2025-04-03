@@ -182,7 +182,7 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
         return;
       }
       const result: number = await response.json();
-      setRegisterTotalAmount(result);
+      setRegisterTotalAmount(Number(result.toFixed(2)));
     } catch (error) {
       console.error("Error fetching cash register: ", error);
     }

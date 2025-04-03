@@ -31,5 +31,9 @@ public class CashRegisterService {
     }
 
     public Object getTypes(YearMonth yearMonth) { return cashRegisterRepository.getTypes(yearMonth); }
+    
+    public void deleteById(Long id) {
+        cashRegisterRepository.deleteById(id);
+    }
 
 }
