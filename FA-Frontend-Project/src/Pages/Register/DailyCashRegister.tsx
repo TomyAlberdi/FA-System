@@ -14,12 +14,13 @@ import { RegisterRecord } from "@/hooks/SalesInterfaces";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { AlertCircle, ChevronDown, ChevronUp } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const DailyCashRegister = () => {
   const { date } = useParams();
   const { BASE_URL } = useSalesContext();
   const { getToken } = useKindeAuth();
+  const navigate = useNavigate();
 
   const [Records, setRecords] = useState<Array<RegisterRecord> | undefined>([]);
   const [DailyTypes, setDailyTypes] = useState<Array<number>>([0, 0]);
@@ -67,6 +68,13 @@ const DailyCashRegister = () => {
     setDailyTotal(ingresos - gastos);
   }, [Records]);
 
+  const handleNavigateToBudget = (detail: string) => {
+    if (detail.startsWith("PRESUPUESTO")) {
+      const id = detail.split(" ")[1];
+      navigate(`/sales/budgets/${id}`);
+    }
+  };
+
   //TODO: Implement delete register request function
 
   return (
@@ -86,7 +94,8 @@ const DailyCashRegister = () => {
           <div className="flex gap-2 items-center text-xl">
             <ChevronDown className="text-destructive large-icon" />
             <span className="font-medium">
-              Gastos: <span className="text-destructive">$ {DailyTypes[1]}</span>
+              Gastos:{" "}
+              <span className="text-destructive">$ {DailyTypes[1]}</span>
             </span>
           </div>
         </CardContent>
@@ -104,7 +113,11 @@ const DailyCashRegister = () => {
             </TableHeader>
             <TableBody>
               {Records?.map((record, index) => (
-                <TableRow key={index}>
+                <TableRow
+                  key={index}
+                  className="cursor-pointer"
+                  onClick={() => handleNavigateToBudget(record.detail)}
+                >
                   <TableCell
                     className={
                       "font-medium " +
