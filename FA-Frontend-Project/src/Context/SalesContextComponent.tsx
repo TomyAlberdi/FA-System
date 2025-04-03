@@ -4,8 +4,10 @@ import {
   CompleteClient,
   PartialBudget,
   PartialClient,
+  RegisterRecord,
 } from "@/hooks/SalesInterfaces";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import { useEffect, useState } from "react";
 
 interface SalesContextComponentProps {
   children: React.ReactNode;
@@ -36,7 +38,7 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
         return;
       }
       const result: CompleteClient = await response.json();
-      return result;
+      return result || [];
     } catch (error) {
       console.error("Error fetching data: ", error);
     }
@@ -59,7 +61,7 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
         return;
       }
       const result: Array<PartialClient> = await response.json();
-      return result;
+      return result || [];
     } catch (error) {
       console.error("Error fetching clients: ", error);
     }
@@ -160,6 +162,91 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
     }
   };
 
+  /// CASH REGISTER GET ///
+  const [RegisterTotalAmount, setRegisterTotalAmount] = useState(0);
+  const fetchRegisterTotalAmount = async () => {
+    const url = `${BASE_URL}/cash-register/total`;
+    try {
+      if (!getToken) {
+        console.error("getToken is undefined");
+        return;
+      }
+      const accessToken = await getToken();
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (!response.ok) {
+        console.error("Error fetching cash register: ", response.statusText);
+        return;
+      }
+      const result: number = await response.json();
+      setRegisterTotalAmount(Number(result.toFixed(2)));
+    } catch (error) {
+      console.error("Error fetching cash register: ", error);
+    }
+  };
+
+  const [RegisterTypes, setRegisterTypes] = useState<Array<number>>([0, 0]);
+  const fetchRegisterTypes = async (yearMonth: string) => {
+    const url = `${BASE_URL}/cash-register/types/${yearMonth}`;
+    try {
+      if (!getToken) {
+        console.error("getToken is undefined");
+        return;
+      }
+      const accessToken = await getToken();
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (!response.ok) {
+        console.error("Error fetching cash register: ", response.statusText);
+        return;
+      }
+      const result: Array<number> = await response.json();
+      const formattedResult = result.map((num) => Number(num.toFixed(2)));
+      setRegisterTypes(formattedResult);
+    } catch (error) {
+      console.error("Error fetching cash register: ", error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      fetchRegisterTotalAmount();
+    };
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [getToken]);
+
+  const fetchRegisterByDate = async (date: string) => {
+    const url = `${BASE_URL}/cash-register/${date}`;
+    try {
+      if (!getToken) {
+        console.error("getToken is undefined");
+        return;
+      }
+      const accessToken = await getToken();
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (!response.ok) {
+        console.error("Error fetching cash register: ", response.statusText);
+        return;
+      }
+      const result: Array<RegisterRecord> = await response.json();
+      return result;
+    } catch (error) {
+      console.error("Error fetching cash register: ", error);
+      return;
+    }
+  };
+
   const exportData: SalesContextType = {
     BASE_URL,
     fetchClient,
@@ -168,6 +255,11 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
     fetchCompleteBudget,
     fetchBudgetsByDate,
     fetchBudgetsByDateRange,
+    fetchRegisterTotalAmount,
+    RegisterTotalAmount,
+    fetchRegisterTypes,
+    RegisterTypes,
+    fetchRegisterByDate,
   };
 
   return (

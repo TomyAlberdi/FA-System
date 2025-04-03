@@ -3,6 +3,7 @@ package com.example.febackendproject.Service;
 import com.example.febackendproject.DTO.BudgetReportMonthDTO;
 import com.example.febackendproject.DTO.PartialBudgetDTO;
 import com.example.febackendproject.Entity.Budget;
+import com.example.febackendproject.Entity.CashRegisterRecord;
 import com.example.febackendproject.Entity.ProductBudget;
 import com.example.febackendproject.Repository.BudgetRepository;
 import com.example.febackendproject.Repository.StockRepository;
@@ -22,6 +23,7 @@ public class BudgetService {
     private final ClientService clientService;
     private final StockService stockService;
     private final StockRepository stockRepository;
+    private final CashRegisterService cashRegisterService;
     
     public Boolean existsById(Long id) {
         return budgetRepository.existsById(id);
@@ -71,6 +73,15 @@ public class BudgetService {
         List<String> unavailableProducts = new ArrayList<>();
         List<ProductBudget> budgetProducts = budget.getProducts();
         if ((status.equals(Budget.Status.PAGO) || status.equals(Budget.Status.ENVIADO) || status.equals(Budget.Status.ENTREGADO))) {
+            // Create Cash Register Record on Budget Status Change (Budget ID as Record Detail)
+            CashRegisterRecord newRecord = new CashRegisterRecord();
+            LocalDate today = LocalDate.now();
+            today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            newRecord.setDate(today);
+            newRecord.setType(CashRegisterRecord.Type.INGRESO);
+            newRecord.setAmount(budget.getFinalAmount());
+            newRecord.setDetail("PRESUPUESTO " + budget.getId());
+            cashRegisterService.addRecord(newRecord);
             budgetProducts.forEach(product -> {
                 Integer stockAvailable = stockRepository.getQuantityByProductId(product.getId());
                 if (stockAvailable < product.getSaleUnitQuantity()) {

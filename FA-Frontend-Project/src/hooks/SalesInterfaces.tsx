@@ -69,3 +69,11 @@ export interface BudgetReport {
   ENTREGADO: number;
   CANCELADO: number;
 }
+
+export interface RegisterRecord {
+  id?: number;
+  date: string;
+  amount: number;
+  type: string;
+  detail: string;
+}

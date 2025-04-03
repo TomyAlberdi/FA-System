@@ -51,6 +51,10 @@ const data = [
       {
         title: "Presupuestos",
         url: "/budgets",
+      },
+      {
+        title: "Caja Registradora",
+        url: "/register",
       }
     ],
   },

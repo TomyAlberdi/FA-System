@@ -25,6 +25,7 @@ const breadcrumbsHandles = [
   { label: "clients", handle: "Clientes" },
   { label: "client", handle: "Cliente" },
   { label: "budgets", handle: "Presupuestos" },
+  { label: "register", handle: "Caja Registradora" },
 ];
 
 export const BreadcrumbsHeader = () => {
@@ -42,7 +43,8 @@ export const BreadcrumbsHeader = () => {
         (handle) => handle.label === segment
       );
       const isId = !isNaN(Number(segment));
-      const label = isId ? segment : matchedHandle?.handle || segment;
+      const isDate = /^\d{4}-\d{2}-\d{2}$/.test(segment);
+      const label = isId || isDate ? segment : matchedHandle?.handle || segment;
       return { label };
     });
     return breadcrumbs;
