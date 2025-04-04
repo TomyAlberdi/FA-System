@@ -23,7 +23,7 @@ export const Welcome = () => {
       ) : (
         <Card>
           <CardHeader>
-            <CardTitle>F&A S.A.</CardTitle>
+            <CardTitle>SB - Cerámicos Olavarría</CardTitle>
             <CardDescription>Administración</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col items-center justify-center">

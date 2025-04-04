@@ -72,7 +72,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <Activity className="size-4" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">F&A S.A.</span>
+                  <span className="truncate font-semibold">SB - Cerámicos Olavarría</span>
                 </div>
               </Link>
             </SidebarMenuButton>

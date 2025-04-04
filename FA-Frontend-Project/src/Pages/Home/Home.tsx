@@ -7,7 +7,7 @@ const Home = () => {
         <Activity className="size-20" />
       </div>
       <div className="text-3xl leading-tight ml-4 flex flex-col items-left justify-center">
-        <span className="truncate font-semibold">F&A S.A.</span>
+        <span className="truncate font-semibold">SB - Cerámicos Olavarría</span>
         <span>Administración</span>
       </div>
     </div>
