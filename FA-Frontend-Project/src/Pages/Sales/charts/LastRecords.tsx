@@ -92,7 +92,11 @@ export const LastRecords = () => {
             <TableBody>
               {Data?.map((record: RegisterRecord, index: number) => {
                 return (
-                  <TableRow key={index} className="cursor-pointer">
+                  <TableRow
+                    key={index}
+                    className="cursor-pointer"
+                    onClick={() => handleNavigateToBudget(record.detail)}
+                  >
                     <TableCell
                       className={
                         "font-medium " +
@@ -107,10 +111,7 @@ export const LastRecords = () => {
                       {record.type === "GASTO" && "- "} $ {record.amount}
                     </TableCell>
                     <TableCell>{record.date}</TableCell>
-                    <TableCell
-                      className="cursor-pointer"
-                      onClick={() => handleNavigateToBudget(record.detail)}
-                    >
+                    <TableCell>
                       {record.detail
                         ? record.detail
                         : "No hay detalle disponible"}

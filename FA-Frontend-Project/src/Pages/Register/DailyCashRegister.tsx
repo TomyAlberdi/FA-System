@@ -40,7 +40,7 @@ const DailyCashRegister = () => {
           altText="Eliminar"
           onClick={() => handleDeleteRegister(id)}
         >
-          Desactivar
+          Eliminar
         </ToastAction>
       ),
     });
