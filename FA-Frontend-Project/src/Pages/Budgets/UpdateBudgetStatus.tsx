@@ -61,7 +61,7 @@ export const UpdateBudgetStatus = ({
       toast({
         variant: "destructive",
         title: "¿Confirmar actualización?",
-        description: `Actualizar el presupuesto a ${data.status} modificará el stock de los productos.`,
+        description: `Actualizar el presupuesto a ${data.status} modificará el stock de los productos y la caja registradora.`,
         action: (
           <ToastAction altText="Actualizar" onClick={() => onSubmit(data)}>
             Actualizar

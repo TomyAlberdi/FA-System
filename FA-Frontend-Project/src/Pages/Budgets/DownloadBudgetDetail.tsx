@@ -106,7 +106,9 @@ export const DownloadBudgetDetail = ({
         `${product.saleUnitQuantity} ${product.productSaleUnit}`,
         product.productName,
         `$ ${product.productMeasurePrice} / ${product.productMeasureUnit}`,
-        `${product.discountPercentage}%`,
+        `${
+          !product.discountPercentage ? "N/A" : `${product.discountPercentage}%`
+        }`,
         `$ ${product.subtotal}`,
       ];
       rowData.forEach((text, index) => {

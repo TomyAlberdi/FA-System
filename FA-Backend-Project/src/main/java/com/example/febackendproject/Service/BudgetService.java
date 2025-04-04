@@ -72,16 +72,8 @@ public class BudgetService {
         }
         List<String> unavailableProducts = new ArrayList<>();
         List<ProductBudget> budgetProducts = budget.getProducts();
-        if ((status.equals(Budget.Status.PAGO) || status.equals(Budget.Status.ENVIADO) || status.equals(Budget.Status.ENTREGADO))) {
-            // Create Cash Register Record on Budget Status Change (Budget ID as Record Detail)
-            CashRegisterRecord newRecord = new CashRegisterRecord();
-            LocalDate today = LocalDate.now();
-            today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            newRecord.setDate(today);
-            newRecord.setType(CashRegisterRecord.Type.INGRESO);
-            newRecord.setAmount(budget.getFinalAmount());
-            newRecord.setDetail("PRESUPUESTO " + budget.getId());
-            cashRegisterService.addRecord(newRecord);
+        boolean paid = status.equals(Budget.Status.PAGO) || status.equals(Budget.Status.ENVIADO) || status.equals(Budget.Status.ENTREGADO);
+        if (paid) {
             budgetProducts.forEach(product -> {
                 Integer stockAvailable = stockRepository.getQuantityByProductId(product.getId());
                 if (stockAvailable < product.getSaleUnitQuantity()) {
@@ -93,6 +85,17 @@ public class BudgetService {
             budgetProducts.forEach(product -> {
                 stockService.decreaseStockById(product.getId(), product.getSaleUnitQuantity());
             });
+            // Create Cash Register Record on Budget Status Change (Budget ID as Record Detail)
+            if (paid) {
+                CashRegisterRecord newRecord = new CashRegisterRecord();
+                LocalDate today = LocalDate.now();
+                today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                newRecord.setDate(today);
+                newRecord.setType(CashRegisterRecord.Type.INGRESO);
+                newRecord.setAmount(budget.getFinalAmount());
+                newRecord.setDetail("PRESUPUESTO " + budget.getId());
+                cashRegisterService.addRecord(newRecord);
+            }
             budgetRepository.updateStatus(status, budget.getId());
             budgetRepository.updateStockDecreased(budget.getId());
             return Optional.empty();
