@@ -243,7 +243,11 @@ export const Budget = () => {
                   </TableCell>
                   <TableCell>{product.productName}</TableCell>
                   <TableCell>$ {product.productMeasurePrice}</TableCell>
-                  <TableCell>{product.discountPercentage}%</TableCell>
+                  <TableCell>
+                    {!product.discountPercentage
+                      ? "N/A"
+                      : product.discountPercentage + "%"}
+                  </TableCell>
                   <TableCell>
                     ${" "}
                     {product.discountPercentage === 0
