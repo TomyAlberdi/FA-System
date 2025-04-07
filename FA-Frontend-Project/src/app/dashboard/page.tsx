@@ -22,7 +22,7 @@ export default function Page() {
             <SidebarTrigger />
           </div>
           <Separator orientation="vertical" className="md:hidden h-3/5" />
-          <div className="flex items-center gap-2 px-4">
+          <div className="items-center gap-2 px-4 hidden md:flex">
             <BreadcrumbsHeader />
           </div>
           <div className="backButtonContainer flex items-center justify-center px-4 ml-auto md:ml-0">
