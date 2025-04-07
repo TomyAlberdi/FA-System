@@ -69,7 +69,7 @@ export const StockRecordsByMonth = () => {
     );
   } else if (ChartData.length === 0) {
     return (
-      <Card className="row-start-1 row-end-11 col-start-1 col-span-8 flex items-center justify-center">
+      <Card className="md:(row-start-1 row-end-11 col-start-1 col-span-8) flex items-center justify-center">
         <CardHeader className="items-center pb-0">
           <CardTitle>No hay información disponible</CardTitle>
         </CardHeader>
