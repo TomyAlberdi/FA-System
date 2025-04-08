@@ -40,9 +40,12 @@ const AddRegister = ({ yearMonth }: { yearMonth?: string }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [LongDate]);
 
+  const [LoadingRequest, setLoadingRequest] = useState(false);
+
   const submitRegister = async () => {
     const url = `${BASE_URL}/cash-register`;
     const body = JSON.stringify(Record);
+    setLoadingRequest(true);
     try {
       const response = await fetch(url, {
         method: "POST",
@@ -65,6 +68,8 @@ const AddRegister = ({ yearMonth }: { yearMonth?: string }) => {
       fetchRegisterTotalAmount();
     } catch (error) {
       console.error("Error submitting register: ", error);
+    } finally {
+      setLoadingRequest(false);
     }
   };
 
@@ -144,7 +149,7 @@ const AddRegister = ({ yearMonth }: { yearMonth?: string }) => {
                   </div>
                 </RadioGroup>
               </div>
-              <Button onClick={submitRegister}>
+              <Button onClick={submitRegister} disabled={LoadingRequest}>
                 <CheckCircle2 className="w-5 h-5" />
                 Registrar
               </Button>
