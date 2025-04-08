@@ -106,7 +106,7 @@ export const ProviderFilter: React.FC<ProviderFilterProps> = ({
                     className="checkboxLabel text-sm w-full cursor-pointer"
                   >
                     {provider.name}
-                    <span>{provider.productsAmount}</span>
+                    <span className="hidden md:block">{provider.productsAmount}</span>
                   </Label>
                 </div>
               )

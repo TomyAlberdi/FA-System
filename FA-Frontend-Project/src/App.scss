@@ -34,7 +34,6 @@ div.App {
   .listBody {
     @include var.flex-container(row, flex-start, flex-start);
     flex-wrap: wrap;
-    gap: 1%;
     padding-top: 1rem;
     .buttonCard, .skeletonCard {
       margin-bottom: 1%;

@@ -144,9 +144,13 @@ export const ProductPagination: React.FC<ProductPaginationProps> = ({
         <Button onClick={handleRefresh} className="text-lg">
           <RefreshCcw className="bigger-icon" />
         </Button>
-        <MobileFilters />
+        <MobileFilters
+          Filter={Filter}
+          setFilter={setFilter}
+          Loading={Loading}
+        />
       </section>
-      <section className="listBody">
+      <section className="listBody md:gap-[1%] gap-2">
         {Loading ? (
           Array.from({ length: 12 }, (_, i) => {
             return (

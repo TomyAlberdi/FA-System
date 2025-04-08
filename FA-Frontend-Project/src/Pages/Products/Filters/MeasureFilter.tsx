@@ -105,7 +105,7 @@ export const MeasureFilter: React.FC<MeasureFilterProps> = ({
                     className="checkboxLabel text-sm w-full cursor-pointer"
                   >
                     {measure.measure}
-                    <span>{measure.productsAmount}</span>
+                    <span className="hidden md:block">{measure.productsAmount}</span>
                   </Label>
                 </div>
               )
