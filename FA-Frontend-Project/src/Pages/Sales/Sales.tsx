@@ -4,7 +4,7 @@ import { AdminPanel } from "@/Pages/Sales/AdminPanel";
 
 export const Sales = () => {
   return (
-    <div className="Saes h-full w-full ProductPage">
+    <div className="Saes h-full w-full grid ProductPage">
       <BudgetsByMonth />
       <LastRecords />
       <AdminPanel />

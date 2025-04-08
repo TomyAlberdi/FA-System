@@ -4,7 +4,7 @@ import { AdminPanel } from "@/Pages/Catalog/AdminPanel"
 
 export const Catalog = () => {
   return (
-    <div className="Catalog ProductPage h-full w-full">
+    <div className="Catalog ProductPage flex flex-col h-full w-full md:grid">
       <StockRecordsByMonth />
       <LastStockRecords />
       <AdminPanel />
