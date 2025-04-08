@@ -27,7 +27,9 @@ div.App {
     letter-spacing: -.025em;
   }
   .listHeader {
-    @include var.flex-container(row, space-between, center);
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
   }
   .listBody {
     @include var.flex-container(row, flex-start, flex-start);

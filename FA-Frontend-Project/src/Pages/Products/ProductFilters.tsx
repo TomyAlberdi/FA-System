@@ -18,7 +18,7 @@ export const ProductFilters: React.FC<ProductFiltersProps> = ({
   Loading,
 }) => {
   return (
-    <section className="ProductFilters col-span-2">
+    <section className="ProductFilters col-span-2 hidden md:block">
       <Accordion
         type="multiple"
         className="filterAccordion w-full"

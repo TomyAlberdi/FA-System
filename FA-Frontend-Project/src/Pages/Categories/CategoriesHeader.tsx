@@ -14,7 +14,7 @@ export const CategoriesHeader = () => {
   const [open, setOpen] = useState(false);
 
   return (
-    <section className="listHeader">
+    <section className="flex listHeader">
       <h1 className="sectionTitle">Categorías</h1>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>

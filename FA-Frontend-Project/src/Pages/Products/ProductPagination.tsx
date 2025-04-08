@@ -32,6 +32,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import CreateProduct from "@/Pages/Products/CreateProduct/CreateProduct";
+import MobileFilters from "@/Pages/Products/Mobile/MobileFilters";
 
 interface ProductPaginationProps {
   Products: Array<CardProduct>;
@@ -106,8 +107,8 @@ export const ProductPagination: React.FC<ProductPaginationProps> = ({
   };
 
   return (
-    <section className="ProductPagination col-span-6">
-      <section className="listHeader flex flex-row items-center justify-between">
+    <section className="ProductPagination md:col-span-6 col-span-12">
+      <section className="listHeader hidden md:flex flex-row items-center justify-between">
         <Button
           onClick={handleRefresh}
           className="text-lg w-[19.2%] max-w-[300px] min-w-[200px]"
@@ -138,6 +139,12 @@ export const ProductPagination: React.FC<ProductPaginationProps> = ({
           </form>
         </Form>
         <CreateProduct TriggerTitle="Nuevo Producto" TriggerIcon={CirclePlus} />
+      </section>
+      <section className="listHeader flex md:hidden">
+        <Button onClick={handleRefresh} className="text-lg">
+          <RefreshCcw className="bigger-icon" />
+        </Button>
+        <MobileFilters />
       </section>
       <section className="listBody">
         {Loading ? (
