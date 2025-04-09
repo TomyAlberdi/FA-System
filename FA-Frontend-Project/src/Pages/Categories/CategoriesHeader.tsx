@@ -10,7 +10,6 @@ import {
 import { useState } from "react";
 import { AddCategory } from "@/Pages/Categories/AddCategory";
 
-//TODO: Mobile Add Category Dialog
 export const CategoriesHeader = () => {
   const [open, setOpen] = useState(false);
 
@@ -19,13 +18,13 @@ export const CategoriesHeader = () => {
       <h1 className="sectionTitle">Categorías</h1>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button className="text-lg">
+          <Button className="md:text-lg text-md">
             <CirclePlus />
             Nueva Categoría
           </Button>
         </DialogTrigger>
         <DialogContent
-          className="sm:max-w-[500px] w-full p-6"
+          className="md:w-full w-[90%] md:p-6 p-3 rounded-lg"
           aria-describedby={undefined}
         >
           <DialogHeader>

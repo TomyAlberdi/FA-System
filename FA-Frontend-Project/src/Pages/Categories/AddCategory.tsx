@@ -1,35 +1,17 @@
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useCatalogContext } from "@/Context/UseCatalogContext";
 import { useToast } from "@/hooks/use-toast";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { z } from "zod";
-
-//FIXME: Migrate from form to regular input
-const formSchema = z.object({
-  name: z.string().min(3, {
-    message: "El nombre debe contar con al menos 3 caracteres.",
-  }),
-});
 
 interface CategoriesHeaderProps {
   setOpen: (value: boolean) => void;
 }
 
-//TODO: Mobile Add Category Form
 export const AddCategory: React.FC<CategoriesHeaderProps> = ({ setOpen }) => {
   const [LoadingRequest, setLoadingRequest] = useState(false);
 
@@ -38,14 +20,9 @@ export const AddCategory: React.FC<CategoriesHeaderProps> = ({ setOpen }) => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-    },
-  });
+  const [Name, setName] = useState<string>("");
 
-  async function onSubmit(data: z.infer<typeof formSchema>) {
+  async function onSubmit() {
     try {
       if (!getToken) {
         console.error("getToken is undefined");
@@ -53,7 +30,7 @@ export const AddCategory: React.FC<CategoriesHeaderProps> = ({ setOpen }) => {
       }
       const accessToken = await getToken();
       setLoadingRequest(true);
-      const response = await fetch(`${BASE_URL}/category/${data.name}`, {
+      const response = await fetch(`${BASE_URL}/category/${Name}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -90,26 +67,17 @@ export const AddCategory: React.FC<CategoriesHeaderProps> = ({ setOpen }) => {
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nombre</FormLabel>
-              <FormControl>
-                <Input placeholder="Nombre de la categoría" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit" disabled={LoadingRequest}>
-          {LoadingRequest && <Loader2 className="animate-spin" />}
-          Guardar
-        </Button>
-      </form>
-    </Form>
+    <div className="w-full flex flex-col gap-4">
+      <Label>Nombre</Label>
+      <Input
+        placeholder="Nombre de la categoría"
+        onChange={(e) => setName(e.target.value)}
+        value={Name}
+      />
+      <Button onClick={onSubmit} disabled={LoadingRequest} className="w-full">
+        {LoadingRequest && <Loader2 className="animate-spin" />}
+        Guardar
+      </Button>
+    </div>
   );
 };

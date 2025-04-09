@@ -10,7 +10,6 @@ import { CirclePlus } from "lucide-react";
 import { useState } from "react";
 import { AddProvider } from "@/Pages/Providers/AddProvider";
 
-//TODO: Mobile Add Provider Dialog
 export const ProvidersHeader = () => {
   const [open, setOpen] = useState(false);
 
@@ -19,13 +18,13 @@ export const ProvidersHeader = () => {
       <h1 className="sectionTitle">Proveedores</h1>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button className="text-lg">
+          <Button className="md:text-lg text-md">
             <CirclePlus />
             Nuevo Proveedor
           </Button>
         </DialogTrigger>
         <DialogContent
-          className="sm:max-w-[500px] w-full p-6"
+          className="w-[90%] md:w-full md:p-6 p-3 rounded-lg"
           aria-describedby={undefined}
         >
           <DialogHeader>
