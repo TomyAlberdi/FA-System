@@ -156,12 +156,12 @@ export const ProductPagination: React.FC<ProductPaginationProps> = ({
             return (
               <Skeleton
                 key={i}
-                className="skeletonCard h-[350px] w-[24.25%] max-w-[400px]"
+                className="skeletonCard md:h-[350px] md:w-[24.25%] md:max-w-[400px] h-[200px] w-full"
               />
             );
           })
         ) : !Loading && Products.length === 0 ? (
-          <Alert variant="destructive" className="w-auto">
+          <Alert variant="destructive" className="md:w-auto w-full">
             <AlertCircle className="w-5 pt-1" />
             <AlertTitle className="text-xl">Error</AlertTitle>
             <AlertDescription className="text-lg">
