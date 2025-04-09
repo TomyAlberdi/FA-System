@@ -59,7 +59,7 @@ export const ClientsPagination: React.FC<ClientsPaginationProps> = ({
   };
 
   return (
-    <section className="listBody">
+    <section className="listBody md:gap-[1%]">
       {Loading ? (
         Array.from({ length: 15 }, (_, i) => {
           return (

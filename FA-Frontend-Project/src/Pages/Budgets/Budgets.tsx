@@ -113,7 +113,7 @@ export const Budgets = () => {
           </Button>
         </div>
       </section>
-      <section className="listBody">
+      <section className="listBody md:gap-[1%]">
         {Budgets?.length === 0 ? (
           <Alert variant="destructive" className="w-auto">
             <AlertCircle className="w-5 pt-1" />

@@ -15,7 +15,7 @@ export const Providers = () => {
   return (
     <div className="Providers">
       <ProvidersHeader />
-      <section className="listBody">
+      <section className="listBody md:gap-[1%]">
         {Data?.Loading ? (
           Array.from({ length: 9 }, (_, i) => {
             return isDesktop ? (
