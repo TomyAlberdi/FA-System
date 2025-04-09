@@ -160,8 +160,7 @@ export const ProductPageAdminPanel = ({
   };
 
   return (
-    <div className="h-full w-1/4 p-2 flex flex-col justify-start items-center gap-4">
-      {/* TODO: Hide Edit Product function on mobile */}
+    <div className="h-full w-1/4 p-2 hidden md:flex flex-col justify-start items-center gap-4">
       <CreateProduct
         ProductProp={Product}
         TriggerTitle="Editar Producto"
