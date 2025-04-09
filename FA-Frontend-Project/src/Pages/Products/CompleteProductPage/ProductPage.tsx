@@ -38,18 +38,18 @@ export const ProductPage = () => {
     <div className="w-full h-full flex flex-col gap-4">
       {Loading ? (
         <>
-          <div className="w-full h-[30vh] flex flex-row gap-4">
-            <Skeleton className="w-1/4 h-full" />
-            <Skeleton className="w-3/4 h-full" />
+          <div className="w-full md:h-[30vh] h-[60vh] flex md:flex-row flex-col gap-4"> 
+            <Skeleton className="md:w-1/4 w-full h-full" />
+            <Skeleton className="md:w-3/4 w-full h-full" />
           </div>
-          <div className="w-full h-[58vh] flex flex-row gap-4">
-            <Skeleton className="h-full w-1/4" />
-            <Skeleton className="h-full w-3/4" />
+          <div className="w-full md:h-[58vh] h-[28vh] flex md:flex-row flex-col gap-4">
+            <Skeleton className="h-full md:w-1/4 w-full" />
+            <Skeleton className="h-full md:w-3/4 w-full" />
           </div>
         </>
       ) : (
         <>
-          <div className="w-full h-[30vh] flex flex-row gap-4">
+          <div className="w-full md:h-[30vh] h-auto flex md:flex-row flex-col gap-4">
             <ProductCarousel Product={Product} />
             <ProductMainInfo Product={Product} />
           </div>

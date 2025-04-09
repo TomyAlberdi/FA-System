@@ -14,7 +14,7 @@ export const ProductCarousel = ({
   Product: CompleteProduct | null;
 }) => {
   return (
-    <div className="w-1/4 h-full flex justify-center items-center">
+    <div className="md:w-1/4 md:h-full w-full aspect-video md:aspect-auto flex justify-center items-center">
       <Carousel className="imageCarousel w-full h-full flex justify-center items-center">
         <CarouselContent className="w-full h-full">
           {Product?.images && Product?.images.length > 0 ? (
@@ -37,8 +37,8 @@ export const ProductCarousel = ({
             ></Card>
           )}
         </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
+        <CarouselPrevious className="hidden md:flex" />
+        <CarouselNext className="hidden md:flex" />
       </Carousel>
     </div>
   );
