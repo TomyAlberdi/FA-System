@@ -63,7 +63,7 @@ export const Budgets = () => {
     <div className="flex flex-col gap-4">
       <section className="flex flex-row justify-between items-center">
         <div className="flex flex-col gap-2">
-          <h1 className="sectionTitle">Presupuestos</h1>
+          <h1 className="sectionTitle text-3xl">Presupuestos</h1>
           <Popover>
             <PopoverTrigger asChild>
               <Button

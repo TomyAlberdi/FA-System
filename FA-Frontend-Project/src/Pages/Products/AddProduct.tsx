@@ -255,7 +255,7 @@ export const AddProduct = () => {
 
   return (
     <div className="AddProduct">
-      <h1 className="sectionTitle">Añadir Producto</h1>
+      <h1 className="sectionTitle text-3xl">Crear Producto</h1>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -339,7 +339,7 @@ export const AddProduct = () => {
                         (provider: Provider, index: number) => {
                           return (
                             <SelectItem
-                              value={provider.id.toString()}
+                              value={provider?.id ? provider.id.toString() : ""}
                               key={index}
                             >
                               {provider.name}

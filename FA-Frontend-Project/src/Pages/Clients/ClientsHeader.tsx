@@ -47,7 +47,7 @@ export const ClientsHeader = ({
 
   return (
     <section className="flex listHeader">
-      <h1 className="sectionTitle">Clientes</h1>
+      <h1 className="sectionTitle text-3xl">Clientes</h1>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(obSumbit)}

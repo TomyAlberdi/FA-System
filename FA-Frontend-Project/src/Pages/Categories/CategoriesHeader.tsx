@@ -15,7 +15,7 @@ export const CategoriesHeader = () => {
 
   return (
     <section className="flex listHeader">
-      <h1 className="sectionTitle">Categorías</h1>
+      <h1 className="sectionTitle md:text-3xl text-2xl">Categorías</h1>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button className="md:text-lg text-md">

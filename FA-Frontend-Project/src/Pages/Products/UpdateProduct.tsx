@@ -420,7 +420,7 @@ export const UpdateProduct = () => {
                           (provider: Provider, index: number) => {
                             return (
                               <SelectItem
-                                value={provider.id.toString()}
+                                value={provider?.id ? provider.id.toString() : ""}
                                 key={index}
                               >
                                 {provider.name}

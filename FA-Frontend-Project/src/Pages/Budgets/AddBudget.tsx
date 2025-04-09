@@ -219,7 +219,7 @@ export const AddBudget = () => {
 
   return (
     <div>
-      <h1 className="sectionTitle">Crear Presupuesto</h1>
+      <h1 className="sectionTitle text-3xl">Crear Presupuesto</h1>
       <div className="w-full px-5 pt-2 h-[calc(100svh-9rem)] flex flex-col gap-4">
         <Card className="flex flex-col">
           <CardHeader>
