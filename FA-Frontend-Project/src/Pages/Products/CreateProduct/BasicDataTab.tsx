@@ -127,7 +127,7 @@ const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
                   (provider: Provider, index: number) => {
                     return (
                       <SelectItem
-                        value={provider.id.toString()}
+                        value={provider?.id ? provider.id.toString() : ""}
                         key={index}
                         className="cursor-pointer"
                       >

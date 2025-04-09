@@ -61,9 +61,9 @@ export const ProviderFilter: React.FC<ProviderFilterProps> = ({
       const checkedProviders: Array<ProviderCheck> = [];
       (Providers?.data as Provider[]).forEach((provider: Provider) => {
         const newItem: ProviderCheck = {
-          id: provider.id,
+          id: provider?.id ?? 0,
           name: provider.name,
-          productsAmount: provider.productsAmount,
+          productsAmount: provider.productsAmount ?? 0,
           checked: false,
         };
         checkedProviders.push(newItem);
