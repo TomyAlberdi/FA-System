@@ -25,7 +25,7 @@ export default function Page() {
           <div className="items-center gap-2 px-4 hidden md:flex">
             <BreadcrumbsHeader />
           </div>
-          <div className="backButtonContainer flex items-center justify-center px-4 ml-auto md:ml-0">
+          <div className="backButtonContainer flex items-center justify-center md:px-4 px-2 ml-auto md:ml-0">
             <Button
               className="bg-primary rounded-md w-full"
               onClick={() => navigate(-1)}
@@ -34,7 +34,7 @@ export default function Page() {
             </Button>
           </div>
         </header>
-        <div className="pageBody gap-4 p-4 pt-0">
+        <div className="pageBody gap-4 md:p-4 p-2 pt-0">
           <Outlet />
         </div>
       </SidebarInset>

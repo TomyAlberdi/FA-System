@@ -65,7 +65,7 @@ const MobileFilters = ({ Filter, setFilter, Loading }: MobileFiltersProps) => {
               </Button>
             </section>
             <section className="flex flex-col gap-2">
-              <Accordion type="single" className="filterAccordion w-full">
+              <Accordion type="multiple" className="filterAccordion w-full">
                 <CategoryFilter
                   Filter={Filter}
                   setFilter={setFilter}

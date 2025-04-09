@@ -22,7 +22,7 @@ export const ProductCard = ({ product }: { product: CardProduct }) => {
     >
       <Tooltip>
         <TooltipTrigger asChild>
-          <CardTitle className="row-span-1 col-start-3 md:col-start-1 col-span-3 md:col-span-1 truncate overflow-hidden whitespace-nowrap pt-1">
+          <CardTitle className="row-span-1 col-start-3 md:col-start-1 col-span-3 md:col-span-1 truncate overflow-hidden whitespace-nowrap pt-1 text-center">
             {product.name}
           </CardTitle>
         </TooltipTrigger>
