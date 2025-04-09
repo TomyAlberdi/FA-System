@@ -10,6 +10,7 @@ import {
 import { useState } from "react";
 import { AddCategory } from "@/Pages/Categories/AddCategory";
 
+//TODO: Mobile Add Category Dialog
 export const CategoriesHeader = () => {
   const [open, setOpen] = useState(false);
 

@@ -56,12 +56,14 @@ import {
   StockProduct,
 } from "@/hooks/CatalogInterfaces";
 
+//FIXME: Migrate from form to regular input
 const formSchema = z.object({
   name: z.string().min(3, {
     message: "El nombre debe contar con al menos 3 caracteres.",
   }),
 });
 
+//TODO: Mobile Category Page
 const Category = () => {
   const { id } = useParams();
   const navigate = useNavigate();

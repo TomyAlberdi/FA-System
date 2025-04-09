@@ -18,6 +18,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 
+//FIXME: Migrate from form to regular input
 const formSchema = z.object({
   name: z.string().min(3, {
     message: "El nombre debe contar con al menos 3 caracteres.",
@@ -28,6 +29,7 @@ interface CategoriesHeaderProps {
   setOpen: (value: boolean) => void;
 }
 
+//TODO: Mobile Add Category Form
 export const AddCategory: React.FC<CategoriesHeaderProps> = ({ setOpen }) => {
   const [LoadingRequest, setLoadingRequest] = useState(false);
 

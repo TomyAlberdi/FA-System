@@ -34,7 +34,6 @@ export const ProductPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, ReloadProduct]);
 
-  //TODO: Mobile Complete Product Page
   return (
     <div className="w-full h-full flex flex-col md:gap-4 gap-2">
       {Loading ? (

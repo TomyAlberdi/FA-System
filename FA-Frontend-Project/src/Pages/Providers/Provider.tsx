@@ -32,8 +32,8 @@ import {
   StockProduct,
 } from "@/hooks/CatalogInterfaces";
 import { UpdateProvider } from "@/Pages/Providers/UpdateProvider";
-import { UpdatePriceProvider } from "@/Pages/Providers/UpdatePriceProvider";
 
+//FIXME: Migrate from form to regular input (Probably useless form, might delete)
 const formSchema = z.object({
   id: z.number(),
   name: z.string().min(3, {
@@ -56,6 +56,7 @@ const formSchema = z.object({
   }),
 });
 
+//TODO: Mobile Provider Page
 export const Provider = () => {
   const { id } = useParams();
   const { BASE_URL, fetchProvider, fetchProviderProducts, fetchProviders } =
@@ -257,16 +258,16 @@ export const Provider = () => {
                   setReload={setReload}
                   Reload={Reload}
                 />
-                <UpdatePriceProvider
+                {/*<UpdatePriceProvider
                   provider={Provider}
                   setReload={setReload}
                   Reload={Reload}
-                />
-                {/*                 <UpdateDiscountProvider
+                />*/}
+                {/*<UpdateDiscountProvider
                   provider={Provider}
                   setReload={setReload}
                   Reload={Reload}
-                /> */}
+                />*/}
                 <Button
                   variant="destructive"
                   className="w-full"

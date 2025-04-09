@@ -29,7 +29,7 @@ export const Categories = () => {
             );
           })
         ) : Array.isArray(Data?.data) && Data?.data.length === 0 ? (
-          <Alert variant="destructive" className="w-auto">
+          <Alert variant="destructive" className="md:w-auto w-full">
             <AlertCircle className="w-5 pt-1" />
             <AlertTitle className="text-xl">Error</AlertTitle>
             <AlertDescription className="text-lg">
