@@ -130,7 +130,11 @@ export const Provider = () => {
   }, [Reload]);
 
   const onDeletePres = () => {
-    if (Provider && Provider?.productsAmount > 0) {
+    if (
+      Provider &&
+      Provider?.productsAmount &&
+      Provider?.productsAmount !== 0
+    ) {
       toast({
         variant: "destructive",
         title: "Error",

@@ -216,7 +216,10 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
 
   useEffect(() => {
     const fetchData = async () => {
-      fetchRegisterTotalAmount();
+      if (getToken) {
+        const accessToken = await getToken();
+        if (accessToken) fetchRegisterTotalAmount();
+      }
     };
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
