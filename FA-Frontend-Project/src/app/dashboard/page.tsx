@@ -34,7 +34,7 @@ export default function Page() {
             </Button>
           </div>
         </header>
-        <div className="pageBody gap-4 md:p-4 p-2 pt-0">
+        <div className="pageBody gap-4 md:p-4 p-2 md:pt-0">
           <Outlet />
         </div>
       </SidebarInset>
