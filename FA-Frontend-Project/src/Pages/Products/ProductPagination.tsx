@@ -26,10 +26,6 @@ import { useState } from "react";
 import { ProductCard } from "@/Pages/Products/ProductCard";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { RefreshCcw } from "lucide-react";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import CreateProduct from "@/Pages/Products/CreateProduct/CreateProduct";
 import MobileFilters from "@/Pages/Products/Mobile/MobileFilters";
@@ -44,11 +40,6 @@ interface ProductPaginationProps {
   setFilter: React.Dispatch<React.SetStateAction<Array<FilterData | null>>>;
 }
 
-//TODO: Migrate from form to regular input
-const formSchema = z.object({
-  keyword: z.string(),
-});
-
 export const ProductPagination: React.FC<ProductPaginationProps> = ({
   Products,
   CurrentPage,
@@ -60,12 +51,7 @@ export const ProductPagination: React.FC<ProductPaginationProps> = ({
 }) => {
   const [PaginationDropdownOpen, setPaginationDropdownOpen] = useState(false);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      keyword: "",
-    },
-  });
+  const [Keyword, setKeyword] = useState<string>("");
 
   const handleKeyword = (keyword: string) => {
     // Remove all filters with type "keyword"
@@ -117,28 +103,21 @@ export const ProductPagination: React.FC<ProductPaginationProps> = ({
           <RefreshCcw />
           Recargar productos
         </Button>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit((data) => handleKeyword(data.keyword))}
-            className="flex flex-row items-start justify-start gap-2 w-1/2"
+        <div className="flex flex-row items-start justify-start gap-2 w-1/2">
+          <Input
+            placeholder="Buscar por nombre, código o descripción"
+            type="text"
+            className="w-full text-lg"
+            onChange={(e) => setKeyword(e.target.value)}
+          />
+          <Button
+            type="submit"
+            className="w-10"
+            onClick={() => handleKeyword(Keyword)}
           >
-            <FormField
-              control={form.control}
-              name="keyword"
-              render={({ field }) => (
-                <Input
-                  placeholder="Buscar por nombre, código o descripción"
-                  type="text"
-                  className="w-full text-lg"
-                  {...field}
-                />
-              )}
-            />
-            <Button type="submit" className="w-10">
-              <Search className="bigger-icon" />
-            </Button>
-          </form>
-        </Form>
+            <Search className="bigger-icon" />
+          </Button>
+        </div>
         <CreateProduct TriggerTitle="Nuevo Producto" TriggerIcon={CirclePlus} />
       </section>
       <section className="listHeader flex md:hidden">
