@@ -14,15 +14,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -39,19 +33,10 @@ import {
   Subcategory as SubcategoryInterface,
 } from "@/hooks/CatalogInterfaces";
 import { useToast } from "@/hooks/use-toast";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { AlertCircle, CircleX, Loader2, Pencil, Plus } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { z } from "zod";
-
-const formSchema = z.object({
-  name: z.string().min(3, {
-    message: "El nombre debe contar con al menos 3 caracteres.",
-  }),
-});
 
 export const Subcategory = () => {
   const { id } = useParams();
@@ -74,61 +59,52 @@ export const Subcategory = () => {
   const [LastLoadedPage, setLastLoadedPage] = useState(0);
   const [IsLastPage, setIsLastPage] = useState(false);
 
-  const updateSubcategory = useCallback(
-    async (data: z.infer<typeof formSchema>) => {
-      try {
-        if (!getToken) {
-          console.error("getToken is undefined");
-          return;
+  const [Name, setName] = useState<string>(Subcategory?.name ?? "");
+
+  async function updateSubcategory(name: string) {
+    try {
+      if (!getToken) {
+        console.error("getToken is undefined");
+        return;
+      }
+      const accessToken = await getToken();
+      setLoadingRequest(true);
+      const response = await fetch(
+        `${BASE_URL}/category/subcategory?name=${name}&subcategoryId=${id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
         }
-        const accessToken = await getToken();
-        setLoadingRequest(true);
-        const response = await fetch(
-          `${BASE_URL}/category/subcategory?name=${data.name}&subcategoryId=${id}`,
-          {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
-        if (!response.ok) {
-          console.error("Error: ", response.statusText);
-          toast({
-            variant: "destructive",
-            title: `Error ${response.status}`,
-            description: `Ocurrió un error al actualizar la subcategoría.`,
-          });
-          return;
-        }
-        fetchSubcategories();
-        toast({
-          title: "Categoría actualizada",
-          description: "La subcategoría ha sido actualizada con éxito",
-        });
-      } catch (error) {
-        console.error("Error: ", error);
+      );
+      if (!response.ok) {
+        console.error("Error: ", response.statusText);
         toast({
           variant: "destructive",
-          title: "Error",
-          description: "Ocurrió un error al actualizar la subcategoría",
+          title: `Error ${response.status}`,
+          description: `Ocurrió un error al actualizar la subcategoría.`,
         });
-      } finally {
-        setLoadingRequest(false);
-        setOpen(false);
+        return;
       }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-    },
-  });
+      fetchSubcategories();
+      toast({
+        title: "Categoría actualizada",
+        description: "La subcategoría ha sido actualizada con éxito",
+      });
+    } catch (error) {
+      console.error("Error: ", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Ocurrió un error al actualizar la subcategoría",
+      });
+    } finally {
+      setLoadingRequest(false);
+      setOpen(false);
+    }
+  }
 
   useEffect(() => {
     if (id) {
@@ -219,88 +195,76 @@ export const Subcategory = () => {
   };
 
   return (
-    <div className="CatalogPage SubcategoryPage h-full">
+    <div className="h-full flex md:flex-row flex-col justify-start items-start">
       {Loading || !Subcategory ? (
-        <div className="loading w-1/5 h-1/5">
+        <div className="loading md:w-1/5 h-1/5 w-[75%]">
           <h1 className="text-xl">Cargando...</h1>
           <Skeleton className="h-4 w-[100px]" />
         </div>
       ) : Subcategory ? (
-        <section className="CatalogPageData h-full w-full">
-          <div className="CatalogPageInfo h-2/3 w-1/3">
-            <Card className="w-5/6">
-              <CardHeader>
-                <CardDescription className="text-xl">
-                  Subcategoría
-                </CardDescription>
-                <CardTitle className="text-4xl">{Subcategory.name}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-lg">
-                  Cantidad de productos: {Subcategory.productsAmount}
-                </CardDescription>
-              </CardContent>
-              <CardContent>
-                <Dialog open={Open} onOpenChange={setOpen}>
-                  <DialogTrigger asChild>
-                    <Button className="w-full mb-2">
-                      <Pencil />
-                      Editar
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent
-                    className="sm:max-w-[500px] w-full p-6"
-                    aria-describedby={undefined}
-                  >
-                    <DialogHeader>
-                      <DialogTitle className="text-xl font-bold">
-                        Editar Subcategoría
-                      </DialogTitle>
-                    </DialogHeader>
-                    <Form {...form}>
-                      <form
-                        onSubmit={form.handleSubmit(updateSubcategory)}
-                        className="w-2/3 space-y-6"
-                      >
-                        <FormField
-                          control={form.control}
-                          name="name"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Nombre</FormLabel>
-                              <FormControl>
-                                <Input
-                                  placeholder="Nombre de la subcategoría"
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <Button type="submit" disabled={LoadingRequest}>
-                          {LoadingRequest && (
-                            <Loader2 className="animate-spin" />
-                          )}
-                          Guardar
-                        </Button>
-                      </form>
-                    </Form>
-                  </DialogContent>
-                </Dialog>
-                <Button
-                  variant="destructive"
-                  className="w-full"
-                  onClick={onDeletePres}
+        <>
+          <Card className="md:w-1/3 md:mr-5 mr-0 w-full">
+            <CardHeader>
+              <CardDescription className="text-xl">
+                Subcategoría
+              </CardDescription>
+              <CardTitle className="md:text-4xl text-3xl">
+                {Subcategory.name}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CardDescription className="text-lg">
+                Cantidad de productos: {Subcategory.productsAmount}
+              </CardDescription>
+            </CardContent>
+            <CardContent>
+              <Dialog open={Open} onOpenChange={setOpen}>
+                <DialogTrigger asChild>
+                  <Button className="w-full mb-2">
+                    <Pencil />
+                    Editar
+                  </Button>
+                </DialogTrigger>
+                <DialogContent
+                  className="md:w-full w-[90%] md:p-6 p-3 rounded-lg"
+                  aria-describedby={undefined}
                 >
-                  <CircleX />
-                  Eliminar
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-          <div className="CatalogPageList w-2/3">
-            <h2 className="text-xl text-muted-foreground text-left pb-5">
+                  <DialogHeader>
+                    <DialogTitle className="text-xl font-bold">
+                      Editar Subcategoría
+                    </DialogTitle>
+                  </DialogHeader>
+                  <div className="w-full flex flex-col gap-4">
+                    <Label>Nombre</Label>
+                    <Input
+                      placeholder="Nombre de la subcategoría"
+                      onChange={(e) => setName(e.target.value)}
+                      defaultValue={Name}
+                    />
+                    <Button
+                      type="submit"
+                      disabled={LoadingRequest}
+                      onClick={() => updateSubcategory(Name)}
+                      className="w-full"
+                    >
+                      {LoadingRequest && <Loader2 className="animate-spin" />}
+                      Guardar
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+              <Button
+                variant="destructive"
+                className="w-full"
+                onClick={onDeletePres}
+              >
+                <CircleX />
+                Eliminar
+              </Button>
+            </CardContent>
+          </Card>
+          <ScrollArea className="md:h-[88vh] md:w-2/3 w-full h-auto">
+            <h2 className="text-xl text-muted-foreground md:pb-5 md:py-0 py-5 md:text-left text-center w-full">
               Lista de productos
             </h2>
             {Products && Products?.length > 0 ? (
@@ -308,11 +272,19 @@ export const Subcategory = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="w-1/6">ID</TableHead>
-                      <TableHead className="w-1/3">Nombre</TableHead>
-                      <TableHead className="w-1/5">Stock</TableHead>
-                      <TableHead>Precio</TableHead>
-                      <TableHead className="w-1/12">Descuento</TableHead>
+                      <TableHead className="w-1/12">ID</TableHead>
+                      <TableHead className="md:w-4/12 w-11/12">
+                        Nombre
+                      </TableHead>
+                      <TableHead className="w-3/12 hidden md:table-cell">
+                        Stock
+                      </TableHead>
+                      <TableHead className="w-3/12 hidden md:table-cell">
+                        Precio
+                      </TableHead>
+                      <TableHead className="w-1/12 hidden md:table-cell">
+                        Descuento
+                      </TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -333,7 +305,7 @@ export const Subcategory = () => {
                             {product.id}
                           </TableCell>
                           <TableCell>{product.name}</TableCell>
-                          <TableCell>
+                          <TableCell className="hidden md:table-cell">
                             {product.stock} {product.saleUnit}s
                             {product.saleUnit !== product.measureType &&
                               ` (${
@@ -344,12 +316,12 @@ export const Subcategory = () => {
                                 ) / 100
                               } ${product.measureType})`}
                           </TableCell>
-                          <TableCell>
+                          <TableCell className="hidden md:table-cell">
                             {product.discountPercentage > 0
                               ? `$${product.discountedPrice} / ${product.saleUnit}`
                               : `$${product.saleUnitPrice} / ${product.saleUnit}`}
                           </TableCell>
-                          <TableCell>
+                          <TableCell className="hidden md:table-cell">
                             {product.discountPercentage > 0
                               ? `${product.discountPercentage}%`
                               : "N/A"}
@@ -381,8 +353,8 @@ export const Subcategory = () => {
                 </AlertDescription>
               </Alert>
             )}
-          </div>
-        </section>
+          </ScrollArea>
+        </>
       ) : null}
     </div>
   );
