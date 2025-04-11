@@ -46,7 +46,6 @@ import {
 } from "@/hooks/CatalogInterfaces";
 import { Label } from "@/components/ui/label";
 
-//TODO: Mobile Category Page
 const Category = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -250,7 +249,7 @@ const Category = () => {
   };
 
   return (
-    <div className="h-full flex md:flex-row flex-col justify-start items-start ">
+    <div className="h-full flex md:flex-row flex-col justify-start items-start">
       {Loading || !Category ? (
         <div className="loading md:w-1/5 h-1/5 w-[75%]">
           <h1 className="text-xl">Cargando...</h1>
@@ -385,7 +384,6 @@ const Category = () => {
             )}
           </Card>
           <ScrollArea className="md:h-[88vh] md:w-2/3 w-full h-auto">
-            {/* FIXME: Product list overflowing viewport width */}
             <h2 className="text-xl text-muted-foreground md:pb-5 md:py-0 py-5 md:text-left text-center w-full">
               Lista de productos
             </h2>
