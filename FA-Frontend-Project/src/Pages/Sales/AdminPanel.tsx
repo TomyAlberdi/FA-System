@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { AddClient } from "@/Pages/Clients/AddClient";
 import AddRegister from "@/Pages/Register/AddRegister";
 
+//TODO: Remove on Mobile
 export const AdminPanel = () => {
   const navigate = useNavigate();
 

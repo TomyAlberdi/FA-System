@@ -15,6 +15,7 @@ import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+//TODO: Mobile LastRecords
 export const LastRecords = () => {
   const { BASE_URL } = useSalesContext();
   const { getToken } = useKindeAuth();
