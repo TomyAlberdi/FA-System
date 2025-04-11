@@ -250,7 +250,7 @@ const Category = () => {
   };
 
   return (
-    <div className="h-full flex md:flex-row flex-col justify-center items-start">
+    <div className="h-full flex md:flex-row flex-col justify-start items-start ">
       {Loading || !Category ? (
         <div className="loading md:w-1/5 h-1/5 w-[75%]">
           <h1 className="text-xl">Cargando...</h1>
@@ -261,7 +261,9 @@ const Category = () => {
           <Card className="md:w-1/3 md:mr-5 mr-0 w-full">
             <CardHeader>
               <CardDescription className="text-xl">Categoría</CardDescription>
-              <CardTitle className="md:text-4xl text-3xl">{Category.name}</CardTitle>
+              <CardTitle className="md:text-4xl text-3xl">
+                {Category.name}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <CardDescription className="text-lg">
@@ -382,9 +384,9 @@ const Category = () => {
               </CardContent>
             )}
           </Card>
-          <ScrollArea className="h-[88vh] w-2/3 ">
-          {/* FIXME: Product list overflowing viewport width */}
-            <h2 className="text-xl text-muted-foreground text-left pb-5">
+          <ScrollArea className="md:h-[88vh] md:w-2/3 w-full h-auto">
+            {/* FIXME: Product list overflowing viewport width */}
+            <h2 className="text-xl text-muted-foreground md:pb-5 md:py-0 py-5 md:text-left text-center w-full">
               Lista de productos
             </h2>
             {Products && Products?.length > 0 ? (
@@ -392,11 +394,19 @@ const Category = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="w-1/6">ID</TableHead>
-                      <TableHead className="w-1/3">Nombre</TableHead>
-                      <TableHead className="w-1/5">Stock</TableHead>
-                      <TableHead>Precio</TableHead>
-                      <TableHead className="w-1/12">Descuento</TableHead>
+                      <TableHead className="w-1/12">ID</TableHead>
+                      <TableHead className="md:w-4/12 w-11/12">
+                        Nombre
+                      </TableHead>
+                      <TableHead className="w-3/12 hidden md:table-cell">
+                        Stock
+                      </TableHead>
+                      <TableHead className="w-3/12 hidden md:table-cell">
+                        Precio
+                      </TableHead>
+                      <TableHead className="w-1/12 hidden md:table-cell">
+                        Descuento
+                      </TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -417,7 +427,7 @@ const Category = () => {
                             {product.id}
                           </TableCell>
                           <TableCell>{product.name}</TableCell>
-                          <TableCell>
+                          <TableCell className="hidden md:table-cell">
                             {product.stock} {product.saleUnit}s
                             {product.saleUnit !== product.measureType &&
                               ` (${
@@ -428,12 +438,12 @@ const Category = () => {
                                 ) / 100
                               } ${product.measureType})`}
                           </TableCell>
-                          <TableCell>
+                          <TableCell className="hidden md:table-cell">
                             {product.discountPercentage > 0
                               ? `$${product.discountedPrice} / ${product.saleUnit}`
                               : `$${product.saleUnitPrice} / ${product.saleUnit}`}
                           </TableCell>
-                          <TableCell>
+                          <TableCell className="hidden md:table-cell">
                             {product.discountPercentage > 0
                               ? `${product.discountPercentage}%`
                               : "N/A"}
