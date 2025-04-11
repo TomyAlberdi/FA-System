@@ -25,6 +25,7 @@ interface StockPaginationProps {
   PaginationInfo: PaginationInfo;
 }
 
+//TODO: Mobile Stock Pagination
 export const StockPagination: React.FC<StockPaginationProps> = ({
   Stocks,
   CurrentPage,

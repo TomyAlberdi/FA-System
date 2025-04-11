@@ -4,6 +4,7 @@ import { PartialProductStock } from "@/hooks/CatalogInterfaces";
 import { CircleEllipsis } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
+//TODO: Mobile Stock Card
 export const StockCard = ({ stock }: { stock: PartialProductStock }) => {
   const navigate = useNavigate();
 

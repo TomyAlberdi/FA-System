@@ -18,10 +18,12 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { StockPagination } from "@/Pages/Stock/StockPagination";
 
+//TODO: Migrate from form to regular input
 const formSchema = z.object({
   keyword: z.string()
 });
 
+//TODO: Mobile Stock List
 export const StockList = () => {
   const { fetchStockListByKeyword } = useCatalogContext();
 

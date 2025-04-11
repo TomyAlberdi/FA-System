@@ -52,6 +52,7 @@ import { useForm } from "react-hook-form";
 import { Link, useParams } from "react-router-dom";
 import { z } from "zod";
 
+//TODO: Migrate from form to regular input
 const formSchema = z.object({
   quantity: z.coerce.number().min(1, {
     message: "La cantidad debe ser mayor a 0",
@@ -61,6 +62,7 @@ const formSchema = z.object({
   }),
 });
 
+//TODO: Mobile Stock Page
 export const Stock = () => {
   const { id } = useParams();
   const { fetchProductStock, BASE_URL } = useCatalogContext();
