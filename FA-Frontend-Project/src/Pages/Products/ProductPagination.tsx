@@ -44,6 +44,7 @@ interface ProductPaginationProps {
   setFilter: React.Dispatch<React.SetStateAction<Array<FilterData | null>>>;
 }
 
+//TODO: Migrate from form to regular input
 const formSchema = z.object({
   keyword: z.string(),
 });

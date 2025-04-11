@@ -25,7 +25,6 @@ interface StockPaginationProps {
   PaginationInfo: PaginationInfo;
 }
 
-//TODO: Mobile Stock Pagination
 export const StockPagination: React.FC<StockPaginationProps> = ({
   Stocks,
   CurrentPage,
@@ -55,14 +54,14 @@ export const StockPagination: React.FC<StockPaginationProps> = ({
 
   return (
     <section className="StockPagination w-full">
-      <section className="listBody md:gap-[1%] w-full">
+      <section className="listBody md:gap-[1%] gap-2 w-full">
         <TooltipProvider>
           {Stocks?.map((stock: PartialProductStock, i) => {
             return <StockCard key={i} stock={stock} />;
           })}
         </TooltipProvider>
       </section>
-      {!PaginationInfo?.last && (
+      {PaginationInfo?.totalPages > 1 && (
         <Pagination className="mt-5">
           <PaginationContent>
             <PaginationItem

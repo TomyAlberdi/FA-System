@@ -34,20 +34,14 @@ export const ProductCard = ({ product }: { product: CardProduct }) => {
         </div>
       )}
       <div
-        className="image md:w-full md:row-span-5 md:mb-1 md:mr-0 md:row-start-2 col-start-1 md:col-span-1 row-start-1 row-span-5 col-span-2 mr-2"
+        className="image md:w-full md:mb-1 md:mr-0 md:row-start-2 col-start-1 md:col-span-1 row-start-1 row-span-5 col-span-2 mr-2 bg-contain bg-center bg-no-repeat"
         style={
           product.image === "" || product.image === null
             ? {
                 backgroundImage: `url(https://media.istockphoto.com/id/1147544807/es/vector/no-imagen-en-miniatura-gr%C3%A1fico-vectorial.jpg?s=612x612&w=0&k=20&c=Bb7KlSXJXh3oSDlyFjIaCiB9llfXsgS7mHFZs6qUgVk=)`,
-                backgroundSize: "contain",
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
               }
             : {
                 backgroundImage: `url(${product.image})`,
-                backgroundSize: "contain",
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
               }
         }
       />
