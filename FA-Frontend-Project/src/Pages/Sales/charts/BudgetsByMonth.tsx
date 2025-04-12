@@ -43,7 +43,6 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-//TODO: Mobile BudgetsByMonth
 export const BudgetsByMonth = () => {
   const { BASE_URL } = useSalesContext();
   const { getToken } = useKindeAuth();
@@ -113,7 +112,7 @@ export const BudgetsByMonth = () => {
                 tickFormatter={(value) => value.slice(0, 3)}
               />
               <ChartTooltip content={<ChartTooltipContent hideLabel />} />
-              <ChartLegend content={<ChartLegendContent />} />
+              <ChartLegend content={<ChartLegendContent />} className="flex-wrap" />
               <Bar
                 dataKey="pendiente"
                 stackId="a"

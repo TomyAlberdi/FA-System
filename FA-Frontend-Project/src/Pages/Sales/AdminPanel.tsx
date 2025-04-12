@@ -13,14 +13,13 @@ import { useNavigate } from "react-router-dom";
 import { AddClient } from "@/Pages/Clients/AddClient";
 import AddRegister from "@/Pages/Register/AddRegister";
 
-//TODO: Remove on Mobile
 export const AdminPanel = () => {
   const navigate = useNavigate();
 
   const [ClientOpen, setClientOpen] = useState(false);
 
   return (
-    <Card className="col-start-1 col-span-8 row-start-11 row-end-16">
+    <Card className="col-start-1 col-span-8 row-start-11 row-end-16 hidden md:block">
       <CardHeader>
         <CardTitle>Atajos</CardTitle>
       </CardHeader>

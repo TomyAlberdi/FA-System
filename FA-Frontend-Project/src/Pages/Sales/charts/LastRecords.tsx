@@ -91,35 +91,36 @@ export const LastRecords = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {Data?.map((record: RegisterRecord, index: number) => {
-                return (
-                  <TableRow
-                    key={index}
-                    className="cursor-pointer"
-                    onClick={() => handleNavigateToBudget(record.detail)}
-                  >
-                    <TableCell
-                      className={
-                        "font-medium " +
-                        (record.type === "INGRESO"
-                          ? "text-chart-2"
-                          : "text-destructive")
-                      }
+              {Array.isArray(Data) &&
+                Data?.map((record: RegisterRecord, index: number) => {
+                  return (
+                    <TableRow
+                      key={index}
+                      className="cursor-pointer"
+                      onClick={() => handleNavigateToBudget(record.detail)}
                     >
-                      {record.type === "INGRESO" ? "INGRESO" : "GASTO"}
-                    </TableCell>
-                    <TableCell>
-                      {record.type === "GASTO" && "- "} $ {record.amount}
-                    </TableCell>
-                    <TableCell>{record.date}</TableCell>
-                    <TableCell>
-                      {record.detail
-                        ? record.detail
-                        : "No hay detalle disponible"}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+                      <TableCell
+                        className={
+                          "font-medium " +
+                          (record.type === "INGRESO"
+                            ? "text-chart-2"
+                            : "text-destructive")
+                        }
+                      >
+                        {record.type === "INGRESO" ? "INGRESO" : "GASTO"}
+                      </TableCell>
+                      <TableCell>
+                        {record.type === "GASTO" && "- "} $ {record.amount}
+                      </TableCell>
+                      <TableCell>{record.date}</TableCell>
+                      <TableCell>
+                        {record.detail
+                          ? record.detail
+                          : "No hay detalle disponible"}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
             </TableBody>
             <TableCaption className="text-center">
               Últimos Registros en Caja
