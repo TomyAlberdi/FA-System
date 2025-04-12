@@ -236,7 +236,7 @@ export const Provider = () => {
               </Button>
             </CardContent>
           </Card>
-          <ScrollArea className="md:h-[88vh] md:w-2/3 w-full h-auto">
+          <ScrollArea className="md:h-[85vh] md:w-2/3 w-full h-auto">
             <h2 className="text-xl text-muted-foreground md:pb-5 md:py-0 py-5 md:text-left text-center w-full">
               Lista de productos
             </h2>

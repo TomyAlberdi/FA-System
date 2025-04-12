@@ -37,14 +37,11 @@ export const ClientBudgets = () => {
   }, []);
 
   return (
-    <div className="CatalogPageList w-2/3">
-      <h1 className="text-xl text-muted-foreground text-left pb-5">
-        Lista de Presupuestos
-      </h1>
+    <>
       {!Budgets || Budgets.length === 0 ? (
-        <Alert variant="destructive" className="w-full mt-2">
+        <Alert variant="destructive" className="w-auto">
           <AlertCircle className="w-5 pt-1" />
-          <AlertTitle className="text-xl">Vacío</AlertTitle>
+          <AlertTitle className="text-xl">Error</AlertTitle>
           <AlertDescription className="text-lg">
             El cliente no tiene presupuestos asociados.
           </AlertDescription>
@@ -53,9 +50,9 @@ export const ClientBudgets = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-3/6">Fecha</TableHead>
-              <TableHead className="w-2/6">Monto</TableHead>
-              <TableHead className="w-1/6">Estado</TableHead>
+              <TableHead className="w-3/6 hidden md:table-cell">Fecha</TableHead>
+              <TableHead className="md:w-2/6 w-1/2">Monto</TableHead>
+              <TableHead className="md:w-1/6 w-1/2">Estado</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -66,7 +63,7 @@ export const ClientBudgets = () => {
                   className="text-lg cursor-pointer"
                   onClick={() => navigate(`/sales/budgets/${budget.id}`)}
                 >
-                  <TableCell>
+                  <TableCell className="hidden md:table-cell">
                     {new Date(budget.date).toLocaleDateString("es-ES", {
                       day: "numeric",
                       month: "long",
@@ -97,6 +94,6 @@ export const ClientBudgets = () => {
           </TableBody>
         </Table>
       )}
-    </div>
+    </>
   );
 };
