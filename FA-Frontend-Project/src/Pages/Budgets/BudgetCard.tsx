@@ -21,7 +21,7 @@ export const BudgetCard = ({ budget }: { budget: PartialBudget }) => {
   return (
     <Button
       asChild
-      className="h-[100px] w-[19.2%] min-w-[300px] max-w-[400px] mb-[1%] flex flex-row gap-2 justify-between p-2 cursor-pointer"
+      className="h-[100px] md:w-[19.2%] md:min-w-[300px] md:max-w-[400px] w-full mb-[1%] flex flex-row gap-2 justify-between p-2 cursor-pointer" 
     >
       <Link to={`/sales/budgets/${budget.id}`}>
         <div className="flex flex-col gap-2 justify-center items-center h-full w-2/3">

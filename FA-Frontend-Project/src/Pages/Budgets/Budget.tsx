@@ -26,6 +26,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { DownloadBudgetDetail } from "@/Pages/Budgets/DownloadBudgetDetail";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export const Budget = () => {
   const { id } = useParams();
@@ -117,13 +118,13 @@ export const Budget = () => {
   };
 
   return Loading ? (
-    <div className="flex flex-row gap-4 h-full">
-      <Skeleton className="w-1/3 h-full" />
-      <Skeleton className="w-2/3 h-full" />
+    <div className="flex md:flex-row flex-col gap-4 h-full">
+      <Skeleton className="md:w-1/3 h-full w-full" />
+      <Skeleton className="md:w-2/3 md:h-full w-full h-1/2 hidden md:block  " />
     </div>
   ) : (
-    <div className="flex flex-row gap-4">
-      <Card className="w-1/3">
+    <div className="flex md:flex-row flex-col gap-4">
+      <Card className="md:w-1/3 w-full">
         <CardHeader>
           <CardTitle className="text-3xl">
             Presupuesto {Budget?.id?.toString().padStart(10, "0")}
@@ -215,7 +216,7 @@ export const Budget = () => {
           <DownloadBudgetDetail budget={Budget} />
         </CardContent>
       </Card>
-      <div className="w-2/3">
+      <ScrollArea className="md:w-2/3 w-[95vw] h-auto">
         <Table>
           <TableHeader>
             <TableRow>
@@ -269,7 +270,7 @@ export const Budget = () => {
             })}
           </TableBody>
         </Table>
-      </div>
+      </ScrollArea>
     </div>
   );
 };

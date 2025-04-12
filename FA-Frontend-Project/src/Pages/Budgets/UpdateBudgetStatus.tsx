@@ -1,12 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { DialogContent, DialogTitle } from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -18,14 +12,8 @@ import { ToastAction } from "@/components/ui/toast";
 import { useSalesContext } from "@/Context/UseSalesContext";
 import { BudgetStatus } from "@/hooks/SalesInterfaces";
 import { useToast } from "@/hooks/use-toast";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-
-const formSchema = z.object({
-  status: z.string(),
-});
+import { useState } from "react";
 
 export const UpdateBudgetStatus = ({
   id,
@@ -44,38 +32,33 @@ export const UpdateBudgetStatus = ({
   const { getToken } = useKindeAuth();
   const { toast } = useToast();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      status: status,
-    },
-  });
+  const [updateStatus, setupdateStatus] = useState<string>("");
 
-  const onUpdatePres = (data: z.infer<typeof formSchema>) => {
+  const onUpdatePres = (status: string) => {
     if (
-      (data.status === BudgetStatus.PAGO ||
-        data.status === BudgetStatus.ENVIADO ||
-        data.status === BudgetStatus.ENTREGADO) &&
+      (status === BudgetStatus.PAGO ||
+        status === BudgetStatus.ENVIADO ||
+        status === BudgetStatus.ENTREGADO) &&
       !stockDecreased
     ) {
       toast({
         variant: "destructive",
         title: "¿Confirmar actualización?",
-        description: `Actualizar el presupuesto a ${data.status} modificará el stock de los productos y la caja registradora.`,
+        description: `Actualizar el presupuesto a ${status} modificará el stock de los productos y la caja registradora.`,
         action: (
-          <ToastAction altText="Actualizar" onClick={() => onSubmit(data)}>
+          <ToastAction altText="Actualizar" onClick={() => onSubmit(status)}>
             Actualizar
           </ToastAction>
         ),
       });
     } else {
-      console.log(data);
-      onSubmit(data);
+      console.log(status);
+      onSubmit(status);
     }
   };
 
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    const url = `${BASE_URL}/budget/${id}?status=${data.status}`;
+  const onSubmit = async (status: string) => {
+    const url = `${BASE_URL}/budget/${id}?status=${status}`;
     try {
       if (!getToken) {
         console.error("getToken is undefined");
@@ -128,53 +111,41 @@ export const UpdateBudgetStatus = ({
 
   return (
     <DialogContent
-      className="sm:max-w-[500px] w-full p-6"
+      className="w-[90%] md:w-full md:p-6 p-3 rounded-lg"
       aria-describedby={undefined}
     >
       <DialogTitle>Actualizar estado del presupuesto</DialogTitle>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onUpdatePres)}>
-          <FormField
-            control={form.control}
-            name="status"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Estado</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleccione un estado" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="PENDIENTE" className="cursor-pointer">
-                      Pendiente
-                    </SelectItem>
-                    <SelectItem value="PAGO" className="cursor-pointer">
-                      Pago
-                    </SelectItem>
-                    <SelectItem value="ENVIADO" className="cursor-pointer">
-                      Enviado
-                    </SelectItem>
-                    <SelectItem value="ENTREGADO" className="cursor-pointer">
-                      Entregado
-                    </SelectItem>
-                    <SelectItem value="CANCELADO" className="cursor-pointer">
-                      Cancelado
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormItem>
-            )}
-          />
-          <Button type="submit" className="w-full mt-4">
-            Actualizar
-          </Button>
-        </form>
-      </Form>
+      <div>
+        <Label>Estado</Label>
+        <Select onValueChange={(value) => setupdateStatus(value)}>
+          <SelectTrigger>
+            <SelectValue placeholder="Seleccione un estado" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="PENDIENTE" className="cursor-pointer">
+              Pendiente
+            </SelectItem>
+            <SelectItem value="PAGO" className="cursor-pointer">
+              Pago
+            </SelectItem>
+            <SelectItem value="ENVIADO" className="cursor-pointer">
+              Enviado
+            </SelectItem>
+            <SelectItem value="ENTREGADO" className="cursor-pointer">
+              Entregado
+            </SelectItem>
+            <SelectItem value="CANCELADO" className="cursor-pointer">
+              Cancelado
+            </SelectItem>
+          </SelectContent>
+        </Select>
+        <Button
+          className="w-full mt-4"
+          onClick={() => onUpdatePres(updateStatus)}
+        >
+          Actualizar
+        </Button>
+      </div>
     </DialogContent>
   );
 };

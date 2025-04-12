@@ -55,21 +55,21 @@ export const Budgets = () => {
   }, [Dates]);
 
   return Loading ? (
-    <div className="flex flex-col gap-4 h-full">
+    <div className="flex flex-col md:gap-4 gap-2 h-full">
       <Skeleton className="w-full h-1/6" />
       <Skeleton className="w-full h-5/6" />
     </div>
   ) : (
     <div className="flex flex-col gap-4">
-      <section className="flex flex-row justify-between items-center">
-        <div className="flex flex-col gap-2">
+      <section className="flex md:flex-row flex-col justify-between items-start md:gap-0 gap-4"> 
+        <div className="flex flex-col gap-2 md:w-auto w-full">
           <h1 className="sectionTitle text-3xl">Presupuestos</h1>
           <Popover>
-            <PopoverTrigger asChild>
+            <PopoverTrigger asChild className="md:w-auto w-full">
               <Button
                 variant="outline"
                 className={cn(
-                  "w-[300px] justify-start text-left font-normal",
+                  "md:w-[300px] w-full justify-start text-left font-normal",
                   !Dates && "text-muted-foreground"
                 )}
               >
@@ -88,7 +88,7 @@ export const Budgets = () => {
                 )}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
+            <PopoverContent className="w-auto " align="start">
               <Calendar
                 initialFocus
                 mode="range"
@@ -104,8 +104,8 @@ export const Budgets = () => {
             </PopoverContent>
           </Popover>
         </div>
-        <div>
-          <Button asChild>
+        <div className="md:w-auto w-full">
+          <Button asChild className="md:w-auto w-full">
             <Link to="/sales/budgets/add">
               <PlusCircle />
               Crear presupuesto
@@ -113,9 +113,9 @@ export const Budgets = () => {
           </Button>
         </div>
       </section>
-      <section className="listBody md:gap-[1%]">
+      <section className="flex md:flex-row flex-col items-start justify-start md:gap-[1%]">
         {Budgets?.length === 0 ? (
-          <Alert variant="destructive" className="w-auto">
+          <Alert variant="destructive" className="md:w-auto w-full">
             <AlertCircle className="w-5 pt-1" />
             <AlertTitle className="text-xl">Error</AlertTitle>
             <AlertDescription className="text-lg">
