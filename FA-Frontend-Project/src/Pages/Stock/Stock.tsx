@@ -150,7 +150,7 @@ export const Stock = () => {
           <>
             <Card className="productData flex flex-col md:flex-row items-start justify-start gap-4 w-full p-4">
               <div
-                className="productImage bg-contain bg-center bg-no-repeat w-full aspect-square md:w-1/6" 
+                className="productImage bg-contain bg-center bg-no-repeat w-full aspect-square md:w-1/6"
                 style={
                   stock?.productImage
                     ? { backgroundImage: `url(${stock?.productImage})` }
@@ -206,7 +206,12 @@ export const Stock = () => {
                               <RadioGroupItem
                                 value="increase"
                                 id="r1"
-                                onClick={() => setUpdateStock({ ...UpdateStock, type: "increase" })}
+                                onClick={() =>
+                                  setUpdateStock({
+                                    ...UpdateStock,
+                                    type: "increase",
+                                  })
+                                }
                               />
                               <Label htmlFor="r1">Ingresar</Label>
                             </div>
@@ -214,7 +219,12 @@ export const Stock = () => {
                               <RadioGroupItem
                                 value="reduce"
                                 id="r2"
-                                onClick={() => setUpdateStock({ ...UpdateStock, type: "reduce" })}
+                                onClick={() =>
+                                  setUpdateStock({
+                                    ...UpdateStock,
+                                    type: "reduce",
+                                  })
+                                }
                               />
                               <Label htmlFor="r2">Retirar</Label>
                             </div>
