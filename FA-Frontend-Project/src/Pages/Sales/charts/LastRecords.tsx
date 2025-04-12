@@ -15,7 +15,6 @@ import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-//TODO: Mobile LastRecords
 export const LastRecords = () => {
   const { BASE_URL } = useSalesContext();
   const { getToken } = useKindeAuth();
@@ -85,8 +84,8 @@ export const LastRecords = () => {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-1/5">Tipo</TableHead>
-                <TableHead className="w-1/5">Monto</TableHead>
-                <TableHead className="w-1/5">Fecha</TableHead>
+                <TableHead className="md:w-1/5 w-2/5">Monto</TableHead>
+                <TableHead className="w-1/5 hidden md:table-cell">Fecha</TableHead>
                 <TableHead className="w-2/5">Detalle</TableHead>
               </TableRow>
             </TableHeader>
@@ -112,7 +111,7 @@ export const LastRecords = () => {
                       <TableCell>
                         {record.type === "GASTO" && "- "} $ {record.amount}
                       </TableCell>
-                      <TableCell>{record.date}</TableCell>
+                      <TableCell className="hidden md:table-cell">{record.date}</TableCell>
                       <TableCell>
                         {record.detail
                           ? record.detail

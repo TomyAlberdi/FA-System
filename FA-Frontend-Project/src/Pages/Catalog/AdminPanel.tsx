@@ -30,7 +30,6 @@ export const AdminPanel = () => {
         <Dialog open={ProviderOpen} onOpenChange={setProviderOpen}>
           <DialogTrigger asChild>
             <Button className="h-full text-lg w-1/3">
-              <CirclePlus className="bigger-icon" />
               Añadir Proveedor
             </Button>
           </DialogTrigger>
@@ -49,7 +48,6 @@ export const AdminPanel = () => {
         <Dialog open={CategoryOpen} onOpenChange={setCategoryOpen}>
           <DialogTrigger asChild>
             <Button className="h-full text-lg w-1/3">
-              <CirclePlus className="bigger-icon" />
               Añadir Categoría
             </Button>
           </DialogTrigger>

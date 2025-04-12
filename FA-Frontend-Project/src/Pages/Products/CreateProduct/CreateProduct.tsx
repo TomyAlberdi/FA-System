@@ -249,9 +249,7 @@ const CreateProduct = ({
               : "w-10/12 text-md"
           }
         >
-          <TriggerIcon
-            className={TriggerTitle == "Añadir Producto" ? "bigger-icon" : ""}
-          />
+          {TriggerTitle !== "Añadir Producto" ? <TriggerIcon /> : null}
           {TriggerTitle}
         </Button>
       </DialogTrigger>
@@ -263,7 +261,8 @@ const CreateProduct = ({
         <ScrollArea className="w-full max-h-[80vh] overflow-auto flex flex-col justify-start px-6 pt-6 pb-2">
           <div className="flex flex-row items-center">
             <DialogTitle className="text-3xl font-bold">
-              {(TriggerTitle === "Nuevo Producto" || TriggerTitle === "Añadir Producto")
+              {TriggerTitle === "Nuevo Producto" ||
+              TriggerTitle === "Añadir Producto"
                 ? "Crear Producto"
                 : "Actualizar Producto"}
             </DialogTitle>

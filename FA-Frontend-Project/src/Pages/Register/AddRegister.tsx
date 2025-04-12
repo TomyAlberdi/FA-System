@@ -13,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useSalesContext } from "@/Context/UseSalesContext";
 import { RegisterRecord } from "@/hooks/SalesInterfaces";
 import { useToast } from "@/hooks/use-toast";
-import { CheckCircle2, CirclePlus, DollarSign } from "lucide-react";
+import { CheckCircle2, DollarSign } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const AddRegister = ({ yearMonth }: { yearMonth?: string }) => {
@@ -88,7 +88,6 @@ const AddRegister = ({ yearMonth }: { yearMonth?: string }) => {
             </>
           ) : (
             <>
-              <CirclePlus className="bigger-icon" />
               Registrar en Caja
             </>
           )}
