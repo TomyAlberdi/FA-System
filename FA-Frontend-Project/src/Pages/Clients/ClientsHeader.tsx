@@ -14,12 +14,12 @@ import {
 } from "@/components/ui/dialog";
 import { useState } from "react";
 
-interface ClientsHeaderProps {
+export interface ClientsHeaderProps {
   setFilters: React.Dispatch<React.SetStateAction<ClientsFilter>>;
   handleRefresh: () => void;
 }
 
-interface Search {
+export interface Search {
   keyword: string;
   type: "" | "A" | "B";
 }
@@ -33,14 +33,14 @@ export const ClientsHeader = ({
     type: "",
   });
 
-  async function obSumbit(data: Search) {
+  async function onSubmit(data: Search) {
     setFilters(data);
   }
 
   const [Open, setOpen] = useState(false);
 
   return (
-    <section className="flex listHeader">
+    <section className="listHeader hidden md:flex">
       <h1 className="sectionTitle text-3xl">Clientes</h1>
       <div className="flex flex-row items-start justify-start gap-2 w-1/2">
         <Input
@@ -49,7 +49,7 @@ export const ClientsHeader = ({
           className="w-1/2 text-lg"
           onChange={(e) => setSearch({ ...Search, keyword: e.target.value })}
         />
-        <Button onClick={() => obSumbit(Search)} type="submit" className="w-10">
+        <Button onClick={() => onSubmit(Search)} type="submit" className="w-10">
           <SearchIcon className="bigger-icon" />
         </Button>
         <RadioGroup>
@@ -79,7 +79,7 @@ export const ClientsHeader = ({
           </Button>
         </DialogTrigger>
         <DialogContent
-          className="sm:max-w-[500px] w-full p-6"
+          className="w-[90%] md:w-full md:p-6 p-3 rounded-lg"
           aria-describedby={undefined}
         >
           <DialogHeader>
