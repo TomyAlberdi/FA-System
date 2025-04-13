@@ -31,6 +31,7 @@ import { useSalesContext } from "@/Context/UseSalesContext";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useNavigate } from "react-router-dom";
 import { Slider } from "@/components/ui/slider";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export const AddBudget = () => {
   const { BASE_URL } = useSalesContext();
@@ -220,13 +221,13 @@ export const AddBudget = () => {
   return (
     <div>
       <h1 className="sectionTitle text-3xl">Crear Presupuesto</h1>
-      <div className="w-full px-5 pt-2 h-[calc(100svh-9rem)] flex flex-col gap-4">
+      <div className="w-full pt-2 h-full flex flex-col gap-4">
         <Card className="flex flex-col">
-          <CardHeader>
+          <CardHeader className="hidden md:flex">
             <CardTitle>Información del Presupuesto</CardTitle>
           </CardHeader>
-          <CardContent className="flex flex-row justify-start gap-4">
-            <div className="flex flex-col gap-2 w-1/6">
+          <CardContent className="flex md:flex-row flex-col justify-start gap-4 md:p-6 p-3 md:pt-6">
+            <div className="flex flex-col gap-2 md:w-1/6 w-full">
               <Label className="text-lg">Cliente:</Label>
               <Dialog
                 open={OpenClientPagination}
@@ -241,7 +242,7 @@ export const AddBudget = () => {
                 </DialogTrigger>
                 <DialogContent
                   aria-describedby={undefined}
-                  className="max-w-[50vw] w-full max-h-[90vh] h-full flex flex-col p-6"
+                  className="md:max-w-[50vw] md:w-full w-[90%] max-h-[90vh] md:h-full h-auto flex flex-col md:p-6 p-3"
                 >
                   <DialogTitle className="text-xl font-bold">
                     Seleccionar cliente
@@ -252,11 +253,11 @@ export const AddBudget = () => {
                 </DialogContent>
               </Dialog>
             </div>
-            <section className="flex flex-row justify-evenly align-center w-4/6">
+            <section className="flex md:flex-row flex-col justify-evenly align-center md:w-4/6 w-auto">
               <div className="flex flex-col gap-4">
                 <div className="flex flex-col align-center justify-center">
                   <Label className="text-lg">Fecha de emisión:</Label>
-                  <span className="text-3xl font-semibold">
+                  <span className="md:text-3xl text-xl font-semibold">
                     {new Date(formattedDate).toLocaleDateString("es-ES", {
                       day: "numeric",
                       month: "long",
@@ -278,13 +279,12 @@ export const AddBudget = () => {
                   />
                 </div>
               </div>
-
               <div className="flex flex-col align-center justify-center">
                 <Label className="text-lg">Monto final:</Label>
                 <span className="text-3xl font-semibold">$ {FinalAmount}</span>
               </div>
             </section>
-            <section className="w-1/6 flex flex-col justify-evenly gap-4">
+            <section className="md:w-1/6 w-full flex flex-col justify-evenly gap-4">
               <div>
                 <Button
                   type="submit"
@@ -323,7 +323,7 @@ export const AddBudget = () => {
                 </Button>
               </DialogTrigger>
               <DialogContent
-                className="max-w-[80vw] w-full max-h-[90vh] h-full flex flex-col p-6"
+                className="md:max-w-[80vw] md:w-full w-[92.5%] md:max-h-[90vh] md:h-full h-[95%] flex flex-col md:p-6 p-2 rounded-lg"
                 aria-describedby={undefined}
               >
                 <DialogTitle className="text-xl font-bold">
@@ -336,7 +336,7 @@ export const AddBudget = () => {
             </Dialog>
           </section>
           {Budget?.products?.length === 0 ? (
-            <Alert variant="destructive" className="w-full mt-2">
+            <Alert variant="destructive" className="md:w-auto w-full mt-2">
               <AlertCircle className="w-5 pt-1" />
               <AlertTitle className="text-xl">Vacío</AlertTitle>
               <AlertDescription className="text-lg">
@@ -344,63 +344,69 @@ export const AddBudget = () => {
               </AlertDescription>
             </Alert>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-2/12">Cantidad solicitada</TableHead>
-                  <TableHead className="w-2/12">Cantidad de unidades</TableHead>
-                  <TableHead className="w-3/12">Nombre</TableHead>
-                  <TableHead className="w-2/12">Precio unitario</TableHead>
-                  <TableHead className="w-1/12">Descuento</TableHead>
-                  <TableHead className="w-1/12">Subtotal</TableHead>
-                  <TableHead className="w-1/12"></TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {Budget?.products?.map(
-                  (product: ProductBudget, index: number) => {
-                    return (
-                      <TableRow key={index}>
-                        <TableCell className="font-medium">
-                          {product.measureUnitQuantity}{" "}
-                          {product.productMeasureUnit}
-                        </TableCell>
-                        <TableCell className="font-medium">
-                          {product.saleUnitQuantity} {product.productSaleUnit}
-                        </TableCell>
-                        <TableCell>{product.productName}</TableCell>
-                        <TableCell>$ {product.productMeasurePrice}</TableCell>
-                        <TableCell>{product.discountPercentage}%</TableCell>
-                        <TableCell>
-                          ${" "}
-                          {product.discountPercentage === 0
-                            ? Math.round(
-                                (product.saleUnitQuantity *
-                                  product.saleUnitPrice +
-                                  Number.EPSILON) *
-                                  100
-                              ) / 100
-                            : Math.round(
-                                (product.saleUnitQuantity *
-                                  product.saleUnitPrice *
-                                  (1 - product.discountPercentage / 100) +
-                                  Number.EPSILON) *
-                                  100
-                              ) / 100}
-                        </TableCell>
-                        <TableCell>
-                          <Button
-                            onClick={() => removeProductFromBudget(product)}
-                          >
-                            <Trash2 className="bigger-icon" color="red" />
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  }
-                )}
-              </TableBody>
-            </Table>
+            <ScrollArea className="md:w-full w-[95vw] h-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-2/12">
+                      Cantidad solicitada
+                    </TableHead>
+                    <TableHead className="w-2/12">
+                      Cantidad de unidades
+                    </TableHead>
+                    <TableHead className="w-3/12">Nombre</TableHead>
+                    <TableHead className="w-2/12">Precio unitario</TableHead>
+                    <TableHead className="w-1/12">Descuento</TableHead>
+                    <TableHead className="w-1/12">Subtotal</TableHead>
+                    <TableHead className="w-1/12"></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {Budget?.products?.map(
+                    (product: ProductBudget, index: number) => {
+                      return (
+                        <TableRow key={index}>
+                          <TableCell className="font-medium">
+                            {product.measureUnitQuantity}{" "}
+                            {product.productMeasureUnit}
+                          </TableCell>
+                          <TableCell className="font-medium">
+                            {product.saleUnitQuantity} {product.productSaleUnit}
+                          </TableCell>
+                          <TableCell>{product.productName}</TableCell>
+                          <TableCell>$ {product.productMeasurePrice}</TableCell>
+                          <TableCell>{product.discountPercentage}%</TableCell>
+                          <TableCell>
+                            ${" "}
+                            {product.discountPercentage === 0
+                              ? Math.round(
+                                  (product.saleUnitQuantity *
+                                    product.saleUnitPrice +
+                                    Number.EPSILON) *
+                                    100
+                                ) / 100
+                              : Math.round(
+                                  (product.saleUnitQuantity *
+                                    product.saleUnitPrice *
+                                    (1 - product.discountPercentage / 100) +
+                                    Number.EPSILON) *
+                                    100
+                                ) / 100}
+                          </TableCell>
+                          <TableCell>
+                            <Button
+                              onClick={() => removeProductFromBudget(product)}
+                            >
+                              <Trash2 className="bigger-icon" color="red" />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    }
+                  )}
+                </TableBody>
+              </Table>
+            </ScrollArea>
           )}
         </div>
       </div>

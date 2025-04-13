@@ -32,9 +32,13 @@ export const ProductCard = ({
 
   const [Discount, setDiscount] = useState<Array<number>>([0]);
   const [Subtotal, setSubtotal] = useState(0);
-  const [data, setData] = useState({
+  const [data, setData] = useState<{
+    product: CardProduct | undefined;
+    saleUnitQuantity: number | null;
+    measureUnitQuantity: number;
+  }>({
     product: undefined,
-    saleUnitQuantity: 0,
+    saleUnitQuantity: null,
     measureUnitQuantity: 0,
   });
 
@@ -46,6 +50,10 @@ export const ProductCard = ({
   }, []);
 
   useEffect(() => {
+    if (data.saleUnitQuantity === null) {
+      setSubtotal(0);
+      return;
+    }
     const subtotal =
       Math.round(
         (data.saleUnitQuantity * product.saleUnitPrice + Number.EPSILON) * 100
@@ -63,7 +71,7 @@ export const ProductCard = ({
   }, [data.saleUnitQuantity, Discount]);
 
   const addProductToBudget = () => {
-    if (data.saleUnitQuantity === 0) {
+    if (data.saleUnitQuantity === 0 || data.saleUnitQuantity === null) {
       toast({
         variant: "destructive",
         title: "Error",
@@ -87,43 +95,36 @@ export const ProductCard = ({
   };
 
   return (
-    <Card className="w-[19.2%] h-[350px] p-2 grid grid-cols-1 grid-rows-8">
-      <CardTitle className="row-span-1 truncate overflow-hidden whitespace-nowrap">
+    <Card className="md:w-[19.2%] h-min md:flex flex-col w-full gap-2 p-2 grid grid-cols-2 grid-rows-4">
+      <CardTitle className="truncate overflow-hidden whitespace-nowrap text-center md:h-1/6 flex justify-center items-center pb-2 row-start-1 row-span-3 col-start-2">
         {product.name}
       </CardTitle>
       <div
-        className="row-span-5"
+        className="bg-contain bg-center bg-no-repeat w-full aspect-square row-start-1 row-span-3 col-start-1"
         style={
           product.image === "" || product.image === null
             ? {
                 backgroundImage: `url(https://media.istockphoto.com/id/1147544807/es/vector/no-imagen-en-miniatura-gr%C3%A1fico-vectorial.jpg?s=612x612&w=0&k=20&c=Bb7KlSXJXh3oSDlyFjIaCiB9llfXsgS7mHFZs6qUgVk=)`,
-                backgroundSize: "contain",
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
               }
             : {
                 backgroundImage: `url(${product.image})`,
-                backgroundSize: "contain",
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
               }
         }
       />
-      <div className="row-span-1" />
-      <div className="row-span-1">
+      <div className="md:h-1/6 flex justify-center items-center row-start-4 row-span-1 col-start-1 col-span-2">
         <Dialog open={Open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button className="w-full h-full">
+            <Button className="w-full">
               <CirclePlus />
               Añadir
             </Button>
           </DialogTrigger>
           <DialogContent
-            className="sm:max-w-[500px] w-full p-6"
+            className="w-[90%] md:w-full md:p-6 p-3 rounded-lg"
             aria-describedby={undefined}
           >
             <DialogTitle className="text-xl font-bold">
-              Añadir {product.name} al presupuesto
+              Añadir {product.name}
             </DialogTitle>
             <div>
               <div>
@@ -132,7 +133,7 @@ export const ProductCard = ({
                 </Label>
                 <Input
                   type="number"
-                  value={data.saleUnitQuantity}
+                  value={data.saleUnitQuantity ?? ""}
                   onChange={(e) =>
                     setData({
                       ...data,
@@ -146,9 +147,8 @@ export const ProductCard = ({
                   Equivale a:
                   <span className="text-xl font-semibold px-2">
                     {Math.round(
-                      (data.saleUnitQuantity * product.measurePerSaleUnit +
-                        Number.EPSILON) *
-                        100
+                      (data.saleUnitQuantity ??
+                        0 * product.measurePerSaleUnit + Number.EPSILON) * 100
                     ) / 100}{" "}
                     {product.measureType}
                   </span>
