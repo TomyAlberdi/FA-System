@@ -10,16 +10,21 @@ import {
 import { useEffect, useState } from "react";
 import CalendarTable from "@/Pages/Register/CalendarTable";
 import AddRegister from "@/Pages/Register/AddRegister";
+import { CustomCalendar } from "@/components/ui/calendar";
+import { useNavigate } from "react-router-dom";
 
 const CashRegister = () => {
   const { RegisterTotalAmount, RegisterTypes, fetchRegisterTypes } =
     useSalesContext();
+  const navigate = useNavigate();
 
   const [CurrentYearMonth, setCurrentYearMonth] = useState<string>(
     new Date().toISOString().slice(0, 7)
   );
   const [CurrentMonth, setCurrentMonth] = useState<string>("");
   const [CurrentYear, setCurrentYear] = useState<number>(0);
+  const [NumericYear, setNumericYear] = useState(0);
+  const [NumericMonth, setNumericMonth] = useState(0);
 
   useEffect(() => {
     const [year, month] = CurrentYearMonth.split("-").map(Number);
@@ -32,6 +37,8 @@ const CashRegister = () => {
     );
     setCurrentYear(year);
     fetchRegisterTypes(CurrentYearMonth);
+    setNumericYear(CurrentYearMonth.split("-").map(Number)[0]);
+    setNumericMonth(CurrentYearMonth.split("-").map(Number)[1] - 1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [CurrentYearMonth]);
 
@@ -53,34 +60,35 @@ const CashRegister = () => {
     setCurrentYearMonth(`${prevYear}-${formattedMonth}`);
   };
 
+  //TODO: Rework component (Use Calendar under Card and display selected day registers on the right, default today)
   return (
-    <div className="h-full flex justify-center items-start gap-3">
-      <Card className="w-1/3">
+    <div className="h-full flex md:flex-row flex-col md:justify-center justify-start items-start gap-3">
+      <Card className="md:w-1/3 w-full h-auto">
         <CardHeader>
-          <CardTitle>Total en Caja Registradora</CardTitle>
+          <CardTitle className="">Total en Caja Registradora</CardTitle>
           <span className="font-medium text-3xl">$ {RegisterTotalAmount}</span>
         </CardHeader>
         <CardContent>
           <AddRegister yearMonth={CurrentYearMonth} />
         </CardContent>
         <CardContent className="flex flex-col gap-2">
-          <div className="flex gap-2 items-center text-xl">
+          <div className="flex gap-2 md:items-center items-start text-xl">
             <ChevronUp className="text-chart-2 large-icon" />
             <span className="font-medium">
-              Ingresos {CurrentMonth}:{" "}
+              Ingresos {CurrentMonth}: <br className="block md:hidden" />
               <span className="text-chart-2">$ {RegisterTypes[0]}</span>
             </span>
           </div>
-          <div className="flex gap-2 items-center text-xl">
+          <div className="flex gap-2 md:items-center items-start text-xl">
             <ChevronDown className="text-destructive large-icon" />
             <span className="font-medium">
-              Gastos {CurrentMonth}:{" "}
+              Gastos {CurrentMonth}: <br className="block md:hidden" />
               <span className="text-destructive">$ {RegisterTypes[1]}</span>
             </span>
           </div>
         </CardContent>
       </Card>
-      <div className="w-2/3 h-full flex flex-col justify-start items-center">
+      <div className="w-2/3 h-full flex-col justify-start items-center hidden md:flex">
         <section className="w-full flex justify-between gap-4">
           <Button onClick={previousYearMonth}>
             <ChevronsLeft className="large-icon" />
@@ -92,9 +100,13 @@ const CashRegister = () => {
             <ChevronsRight className="large-icon" />
           </Button>
         </section>
-        <CalendarTable
-          year={CurrentYearMonth.split("-").map(Number)[0]}
-          month={CurrentYearMonth.split("-").map(Number)[1] - 1}
+        <CalendarTable year={NumericYear} month={NumericMonth} />
+      </div>
+      <div className="w-full h-auto flex md:hidden">
+        <CustomCalendar
+          className="rounded-md border"
+          selected={new Date()}
+          onSelect={(e: Date | undefined) => console.log(e)}
         />
       </div>
     </div>
