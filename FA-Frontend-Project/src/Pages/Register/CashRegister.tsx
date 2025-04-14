@@ -106,23 +106,9 @@ const CashRegister = () => {
           />
         </div>
       </section>
-      <section className="md:w-2/3 h-full flex flex-col gap-3">
+      <section className="md:w-2/3 w-full h-full flex flex-col gap-3">
         <DailyCashRegister />
       </section>
-      {/*       <div className="w-2/3 h-full flex-col justify-start items-center hidden md:flex">
-        <section className="w-full flex justify-between gap-4">
-          <Button onClick={previousYearMonth}>
-            <ChevronsLeft className="large-icon" />
-          </Button>
-          <h2 className="text-3xl font-semibold mb-4">
-            Registros {CurrentMonth} {CurrentYear}
-          </h2>
-          <Button onClick={nextYearMonth}>
-            <ChevronsRight className="large-icon" />
-          </Button>
-        </section>
-        <CalendarTable year={NumericYear} month={NumericMonth} />
-      </div> */}
     </div>
   );
 };

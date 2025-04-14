@@ -137,15 +137,12 @@ const DailyCashRegister = () => {
           <TableBody>
             {Records?.map((record, index) => (
               <TableRow key={index}>
-                <TableCell
-                  className={
-                    "font-medium " +
-                    (record.type === "INGRESO"
-                      ? "text-chart-2"
-                      : "text-destructive")
-                  }
-                >
-                  {record.type === "INGRESO" ? "INGRESO" : "GASTO"}
+                <TableCell>
+                  {record.type === "INGRESO" ? (
+                    <ChevronUp className="text-chart-2 large-icon" />
+                  ) : (
+                    <ChevronDown className="text-destructive large-icon" />
+                  )}
                 </TableCell>
                 <TableCell>
                   {record.type === "GASTO" && "- "} $ {record.amount}
