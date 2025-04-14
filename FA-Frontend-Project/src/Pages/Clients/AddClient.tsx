@@ -31,7 +31,27 @@ export const AddClient = ({ handleRefresh, setOpen }: AddClientProps) => {
     cuit_dni: "",
   });
 
-  async function onSubmit(client: AddClientInterface) {
+  const onSubmit = () => {
+    if (Client.name === "") {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "El nombre del cliente no puede estar vacío.",
+      });
+      return;
+    }
+    if (Client.type === "") {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Seleccione un tipo de cliente (A / B).",
+      });
+      return;
+    }
+    submitClient(Client);
+  };
+
+  const submitClient = async (client: AddClientInterface) => {
     const url = `${BASE_URL}/client`;
     setLoadingRequest(true);
     try {
@@ -77,7 +97,7 @@ export const AddClient = ({ handleRefresh, setOpen }: AddClientProps) => {
         handleRefresh();
       }
     }
-  }
+  };
 
   return (
     <div className="w-full md:grid grid-cols-2 grid-rows-5 gap-2">
@@ -154,7 +174,7 @@ export const AddClient = ({ handleRefresh, setOpen }: AddClientProps) => {
       </div>
       <div className="col-span-2 col-start-1 flex justify-center items-center">
         <Button
-          onClick={() => onSubmit(Client)}
+          onClick={() => onSubmit()}
           className="w-full"
           disabled={LoadingRequest}
         >

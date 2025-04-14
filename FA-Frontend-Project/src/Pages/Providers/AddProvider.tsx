@@ -29,7 +29,19 @@ export const AddProvider: React.FC<CategoriesHeaderProps> = ({ setOpen }) => {
     cuit: "",
   });
 
-  async function onSubmit() {
+  const onSubmit = () => {
+    if (Provider.name === "") {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "El nombre del proveedor no puede estar vacío.",
+      });
+      return;
+    }
+    submitProvider(Provider);
+  };
+
+  const submitProvider = async (provider: Provider) => {
     try {
       if (!getToken) {
         console.error("getToken is undefined");
@@ -43,7 +55,7 @@ export const AddProvider: React.FC<CategoriesHeaderProps> = ({ setOpen }) => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify(Provider),
+        body: JSON.stringify(provider),
       });
       if (!response.ok) {
         console.error("Error: ", response.statusText);

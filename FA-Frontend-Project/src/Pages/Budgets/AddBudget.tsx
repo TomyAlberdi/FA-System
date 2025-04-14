@@ -33,6 +33,14 @@ import { useNavigate } from "react-router-dom";
 import { Slider } from "@/components/ui/slider";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
+interface CreationBudget {
+  client: {
+    id: number;
+    name: string;
+  };
+  products: ProductBudget[];
+}
+
 export const AddBudget = () => {
   const { BASE_URL } = useSalesContext();
   const { getToken } = useKindeAuth();
@@ -41,13 +49,7 @@ export const AddBudget = () => {
   const BUDGET_STORAGE_KEY = "currentBudget";
 
   // budget logic
-  const [Budget, setBudget] = useState<{
-    client: {
-      id: number;
-      name: string;
-    };
-    products: ProductBudget[];
-  }>(() => {
+  const [Budget, setBudget] = useState<CreationBudget>(() => {
     const savedBudget = sessionStorage.getItem(BUDGET_STORAGE_KEY);
     return savedBudget
       ? JSON.parse(savedBudget)
@@ -76,15 +78,8 @@ export const AddBudget = () => {
     });
   };
 
-  const submitBudget = async () => {
-    if (Budget?.products?.length === 0) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "El presupuesto no tiene productos asociados.",
-      });
-      return;
-    } else if (Budget?.client.id === 0) {
+  const onSubmit = () => {
+    if (Budget?.client.id === 0) {
       toast({
         variant: "destructive",
         title: "Error",
@@ -92,6 +87,18 @@ export const AddBudget = () => {
       });
       return;
     }
+    if (Budget?.products?.length === 0) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "El presupuesto no tiene productos asociados.",
+      });
+      return;
+    }
+    submitBudget(Budget);
+  };
+
+  const submitBudget = async (Budget: CreationBudget) => {
     try {
       if (!getToken) {
         console.error("getToken is undefined");
@@ -290,7 +297,7 @@ export const AddBudget = () => {
                   type="submit"
                   className="w-full"
                   disabled={LoadingRequest}
-                  onClick={submitBudget}
+                  onClick={onSubmit}
                 >
                   {LoadingRequest && <Loader2 className="animate-spin" />}
                   Crear Presupuesto

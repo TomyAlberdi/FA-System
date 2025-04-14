@@ -22,7 +22,19 @@ export const AddCategory: React.FC<CategoriesHeaderProps> = ({ setOpen }) => {
 
   const [Name, setName] = useState<string>("");
 
-  async function onSubmit() {
+  const onSubmit = () => {
+    if (Name === "") {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "El nombre de la categoría no puede estar vacío.",
+      });
+      return;
+    }
+    submitCategory(Name);
+  };
+
+  const submitCategory = async (name: string) => {
     try {
       if (!getToken) {
         console.error("getToken is undefined");
@@ -30,7 +42,7 @@ export const AddCategory: React.FC<CategoriesHeaderProps> = ({ setOpen }) => {
       }
       const accessToken = await getToken();
       setLoadingRequest(true);
-      const response = await fetch(`${BASE_URL}/category/${Name}`, {
+      const response = await fetch(`${BASE_URL}/category/${name}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -64,7 +76,7 @@ export const AddCategory: React.FC<CategoriesHeaderProps> = ({ setOpen }) => {
       setOpen(false);
       setLoadingRequest(false);
     }
-  }
+  };
 
   return (
     <div className="w-full flex flex-col gap-4">

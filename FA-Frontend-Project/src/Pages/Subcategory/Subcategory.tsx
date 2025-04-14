@@ -61,7 +61,28 @@ export const Subcategory = () => {
 
   const [Name, setName] = useState<string>(Subcategory?.name ?? "");
 
-  async function updateSubcategory(name: string) {
+  const onSubmit = () => {
+    if (Name === "") {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "El nombre de la subcategoría no puede estar vacío.",
+      });
+      return;
+    }
+    if (Name === Subcategory?.name) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description:
+          "El nombre de la subcategoría no puede ser igual al actual.",
+      });
+      return;
+    }
+    submitUpdate(Name);
+  };
+
+  const submitUpdate = async (name: string) => {
     try {
       if (!getToken) {
         console.error("getToken is undefined");
@@ -104,7 +125,7 @@ export const Subcategory = () => {
       setLoadingRequest(false);
       setOpen(false);
     }
-  }
+  };
 
   useEffect(() => {
     if (id) {
@@ -237,14 +258,13 @@ export const Subcategory = () => {
                   <div className="w-full flex flex-col gap-4">
                     <Label>Nombre</Label>
                     <Input
-                      placeholder="Nombre de la subcategoría"
+                      placeholder={Subcategory?.name}
                       onChange={(e) => setName(e.target.value)}
-                      defaultValue={Name}
                     />
                     <Button
                       type="submit"
                       disabled={LoadingRequest}
-                      onClick={() => updateSubcategory(Name)}
+                      onClick={() => onSubmit()}
                       className="w-full"
                     >
                       {LoadingRequest && <Loader2 className="animate-spin" />}

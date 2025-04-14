@@ -61,17 +61,20 @@ export const Stock = () => {
     type: "increase",
   });
 
-  const updateStock = async (data: StockForm) => {
-    setLoadingRequest(true);
-    if (UpdateStock.quantity === 0) {
+  const onSubmit = () => {
+    if (UpdateStock.quantity <= 0) {
       toast({
         title: "Cantidad incorrecta",
         description: "La cantidad debe ser mayor a 0",
         variant: "destructive",
       });
-      setLoadingRequest(false);
       return;
     }
+    updateStock(UpdateStock);
+  };
+
+  const updateStock = async (data: StockForm) => {
+    setLoadingRequest(true);
     try {
       if (!getToken) {
         console.error("getToken is undefined");
@@ -247,7 +250,7 @@ export const Stock = () => {
                             type="submit"
                             className="w-full"
                             disabled={LoadingRequest}
-                            onClick={() => updateStock(UpdateStock)}
+                            onClick={() => onSubmit()}
                           >
                             {LoadingRequest && (
                               <Loader2 className="animate-spin" />

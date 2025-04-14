@@ -53,7 +53,35 @@ export const UpdateClient = ({
     });
   }, [client]);
 
-  const updateClient = async (data: CompleteClient) => {
+  const onSubmit = () => {
+    if (Client.name === "") {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "El nombre del cliente no puede estar vacío.",
+      });
+      return;
+    }
+    if (Client.name === client?.name) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "El nombre del cliente no puede ser igual al actual.",
+      });
+      return;
+    }
+    if (Client.type === "") {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Seleccione un tipo de cliente (A / B).",
+      });
+      return;
+    }
+    submitClient(Client);
+  };
+
+  const submitClient = async (data: CompleteClient) => {
     setLoadingRequest(true);
     try {
       if (!getToken) {
@@ -118,9 +146,8 @@ export const UpdateClient = ({
             <Label>Nombre</Label>
             <Input
               type="text"
-              value={Client.name}
               onChange={(e) => setClient({ ...Client, name: e.target.value })}
-              placeholder="Nombre"
+              placeholder={Client.name}
               className="w-full"
             />
           </div>
@@ -128,11 +155,10 @@ export const UpdateClient = ({
             <Label>Dirección (Opcional)</Label>
             <Input
               type="text"
-              value={Client.address}
               onChange={(e) =>
                 setClient({ ...Client, address: e.target.value })
               }
-              placeholder="Dirección"
+              placeholder={Client.address}
               className="w-full"
             />
           </div>
@@ -140,9 +166,8 @@ export const UpdateClient = ({
             <Label>Teléfono (Opcional)</Label>
             <Input
               type="number"
-              value={Client.phone}
               onChange={(e) => setClient({ ...Client, phone: e.target.value })}
-              placeholder="Teléfono"
+              placeholder={Client.phone}
               className="w-full"
             />
           </div>
@@ -150,9 +175,8 @@ export const UpdateClient = ({
             <Label>Email (Opcional)</Label>
             <Input
               type="email"
-              value={Client.email}
               onChange={(e) => setClient({ ...Client, email: e.target.value })}
-              placeholder="Email"
+              placeholder={Client.email}
               className="w-full"
             />
           </div>
@@ -160,11 +184,10 @@ export const UpdateClient = ({
             <Label>CUIT / DNI (Opcional)</Label>
             <Input
               type="number"
-              value={Client.cuitDni}
               onChange={(e) =>
                 setClient({ ...Client, cuitDni: e.target.value })
               }
-              placeholder="CUIT / DNI"
+              placeholder={Client.cuitDni}
               className="w-full"
             />
           </div>
@@ -191,7 +214,7 @@ export const UpdateClient = ({
           </div>
           <div className="col-span-2 col-start-1 flex justify-center items-center">
             <Button
-              onClick={() => updateClient(Client)}
+              onClick={() => onSubmit()}
               className="w-full"
               disabled={LoadingRequest}
             >

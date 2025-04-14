@@ -50,7 +50,43 @@ const AddRegister = ({ yearMonth }: AddRegisterProps) => {
 
   const [LoadingRequest, setLoadingRequest] = useState(false);
 
-  const submitRegister = async () => {
+  const onSubmit = () => {
+    if (Record.amount === 0) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "La cantidad no puede ser 0.",
+      });
+      return;
+    }
+    if (Record.amount < 0) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "La cantidad no puede ser menor a 0.",
+      });
+      return;
+    }
+    if (Record.type === "") {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Seleccione un tipo de operación.",
+      });
+      return;
+    }
+    if (Record.date === "") {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Seleccione una fecha.",
+      });
+      return;
+    }
+    submitRegister(Record);
+  };
+
+  const submitRegister = async (Record: RegisterRecord) => {
     const url = `${BASE_URL}/cash-register`;
     const body = JSON.stringify(Record);
     setLoadingRequest(true);
@@ -155,7 +191,7 @@ const AddRegister = ({ yearMonth }: AddRegisterProps) => {
                   </div>
                 </RadioGroup>
               </div>
-              <Button onClick={submitRegister} disabled={LoadingRequest}>
+              <Button onClick={onSubmit} disabled={LoadingRequest}>
                 <CheckCircle2 className="w-5 h-5" />
                 Registrar
               </Button>

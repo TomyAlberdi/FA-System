@@ -69,7 +69,27 @@ const Category = () => {
 
   const [SubcategoryName, setSubcategoryName] = useState<string>("");
 
-  async function updateCategory() {
+  const onSubmitUpdate = () => {
+    if (Name === Category?.name) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "El nombre de la categoría no puede ser igual al actual.",
+      });
+      return;
+    }
+    if (Name === "") {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "El nombre de la categoría no puede estar vacío.",
+      });
+      return;
+    }
+    submitUpdateCategory(Name);
+  };
+
+  const submitUpdateCategory = async (name: string) => {
     setLoadingRequest(true);
     try {
       if (!getToken) {
@@ -78,7 +98,7 @@ const Category = () => {
       }
       const accessToken = await getToken();
       const response = await fetch(
-        `${BASE_URL}/category?name=${Name}&id=${id}`,
+        `${BASE_URL}/category?name=${name}&id=${id}`,
         {
           method: "PATCH",
           headers: {
@@ -112,9 +132,21 @@ const Category = () => {
       setLoadingRequest(false);
       setOpen(false);
     }
-  }
+  };
 
-  async function createSubcategory() {
+  const onSubmitSubcategory = () => {
+    if (SubcategoryName === "") {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "El nombre de la subcategoría no puede estar vacío.",
+      });
+      return;
+    }
+    submitSubcategory(SubcategoryName);
+  };
+
+  const submitSubcategory = async (name: string) => {
     try {
       if (!getToken) {
         console.error("getToken is undefined");
@@ -123,7 +155,7 @@ const Category = () => {
       const accessToken = await getToken();
       setLoadingRequest(true);
       const response = await fetch(
-        `${BASE_URL}/category/subcategory?name=${SubcategoryName}&categoryId=${id}`,
+        `${BASE_URL}/category/subcategory?name=${name}&categoryId=${id}`,
         {
           method: "POST",
           headers: {
@@ -158,7 +190,7 @@ const Category = () => {
       setOpenCreateSubcategory(false);
       setLoadingRequest(false);
     }
-  }
+  };
 
   useEffect(() => {
     if (id) {
@@ -188,7 +220,7 @@ const Category = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [LastLoadedPage]);
 
-  const onDeletePres = () => {
+  const onSubmitDelete = () => {
     if (Category && Category?.productsAmount > 0) {
       toast({
         variant: "destructive",
@@ -289,12 +321,11 @@ const Category = () => {
                   <div className="w-full flex flex-col gap-4">
                     <Label>Nombre</Label>
                     <Input
-                      placeholder="Nombre de la categoría"
                       onChange={(e) => setName(e.target.value)}
-                      defaultValue={Category?.name ?? ""}
+                      placeholder={Category?.name ?? ""}
                     />
                     <Button
-                      onClick={updateCategory}
+                      onClick={onSubmitUpdate}
                       disabled={LoadingRequest}
                       className="w-full"
                     >
@@ -307,7 +338,7 @@ const Category = () => {
               <Button
                 variant="destructive"
                 className="w-full mb-2"
-                onClick={onDeletePres}
+                onClick={onSubmitDelete}
               >
                 <CircleX />
                 Eliminar
@@ -335,7 +366,7 @@ const Category = () => {
                       onChange={(e) => setSubcategoryName(e.target.value)}
                     />
                     <Button
-                      onClick={createSubcategory}
+                      onClick={onSubmitSubcategory}
                       disabled={LoadingRequest}
                       className="w-full"
                     >
