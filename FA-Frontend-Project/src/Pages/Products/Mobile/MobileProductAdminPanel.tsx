@@ -1,23 +1,25 @@
 import { Button } from "@/components/ui/button";
+import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { ToastAction } from "@/components/ui/toast";
 import { useCatalogContext } from "@/Context/UseCatalogContext";
 import { CompleteProduct } from "@/hooks/CatalogInterfaces";
 import { toast } from "@/hooks/use-toast";
 import { ProductDetail } from "@/lib/ProductDetail";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { CircleX, ListPlus, ListX, Package, Pencil } from "lucide-react";
+import { CircleX, ListPlus, ListX, Menu, Package } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import CreateProduct from "@/Pages/Products/CreateProduct/CreateProduct";
 
-export const ProductPageAdminPanel = ({
-  Product,
-  ReloadProduct,
-  setReloadProduct,
-}: {
+interface MobileProductAdminPanelProps {
   Product: CompleteProduct | null;
   ReloadProduct: boolean;
   setReloadProduct: React.Dispatch<React.SetStateAction<boolean>>;
-}) => {
+}
+
+const MobileProductAdminPanel = ({
+  Product,
+  ReloadProduct,
+  setReloadProduct,
+}: MobileProductAdminPanelProps) => {
   const {
     BASE_URL,
     // Re fetch the filter data when deleting a product
@@ -160,44 +162,51 @@ export const ProductPageAdminPanel = ({
   };
 
   return (
-    <div className="h-full w-1/4 p-2 hidden md:flex flex-col justify-start items-center gap-4">
-      <CreateProduct
-        ProductProp={Product}
-        TriggerTitle="Editar Producto"
-        TriggerIcon={Pencil}
-        ReloadProduct={ReloadProduct}
-        setReloadProduct={setReloadProduct}
-      />
-      <Button
-        className="w-10/12 text-md"
-        variant="destructive"
-        onClick={onDeletePress}
-      >
-        <CircleX />
-        Eliminar Producto
-      </Button>
-      {Product?.disabled ? (
-        <Button className="w-10/12 text-md bg-chart-2" onClick={onEnablePress}>
-          <ListPlus />
-          Activar Producto
+    <Drawer>
+      <DrawerTrigger asChild className="flex md:hidden">
+        <Button className="w-full my-2">
+          <Menu className="bigger-icon" />
+          Administrar Producto
         </Button>
-      ) : (
-        <Button
-          className="w-10/12 text-md"
-          variant="destructive"
-          onClick={onDisablePress}
-        >
-          <ListX />
-          Desactivar Producto
-        </Button>
-      )}
-      <Button className="w-10/12 text-md" asChild>
-        <Link to={`/catalog/stock/${Product?.id}`}>
-          <Package />
-          Administrar Stock
-        </Link>
-      </Button>
-      <ProductDetail Product={Product} />
-    </div>
+      </DrawerTrigger>
+      <DrawerContent>
+        <div className="mx-auto w-full max-w-sm flex flex-col justify-center items-center py-4 gap-4">
+          <Button
+            className="w-10/12 text-md"
+            variant="destructive"
+            onClick={onDeletePress}
+          >
+            <CircleX />
+            Eliminar Producto
+          </Button>
+          {Product?.disabled ? (
+            <Button
+              className="w-10/12 text-md bg-chart-2"
+              onClick={onEnablePress}
+            >
+              <ListPlus />
+              Activar Producto
+            </Button>
+          ) : (
+            <Button
+              className="w-10/12 text-md"
+              variant="destructive"
+              onClick={onDisablePress}
+            >
+              <ListX />
+              Desactivar Producto
+            </Button>
+          )}
+          <Button className="w-10/12 text-md" asChild>
+            <Link to={`/catalog/stock/${Product?.id}`}>
+              <Package />
+              Administrar Stock
+            </Link>
+          </Button>
+          <ProductDetail Product={Product} />
+        </div>
+      </DrawerContent>
+    </Drawer>
   );
 };
+export default MobileProductAdminPanel;

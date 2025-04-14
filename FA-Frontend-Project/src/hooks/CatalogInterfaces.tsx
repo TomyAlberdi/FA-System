@@ -18,15 +18,15 @@ export interface Subcategory {
 }
 
 export interface Provider {
-  id: number;
+  id?: number;
   name: string;
   locality: string;
   address: string;
   phone: string;
   email: string;
   cuit: string;
-  productsAmount: number;
-  productsDiscount: number;
+  productsAmount?: number;
+  productsDiscount?: number;
 }
 
 export interface Measure {

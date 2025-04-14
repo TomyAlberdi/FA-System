@@ -14,14 +14,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -38,7 +30,6 @@ import {
 import { useCatalogContext } from "@/Context/UseCatalogContext";
 import { ProductStock, StockRecord } from "@/hooks/CatalogInterfaces";
 import { toast } from "@/hooks/use-toast";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import {
   AlertCircle,
@@ -48,18 +39,12 @@ import {
   Package,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
 import { Link, useParams } from "react-router-dom";
-import { z } from "zod";
 
-const formSchema = z.object({
-  quantity: z.coerce.number().min(1, {
-    message: "La cantidad debe ser mayor a 0",
-  }),
-  type: z.enum(["increase", "reduce"], {
-    required_error: "Debe seleccionar un tipo de operación",
-  }),
-});
+interface StockForm {
+  quantity: number;
+  type: "increase" | "reduce";
+}
 
 export const Stock = () => {
   const { id } = useParams();
@@ -71,15 +56,22 @@ export const Stock = () => {
   const [open, setOpen] = useState(false);
   const [LoadingRequest, setLoadingRequest] = useState(false);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      quantity: 0,
-    },
+  const [UpdateStock, setUpdateStock] = useState<StockForm>({
+    quantity: 0,
+    type: "increase",
   });
 
-  const updateStock = async (data: z.infer<typeof formSchema>) => {
+  const updateStock = async (data: StockForm) => {
     setLoadingRequest(true);
+    if (UpdateStock.quantity === 0) {
+      toast({
+        title: "Cantidad incorrecta",
+        description: "La cantidad debe ser mayor a 0",
+        variant: "destructive",
+      });
+      setLoadingRequest(false);
+      return;
+    }
     try {
       if (!getToken) {
         console.error("getToken is undefined");
@@ -156,9 +148,9 @@ export const Stock = () => {
       ) : (
         stock && (
           <>
-            <Card className="productData flex flex-row items-start justify-start gap-4 w-full p-4">
+            <Card className="productData flex flex-col md:flex-row items-start justify-start gap-4 w-full p-4">
               <div
-                className="productImage bg-contain bg-center bg-no-repeat h-full w-1/5"
+                className="productImage bg-contain bg-center bg-no-repeat w-full aspect-square md:w-1/6"
                 style={
                   stock?.productImage
                     ? { backgroundImage: `url(${stock?.productImage})` }
@@ -167,17 +159,17 @@ export const Stock = () => {
                       }
                 }
               ></div>
-              <div className="productInfo">
+              <div className="productInfo w-full">
                 <CardDescription className="text-2xl font-bold">
                   STOCK
                 </CardDescription>
-                <CardTitle className="text-6xl font-bold">
+                <CardTitle className="md:text-6xl text-3xl font-bold">
                   <Link to={`/catalog/products/${stock?.productId}`}>
                     {stock?.productName}
                   </Link>
                 </CardTitle>
-                <CardContent className="flex flex-col justify-between items-start p-0 pt-4 gap-2">
-                  <span className="p-2 rounded-md text-xl font-semibold border border-card-foreground">
+                <CardContent className="flex flex-col justify-between items-start p-0 pt-4 gap-2 w-full">
+                  <span className="p-2 rounded-md text-xl font-semibold border border-card-foreground w-auto">
                     {stock?.quantity} {stock?.productSaleUnit}s{" "}
                     {stock?.productSaleUnit !== stock?.productMeasureType &&
                       stock &&
@@ -189,15 +181,15 @@ export const Stock = () => {
                         ) / 100
                       } ${stock?.productMeasureType})`}
                   </span>
-                  <div className="adminButtons flex flex-col justify-start items-start gap-2">
+                  <div className="adminButtons flex flex-col justify-start items-start gap-2 w-full">
                     <Dialog open={open} onOpenChange={setOpen}>
                       <DialogTrigger asChild>
-                        <Button className="text-xl w-56">
+                        <Button className="text-xl md:w-56 w-full">
                           <Package className="big-icon" /> Administrar Stock
                         </Button>
                       </DialogTrigger>
                       <DialogContent
-                        className="sm:max-w-[500px] w-full p-6"
+                        className="md:w-full w-[90%] md:p-6 p-3 rounded-lg"
                         aria-describedby={undefined}
                       >
                         <DialogHeader>
@@ -208,69 +200,61 @@ export const Stock = () => {
                             Ingreso / Salida de {stock?.productSaleUnit}s
                           </DialogDescription>
                         </DialogHeader>
-                        <Form {...form}>
-                          <form
-                            onSubmit={form.handleSubmit(updateStock)}
-                            className="w-2/3 space-y-6"
+                        <div className="w-full space-y-6">
+                          <RadioGroup>
+                            <div className="flex items-center space-x-2 cursor-pointer">
+                              <RadioGroupItem
+                                value="increase"
+                                id="r1"
+                                onClick={() =>
+                                  setUpdateStock({
+                                    ...UpdateStock,
+                                    type: "increase",
+                                  })
+                                }
+                              />
+                              <Label htmlFor="r1">Ingresar</Label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <RadioGroupItem
+                                value="reduce"
+                                id="r2"
+                                onClick={() =>
+                                  setUpdateStock({
+                                    ...UpdateStock,
+                                    type: "reduce",
+                                  })
+                                }
+                              />
+                              <Label htmlFor="r2">Retirar</Label>
+                            </div>
+                          </RadioGroup>
+                          <div>
+                            <Label />
+                            <Input
+                              placeholder="Cantidad"
+                              type="number"
+                              defaultValue={UpdateStock.quantity}
+                              onChange={(e) =>
+                                setUpdateStock({
+                                  ...UpdateStock,
+                                  quantity: Number(e.target.value),
+                                })
+                              }
+                            />
+                          </div>
+                          <Button
+                            type="submit"
+                            className="w-full"
+                            disabled={LoadingRequest}
+                            onClick={() => updateStock(UpdateStock)}
                           >
-                            <FormField
-                              control={form.control}
-                              name="type"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Tipo</FormLabel>
-                                  <FormControl>
-                                    <RadioGroup onValueChange={field.onChange}>
-                                      <div className="flex items-center space-x-2">
-                                        <RadioGroupItem
-                                          value="increase"
-                                          id="r1"
-                                        />
-                                        <Label htmlFor="r1">Ingresar</Label>
-                                      </div>
-                                      <div className="flex items-center space-x-2">
-                                        <RadioGroupItem
-                                          value="reduce"
-                                          id="r2"
-                                        />
-                                        <Label htmlFor="r2">Retirar</Label>
-                                      </div>
-                                    </RadioGroup>
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                            <FormField
-                              control={form.control}
-                              name="quantity"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Cantidad</FormLabel>
-                                  <FormControl>
-                                    <Input
-                                      placeholder="Cantidad"
-                                      type="number"
-                                      {...field}
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-
-                            <Button
-                              type="submit"
-                              className="w-full"
-                              disabled={LoadingRequest}
-                            >
-                              {LoadingRequest && (
-                                <Loader2 className="animate-spin" />
-                              )}
-                              Guardar
-                            </Button>
-                          </form>
-                        </Form>
+                            {LoadingRequest && (
+                              <Loader2 className="animate-spin" />
+                            )}
+                            Guardar
+                          </Button>
+                        </div>
                       </DialogContent>
                     </Dialog>
                   </div>
@@ -291,7 +275,7 @@ export const Stock = () => {
                 <TableHeader>
                   <TableRow>
                     <TableHead className="w-1/12">Tipo</TableHead>
-                    <TableHead className="w-1/3">Cantidad</TableHead>
+                    <TableHead className="md:w-1/3 w-1/2">Cantidad</TableHead>
                     <TableHead>Fecha</TableHead>
                   </TableRow>
                 </TableHeader>

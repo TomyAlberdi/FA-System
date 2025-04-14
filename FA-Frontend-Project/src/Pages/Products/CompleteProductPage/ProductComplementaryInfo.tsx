@@ -39,16 +39,13 @@ export const ProductComplementaryInfo = ({
   ]);
 
   return (
-    <div className="h-full w-3/4 px-2 py-4">
-      <Accordion
-        type="multiple"
-        className="w-full"
-      >
+    <div className="md:h-full md:w-3/4 md:px-2 md:py-4 h-auto w-full px-0 py-0">
+      <Accordion type="multiple" className="w-full">
         <AccordionItem value="measures">
           <AccordionTrigger>Información</AccordionTrigger>
-          <AccordionContent className="flex flex-row items-center gap-2 flex-wrap">
+          <AccordionContent className="flex md:flex-row flex-col items-center gap-2 md:flex-wrap w-full">
             {Product?.discountPercentage && Product?.discountPercentage > 0 ? (
-              <Card className="bg-destructive">
+              <Card className="bg-destructive md:w-auto w-full">
                 <CardHeader>
                   <CardTitle className="text-center">Oferta</CardTitle>
                 </CardHeader>
@@ -63,8 +60,8 @@ export const ProductComplementaryInfo = ({
               <Card
                 className={
                   Product?.discountPercentage && Product?.discountPercentage > 0
-                    ? "bg-destructive"
-                    : ""
+                    ? "bg-destructive md:w-auto w-full"
+                    : "md:w-auto w-full"
                 }
               >
                 <CardHeader>
@@ -88,8 +85,8 @@ export const ProductComplementaryInfo = ({
               <Card
                 className={
                   Product?.discountPercentage && Product?.discountPercentage > 0
-                    ? "bg-destructive"
-                    : ""
+                    ? "bg-destructive md:w-auto w-full"
+                    : "md:w-auto w-full"
                 }
               >
                 <CardHeader>
@@ -111,7 +108,7 @@ export const ProductComplementaryInfo = ({
             )}
             {Product?.measurePerSaleUnit &&
               Product?.measureType !== Product?.saleUnit && (
-                <Card>
+                <Card className="md:w-auto w-full">
                   <CardHeader>
                     <CardTitle className="text-center">
                       {Product?.measureType} por {Product?.saleUnit}
@@ -125,7 +122,7 @@ export const ProductComplementaryInfo = ({
                 </Card>
               )}
             {Product?.measures && (
-              <Card>
+              <Card className="md:w-auto w-full">
                 <CardHeader>
                   <CardTitle className="text-center">Medidas</CardTitle>
                 </CardHeader>
@@ -135,7 +132,7 @@ export const ProductComplementaryInfo = ({
               </Card>
             )}
             {Product?.quality && (
-              <Card>
+              <Card className="md:w-auto w-full">
                 <CardHeader>
                   <CardTitle className="text-center">Calidad</CardTitle>
                 </CardHeader>
@@ -149,13 +146,13 @@ export const ProductComplementaryInfo = ({
         {Product?.characteristics && Product?.characteristics.length > 0 && (
           <AccordionItem value="tags">
             <AccordionTrigger>Características</AccordionTrigger>
-            <AccordionContent className="flex flex-row items-center gap-2 flex-wrap">
+            <AccordionContent className="flex md:flex-row flex-col items-center gap-2 md:flex-wrap w-full">
               {Product?.characteristics?.map(
                 (tag: characteristic, index: number) => {
                   return (
                     tag.value !== null &&
                     tag.value !== "" && (
-                      <Card key={index}>
+                      <Card key={index} className="md:w-auto w-full">
                         <CardHeader>
                           <CardTitle className="text-center">
                             {tag.key}
@@ -175,8 +172,8 @@ export const ProductComplementaryInfo = ({
         {Product?.saleUnitCost && Product?.saleUnitCost > 0 ? (
           <AccordionItem value="saleUnitCost">
             <AccordionTrigger>Costo</AccordionTrigger>
-            <AccordionContent className="flex flex-row items-center gap-2 flex-wrap">
-              <Card>
+            <AccordionContent className="flex md:flex-row flex-col items-center gap-2 md:flex-wrap w-full">
+              <Card className="md:w-auto w-full">
                 <CardHeader>
                   <CardTitle className="text-center">Costo de compra</CardTitle>
                 </CardHeader>
@@ -186,7 +183,13 @@ export const ProductComplementaryInfo = ({
                   </span>
                 </CardContent>
               </Card>
-              <Card className={Rentabilidad < 0 ? "bg-destructive" : ""}>
+              <Card
+                className={
+                  Rentabilidad < 0
+                    ? "bg-destructive md:w-auto w-full"
+                    : "md:w-auto w-full"
+                }
+              >
                 <CardHeader>
                   <CardTitle className="text-center">Rentabilidad</CardTitle>
                 </CardHeader>

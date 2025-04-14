@@ -8,52 +8,41 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Loader2, Pencil } from "lucide-react";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { CompleteClient } from "@/hooks/SalesInterfaces";
 import { useSalesContext } from "@/Context/UseSalesContext";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useToast } from "@/hooks/use-toast";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 
-const formSchema = z.object({
-  id: z.number(),
-  name: z.string().min(3, {
-    message: "El nombre debe contar con al menos 3 caracteres.",
-  }),
-  type: z.enum(["A", "B"], {
-    required_error: "Seleccione un tipo de cliente.",
-  }),
-  address: z.string().optional(),
-  phone: z.string().optional(),
-  email: z.string().optional(),
-  cuitDni: z.string().optional(),
-});
-
-export const UpdateClient = ({ client, Reload, setReload }: { client: CompleteClient, Reload: boolean, setReload: (value: boolean) => void }) => {
+export const UpdateClient = ({
+  client,
+  Reload,
+  setReload,
+}: {
+  client: CompleteClient;
+  Reload: boolean;
+  setReload: (value: boolean) => void;
+}) => {
   const [Open, setOpen] = useState(false);
   const [LoadingRequest, setLoadingRequest] = useState(false);
   const { getToken } = useKindeAuth();
   const { BASE_URL } = useSalesContext();
   const { toast } = useToast();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const [Client, setClient] = useState<CompleteClient>({
+    id: 0,
+    name: "",
+    type: "",
+    address: "",
+    phone: "",
+    email: "",
+    cuitDni: "",
   });
 
   useEffect(() => {
-    form.reset({
+    setClient({
       id: client?.id ?? 0,
       name: client?.name ?? "",
       type: (client?.type as "A" | "B") ?? "A",
@@ -62,10 +51,9 @@ export const UpdateClient = ({ client, Reload, setReload }: { client: CompleteCl
       email: client?.email ?? "",
       cuitDni: client?.cuitDni ?? "",
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [client]);
 
-  const updateClient = async (data: z.infer<typeof formSchema>) => {
+  const updateClient = async (data: CompleteClient) => {
     setLoadingRequest(true);
     try {
       if (!getToken) {
@@ -117,7 +105,7 @@ export const UpdateClient = ({ client, Reload, setReload }: { client: CompleteCl
         </Button>
       </DialogTrigger>
       <DialogContent
-        className="sm:max-w-[500px] w-full p-6"
+        className="md:w-full w-[90%] md:p-6 p-3 rounded-lg"
         aria-describedby={undefined}
       >
         <DialogHeader>
@@ -125,112 +113,93 @@ export const UpdateClient = ({ client, Reload, setReload }: { client: CompleteCl
             Editar Cliente
           </DialogTitle>
         </DialogHeader>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(updateClient)}
-            className="w-full grid grid-cols-2 grid-rows-5 gap-4"
-          >
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem className="col-start-1 row-start-1">
-                  <FormLabel>Nombre</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+        <div className="w-full md:grid grid-cols-2 grid-rows-5 gap-2">
+          <div>
+            <Label>Nombre</Label>
+            <Input
+              type="text"
+              value={Client.name}
+              onChange={(e) => setClient({ ...Client, name: e.target.value })}
+              placeholder="Nombre"
+              className="w-full"
             />
-            <FormField
-              control={form.control}
-              name="address"
-              render={({ field }) => (
-                <FormItem className="col-start-1 row-start-2">
-                  <FormLabel>Dirección (Opcional)</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+          </div>
+          <div>
+            <Label>Dirección (Opcional)</Label>
+            <Input
+              type="text"
+              value={Client.address}
+              onChange={(e) =>
+                setClient({ ...Client, address: e.target.value })
+              }
+              placeholder="Dirección"
+              className="w-full"
             />
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem className="col-start-2 row-start-1">
-                  <FormLabel>Teléfono (Opcional)</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+          </div>
+          <div>
+            <Label>Teléfono (Opcional)</Label>
+            <Input
+              type="number"
+              value={Client.phone}
+              onChange={(e) => setClient({ ...Client, phone: e.target.value })}
+              placeholder="Teléfono"
+              className="w-full"
             />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem className="col-start-2 row-start-2">
-                  <FormLabel>Email (Opcional)</FormLabel>
-                  <FormControl>
-                    <Input type="email" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+          </div>
+          <div>
+            <Label>Email (Opcional)</Label>
+            <Input
+              type="email"
+              value={Client.email}
+              onChange={(e) => setClient({ ...Client, email: e.target.value })}
+              placeholder="Email"
+              className="w-full"
             />
-            <FormField
-              control={form.control}
-              name="cuitDni"
-              render={({ field }) => (
-                <FormItem className="col-start-1 row-start-3 col-span-2">
-                  <FormLabel>CUIT / DNI (Opcional)</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+          </div>
+          <div>
+            <Label>CUIT / DNI (Opcional)</Label>
+            <Input
+              type="number"
+              value={Client.cuitDni}
+              onChange={(e) =>
+                setClient({ ...Client, cuitDni: e.target.value })
+              }
+              placeholder="CUIT / DNI"
+              className="w-full"
             />
-            <FormField
-              control={form.control}
-              name="type"
-              render={({ field }) => (
-                <FormItem className="col-start-1 row-start-4 col-span-2">
-                  <FormLabel>Tipo</FormLabel>
-                  <FormControl>
-                    <RadioGroup onValueChange={field.onChange}>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="A" id="A" />
-                        <Label htmlFor="A">
-                          Responsable Inscripto (Tipo A)
-                        </Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="B" id="B" />
-                        <Label htmlFor="B">Consumidor Final (Tipo B)</Label>
-                      </div>
-                    </RadioGroup>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="col-span-2 col-start-1 flex justify-center items-center">
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={LoadingRequest}
-              >
-                {LoadingRequest && <Loader2 className="animate-spin" />}
-                Guardar
-              </Button>
-            </div>
-          </form>
-        </Form>
+          </div>
+          <div className="col-span-2 col-start-1">
+            <Label>Tipo</Label>
+            <RadioGroup className="flex items-center md:mt-2 justify-evenly md:py-0 py-4 mt-0">
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem
+                  value="A"
+                  id="r1"
+                  onClick={() => setClient({ ...Client, type: "A" })}
+                />
+                <Label htmlFor="r1">Responsable Inscripto (Tipo A)</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem
+                  value="B"
+                  id="r2"
+                  onClick={() => setClient({ ...Client, type: "B" })}
+                />
+                <Label htmlFor="r2">Consumidor Final (Tipo B)</Label>
+              </div>
+            </RadioGroup>
+          </div>
+          <div className="col-span-2 col-start-1 flex justify-center items-center">
+            <Button
+              onClick={() => updateClient(Client)}
+              className="w-full"
+              disabled={LoadingRequest}
+            >
+              {LoadingRequest && <Loader2 className="animate-spin" />}
+              Guardar
+            </Button>
+          </div>
+        </div>
       </DialogContent>
     </Dialog>
   );

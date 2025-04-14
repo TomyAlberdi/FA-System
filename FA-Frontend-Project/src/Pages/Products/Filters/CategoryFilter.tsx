@@ -103,7 +103,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
                     className="checkboxLabel text-sm w-full cursor-pointer"
                   >
                     {category.name}
-                    <span>{category.productsAmount}</span>
+                    <span className="hidden md:block">{category.productsAmount}</span>
                   </Label>
                 </div>
               )

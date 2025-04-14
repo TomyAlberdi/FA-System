@@ -26,12 +26,9 @@ import { useState } from "react";
 import { ProductCard } from "@/Pages/Products/ProductCard";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { RefreshCcw } from "lucide-react";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import CreateProduct from "@/Pages/Products/CreateProduct/CreateProduct";
+import MobileFilters from "@/Pages/Products/Mobile/MobileFilters";
 
 interface ProductPaginationProps {
   Products: Array<CardProduct>;
@@ -42,10 +39,6 @@ interface ProductPaginationProps {
   Filter: Array<FilterData | null>;
   setFilter: React.Dispatch<React.SetStateAction<Array<FilterData | null>>>;
 }
-
-const formSchema = z.object({
-  keyword: z.string(),
-});
 
 export const ProductPagination: React.FC<ProductPaginationProps> = ({
   Products,
@@ -58,12 +51,7 @@ export const ProductPagination: React.FC<ProductPaginationProps> = ({
 }) => {
   const [PaginationDropdownOpen, setPaginationDropdownOpen] = useState(false);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      keyword: "",
-    },
-  });
+  const [Keyword, setKeyword] = useState<string>("");
 
   const handleKeyword = (keyword: string) => {
     // Remove all filters with type "keyword"
@@ -106,8 +94,8 @@ export const ProductPagination: React.FC<ProductPaginationProps> = ({
   };
 
   return (
-    <section className="ProductPagination col-span-6">
-      <section className="listHeader flex flex-row items-center justify-between">
+    <section className="ProductPagination md:col-span-6 col-span-12">
+      <section className="listHeader hidden md:flex flex-row items-center justify-between">
         <Button
           onClick={handleRefresh}
           className="text-lg w-[19.2%] max-w-[300px] min-w-[200px]"
@@ -115,42 +103,45 @@ export const ProductPagination: React.FC<ProductPaginationProps> = ({
           <RefreshCcw />
           Recargar productos
         </Button>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit((data) => handleKeyword(data.keyword))}
-            className="flex flex-row items-start justify-start gap-2 w-1/2"
+        <div className="flex flex-row items-start justify-start gap-2 w-1/2">
+          <Input
+            placeholder="Buscar por nombre, código o descripción"
+            type="text"
+            className="w-full text-lg"
+            onChange={(e) => setKeyword(e.target.value)}
+          />
+          <Button
+            type="submit"
+            className="w-10"
+            onClick={() => handleKeyword(Keyword)}
           >
-            <FormField
-              control={form.control}
-              name="keyword"
-              render={({ field }) => (
-                <Input
-                  placeholder="Buscar por nombre, código o descripción"
-                  type="text"
-                  className="w-full text-lg"
-                  {...field}
-                />
-              )}
-            />
-            <Button type="submit" className="w-10">
-              <Search className="bigger-icon" />
-            </Button>
-          </form>
-        </Form>
+            <Search className="bigger-icon" />
+          </Button>
+        </div>
         <CreateProduct TriggerTitle="Nuevo Producto" TriggerIcon={CirclePlus} />
       </section>
-      <section className="listBody">
+      <section className="listHeader flex md:hidden">
+        <Button onClick={handleRefresh} className="text-lg">
+          <RefreshCcw className="bigger-icon" />
+        </Button>
+        <MobileFilters
+          Filter={Filter}
+          setFilter={setFilter}
+          Loading={Loading}
+        />
+      </section>
+      <section className="listBody md:gap-[1%] gap-2">
         {Loading ? (
           Array.from({ length: 12 }, (_, i) => {
             return (
               <Skeleton
                 key={i}
-                className="skeletonCard h-[350px] w-[24.25%] max-w-[400px]"
+                className="skeletonCard md:h-[350px] md:w-[24.25%] md:max-w-[400px] h-[200px] w-full"
               />
             );
           })
         ) : !Loading && Products.length === 0 ? (
-          <Alert variant="destructive" className="w-auto">
+          <Alert variant="destructive" className="md:w-auto w-full">
             <AlertCircle className="w-5 pt-1" />
             <AlertTitle className="text-xl">Error</AlertTitle>
             <AlertDescription className="text-lg">

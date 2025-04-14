@@ -24,37 +24,11 @@ import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { ToastAction } from "@/components/ui/toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle, CircleX, Plus } from "lucide-react";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Provider as ProviderInterface,
   StockProduct,
 } from "@/hooks/CatalogInterfaces";
 import { UpdateProvider } from "@/Pages/Providers/UpdateProvider";
-import { UpdatePriceProvider } from "@/Pages/Providers/UpdatePriceProvider";
-
-const formSchema = z.object({
-  id: z.number(),
-  name: z.string().min(3, {
-    message: "El nombre debe contar con al menos 3 caracteres.",
-  }),
-  locality: z.string().min(3, {
-    message: "La localidad debe contar con al menos 3 caracteres.",
-  }),
-  address: z.string().min(3, {
-    message: "La dirección debe contar con al menos 3 caracteres.",
-  }),
-  phone: z.string().min(10, {
-    message: "El teléfono debe contar con al menos 10 caracteres.",
-  }),
-  email: z.string().email({
-    message: "El email no es válido.",
-  }),
-  cuit: z.string().length(11, {
-    message: "El CUIT debe contar con 11 caracteres.",
-  }),
-});
 
 export const Provider = () => {
   const { id } = useParams();
@@ -70,18 +44,6 @@ export const Provider = () => {
   const navigate = useNavigate();
   const [Reload, setReload] = useState(false);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      locality: "",
-      address: "",
-      phone: "",
-      email: "",
-      cuit: "",
-    },
-  });
-
   useEffect(() => {
     if (id) {
       fetchProvider(Number.parseInt(id))
@@ -90,14 +52,6 @@ export const Provider = () => {
             navigate(-1);
           }
           setProvider(result ?? null);
-          form.reset({
-            name: result?.name ?? "",
-            locality: result?.locality ?? "",
-            address: result?.address ?? "",
-            phone: result?.phone ?? "",
-            email: result?.email ?? "",
-            cuit: result?.cuit ?? "",
-          });
         })
         .finally(() => setLoading(false));
     }
@@ -129,7 +83,11 @@ export const Provider = () => {
   }, [Reload]);
 
   const onDeletePres = () => {
-    if (Provider && Provider?.productsAmount > 0) {
+    if (
+      Provider &&
+      Provider?.productsAmount &&
+      Provider?.productsAmount !== 0
+    ) {
       toast({
         variant: "destructive",
         title: "Error",
@@ -189,59 +147,60 @@ export const Provider = () => {
   };
 
   return (
-    <div className="CatalogPage ProviderPage h-full">
+    <div className="h-full flex md:flex-row flex-col justify-start items-start">
       {Loading || !Provider ? (
-        <div className="loading w-1/5 h-1/5">
+        <div className="loading md:w-1/5 h-1/5 w-[75%]">
           <h1 className="text-xl">Cargando...</h1>
           <Skeleton className="h-4 w-[100px]" />
         </div>
       ) : Provider ? (
-        <section className="CatalogPageData h-full w-full">
-          <div className="CatalogPageInfo h-2/3 w-1/3">
-            <Card className="w-5/6">
-              <CardHeader>
-                <CardDescription className="text-xl">Proveedor</CardDescription>
-                <CardTitle className="text-4xl">{Provider.name}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-lg">
-                  Cantidad de productos:{" "}
-                  <span className="text-secondary-foreground">
-                    {Provider.productsAmount}
-                  </span>
-                </CardDescription>
-                <CardDescription className="text-lg">
-                  Localidad:{" "}
-                  <span className="text-secondary-foreground">
-                    {Provider.locality}
-                  </span>
-                </CardDescription>
-                <CardDescription className="text-lg">
-                  Dirección:{" "}
-                  <span className="text-secondary-foreground">
-                    {Provider.address}
-                  </span>
-                </CardDescription>
-                <CardDescription className="text-lg">
-                  Teléfono:{" "}
-                  <span className="text-secondary-foreground">
-                    {Provider.phone}
-                  </span>
-                </CardDescription>
-                <CardDescription className="text-lg">
-                  Email:{" "}
-                  <span className="text-secondary-foreground">
-                    {Provider.email}
-                  </span>
-                </CardDescription>
-                <CardDescription className="text-lg">
-                  CUIT:{" "}
-                  <span className="text-secondary-foreground">
-                    {Provider.cuit}
-                  </span>
-                </CardDescription>
-              </CardContent>
-              {/*               {Provider && Provider.productsDiscount > 0 && (
+        <>
+          <Card className="md:w-1/3 md:mr-5 mr-0 w-full">
+            <CardHeader>
+              <CardDescription className="text-xl">Proveedor</CardDescription>
+              <CardTitle className="md:text-4xl text-3xl">
+                {Provider.name}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CardDescription className="text-lg">
+                Cantidad de productos:{" "}
+                <span className="text-secondary-foreground">
+                  {Provider.productsAmount}
+                </span>
+              </CardDescription>
+              <CardDescription className="text-lg">
+                Localidad:{" "}
+                <span className="text-secondary-foreground">
+                  {Provider.locality}
+                </span>
+              </CardDescription>
+              <CardDescription className="text-lg">
+                Dirección:{" "}
+                <span className="text-secondary-foreground">
+                  {Provider.address}
+                </span>
+              </CardDescription>
+              <CardDescription className="text-lg">
+                Teléfono:{" "}
+                <span className="text-secondary-foreground">
+                  {Provider.phone}
+                </span>
+              </CardDescription>
+              <CardDescription className="text-lg">
+                Email:{" "}
+                <span className="text-secondary-foreground">
+                  {Provider.email}
+                </span>
+              </CardDescription>
+              <CardDescription className="text-lg">
+                CUIT:{" "}
+                <span className="text-secondary-foreground">
+                  {Provider.cuit}
+                </span>
+              </CardDescription>
+            </CardContent>
+            {/*               {Provider && Provider.productsDiscount > 0 && (
                 <CardContent className="flex flex-row gap-2">
                   <h3 className="text-xl font-semibold">
                     Descuento actual:{" "}
@@ -251,47 +210,54 @@ export const Provider = () => {
                   </h3>
                 </CardContent>
               )} */}
-              <CardContent>
-                <UpdateProvider
+            <CardContent>
+              <UpdateProvider
+                provider={Provider}
+                setReload={setReload}
+                Reload={Reload}
+              />
+              {/*<UpdatePriceProvider
                   provider={Provider}
                   setReload={setReload}
                   Reload={Reload}
-                />
-                <UpdatePriceProvider
+                />*/}
+              {/*<UpdateDiscountProvider
                   provider={Provider}
                   setReload={setReload}
                   Reload={Reload}
-                />
-                {/*                 <UpdateDiscountProvider
-                  provider={Provider}
-                  setReload={setReload}
-                  Reload={Reload}
-                /> */}
-                <Button
-                  variant="destructive"
-                  className="w-full"
-                  onClick={onDeletePres}
-                >
-                  <CircleX />
-                  Eliminar
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-          <ScrollArea className="CatalogPageList w-2/3">
-            <h1 className="text-xl text-muted-foreground text-left pb-5">
+                />*/}
+              <Button
+                variant="destructive"
+                className="w-full"
+                onClick={onDeletePres}
+              >
+                <CircleX />
+                Eliminar
+              </Button>
+            </CardContent>
+          </Card>
+          <ScrollArea className="md:h-[85vh] md:w-2/3 w-full h-auto">
+            <h2 className="text-xl text-muted-foreground md:pb-5 md:py-0 py-5 md:text-left text-center w-full">
               Lista de productos
-            </h1>
+            </h2>
             {Products && Products?.length > 0 ? (
               <>
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="w-1/6">ID</TableHead>
-                      <TableHead className="w-1/3">Nombre</TableHead>
-                      <TableHead className="w-1/5">Stock</TableHead>
-                      <TableHead>Precio</TableHead>
-                      <TableHead className="w-1/12">Descuento</TableHead>
+                      <TableHead className="w-1/12">ID</TableHead>
+                      <TableHead className="md:w-4/12 w-11/12">
+                        Nombre
+                      </TableHead>
+                      <TableHead className="w-3/12 hidden md:table-cell">
+                        Stock
+                      </TableHead>
+                      <TableHead className="w-3/12 hidden md:table-cell">
+                        Precio
+                      </TableHead>
+                      <TableHead className="w-1/12 hidden md:table-cell">
+                        Descuento
+                      </TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -312,7 +278,7 @@ export const Provider = () => {
                             {product.id}
                           </TableCell>
                           <TableCell>{product.name}</TableCell>
-                          <TableCell>
+                          <TableCell className="hidden md:table-cell">
                             {product.stock} {product.saleUnit}s
                             {product.saleUnit !== product.measureType &&
                               ` (${
@@ -323,12 +289,12 @@ export const Provider = () => {
                                 ) / 100
                               } ${product.measureType})`}
                           </TableCell>
-                          <TableCell>
+                          <TableCell className="hidden md:table-cell">
                             {product.discountPercentage > 0
                               ? `$${product.discountedPrice} / ${product.saleUnit}`
                               : `$${product.saleUnitPrice} / ${product.saleUnit}`}
                           </TableCell>
-                          <TableCell>
+                          <TableCell className="hidden md:table-cell">
                             {product.discountPercentage > 0
                               ? `${product.discountPercentage}%`
                               : "N/A"}
@@ -361,7 +327,7 @@ export const Provider = () => {
               </Alert>
             )}
           </ScrollArea>
-        </section>
+        </>
       ) : null}
     </div>
   );

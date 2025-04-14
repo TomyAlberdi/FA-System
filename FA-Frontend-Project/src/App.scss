@@ -21,18 +21,18 @@ div.App {
     }
   }
   .sectionTitle {
-    font-size: 1.875rem;
     font-family: "Be Vietnam Pro", sans-serif;
     font-weight: 700;
     letter-spacing: -.025em;
   }
   .listHeader {
-    @include var.flex-container(row, space-between, center);
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
   }
   .listBody {
     @include var.flex-container(row, flex-start, flex-start);
     flex-wrap: wrap;
-    gap: 1%;
     padding-top: 1rem;
     .buttonCard, .skeletonCard {
       margin-bottom: 1%;
@@ -44,9 +44,6 @@ div.App {
       &:hover {
         transform: scale(1.01);
         transition: all 0.2s ease-in-out;
-      }
-      div.discountTag {
-        top: 15%;
       }
     }
   }
@@ -89,7 +86,6 @@ div.App {
     height: 2em;
   }
   .ProductPage {
-    display: grid;
     grid-template-columns: repeat(15, 1fr);
     grid-template-rows: repeat(15, 1fr);
     grid-column-gap: 0.25rem;

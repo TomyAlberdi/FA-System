@@ -13,12 +13,20 @@ import { Textarea } from "@/components/ui/textarea";
 import { useSalesContext } from "@/Context/UseSalesContext";
 import { RegisterRecord } from "@/hooks/SalesInterfaces";
 import { useToast } from "@/hooks/use-toast";
-import { CheckCircle2, CirclePlus, DollarSign } from "lucide-react";
+import { CheckCircle2, DollarSign } from "lucide-react";
 import { useEffect, useState } from "react";
 
-const AddRegister = ({ yearMonth }: { yearMonth?: string }) => {
-  const { BASE_URL, fetchRegisterTypes, fetchRegisterTotalAmount } =
-    useSalesContext();
+interface AddRegisterProps {
+  yearMonth?: string;
+}
+
+const AddRegister = ({ yearMonth }: AddRegisterProps) => {
+  const {
+    BASE_URL,
+    fetchRegisterTypes,
+    fetchRegisterTotalAmount,
+    fetchRecords,
+  } = useSalesContext();
   const { toast } = useToast();
   const [Open, setOpen] = useState(false);
   const [Record, setRecord] = useState<RegisterRecord>({
@@ -66,6 +74,7 @@ const AddRegister = ({ yearMonth }: { yearMonth?: string }) => {
       setOpen(false);
       fetchRegisterTypes(yearMonth ?? new Date().toISOString().slice(0, 7));
       fetchRegisterTotalAmount();
+      fetchRecords();
     } catch (error) {
       console.error("Error submitting register: ", error);
     } finally {
@@ -87,10 +96,7 @@ const AddRegister = ({ yearMonth }: { yearMonth?: string }) => {
               Modificar
             </>
           ) : (
-            <>
-              <CirclePlus className="bigger-icon" />
-              Registrar en Caja
-            </>
+            <>Registrar en Caja</>
           )}
         </Button>
       </DialogTrigger>

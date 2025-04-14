@@ -8,10 +8,6 @@ import { CardProduct } from "@/hooks/CatalogInterfaces";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Plus, Search } from "lucide-react";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
 interface FloatingProductPaginationProps {
@@ -23,10 +19,6 @@ interface FloatingProductPaginationProps {
     subtotal: number
   ) => void;
 }
-
-const formSchema = z.object({
-  keyword: z.string(),
-});
 
 export const FloatingProductPagination = ({
   handleAddProduct,
@@ -41,93 +33,76 @@ export const FloatingProductPagination = ({
   const [Keyword, setKeyword] = useState("");
   const [Loading, setLoading] = useState(true);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-  });
+  const fetchProducts = async (keyword: string) => {
+    setLoading(true);
+    try {
+      if (!getToken) {
+        console.error("getToken is undefined");
+        return;
+      }
+      const url = `${BASE_URL}/product/search?page=${LastLoadedPage}&size=10&keyword=${keyword}`;
+      const accessToken = await getToken();
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (!response.ok) {
+        console.error("Error fetching products: ", response.status);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Ocurrió un error al buscar productos.",
+        });
+        return;
+      }
+      const result = await response.json();
+      const newProducts = result.content;
+      setProducts((prevProducts) => {
+        if (LastLoadedPage === 0) {
+          return newProducts;
+        }
+        const existingIds = prevProducts.map((product) => product.id);
+        const filteredNewProducts = newProducts.filter(
+          (product: CardProduct) => !existingIds.includes(product.id)
+        );
+        return [...prevProducts, ...filteredNewProducts];
+      });
+      setIsLastPage(result.last);
+    } catch (error) {
+      console.error("Error fetching products: ", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      setLoading(true);
-      try {
-        if (!getToken) {
-          console.error("getToken is undefined");
-          return;
-        }
-        let url = `${BASE_URL}/product/search?page=${LastLoadedPage}&size=10`;
-        if (Keyword.length > 0) {
-          url += `&keyword=${Keyword}`;
-        }
-        const accessToken = await getToken();
-        const response = await fetch(url, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        if (!response.ok) {
-          console.error("Error fetching products: ", response.status);
-          toast({
-            variant: "destructive",
-            title: "Error",
-            description: "Ocurrió un error al buscar productos.",
-          });
-          return;
-        }
-        const result = await response.json();
-        const newProducts = result.content;
-        setProducts((prevProducts) => {
-          if (LastLoadedPage === 0) {
-            return newProducts;
-          }
-          const existingIds = prevProducts.map((product) => product.id);
-          const filteredNewProducts = newProducts.filter(
-            (product: CardProduct) => !existingIds.includes(product.id)
-          );
-          return [...prevProducts, ...filteredNewProducts];
-        });
-        setIsLastPage(result.last);
-      } catch (error) {
-        console.error("Error fetching products: ", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProducts();
+    fetchProducts(Keyword);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [LastLoadedPage, Keyword]);
+  }, [LastLoadedPage]);
 
   return (
     <ScrollArea className="w-full h-full">
       {Loading ? (
-        <div className="w-full h-full flex flex-row flex-wrap justify-between">
+        <div className="w-full h-full flex md:flex-row flex-col flex-wrap justify-between">
           {Array.from({ length: 10 }, (_, i) => {
-            return <Skeleton key={i} className="w-[19.2%] mb-3 h-[375px]" />;
+            return <Skeleton key={i} className="md:w-[19.2%] w-full mb-3 h-[375px]" />;
           })}
         </div>
       ) : (
         <div className="w-full h-full flex flex-col items-center">
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit((data) => setKeyword(data.keyword))}
-              className="w-full pb-2 flex flex-row items-center"
-            >
-              <FormField
-                control={form.control}
-                name="keyword"
-                render={({ field }) => (
-                  <Input
-                    placeholder="Buscar por nombre, código o descripción"
-                    type="text"
-                    className="w-1/3 text-lg"
-                    {...field}
-                  />
-                )}
-              />
-              <Button type="submit" className="ml-2">
-                <Search className="bigger-icon" />
-              </Button>
-            </form>
-          </Form>
-          <div className="w-full h-full flex flex-row flex-wrap justify-left gap-3">
+          <div className="w-full pb-2 flex flex-row items-center">
+            <Input
+              placeholder="Buscar por nombre, código o descripción"
+              type="text"
+              className="md:w-1/3 w-full text-lg"
+              onChange={(e) => setKeyword(e.target.value)}
+            />
+            <Button onClick={() => fetchProducts(Keyword)} className="ml-2">
+              <Search className="bigger-icon" />
+            </Button>
+          </div>
+          <div className="w-full h-full flex md:flex-row flex-col flex-wrap justify-left gap-3">
             {Products?.map((product: CardProduct, i: number) => {
               return (
                 <ProductCard

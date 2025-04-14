@@ -6,7 +6,7 @@ export const ClientCard = ({ client }: { client: PartialClient }) => {
   return (
     <Button
       asChild
-      className="buttonCard h-[100px] w-[19.2%] min-w-[300px] max-w-[400px]"
+      className="buttonCard h-[100px] md:w-[19.2%] md:min-w-[300px] md:max-w-[400px] w-full"
     >
       <Link to={`/sales/clients/${client.id}`}>
         <h2 className="text-3xl">{client.name}</h2>

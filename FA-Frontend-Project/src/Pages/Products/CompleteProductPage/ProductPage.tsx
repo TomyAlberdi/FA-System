@@ -7,6 +7,7 @@ import { ProductPageAdminPanel } from "@/Pages/Products/CompleteProductPage/Prod
 import { ProductCarousel } from "@/Pages/Products/CompleteProductPage/ProductCarousel";
 import { ProductMainInfo } from "@/Pages/Products/CompleteProductPage/ProductMainInfo";
 import { ProductComplementaryInfo } from "@/Pages/Products/CompleteProductPage/ProductComplementaryInfo";
+import MobileProductAdminPanel from "@/Pages/Products/Mobile/MobileProductAdminPanel";
 
 export const ProductPage = () => {
   const { id } = useParams();
@@ -34,26 +35,31 @@ export const ProductPage = () => {
   }, [id, ReloadProduct]);
 
   return (
-    <div className="w-full h-full flex flex-col gap-4">
+    <div className="w-full h-full flex flex-col md:gap-4 gap-2">
       {Loading ? (
         <>
-          <div className="w-full h-[30vh] flex flex-row gap-4">
-            <Skeleton className="w-1/4 h-full" />
-            <Skeleton className="w-3/4 h-full" />
+          <div className="w-full md:h-[30vh] h-[60vh] flex md:flex-row flex-col gap-4">
+            <Skeleton className="md:w-1/4 w-full h-full" />
+            <Skeleton className="md:w-3/4 w-full h-full" />
           </div>
-          <div className="w-full h-[58vh] flex flex-row gap-4">
-            <Skeleton className="h-full w-1/4" />
-            <Skeleton className="h-full w-3/4" />
+          <div className="w-full md:h-[58vh] h-[28vh] flex md:flex-row flex-col gap-4">
+            <Skeleton className="h-full md:w-1/4 w-full" />
+            <Skeleton className="h-full md:w-3/4 w-full" />
           </div>
         </>
       ) : (
         <>
-          <div className="w-full h-[30vh] flex flex-row gap-4">
+          <div className="w-full md:h-[30vh] h-auto flex md:flex-row flex-col md:gap-4 gap-2">
             <ProductCarousel Product={Product} />
             <ProductMainInfo Product={Product} />
           </div>
-          <div className="w-full min-h-[58vh] flex flex-row gap-4">
+          <div className="w-full md:min-h-[58vh] h-auto flex md:flex-row flex-col md:gap-4 gap-0">
             <ProductPageAdminPanel
+              Product={Product}
+              ReloadProduct={ReloadProduct}
+              setReloadProduct={setReloadProduct}
+            />
+            <MobileProductAdminPanel
               Product={Product}
               ReloadProduct={ReloadProduct}
               setReloadProduct={setReloadProduct}

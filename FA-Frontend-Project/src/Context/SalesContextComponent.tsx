@@ -214,16 +214,18 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
     }
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      fetchRegisterTotalAmount();
-    };
-    fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getToken]);
-
-  const fetchRegisterByDate = async (date: string) => {
-    const url = `${BASE_URL}/cash-register/${date}`;
+  const [Records, setRecords] = useState<Array<RegisterRecord> | undefined>([]);
+  const [FormattedDate, setFormattedDate] = useState<string>("");
+  const fetchRecords = async () => {
+    let fetchDate = FormattedDate;
+    if (!fetchDate) {
+      const date = new Date();
+      const year = date.getFullYear();
+      const month = (date.getMonth() + 1).toString().padStart(2, "0");
+      const day = date.getDate().toString().padStart(2, "0");
+      fetchDate = `${year}-${month}-${day}`;
+    }
+    const url = `${BASE_URL}/cash-register/${fetchDate}`;
     try {
       if (!getToken) {
         console.error("getToken is undefined");
@@ -240,12 +242,29 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
         return;
       }
       const result: Array<RegisterRecord> = await response.json();
-      return result;
+      setRecords(result);
     } catch (error) {
       console.error("Error fetching cash register: ", error);
-      return;
     }
   };
+  useEffect(() => {
+    fetchRecords();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [FormattedDate]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (getToken) {
+        const accessToken = await getToken();
+        if (accessToken) {
+          fetchRegisterTotalAmount();
+          fetchRecords();
+        }
+      }
+    };
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [getToken]);
 
   const exportData: SalesContextType = {
     BASE_URL,
@@ -259,7 +278,10 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
     RegisterTotalAmount,
     fetchRegisterTypes,
     RegisterTypes,
-    fetchRegisterByDate,
+    fetchRecords,
+    Records,
+    FormattedDate,
+    setFormattedDate,
   };
 
   return (

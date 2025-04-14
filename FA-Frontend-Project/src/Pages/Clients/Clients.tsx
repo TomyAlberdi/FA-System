@@ -5,6 +5,7 @@ import { ClientsHeader } from "@/Pages/Clients/ClientsHeader";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useEffect, useState } from "react";
 import { ClientsPagination } from "@/Pages/Clients/ClientsPagination";
+import MobileClientsHeader from '@/Pages/Clients/Mobile/MobileClientsHeader'
 
 export const Clients = () => {
   const { BASE_URL } = useSalesContext();
@@ -85,6 +86,7 @@ export const Clients = () => {
         setFilters={setFilters}
         handleRefresh={handleRefresh}
       />
+      <MobileClientsHeader setFilters={setFilters} handleRefresh={handleRefresh} />
       <ClientsPagination
         Clients={Clients}
         CurrentPage={CurrentPage}

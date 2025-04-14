@@ -17,6 +17,7 @@ import { CirclePlus, CircleX } from "lucide-react";
 import { UpdateClient } from "./UpdateClient";
 import { ToastAction } from "@/components/ui/toast";
 import { ClientBudgets } from "@/Pages/Clients/ClientBudgets";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export const Client = () => {
   const { id } = useParams();
@@ -96,79 +97,84 @@ export const Client = () => {
   };
 
   return (
-    <div className="CatalogPage h-full">
+    <div className="h-full flex md:flex-row flex-col justify-start items-start">
       {Loading || !Client ? (
-        <div className="loading w-1/5 h-1/5">
+        <div className="loading md:w-1/5 h-1/5 w-[75%]">
           <h1 className="text-xl">Cargando...</h1>
           <Skeleton className="h-4 w-[100px]" />
         </div>
       ) : Client ? (
-        <section className="CatalogPageData h-full w-full">
-          <div className="CatalogPageInfo h-2/3 w-1/3">
-            <Card className="w-5/6">
-              <CardHeader>
-                <CardDescription>Cliente</CardDescription>
-                <CardTitle className="text-4xl">{Client?.name}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-lg">
-                  Tipo:{" "}
-                  <span className="text-secondary-foreground">
-                    {Client.type === "A"
-                      ? "Responsable Inscripto (Tipo A)"
-                      : "Consumidor Final (Tipo B)"}
-                  </span>
-                </CardDescription>
-                <CardDescription className="text-lg">
-                  Teléfono:{" "}
-                  <span className="text-secondary-foreground">
-                    {Client.phone}
-                  </span>
-                </CardDescription>
-                <CardDescription className="text-lg">
-                  Email:{" "}
-                  <span className="text-secondary-foreground">
-                    {Client.email}
-                  </span>
-                </CardDescription>
-                <CardDescription className="text-lg">
-                  {Client.type === "A" ? "CUIT" : "DNI"}:{" "}
-                  <span className="text-secondary-foreground">
-                    {Client?.cuitDni}
-                  </span>
-                </CardDescription>
-                <CardDescription className="text-lg">
-                  Dirección:{" "}
-                  <span className="text-secondary-foreground">
-                    {Client.address}
-                  </span>
-                </CardDescription>
-              </CardContent>
-              <CardContent>
-                <Button asChild className="w-full mb-2">
-                  <Link to={`/sales/budgets/add`}>
-                    <CirclePlus />
-                    Crear Presupuesto
-                  </Link>
-                </Button>
-                <UpdateClient
-                  client={Client}
-                  setReload={setReload}
-                  Reload={Reload}
-                />
-                <Button
-                  variant="destructive"
-                  className="w-full mb-2"
-                  onClick={onDeletePres}
-                >
-                  <CircleX />
-                  Eliminar
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-          <ClientBudgets />
-        </section>
+        <>
+          <Card className="md:w-1/3 md:mr-5 mr-0 w-full">
+            <CardHeader>
+              <CardDescription className="text-xl">Cliente</CardDescription>
+              <CardTitle className="md:text-4xl text-3xl">
+                {Client?.name}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CardDescription className="text-lg">
+                Tipo:{" "}
+                <span className="text-secondary-foreground">
+                  {Client.type === "A"
+                    ? "Responsable Inscripto (Tipo A)"
+                    : "Consumidor Final (Tipo B)"}
+                </span>
+              </CardDescription>
+              <CardDescription className="text-lg">
+                Teléfono:{" "}
+                <span className="text-secondary-foreground">
+                  {Client.phone}
+                </span>
+              </CardDescription>
+              <CardDescription className="text-lg">
+                Email:{" "}
+                <span className="text-secondary-foreground">
+                  {Client.email}
+                </span>
+              </CardDescription>
+              <CardDescription className="text-lg">
+                {Client.type === "A" ? "CUIT" : "DNI"}:{" "}
+                <span className="text-secondary-foreground">
+                  {Client?.cuitDni}
+                </span>
+              </CardDescription>
+              <CardDescription className="text-lg">
+                Dirección:{" "}
+                <span className="text-secondary-foreground">
+                  {Client.address}
+                </span>
+              </CardDescription>
+            </CardContent>
+            <CardContent>
+              <Button asChild className="w-full mb-2">
+                <Link to={`/sales/budgets/add`}>
+                  <CirclePlus />
+                  Crear Presupuesto
+                </Link>
+              </Button>
+              <UpdateClient
+                client={Client}
+                setReload={setReload}
+                Reload={Reload}
+              />
+              <Button
+                variant="destructive"
+                className="w-full mb-2"
+                onClick={onDeletePres}
+              >
+                <CircleX />
+                Eliminar
+              </Button>
+            </CardContent>
+          </Card>
+          <ScrollArea className="md:h-[85vh] md:w-2/3 w-full h-auto">
+            <h2 className="text-xl text-muted-foreground md:pb-5 md:py-0 py-5 md:text-left text-center w-full">
+              Lista de Presupuestos
+            </h2>
+            <ClientBudgets />
+          </ScrollArea>
+        </>
       ) : null}
     </div>
   );

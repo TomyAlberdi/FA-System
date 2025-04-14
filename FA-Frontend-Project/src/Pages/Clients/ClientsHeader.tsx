@@ -1,12 +1,8 @@
 import { ClientsFilter } from "@/hooks/SalesInterfaces";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { AddClient } from "@/Pages/Clients/AddClient";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { CirclePlus, Search } from "lucide-react";
+import { CirclePlus, Search, SearchIcon } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import {
@@ -18,81 +14,63 @@ import {
 } from "@/components/ui/dialog";
 import { useState } from "react";
 
-const formSchema = z.object({
-  keyword: z.string(),
-  type: z.string(),
-});
+export interface ClientsHeaderProps {
+  setFilters: React.Dispatch<React.SetStateAction<ClientsFilter>>;
+  handleRefresh: () => void;
+}
+
+export interface Search {
+  keyword: string;
+  type: "" | "A" | "B";
+}
 
 export const ClientsHeader = ({
   setFilters,
   handleRefresh,
-}: {
-  setFilters: React.Dispatch<React.SetStateAction<ClientsFilter>>;
-  handleRefresh: () => void;
-}) => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      keyword: "",
-      type: "",
-    },
+}: ClientsHeaderProps) => {
+  const [Search, setSearch] = useState<Search>({
+    keyword: "",
+    type: "",
   });
 
-  async function obSumbit(data: z.infer<typeof formSchema>) {
+  async function onSubmit(data: Search) {
     setFilters(data);
-    form.reset();
   }
 
   const [Open, setOpen] = useState(false);
 
   return (
-    <section className="listHeader">
-      <h1 className="sectionTitle">Clientes</h1>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(obSumbit)}
-          className="flex flex-row items-start justify-start gap-2 w-1/2"
-        >
-          <FormField
-            control={form.control}
-            name="keyword"
-            render={({ field }) => (
-              <Input
-                placeholder="Buscar por nombre, DNI o CUIT"
-                type="text"
-                className="w-1/2 text-lg"
-                {...field}
-              />
-            )}
-          />
-          <Button type="submit" className="w-10">
-            <Search className="bigger-icon" />
-          </Button>
-          <FormField
-            control={form.control}
-            name="type"
-            render={({ field }) => (
-              <FormItem className="flex flex-col items-start justify-start">
-                <FormControl>
-                  <RadioGroup
-                    onValueChange={field.onChange}
-                    value={field.value}
-                  >
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="A" id="A" />
-                      <Label htmlFor="A">Responsable Inscripto (Tipo A)</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="B" id="B" />
-                      <Label htmlFor="B">Consumidor Final (Tipo B)</Label>
-                    </div>
-                  </RadioGroup>
-                </FormControl>
-              </FormItem>
-            )}
-          />
-        </form>
-      </Form>
+    <section className="listHeader hidden md:flex">
+      <h1 className="sectionTitle text-3xl">Clientes</h1>
+      <div className="flex flex-row items-start justify-start gap-2 w-1/2">
+        <Input
+          placeholder="Buscar por nombre, DNI o CUIT"
+          type="text"
+          className="w-1/2 text-lg"
+          onChange={(e) => setSearch({ ...Search, keyword: e.target.value })}
+        />
+        <Button onClick={() => onSubmit(Search)} type="submit" className="w-10">
+          <SearchIcon className="bigger-icon" />
+        </Button>
+        <RadioGroup>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem
+              value="A"
+              id="r1"
+              onClick={() => setSearch({ ...Search, type: "A" })}
+            />
+            <Label htmlFor="r1">Responsable Inscripto (Tipo A)</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem
+              value="B"
+              id="r2"
+              onClick={() => setSearch({ ...Search, type: "B" })}
+            />
+            <Label htmlFor="r2">Consumidor Final (Tipo B)</Label>
+          </div>
+        </RadioGroup>
+      </div>
       <Dialog open={Open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <Button className="text-lg">
@@ -101,7 +79,7 @@ export const ClientsHeader = ({
           </Button>
         </DialogTrigger>
         <DialogContent
-          className="sm:max-w-[500px] w-full p-6"
+          className="w-[90%] md:w-full md:p-6 p-3 rounded-lg"
           aria-describedby={undefined}
         >
           <DialogHeader>

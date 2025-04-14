@@ -84,41 +84,42 @@ export const LastRecords = () => {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-1/5">Tipo</TableHead>
-                <TableHead className="w-1/5">Monto</TableHead>
-                <TableHead className="w-1/5">Fecha</TableHead>
+                <TableHead className="md:w-1/5 w-2/5">Monto</TableHead>
+                <TableHead className="w-1/5 hidden md:table-cell">Fecha</TableHead>
                 <TableHead className="w-2/5">Detalle</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {Data?.map((record: RegisterRecord, index: number) => {
-                return (
-                  <TableRow
-                    key={index}
-                    className="cursor-pointer"
-                    onClick={() => handleNavigateToBudget(record.detail)}
-                  >
-                    <TableCell
-                      className={
-                        "font-medium " +
-                        (record.type === "INGRESO"
-                          ? "text-chart-2"
-                          : "text-destructive")
-                      }
+              {Array.isArray(Data) &&
+                Data?.map((record: RegisterRecord, index: number) => {
+                  return (
+                    <TableRow
+                      key={index}
+                      className="cursor-pointer"
+                      onClick={() => handleNavigateToBudget(record.detail)}
                     >
-                      {record.type === "INGRESO" ? "INGRESO" : "GASTO"}
-                    </TableCell>
-                    <TableCell>
-                      {record.type === "GASTO" && "- "} $ {record.amount}
-                    </TableCell>
-                    <TableCell>{record.date}</TableCell>
-                    <TableCell>
-                      {record.detail
-                        ? record.detail
-                        : "No hay detalle disponible"}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+                      <TableCell
+                        className={
+                          "font-medium " +
+                          (record.type === "INGRESO"
+                            ? "text-chart-2"
+                            : "text-destructive")
+                        }
+                      >
+                        {record.type === "INGRESO" ? "INGRESO" : "GASTO"}
+                      </TableCell>
+                      <TableCell>
+                        {record.type === "GASTO" && "- "} $ {record.amount}
+                      </TableCell>
+                      <TableCell className="hidden md:table-cell">{record.date}</TableCell>
+                      <TableCell>
+                        {record.detail
+                          ? record.detail
+                          : "No hay detalle disponible"}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
             </TableBody>
             <TableCaption className="text-center">
               Últimos Registros en Caja

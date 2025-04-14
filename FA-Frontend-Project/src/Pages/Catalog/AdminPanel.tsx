@@ -18,7 +18,7 @@ export const AdminPanel = () => {
   const [CategoryOpen, setCategoryOpen] = useState(false);
 
   return (
-    <Card className="col-start-1 col-span-8 row-start-11 row-end-16">
+    <Card className="col-start-1 col-span-8 row-start-11 row-end-16 hidden md:block">
       <CardHeader>
         <CardTitle>Atajos</CardTitle>
       </CardHeader>
@@ -30,7 +30,6 @@ export const AdminPanel = () => {
         <Dialog open={ProviderOpen} onOpenChange={setProviderOpen}>
           <DialogTrigger asChild>
             <Button className="h-full text-lg w-1/3">
-              <CirclePlus className="bigger-icon" />
               Añadir Proveedor
             </Button>
           </DialogTrigger>
@@ -49,7 +48,6 @@ export const AdminPanel = () => {
         <Dialog open={CategoryOpen} onOpenChange={setCategoryOpen}>
           <DialogTrigger asChild>
             <Button className="h-full text-lg w-1/3">
-              <CirclePlus className="bigger-icon" />
               Añadir Categoría
             </Button>
           </DialogTrigger>

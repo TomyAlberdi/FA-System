@@ -1,33 +1,13 @@
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useCatalogContext } from "@/Context/UseCatalogContext";
+import { Provider } from "@/hooks/CatalogInterfaces";
 import { useToast } from "@/hooks/use-toast";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { z } from "zod";
-
-const formSchema = z.object({
-  name: z.string().min(3, {
-    message: "El nombre debe contar con al menos 3 caracteres.",
-  }),
-  locality: z.string().optional(),
-  address: z.string().optional(),
-  phone: z.string().optional(),
-  email: z.string().optional(),
-  cuit: z.string().optional(),
-});
 
 interface CategoriesHeaderProps {
   setOpen: (value: boolean) => void;
@@ -40,19 +20,16 @@ export const AddProvider: React.FC<CategoriesHeaderProps> = ({ setOpen }) => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      locality: "",
-      address: "",
-      phone: "",
-      email: "",
-      cuit: "",
-    },
+  const [Provider, setProvider] = useState<Provider>({
+    name: "",
+    locality: "",
+    address: "",
+    phone: "",
+    email: "",
+    cuit: "",
   });
 
-  async function onSubmit(data: z.infer<typeof formSchema>) {
+  async function onSubmit() {
     try {
       if (!getToken) {
         console.error("getToken is undefined");
@@ -66,7 +43,7 @@ export const AddProvider: React.FC<CategoriesHeaderProps> = ({ setOpen }) => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(Provider),
       });
       if (!response.ok) {
         console.error("Error: ", response.statusText);
@@ -98,96 +75,91 @@ export const AddProvider: React.FC<CategoriesHeaderProps> = ({ setOpen }) => {
   }
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="w-full grid grid-cols-2 grid-rows-4 gap-4"
-      >
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem className="col-start-1 row-start-1">
-              <FormLabel>Nombre</FormLabel>
-              <FormControl>
-                <Input placeholder="Nombre del proveedor" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+    <div className="w-full md:grid grid-cols-2 grid-rows-4 gap-4 flex flex-col">
+      <section>
+        <Label>Nombre</Label>
+        <Input
+          placeholder="Nombre del proveedor"
+          onChange={(e) => {
+            setProvider({
+              ...Provider,
+              name: e.target.value,
+            });
+          }}
+          value={Provider?.name}
         />
-        <FormField
-          control={form.control}
-          name="locality"
-          render={({ field }) => (
-            <FormItem className="col-start-1 row-start-2">
-              <FormLabel>Localidad (Opcional)</FormLabel>
-              <FormControl>
-                <Input placeholder="Localidad del proveedor" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+      </section>
+      <section>
+        <Label>Localidad (Opcional)</Label>
+        <Input
+          placeholder="Localidad del proveedor"
+          onChange={(e) => {
+            setProvider({
+              ...Provider,
+              locality: e.target.value,
+            });
+          }}
+          value={Provider?.locality}
         />
-        <FormField
-          control={form.control}
-          name="address"
-          render={({ field }) => (
-            <FormItem className="col-start-1 row-start-3">
-              <FormLabel>Dirección (Opcional)</FormLabel>
-              <FormControl>
-                <Input placeholder="Dirección del proveedor" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+      </section>
+      <section>
+        <Label>Dirección (Opcional)</Label>
+        <Input
+          placeholder="Dirección del proveedor"
+          onChange={(e) => {
+            setProvider({
+              ...Provider,
+              address: e.target.value,
+            });
+          }}
+          value={Provider?.address}
         />
-        <FormField
-          control={form.control}
-          name="phone"
-          render={({ field }) => (
-            <FormItem className="col-start-2 row-start-1">
-              <FormLabel>Teléfono (Opcional)</FormLabel>
-              <FormControl>
-                <Input placeholder="Teléfono del proveedor" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+      </section>
+      <section>
+        <Label>Teléfono (Opcional)</Label>
+        <Input
+          placeholder="Teléfono del proveedor"
+          onChange={(e) => {
+            setProvider({
+              ...Provider,
+              phone: e.target.value,
+            });
+          }}
+          value={Provider?.phone}
         />
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem className="col-start-2 row-start-2">
-              <FormLabel>Email (Opcional)</FormLabel>
-              <FormControl>
-                <Input placeholder="Email del proveedor" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+      </section>
+      <section>
+        <Label>Email (Opcional)</Label>
+        <Input
+          placeholder="Email del proveedor"
+          onChange={(e) => {
+            setProvider({
+              ...Provider,
+              email: e.target.value,
+            });
+          }}
+          value={Provider?.email}
         />
-        <FormField
-          control={form.control}
-          name="cuit"
-          render={({ field }) => (
-            <FormItem className="col-start-2 row-start-3">
-              <FormLabel>CUIT (Opcional)</FormLabel>
-              <FormControl>
-                <Input placeholder="CUIT del proveedor" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+      </section>
+      <section>
+        <Label>CUIT (Opcional)</Label>
+        <Input
+          placeholder="CUIT del proveedor"
+          onChange={(e) => {
+            setProvider({
+              ...Provider,
+              cuit: e.target.value,
+            });
+          }}
+          value={Provider?.cuit}
         />
-        <div className="col-span-2 col-start-1 flex justify-center items-center">
-          <Button type="submit" className="w-full" disabled={LoadingRequest}>
-            {LoadingRequest && <Loader2 className="animate-spin" />}
-            Guardar
-          </Button>
-        </div>
-      </form>
-    </Form>
+      </section>
+      <div className="col-span-2 col-start-1 flex justify-center items-center">
+        <Button onClick={onSubmit} className="w-full" disabled={LoadingRequest}>
+          {LoadingRequest && <Loader2 className="animate-spin" />}
+          Guardar
+        </Button>
+      </div>
+    </div>
   );
 };

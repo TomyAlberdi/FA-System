@@ -7,7 +7,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { CirclePlus } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AddClient } from "@/Pages/Clients/AddClient";
@@ -19,7 +18,7 @@ export const AdminPanel = () => {
   const [ClientOpen, setClientOpen] = useState(false);
 
   return (
-    <Card className="col-start-1 col-span-8 row-start-11 row-end-16">
+    <Card className="col-start-1 col-span-8 row-start-11 row-end-16 hidden md:block">
       <CardHeader>
         <CardTitle>Atajos</CardTitle>
       </CardHeader>
@@ -27,7 +26,6 @@ export const AdminPanel = () => {
         <Dialog open={ClientOpen} onOpenChange={setClientOpen}>
           <DialogTrigger asChild>
             <Button className="h-full text-lg w-1/3">
-              <CirclePlus className="bigger-icon" />
               Crear Cliente
             </Button>
           </DialogTrigger>
@@ -47,7 +45,6 @@ export const AdminPanel = () => {
           className="h-full text-lg w-1/3"
           onClick={() => navigate("/sales/budgets/add")}
         >
-          <CirclePlus className="bigger-icon" />
           Crear Presupuesto
         </Button>
         <AddRegister />

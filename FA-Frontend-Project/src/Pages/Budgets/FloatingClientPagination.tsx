@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Form, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -14,20 +13,13 @@ import {
 import { useSalesContext } from "@/Context/UseSalesContext";
 import { PartialClient } from "@/hooks/SalesInterfaces";
 import { useToast } from "@/hooks/use-toast";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { Plus, Search } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 
 interface FloatingClientPaginationProps {
   handleSelectClient: (client: PartialClient) => void;
 }
-
-const formSchema = z.object({
-  keyword: z.string(),
-});
 
 export const FloatingClientPagination = ({
   handleSelectClient,
@@ -42,59 +34,53 @@ export const FloatingClientPagination = ({
   const [Keyword, setKeyword] = useState("");
   const [Loading, setLoading] = useState(true);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-  });
+  const fetchClients = async (keyword: string) => {
+    setLoading(true);
+    try {
+      if (!getToken) {
+        console.error("getToken is undefined");
+        return;
+      }
+      const url = `${BASE_URL}/client/search?page=${LastLoadedPage}&size=15&keyword=${keyword}`;
+      const accessToken = await getToken();
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (!response.ok) {
+        console.error("Error fetching clients: ", response.status);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Ocurrió un error al buscar clientes.",
+        });
+        return;
+      }
+      const result = await response.json();
+      const newClients = result.content;
+      setClients((prevClients) => {
+        if (LastLoadedPage === 0) {
+          return newClients;
+        }
+        const existingIds = prevClients.map((client) => client.id);
+        const filteredNewClients = newClients.filter(
+          (client: PartialClient) => !existingIds.includes(client.id)
+        );
+        return [...prevClients, ...filteredNewClients];
+      });
+      setIsLastPage(result.last);
+    } catch (error) {
+      console.error("Error fetching clients: ", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchClients = async () => {
-      setLoading(true);
-      try {
-        if (!getToken) {
-          console.error("getToken is undefined");
-          return;
-        }
-        let url = `${BASE_URL}/client/search?page=${LastLoadedPage}&size=15`;
-        if (Keyword.length > 0) {
-          url += `&keyword=${Keyword}`;
-        }
-        const accessToken = await getToken();
-        const response = await fetch(url, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        if (!response.ok) {
-          console.error("Error fetching clients: ", response.status);
-          toast({
-            variant: "destructive",
-            title: "Error",
-            description: "Ocurrió un error al buscar clientes.",
-          });
-          return;
-        }
-        const result = await response.json();
-        const newClients = result.content;
-        setClients((prevClients) => {
-          if (LastLoadedPage === 0) {
-            return newClients;
-          }
-          const existingIds = prevClients.map((client) => client.id);
-          const filteredNewClients = newClients.filter(
-            (client: PartialClient) => !existingIds.includes(client.id)
-          );
-          return [...prevClients, ...filteredNewClients];
-        });
-        setIsLastPage(result.last);
-      } catch (error) {
-        console.error("Error fetching clients: ", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchClients();
+    fetchClients(Keyword);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [LastLoadedPage, Keyword]);
+  }, [LastLoadedPage]);
 
   return (
     <ScrollArea className="w-full h-full flex flex-col justify-center items-left">
@@ -104,28 +90,17 @@ export const FloatingClientPagination = ({
         })
       ) : (
         <>
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit((data) => setKeyword(data.keyword))}
-              className="w-full pb-2 flex flex-row items-center"
-            >
-              <FormField
-                control={form.control}
-                name="keyword"
-                render={({ field }) => (
-                  <Input
-                    placeholder="Buscar por nombre, DNI o CUIT"
-                    type="text"
-                    className="w-1/2 text-lg"
-                    {...field}
-                  />
-                )}
-              />
-              <Button type="submit" className="ml-2">
-                <Search className="bigger-icon" />
-              </Button>
-            </form>
-          </Form>
+          <div className="w-full pb-2 flex flex-row items-center">
+            <Input
+              placeholder="Buscar por nombre, DNI o CUIT"
+              type="text"
+              className="md:w-1/2 w-full text-lg"
+              onChange={(e) => setKeyword(e.target.value)}
+            />
+            <Button onClick={() => fetchClients(Keyword)} className="ml-2">
+              <Search className="bigger-icon" />
+            </Button>
+          </div>
           <Table>
             <TableHeader>
               <TableRow>
