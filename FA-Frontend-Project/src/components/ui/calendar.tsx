@@ -65,18 +65,23 @@ function Calendar({
 }
 Calendar.displayName = "Calendar";
 
-function CustomCalendar({
-  className,
-  classNames,
-  showOutsideDays = true,
-  ...props
-}: CalendarProps) {
+function CustomCalendar(
+  { className, classNames, showOutsideDays = true, ...props }: CalendarProps,
+  {
+    nextYearMonth,
+    previousYearMonth,
+  }: {
+    nextYearMonth: () => void;
+    previousYearMonth: () => void;
+  }
+) {
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
       className={cn("p-3 w-full h-full", className)}
       classNames={{
-        months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0 w-full h-full",
+        months:
+          "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0 w-full h-full",
         month: "space-y-4 flex-1 w-full",
         caption: "flex justify-center pt-1 relative items-center",
         caption_label: "text-sm font-medium",
@@ -111,10 +116,18 @@ function CustomCalendar({
       }}
       components={{
         IconLeft: ({ className, ...props }) => (
-          <ChevronLeft className={cn("h-4 w-4", className)} {...props} />
+          <ChevronLeft
+            className={cn("h-4 w-4", className)}
+            {...props}
+            onClick={previousYearMonth}
+          />
         ),
         IconRight: ({ className, ...props }) => (
-          <ChevronRight className={cn("h-4 w-4", className)} {...props} />
+          <ChevronRight
+            className={cn("h-4 w-4", className)}
+            {...props}
+            onClick={nextYearMonth}
+          />
         ),
       }}
       {...props}

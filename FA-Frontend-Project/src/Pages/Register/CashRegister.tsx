@@ -25,6 +25,7 @@ const CashRegister = () => {
   const [CurrentYear, setCurrentYear] = useState<number>(0);
   const [NumericYear, setNumericYear] = useState(0);
   const [NumericMonth, setNumericMonth] = useState(0);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   useEffect(() => {
     const [year, month] = CurrentYearMonth.split("-").map(Number);
@@ -62,33 +63,51 @@ const CashRegister = () => {
 
   //TODO: Rework component (Use Calendar under Card and display selected day registers on the right, default today)
   return (
-    <div className="h-full flex md:flex-row flex-col md:justify-center justify-start items-start gap-3">
-      <Card className="md:w-1/3 w-full h-auto">
-        <CardHeader>
-          <CardTitle className="">Total en Caja Registradora</CardTitle>
-          <span className="font-medium text-3xl">$ {RegisterTotalAmount}</span>
-        </CardHeader>
-        <CardContent>
-          <AddRegister yearMonth={CurrentYearMonth} />
-        </CardContent>
-        <CardContent className="flex flex-col gap-2">
-          <div className="flex gap-2 md:items-center items-start text-xl">
-            <ChevronUp className="text-chart-2 large-icon" />
-            <span className="font-medium">
-              Ingresos {CurrentMonth}: <br className="block md:hidden" />
-              <span className="text-chart-2">$ {RegisterTypes[0]}</span>
+    <div className="h-full flex md:flex-row flex-col justify-start items-start gap-3">
+      <section className="md:w-1/3 h-full">
+        <Card className="w-full h-auto mb-3">
+          <CardHeader>
+            <CardTitle className="">Total en Caja Registradora</CardTitle>
+            <span className="font-medium text-3xl">
+              $ {RegisterTotalAmount}
             </span>
-          </div>
-          <div className="flex gap-2 md:items-center items-start text-xl">
-            <ChevronDown className="text-destructive large-icon" />
-            <span className="font-medium">
-              Gastos {CurrentMonth}: <br className="block md:hidden" />
-              <span className="text-destructive">$ {RegisterTypes[1]}</span>
-            </span>
-          </div>
-        </CardContent>
-      </Card>
-      <div className="w-2/3 h-full flex-col justify-start items-center hidden md:flex">
+          </CardHeader>
+          <CardContent>
+            <AddRegister yearMonth={CurrentYearMonth} />
+          </CardContent>
+          <CardContent className="flex flex-col gap-2">
+            <div className="flex gap-2 md:items-center items-start text-xl">
+              <ChevronUp className="text-chart-2 large-icon" />
+              <span className="font-medium">
+                Ingresos {CurrentMonth}: <br className="block md:hidden" />
+                <span className="text-chart-2">$ {RegisterTypes[0]}</span>
+              </span>
+            </div>
+            <div className="flex gap-2 md:items-center items-start text-xl">
+              <ChevronDown className="text-destructive large-icon" />
+              <span className="font-medium">
+                Gastos {CurrentMonth}: <br className="block md:hidden" />
+                <span className="text-destructive">$ {RegisterTypes[1]}</span>
+              </span>
+            </div>
+          </CardContent>
+        </Card>
+        <div className="w-full h-auto">
+          <CustomCalendar
+            className="rounded-md border"
+            mode="single"
+            selected={selectedDate}
+            onSelect={(date) => {
+              if (date) {
+                setSelectedDate(date);
+                // Handle your date selection logic here
+                console.log(date);
+              }
+            }}
+          />
+        </div>
+      </section>
+{/*       <div className="w-2/3 h-full flex-col justify-start items-center hidden md:flex">
         <section className="w-full flex justify-between gap-4">
           <Button onClick={previousYearMonth}>
             <ChevronsLeft className="large-icon" />
@@ -101,14 +120,7 @@ const CashRegister = () => {
           </Button>
         </section>
         <CalendarTable year={NumericYear} month={NumericMonth} />
-      </div>
-      <div className="w-full h-auto flex md:hidden">
-        <CustomCalendar
-          className="rounded-md border"
-          selected={new Date()}
-          onSelect={(e: Date | undefined) => console.log(e)}
-        />
-      </div>
+      </div> */}
     </div>
   );
 };
