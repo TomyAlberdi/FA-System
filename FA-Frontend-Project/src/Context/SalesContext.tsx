@@ -29,9 +29,10 @@ export interface SalesContextType {
   RegisterTotalAmount: number;
   fetchRegisterTypes: (yearMonth: string) => Promise<void>;
   RegisterTypes: Array<number>;
-  fetchRegisterByDate: (
-    date: string
-  ) => Promise<Array<RegisterRecord> | undefined>;
+  fetchRecords: () => Promise<void>;
+  Records: Array<RegisterRecord> | undefined;
+  FormattedDate: string;
+  setFormattedDate: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const SalesContext = createContext<SalesContextType | null>(null);

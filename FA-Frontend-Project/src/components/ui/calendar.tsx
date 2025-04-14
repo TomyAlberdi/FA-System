@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DayPicker } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
@@ -65,20 +65,33 @@ function Calendar({
 }
 Calendar.displayName = "Calendar";
 
-function CustomCalendar(
-  { className, classNames, showOutsideDays = true, ...props }: CalendarProps,
-  {
-    nextYearMonth,
-    previousYearMonth,
-  }: {
-    nextYearMonth: () => void;
-    previousYearMonth: () => void;
-  }
-) {
+function CustomCalendar({
+  className,
+  classNames,
+  showOutsideDays = true,
+  onNextMonth,
+  onPrevMonth,
+  currentYearMonth,
+  ...props
+}: CalendarProps & {
+  onNextMonth?: () => void;
+  onPrevMonth?: () => void;
+  currentYearMonth: string;
+}) {
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
       className={cn("p-3 w-full h-full", className)}
+      onMonthChange={(month) => {
+        const selectedYearMonth = `${month.getFullYear()}-${String(
+          month.getMonth() + 1
+        ).padStart(2, "0")}`;
+        if (selectedYearMonth > currentYearMonth) {
+          onNextMonth?.();
+        } else if (selectedYearMonth < currentYearMonth) {
+          onPrevMonth?.();
+        }
+      }}
       classNames={{
         months:
           "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0 w-full h-full",
@@ -115,19 +128,33 @@ function CustomCalendar(
         ...classNames,
       }}
       components={{
-        IconLeft: ({ className, ...props }) => (
-          <ChevronLeft
-            className={cn("h-4 w-4", className)}
-            {...props}
-            onClick={previousYearMonth}
-          />
+        IconLeft: () => (
+          <Button
+            variant="outline"
+            className={cn(
+              "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100"
+            )}
+            onClick={(e) => {
+              e.preventDefault();
+              onPrevMonth?.();
+            }}
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
         ),
-        IconRight: ({ className, ...props }) => (
-          <ChevronRight
-            className={cn("h-4 w-4", className)}
-            {...props}
-            onClick={nextYearMonth}
-          />
+        IconRight: () => (
+          <Button
+            variant="outline"
+            className={cn(
+              "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100"
+            )}
+            onClick={(e) => {
+              e.preventDefault();
+              onNextMonth?.();
+            }}
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
         ),
       }}
       {...props}

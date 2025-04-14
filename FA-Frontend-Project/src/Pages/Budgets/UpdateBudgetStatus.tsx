@@ -28,7 +28,7 @@ export const UpdateBudgetStatus = ({
   Reload: boolean;
   setReload: (value: boolean) => void;
 }) => {
-  const { BASE_URL, fetchRegisterTotalAmount } = useSalesContext();
+  const { BASE_URL, fetchRegisterTotalAmount, fetchRecords } = useSalesContext();
   const { getToken } = useKindeAuth();
   const { toast } = useToast();
 
@@ -96,6 +96,7 @@ export const UpdateBudgetStatus = ({
         description: "El estado del presupuesto ha sido actualizado con éxito",
       });
       fetchRegisterTotalAmount();
+      fetchRecords()
     } catch (error) {
       console.error("Error: ", error);
       toast({
