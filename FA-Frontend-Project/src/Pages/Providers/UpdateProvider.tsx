@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useCatalogContext } from "@/Context/UseCatalogContext";
-import { useToast } from "@/hooks/use-toast";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { Loader2, Pencil } from "lucide-react";
 import { useState } from "react";
@@ -28,7 +27,6 @@ export const UpdateProvider = ({
   const [Open, setOpen] = useState(false);
 
   const { BASE_URL, fetchProviders } = useCatalogContext();
-  const { toast } = useToast();
   const { getToken } = useKindeAuth();
 
   const [Provider, setProvider] = useState<ProviderInterface>(
@@ -44,19 +42,11 @@ export const UpdateProvider = ({
 
   const onSubmit = () => {
     if (Provider.name === "") {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "El nombre del proveedor no puede estar vacío.",
-      });
+      window.alert("El nombre del proveedor no puede estar vacío.");
       return;
     }
     if (Provider.name === provider?.name) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "El nombre del proveedor no puede ser igual al actual.",
-      });
+      window.alert("El nombre del proveedor no puede ser igual al actual.");
       return;
     }
     submitProvider(Provider);
@@ -80,26 +70,15 @@ export const UpdateProvider = ({
       });
       if (!response.ok) {
         console.error("Error: ", response.statusText);
-        toast({
-          variant: "destructive",
-          title: `Error ${response.status}`,
-          description: `Ocurrió un error al actualizar el proveedor.`,
-        });
+        window.alert(`Error actualizando el proveedor: ${response.status}`);
         return;
       }
-      toast({
-        title: "Proveedor actualizado",
-        description: "El proveedor ha sido actualizada con éxito",
-      });
+      window.alert("Proveedor actualizado con éxito");
       fetchProviders();
       setReload(!Reload);
     } catch (error) {
       console.error("Error: ", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Ocurrió un error al actualizar el proveedor",
-      });
+      window.alert("Ocurrió un error al actualizar el proveedor");
     } finally {
       setLoadingRequest(false);
       setOpen(false);

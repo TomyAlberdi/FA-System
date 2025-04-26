@@ -15,7 +15,6 @@ import { CompleteProduct, CreateProductDTO } from "@/hooks/CatalogInterfaces";
 import { Progress } from "@/components/ui/progress";
 import { useNavigate } from "react-router-dom";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { useToast } from "@/hooks/use-toast";
 import { useCatalogContext } from "@/Context/UseCatalogContext";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -34,7 +33,6 @@ const CreateProduct = ({
 }) => {
   const navigate = useNavigate();
   const { getToken } = useKindeAuth();
-  const { toast } = useToast();
   const {
     BASE_URL,
     fetchProviders,
@@ -160,17 +158,10 @@ const CreateProduct = ({
         body: JSON.stringify(newProduct),
       });
       if (!response.ok) {
-        toast({
-          variant: "destructive",
-          title: `Error ${response.status}`,
-          description: `Ocurrió un error al crear el producto.`,
-        });
+        window.alert(`Error creando el producto: ${response.status}`);
         return;
       }
-      toast({
-        title: "Producto creado",
-        description: "El producto ha sido creado con éxito",
-      });
+      window.alert("Producto creado con éxito");
       fetchCategories();
       fetchProviders();
       fetchMeasures();
@@ -178,11 +169,8 @@ const CreateProduct = ({
       const responseData = await response.json();
       navigate(`/catalog/products/${responseData.id}`);
     } catch (error) {
-      toast({
-        variant: "destructive",
-        title: `Error ${error}`,
-        description: `Ocurrió un error al crear el producto.`,
-      });
+      console.error("Error creating product: ", error);
+      window.alert("Ocurrió un error al crear el producto");
     } finally {
       setLoadingRequest(false);
       setDialogOpen(false);
@@ -206,27 +194,17 @@ const CreateProduct = ({
         body: JSON.stringify(newProduct),
       });
       if (!response.ok) {
-        toast({
-          variant: "destructive",
-          title: `Error ${response.status}`,
-          description: `Ocurrió un error al actualizar el producto.`,
-        });
+        window.alert(`Error actualizando el producto: ${response.status}`);
         return;
       }
-      toast({
-        title: "Producto actualizado",
-        description: "El producto ha sido actualizado con éxito.",
-      });
+      window.alert("Producto actualizado con éxito");
       fetchCategories();
       fetchProviders();
       fetchMeasures();
       fetchPrices();
     } catch (error) {
-      toast({
-        variant: "destructive",
-        title: `Error ${error}`,
-        description: "Ocurrió un error al actualizar el producto.",
-      });
+      console.error("Error updating product: ", error);
+      window.alert("Ocurrió un error al actualizar el producto");
     } finally {
       setLoadingRequest(false);
       setDialogOpen(false);

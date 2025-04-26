@@ -12,7 +12,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { useSalesContext } from "@/Context/UseSalesContext";
 import { RegisterRecord } from "@/hooks/SalesInterfaces";
-import { useToast } from "@/hooks/use-toast";
 import { CheckCircle2, DollarSign } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -27,7 +26,6 @@ const AddRegister = ({ yearMonth }: AddRegisterProps) => {
     fetchRegisterTotalAmount,
     fetchRecords,
   } = useSalesContext();
-  const { toast } = useToast();
   const [Open, setOpen] = useState(false);
   const [Record, setRecord] = useState<RegisterRecord>({
     amount: 0,
@@ -52,35 +50,19 @@ const AddRegister = ({ yearMonth }: AddRegisterProps) => {
 
   const onSubmit = () => {
     if (Record.amount === 0) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "La cantidad no puede ser 0.",
-      });
+      window.alert("La cantidad no puede ser 0.");
       return;
     }
     if (Record.amount < 0) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "La cantidad no puede ser menor a 0.",
-      });
+      window.alert("La cantidad no puede ser menor a 0.");
       return;
     }
     if (Record.type === "") {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Seleccione un tipo de operación.",
-      });
+      window.alert("Seleccione un tipo de operación.");
       return;
     }
     if (Record.date === "") {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Seleccione una fecha.",
-      });
+      window.alert("Seleccione una fecha.");
       return;
     }
     submitRegister(Record);
@@ -100,11 +82,7 @@ const AddRegister = ({ yearMonth }: AddRegisterProps) => {
       });
       if (!response.ok) {
         console.error("Error submitting register: ", response.status);
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Ocurrió un error al crear el registro.",
-        });
+        window.alert(`Error creando el registro: ${response.status}`);
         return;
       }
       setOpen(false);

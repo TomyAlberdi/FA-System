@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useCatalogContext } from "@/Context/UseCatalogContext";
-import { useToast } from "@/hooks/use-toast";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
@@ -17,18 +16,13 @@ export const AddCategory: React.FC<CategoriesHeaderProps> = ({ setOpen }) => {
 
   const { BASE_URL, fetchCategories } = useCatalogContext();
   const { getToken } = useKindeAuth();
-  const { toast } = useToast();
   const navigate = useNavigate();
 
   const [Name, setName] = useState<string>("");
 
   const onSubmit = () => {
     if (Name === "") {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "El nombre de la categoría no puede estar vacío.",
-      });
+      window.alert("El nombre de la categoría no puede estar vacío.");
       return;
     }
     submitCategory(Name);
@@ -51,27 +45,16 @@ export const AddCategory: React.FC<CategoriesHeaderProps> = ({ setOpen }) => {
       });
       if (!response.ok) {
         console.error("Error: ", response.statusText);
-        toast({
-          variant: "destructive",
-          title: `Error ${response.status}`,
-          description: `Ocurrió un error al completar la creación de la categoría.`,
-        });
+        window.alert(`Error creando la categoría: ${response.status}`);
         return;
       }
-      toast({
-        title: "Categoría creada",
-        description: "La categoría ha sido creada con éxito",
-      });
+      window.alert("Categoría creada con éxito");
       fetchCategories();
       const responseData = await response.json();
       navigate(`/catalog/categories/${responseData.id}`);
     } catch (error) {
       console.error("Error: ", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Ocurrió un error al crear la categoría",
-      });
+      window.alert("Ocurrió un error al crear la categoría");
     } finally {
       setOpen(false);
       setLoadingRequest(false);

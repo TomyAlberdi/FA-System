@@ -10,7 +10,6 @@ import {
   ReturnData,
   Subcategory,
 } from "@/hooks/CatalogInterfaces";
-import { useToast } from "@/hooks/use-toast";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 
 interface CatalogContextComponentProps {
@@ -20,7 +19,6 @@ interface CatalogContextComponentProps {
 const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({
   children,
 }) => {
-  const { toast } = useToast();
   const { getToken } = useKindeAuth();
   const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -116,11 +114,9 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({
       );
       if (!response.ok) {
         console.error("Error fetching Category: ", response.statusText);
-        toast({
-          variant: "destructive",
-          title: `Error ${response.status}`,
-          description: `Ocurrió un error al obtener los productos de la categoría.`,
-        });
+        window.alert(
+          `Error obteniendo los productos de la categoría: ${response.status}`
+        );
         return;
       }
       const result = await response.json();
@@ -277,11 +273,7 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({
       });
       if (!response.ok) {
         console.error("Error fetching Provider: ", response.statusText);
-        toast({
-          variant: "destructive",
-          title: `Error ${response.status}`,
-          description: `Ocurrió un error al obtener el proveedor.`,
-        });
+        window.alert(`Error obteniendo el proveedor: ${response.status}`);
         return;
       }
       const result: Provider = await response.json();
@@ -315,11 +307,9 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({
           "Error fetching Provider products: ",
           response.statusText
         );
-        toast({
-          variant: "destructive",
-          title: `Error ${response.status}`,
-          description: `Ocurrió un error al obtener los productos del proveedor.`,
-        });
+        window.alert(
+          `Error obteniendo los productos del proveedor: ${response.status}`
+        );
         return;
       }
       const result = await response.json();
@@ -347,11 +337,9 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({
       });
       if (!response.ok) {
         console.error("Error fetching Measures: ", response.statusText);
-        toast({
-          variant: "destructive",
-          title: `Error ${response.status}`,
-          description: `Ocurrió un error al obtener los productos de la categoría.`,
-        });
+        window.alert(
+          `Error obteniendo los productos de la categoría: ${response.status}`
+        );
         return;
       }
       const result: Array<Measure> = await response.json();

@@ -8,7 +8,6 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSalesContext } from "@/Context/UseSalesContext";
 import { PartialBudget } from "@/hooks/SalesInterfaces";
-import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { format, subDays } from "date-fns";
 import { AlertCircle, CalendarIcon, PlusCircle } from "lucide-react";
@@ -20,7 +19,6 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export const Budgets = () => {
   const { fetchBudgetsByDateRange } = useSalesContext();
-  const { toast } = useToast();
 
   const [Dates, setDates] = useState<DateRange>({
     from: subDays(new Date(), 7),
@@ -42,11 +40,7 @@ export const Budgets = () => {
         setBudgets(result);
       })
       .catch(() => {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Ocurrió un error al obtener los presupuestos.",
-        });
+        window.alert("Ocurrió un error al obtener los presupuestos.");
       })
       .finally(() => {
         setLoading(false);
@@ -61,7 +55,7 @@ export const Budgets = () => {
     </div>
   ) : (
     <div className="flex flex-col gap-4">
-      <section className="flex md:flex-row flex-col justify-between items-start md:gap-0 gap-4"> 
+      <section className="flex md:flex-row flex-col justify-between items-start md:gap-0 gap-4">
         <div className="flex flex-col gap-2 md:w-auto w-full">
           <h1 className="sectionTitle text-3xl">Presupuestos</h1>
           <Popover>

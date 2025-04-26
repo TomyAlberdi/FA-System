@@ -1,8 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { ToastAction } from "@/components/ui/toast";
 import { useCatalogContext } from "@/Context/UseCatalogContext";
 import { CompleteProduct } from "@/hooks/CatalogInterfaces";
-import { toast } from "@/hooks/use-toast";
 import { ProductDetail } from "@/lib/ProductDetail";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { CircleX, ListPlus, ListX, Package, Pencil } from "lucide-react";
@@ -30,35 +28,15 @@ export const ProductPageAdminPanel = ({
   const navigate = useNavigate();
 
   const onDisablePress = () => {
-    toast({
-      variant: "destructive",
-      title: "Confirmación",
-      description: "¿Desea desactivar el producto?",
-      action: (
-        <ToastAction
-          altText="Desactivar"
-          onClick={() => updateProductStatus(true)}
-        >
-          Desactivar
-        </ToastAction>
-      ),
-    });
+    if (window.confirm("¿Desea desactivar el producto?")) {
+      updateProductStatus(true);
+    }
   };
 
   const onEnablePress = () => {
-    toast({
-      variant: "default",
-      title: "Confirmación",
-      description: "¿Desea activar el producto?",
-      action: (
-        <ToastAction
-          altText="Activar"
-          onClick={() => updateProductStatus(false)}
-        >
-          Activar
-        </ToastAction>
-      ),
-    });
+    if (window.confirm("¿Desea activar el producto?")) {
+      updateProductStatus(false);
+    }
   };
 
   const updateProductStatus = async (disabled: boolean) => {
@@ -80,41 +58,22 @@ export const ProductPageAdminPanel = ({
       );
       if (!response.ok) {
         console.error("Error: ", response.statusText);
-        toast({
-          variant: "destructive",
-          title: `Error ${response.status}`,
-          description: `Ocurrió un error al actualizar el producto.`,
-        });
+        window.alert(`Error actualizando el producto: ${response.status}`);
         return;
       }
-      toast({
-        title: "Producto actualizado",
-        description: "El producto ha sido actualizado con éxito",
-      });
+      window.alert("Producto actualizado con éxito");
     } catch (error) {
       console.error("Error: ", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Ocurrió un error al actualizar el producto",
-      });
+      window.alert("Ocurrió un error al actualizar el producto");
     } finally {
       setReloadProduct(!ReloadProduct);
     }
   };
 
   const onDeletePress = () => {
-    toast({
-      variant: "destructive",
-      title: "Confirmación",
-      description:
-        "¿Desea eliminar el producto? Esta acción no se puede deshacer.",
-      action: (
-        <ToastAction altText="Eliminar" onClick={deleteProduct}>
-          Eliminar
-        </ToastAction>
-      ),
-    });
+    if (window.confirm("¿Desea eliminar el producto?")) {
+      deleteProduct();
+    }
   };
 
   const deleteProduct = async () => {
@@ -133,17 +92,10 @@ export const ProductPageAdminPanel = ({
       });
       if (!response.ok) {
         console.error("Error: ", response.statusText);
-        toast({
-          variant: "destructive",
-          title: `Error ${response.status}`,
-          description: `Ocurrió un error al eliminar el producto.`,
-        });
+        window.alert(`Error eliminando el producto: ${response.status}`);
         return;
       }
-      toast({
-        title: "Producto eliminado",
-        description: "El producto ha sido eliminado con éxito",
-      });
+      window.alert("Producto eliminado con éxito");
       fetchMeasures();
       fetchPrices();
       fetchCategories();
@@ -151,11 +103,7 @@ export const ProductPageAdminPanel = ({
       navigate(-1);
     } catch (error) {
       console.error("Error: ", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Ocurrió un error al eliminar el producto",
-      });
+      window.alert("Ocurrió un error al eliminar el producto");
     }
   };
 

@@ -15,7 +15,6 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { useCatalogContext } from "@/Context/UseCatalogContext";
-import { useToast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { DollarSign, Loader2 } from "lucide-react";
@@ -42,7 +41,6 @@ export const UpdatePriceProvider = ({
   const [LoadingRequest, setLoadingRequest] = useState(false);
   const [Open, setOpen] = useState(false);
   const { BASE_URL } = useCatalogContext();
-  const { toast } = useToast();
   const { getToken } = useKindeAuth();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -82,24 +80,13 @@ export const UpdatePriceProvider = ({
       });
       if (!response.ok) {
         console.error("Error: ", response.statusText);
-        toast({
-          variant: "destructive",
-          title: `Error ${response.status}`,
-          description: `Ocurrió un error al actualizar el precio.`,
-        });
+        window.alert(`Error actualizando el precio: ${response.status}`);
         return;
       }
-      toast({
-        title: "Precio actualizado",
-        description: "El precio ha sido actualizado con éxito",
-      });
+      window.alert("El precio ha sido actualizado con éxito");
     } catch (error) {
       console.error("Error: ", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Ocurrió un error al actualizar el precio",
-      });
+      window.alert("Ocurrió un error al actualizar el precio");
     } finally {
       form.resetField("percentage");
       setLoadingRequest(false);

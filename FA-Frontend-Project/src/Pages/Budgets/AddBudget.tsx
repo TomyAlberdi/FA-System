@@ -21,7 +21,6 @@ import {
   PartialClient,
   ProductBudget,
 } from "@/hooks/SalesInterfaces";
-import { useToast } from "@/hooks/use-toast";
 import { AlertCircle, Ban, CirclePlus, Loader2, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { FloatingProductPagination } from "@/Pages/Budgets/FloatingProductPagination";
@@ -44,7 +43,6 @@ interface CreationBudget {
 export const AddBudget = () => {
   const { BASE_URL } = useSalesContext();
   const { getToken } = useKindeAuth();
-  const { toast } = useToast();
   const navigate = useNavigate();
   const BUDGET_STORAGE_KEY = "currentBudget";
 
@@ -80,19 +78,11 @@ export const AddBudget = () => {
 
   const onSubmit = () => {
     if (Budget?.client.id === 0) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "El presupuesto no tiene cliente asociado.",
-      });
+      window.alert("El presupuesto no tiene cliente asociado.");
       return;
     }
     if (Budget?.products?.length === 0) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "El presupuesto no tiene productos asociados.",
-      });
+      window.alert("El presupuesto no tiene productos asociados.");
       return;
     }
     submitBudget(Budget);
@@ -124,27 +114,16 @@ export const AddBudget = () => {
       });
       if (!response.ok) {
         console.error("Error submitting budget: ", response.status);
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Ocurrió un error al crear el presupuesto.",
-        });
+        window.alert(`Error creando el presupuesto: ${response.status}`);
         return;
       }
-      toast({
-        title: "Presupuesto creado",
-        description: "El presupuesto se ha creado correctamente.",
-      });
+      window.alert("El presupuesto se ha creado correctamente.");
       clearBudget();
       const responseData = await response.json();
       navigate(`/sales/budgets/${responseData.id}`);
     } catch (error) {
       console.error("Error submitting budget: ", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Ocurrió un error al crear el presupuesto.",
-      });
+      window.alert("Ocurrió un error al crear el presupuesto.");
     } finally {
       setLoadingRequest(false);
     }

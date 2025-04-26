@@ -29,7 +29,6 @@ import {
 } from "@/components/ui/table";
 import { useCatalogContext } from "@/Context/UseCatalogContext";
 import { ProductStock, StockRecord } from "@/hooks/CatalogInterfaces";
-import { toast } from "@/hooks/use-toast";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import {
   AlertCircle,
@@ -63,11 +62,7 @@ export const Stock = () => {
 
   const onSubmit = () => {
     if (UpdateStock.quantity <= 0) {
-      toast({
-        title: "Cantidad incorrecta",
-        description: "La cantidad debe ser mayor a 0",
-        variant: "destructive",
-      });
+      window.alert("La cantidad debe ser mayor a 0");
       return;
     }
     updateStock(UpdateStock);
@@ -93,25 +88,13 @@ export const Stock = () => {
       );
       if (!response.ok) {
         console.error("Error: ", response.statusText);
-        toast({
-          variant: "destructive",
-          title: `Error ${response.status}`,
-          description: `Ocurrió un error al actualizar el stock.`,
-        });
+        window.alert(`Error actualizando el stock: ${response.status}`);
         return;
       }
-      toast({
-        title: "Stock actualizado",
-        variant: "default",
-        description: "El stock ha sido actualizado con éxito",
-      });
+      window.alert("El stock ha sido actualizado con éxito");
     } catch (error) {
       console.error("Error: ", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Ocurrió un error al actualizar el stock",
-      });
+      window.alert("Ocurrió un error al actualizar el stock");
     } finally {
       setLoadingRequest(false);
       setOpen(false);

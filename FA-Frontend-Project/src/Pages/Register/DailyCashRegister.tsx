@@ -10,9 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ToastAction } from "@/components/ui/toast";
 import { useSalesContext } from "@/Context/UseSalesContext";
-import { useToast } from "@/hooks/use-toast";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { AlertCircle, ChevronDown, ChevronUp, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -27,23 +25,15 @@ const DailyCashRegister = () => {
     Records,
   } = useSalesContext();
   const { getToken } = useKindeAuth();
-  const { toast } = useToast();
   const navigate = useNavigate();
 
   const [DailyTypes, setDailyTypes] = useState<Array<number>>([0, 0]);
   const [DailyTotal, setDailyTotal] = useState<number>(0);
 
   const onDeletePress = (id: number) => {
-    toast({
-      variant: "destructive",
-      title: "Confirmación",
-      description: "¿Desea eliminar el registro?",
-      action: (
-        <ToastAction altText="Eliminar" onClick={() => handleDeleteRecord(id)}>
-          Eliminar
-        </ToastAction>
-      ),
-    });
+    if (window.confirm("¿Desea eliminar el registro?")) {
+      handleDeleteRecord(id);
+    }
   };
 
   const handleDeleteRecord = async (id: number) => {
@@ -62,21 +52,15 @@ const DailyCashRegister = () => {
       });
       if (!response.ok) {
         console.error("Error deleting record: ", response.statusText);
+        window.alert(`Error eliminando el registro: ${response.status}`);
         return;
       }
-      toast({
-        title: "Registro eliminado",
-        description: "El registro ha sido eliminado con éxito.",
-      });
+      window.alert("El registro ha sido eliminado con éxito.");
       fetchRegisterTotalAmount();
       fetchRecords();
     } catch (error) {
       console.error("Error deleting record: ", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Ocurrió un error al eliminar el registro.",
-      });
+      window.alert("Ocurrió un error al eliminar el registro.");
     }
   };
 

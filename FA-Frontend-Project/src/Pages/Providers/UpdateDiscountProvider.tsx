@@ -17,7 +17,6 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { useCatalogContext } from "@/Context/UseCatalogContext";
 import { Provider as ProviderIntefrace } from "@/hooks/CatalogInterfaces";
-import { useToast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { CirclePercent, Loader2 } from "lucide-react";
@@ -42,7 +41,6 @@ export const UpdateDiscountProvider = ({
   const [LoadingRequest, setLoadingRequest] = useState(false);
   const [Open, setOpen] = useState(false);
   const { BASE_URL } = useCatalogContext();
-  const { toast } = useToast();
   const { getToken } = useKindeAuth();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -83,24 +81,13 @@ export const UpdateDiscountProvider = ({
       });
       if (!response.ok) {
         console.error("Error: ", response.statusText);
-        toast({
-          variant: "destructive",
-          title: `Error ${response.status}`,
-          description: `Ocurrió un error al actualizar el descuento.`,
-        });
+        window.alert(`Error actualizando el descuento: ${response.status}`);
         return;
       }
-      toast({
-        title: "Precio actualizado",
-        description: "El descuento ha sido actualizado con éxito",
-      });
+      window.alert("El descuento ha sido actualizado con éxito");
     } catch (error) {
       console.error("Error: ", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Ocurrió un error al actualizar el descuento",
-      });
+      window.alert("Ocurrió un error al actualizar el descuento");
     } finally {
       form.resetField("percentage");
       setLoadingRequest(false);

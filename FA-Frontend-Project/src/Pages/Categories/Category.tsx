@@ -20,8 +20,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useToast } from "@/hooks/use-toast";
-import { ToastAction } from "@/components/ui/toast";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
@@ -49,7 +47,6 @@ import { Label } from "@/components/ui/label";
 const Category = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { toast } = useToast();
   const { BASE_URL, fetchCategory, fetchCategoryProducts, fetchCategories } =
     useCatalogContext();
   const { getToken } = useKindeAuth();
@@ -71,19 +68,11 @@ const Category = () => {
 
   const onSubmitUpdate = () => {
     if (Name === Category?.name) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "El nombre de la categoría no puede ser igual al actual.",
-      });
+      window.alert("El nombre de la categoría no puede ser igual al actual.");
       return;
     }
     if (Name === "") {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "El nombre de la categoría no puede estar vacío.",
-      });
+      window.alert("El nombre de la categoría no puede estar vacío.");
       return;
     }
     submitUpdateCategory(Name);
@@ -109,25 +98,14 @@ const Category = () => {
       );
       if (!response.ok) {
         console.error("Error: ", response.statusText);
-        toast({
-          variant: "destructive",
-          title: `Error ${response.status}`,
-          description: `Ocurrió un error al actualizar la categoría.`,
-        });
+        window.alert(`Error actualizando la categoría: ${response.status}`);
         return;
       }
-      toast({
-        title: "Categoría actualizada",
-        description: "La categoría ha sido actualizada con éxito",
-      });
+      window.alert("Categoría actualizada con éxito");
       fetchCategories();
     } catch (error) {
       console.error("Error: ", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Ocurrió un error al actualizar la categoría",
-      });
+      window.alert("Ocurrió un error al actualizar la categoría");
     } finally {
       setLoadingRequest(false);
       setOpen(false);
@@ -136,11 +114,7 @@ const Category = () => {
 
   const onSubmitSubcategory = () => {
     if (SubcategoryName === "") {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "El nombre de la subcategoría no puede estar vacío.",
-      });
+      window.alert("El nombre de la subcategoría no puede estar vacío.");
       return;
     }
     submitSubcategory(SubcategoryName);
@@ -166,26 +140,15 @@ const Category = () => {
       );
       if (!response.ok) {
         console.error("Error: ", response.statusText);
-        toast({
-          variant: "destructive",
-          title: `Error ${response.status}`,
-          description: `Ocurrió un error al crear la subcategoría.`,
-        });
+        window.alert(`Error creando la subcategoría: ${response.status}`);
         return;
       }
-      toast({
-        title: "Subcategoría creada",
-        description: "La subcategoría ha sido creada con éxito",
-      });
+      window.alert("Subcategoría creada con éxito");
       const responseData = await response.json();
       navigate(`/catalog/subcategory/${responseData.id}`);
     } catch (error) {
       console.error("Error: ", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Ocurrió un error al crear la subcategoría",
-      });
+      window.alert("Ocurrió un error al crear la subcategoría");
     } finally {
       setOpenCreateSubcategory(false);
       setLoadingRequest(false);
@@ -222,22 +185,11 @@ const Category = () => {
 
   const onSubmitDelete = () => {
     if (Category && Category?.productsAmount > 0) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "La categoría tiene productos asociados.",
-      });
+      window.alert("La categoría tiene productos asociados.");
     } else {
-      toast({
-        variant: "destructive",
-        title: "Confirmación",
-        description: "¿Desea eliminar la categoría?",
-        action: (
-          <ToastAction altText="Eliminar" onClick={deleteCategory}>
-            Eliminar
-          </ToastAction>
-        ),
-      });
+      if (window.confirm("¿Desea eliminar la categoría?")) {
+        deleteCategory();
+      }
     }
   };
 
@@ -257,26 +209,15 @@ const Category = () => {
       });
       if (!response.ok) {
         console.error("Error: ", response.statusText);
-        toast({
-          variant: "destructive",
-          title: `Error ${response.status}`,
-          description: `Ocurrió un error al eliminar la categoría.`,
-        });
+        window.alert(`Error eliminando la categoría: ${response.status}`);
         return;
       }
-      toast({
-        title: "Categoría eliminada",
-        description: "La categoría ha sido eliminada con éxito",
-      });
+      window.alert("Categoría eliminada con éxito");
       fetchCategories();
       navigate("/catalog/categories");
     } catch (error) {
       console.error("Error: ", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Ocurrió un error al eliminar la categoría",
-      });
+      window.alert("Ocurrió un error al eliminar la categoría");
     }
   };
 

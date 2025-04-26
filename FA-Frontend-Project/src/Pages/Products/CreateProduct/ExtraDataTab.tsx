@@ -4,7 +4,6 @@ import { Label } from "@/components/ui/label";
 import { TabsContent } from "@/components/ui/tabs";
 import { useSalesContext } from "@/Context/UseSalesContext";
 import { CreateProductDTO } from "@/hooks/CatalogInterfaces";
-import { useToast } from "@/hooks/use-toast";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { CheckCircle2, ChevronLeft, Loader2, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -30,14 +29,9 @@ const ExtraDataTab = ({
 }: ExtraDataTabProps) => {
   const { BASE_URL } = useSalesContext();
   const { getToken } = useKindeAuth();
-  const { toast } = useToast();
 
   const toastDefaultError = () => {
-    toast({
-      variant: "destructive",
-      title: `Error`,
-      description: `Ocurrió un error al cargar las imágenes.`,
-    });
+    window.alert("Ocurrió un error al cargar las imágenes");
   };
 
   //#green Image uploading and preview logic

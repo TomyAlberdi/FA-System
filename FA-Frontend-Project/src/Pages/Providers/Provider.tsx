@@ -19,9 +19,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useToast } from "@/hooks/use-toast";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { ToastAction } from "@/components/ui/toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle, CircleX, Plus } from "lucide-react";
 import {
@@ -39,7 +37,6 @@ export const Provider = () => {
   const [LastLoadedPage, setLastLoadedPage] = useState(0);
   const [IsLastPage, setIsLastPage] = useState(false);
   const [Loading, setLoading] = useState(true);
-  const { toast } = useToast();
   const { getToken } = useKindeAuth();
   const navigate = useNavigate();
   const [Reload, setReload] = useState(false);
@@ -88,22 +85,11 @@ export const Provider = () => {
       Provider?.productsAmount &&
       Provider?.productsAmount !== 0
     ) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "El proveedor tiene productos asociados.",
-      });
+      window.alert("El proveedor tiene productos asociados.");
     } else {
-      toast({
-        variant: "destructive",
-        title: "Confirmación",
-        description: "¿Desea eliminar el proveedor?",
-        action: (
-          <ToastAction altText="Eliminar" onClick={deleteProvider}>
-            Eliminar
-          </ToastAction>
-        ),
-      });
+      if (window.confirm("¿Desea eliminar el proveedor?")) {
+        deleteProvider();
+      }
     }
   };
 
@@ -123,26 +109,15 @@ export const Provider = () => {
       });
       if (!response.ok) {
         console.error("Error: ", response.statusText);
-        toast({
-          variant: "destructive",
-          title: `Error ${response.status}`,
-          description: `Ocurrió un error al eliminar el proveedor.`,
-        });
+        window.alert(`Error eliminando el proveedor: ${response.status}`);
         return;
       }
-      toast({
-        title: "Proveedor eliminado",
-        description: "El proveedor ha sido eliminado con éxito",
-      });
+      window.alert("Proveedor eliminado con éxito");
       fetchProviders();
       navigate("/catalog/providers");
     } catch (error) {
       console.error("Error: ", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Ocurrió un error al eliminar el proveedor",
-      });
+      window.alert("Ocurrió un error al eliminar el proveedor");
     }
   };
 

@@ -8,10 +8,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ToastAction } from "@/components/ui/toast";
 import { useSalesContext } from "@/Context/UseSalesContext";
 import { BudgetStatus } from "@/hooks/SalesInterfaces";
-import { useToast } from "@/hooks/use-toast";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useState } from "react";
 
@@ -28,9 +26,9 @@ export const UpdateBudgetStatus = ({
   Reload: boolean;
   setReload: (value: boolean) => void;
 }) => {
-  const { BASE_URL, fetchRegisterTotalAmount, fetchRecords } = useSalesContext();
+  const { BASE_URL, fetchRegisterTotalAmount, fetchRecords } =
+    useSalesContext();
   const { getToken } = useKindeAuth();
-  const { toast } = useToast();
 
   const [updateStatus, setupdateStatus] = useState<string>("");
 
@@ -41,16 +39,9 @@ export const UpdateBudgetStatus = ({
         status === BudgetStatus.ENTREGADO) &&
       !stockDecreased
     ) {
-      toast({
-        variant: "destructive",
-        title: "¿Confirmar actualización?",
-        description: `Actualizar el presupuesto a ${status} modificará el stock de los productos y la caja registradora.`,
-        action: (
-          <ToastAction altText="Actualizar" onClick={() => onSubmit(status)}>
-            Actualizar
-          </ToastAction>
-        ),
-      });
+      if (window.confirm("¿Desea actualizar el estado del presupuesto?")) {
+        onSubmit(status);
+      }
     } else {
       console.log(status);
       onSubmit(status);
@@ -75,35 +66,23 @@ export const UpdateBudgetStatus = ({
       if (!response.ok) {
         if (response.status === 409) {
           const responseData = await response.json();
-          toast({
-            variant: "destructive",
-            title: "Conflicto de Inventario",
-            description: `Los siguientes productos no tienen stock suficiente: ${responseData.join(
-              ", "
-            )}`,
-          });
+          window.alert(
+            "Conflicto de Inventario\n. Los siguientes productos no tienen stock suficiente:\n" +
+              responseData.join(", ")
+          );
           return;
         }
-        toast({
-          variant: "destructive",
-          title: `Error ${response.status}`,
-          description: `Ocurrió un error al actualizar el estado del presupuesto.`,
-        });
+        window.alert(
+          `Error actualizando el estado del presupuesto: ${response.status}`
+        );
         return;
       }
-      toast({
-        title: "Estado actualizado",
-        description: "El estado del presupuesto ha sido actualizado con éxito",
-      });
+      window.alert("El estado del presupuesto ha sido actualizado con éxito");
       fetchRegisterTotalAmount();
-      fetchRecords()
+      fetchRecords();
     } catch (error) {
       console.error("Error: ", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Ocurrió un error al actualizar el estado del presupuesto",
-      });
+      window.alert("Ocurrió un error al actualizar el estado del presupuesto");
     } finally {
       setOpenUpdateStatus(false);
       setReload(!Reload);
