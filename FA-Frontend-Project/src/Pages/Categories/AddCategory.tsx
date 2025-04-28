@@ -29,13 +29,14 @@ export const AddCategory: React.FC<CategoriesHeaderProps> = ({ setOpen }) => {
   };
 
   const submitCategory = async (name: string) => {
+    setLoadingRequest(true);
     try {
       if (!getToken) {
         console.error("getToken is undefined");
+        setLoadingRequest(false);
         return;
       }
       const accessToken = await getToken();
-      setLoadingRequest(true);
       const response = await fetch(`${BASE_URL}/category/${name}`, {
         method: "POST",
         headers: {
@@ -48,15 +49,15 @@ export const AddCategory: React.FC<CategoriesHeaderProps> = ({ setOpen }) => {
         window.alert(`Error creando la categoría: ${response.status}`);
         return;
       }
-      window.alert("Categoría creada con éxito");
-      fetchCategories();
       const responseData = await response.json();
+      setOpen(false);
+      window.alert("Categoría creada con éxito");
+      await fetchCategories();
       navigate(`/catalog/categories/${responseData.id}`);
     } catch (error) {
       console.error("Error: ", error);
       window.alert("Ocurrió un error al crear la categoría");
     } finally {
-      setOpen(false);
       setLoadingRequest(false);
     }
   };

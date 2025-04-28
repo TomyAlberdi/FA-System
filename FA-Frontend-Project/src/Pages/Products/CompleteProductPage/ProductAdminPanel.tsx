@@ -62,11 +62,10 @@ export const ProductPageAdminPanel = ({
         return;
       }
       window.alert("Producto actualizado con éxito");
+      setReloadProduct(!ReloadProduct);
     } catch (error) {
       console.error("Error: ", error);
       window.alert("Ocurrió un error al actualizar el producto");
-    } finally {
-      setReloadProduct(!ReloadProduct);
     }
   };
 
@@ -77,13 +76,14 @@ export const ProductPageAdminPanel = ({
   };
 
   const deleteProduct = async () => {
+    if (!getToken || !Product?.id) {
+      console.error("Missing requirements for deletion");
+      window.alert("Error: No se puede eliminar el producto");
+      return;
+    }
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
       const accessToken = await getToken();
-      const response = await fetch(`${BASE_URL}/product/${Product?.id}`, {
+      const response = await fetch(`${BASE_URL}/product/${Product.id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -91,18 +91,20 @@ export const ProductPageAdminPanel = ({
         },
       });
       if (!response.ok) {
-        console.error("Error: ", response.statusText);
+        console.error("Error:", response.statusText);
         window.alert(`Error eliminando el producto: ${response.status}`);
         return;
       }
       window.alert("Producto eliminado con éxito");
-      fetchMeasures();
-      fetchPrices();
-      fetchCategories();
-      fetchProviders();
+      await Promise.all([
+        fetchMeasures(),
+        fetchPrices(),
+        fetchCategories(),
+        fetchProviders(),
+      ]);
       navigate(-1);
     } catch (error) {
-      console.error("Error: ", error);
+      console.error("Error:", error);
       window.alert("Ocurrió un error al eliminar el producto");
     }
   };

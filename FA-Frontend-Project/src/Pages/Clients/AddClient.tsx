@@ -63,14 +63,14 @@ export const AddClient = ({ handleRefresh, setOpen }: AddClientProps) => {
         window.alert(`Error creando el cliente: ${response.status}`);
         return;
       }
-      window.alert("Cliente creado con éxito");
       const responseData = await response.json();
+      setOpen(false);
+      window.alert("Cliente creado con éxito");
       navigate(`/sales/clients/${responseData.id}`);
     } catch (error) {
       console.error("Error: ", error);
       window.alert("Ocurrió un error al crear el cliente");
     } finally {
-      setOpen(false);
       setLoadingRequest(false);
       if (handleRefresh) {
         handleRefresh();

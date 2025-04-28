@@ -89,9 +89,11 @@ export const AddBudget = () => {
   };
 
   const submitBudget = async (Budget: CreationBudget) => {
+    setLoadingRequest(true);
     try {
       if (!getToken) {
         console.error("getToken is undefined");
+        setLoadingRequest(false);
         return;
       }
       const accessToken = await getToken();
@@ -117,9 +119,9 @@ export const AddBudget = () => {
         window.alert(`Error creando el presupuesto: ${response.status}`);
         return;
       }
-      window.alert("El presupuesto se ha creado correctamente.");
-      clearBudget();
       const responseData = await response.json();
+      clearBudget();
+      window.alert("El presupuesto se ha creado correctamente.");
       navigate(`/sales/budgets/${responseData.id}`);
     } catch (error) {
       console.error("Error submitting budget: ", error);

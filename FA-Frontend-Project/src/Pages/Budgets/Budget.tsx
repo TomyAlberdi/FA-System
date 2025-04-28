@@ -36,20 +36,35 @@ export const Budget = () => {
   const [Reload, setReload] = useState(false);
 
   useEffect(() => {
-    if (id) {
-      setLoading(true);
-      fetchCompleteBudget(Number.parseInt(id))
-        .then((result) => {
-          if (!result) {
-            window.alert("Ocurrió un error al obtener el presupuesto.");
-            navigate(-1);
-          }
-          setBudget(result ?? null);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+    if (!id) {
+      window.alert("Ocurrió un error al obtener el presupuesto.");
+      navigate(-1);
+      return;
     }
+    const budgetId = Number.parseInt(id);
+    if (isNaN(budgetId)) {
+      window.alert("Ocurrió un error al obtener el presupuesto.");
+      navigate(-1);
+      return;
+    }
+    setLoading(true);
+    fetchCompleteBudget(budgetId)
+      .then((result) => {
+        if (!result) {
+          window.alert("Ocurrió un error al obtener el presupuesto.");
+          navigate(-1);
+          return;
+        }
+        setBudget(result ?? null);
+      })
+      .catch((error) => {
+        console.error("Error fetching budget:", error);
+        window.alert("Ocurrió un error al obtener el presupuesto.");
+        navigate(-1);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, Reload]);
 
@@ -87,8 +102,6 @@ export const Budget = () => {
     } catch (error) {
       console.error("Error: ", error);
       window.alert("Ocurrió un error al eliminar el presupuesto");
-    } finally {
-      navigate("/sales/budgets");
     }
   };
 

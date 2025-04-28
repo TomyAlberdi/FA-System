@@ -45,10 +45,6 @@ export const UpdateProvider = ({
       window.alert("El nombre del proveedor no puede estar vacío.");
       return;
     }
-    if (Provider.name === provider?.name) {
-      window.alert("El nombre del proveedor no puede ser igual al actual.");
-      return;
-    }
     submitProvider(Provider);
   };
 
@@ -57,6 +53,7 @@ export const UpdateProvider = ({
     try {
       if (!getToken) {
         console.error("getToken is undefined");
+        setLoadingRequest(false);
         return;
       }
       const accessToken = await getToken();
@@ -73,15 +70,17 @@ export const UpdateProvider = ({
         window.alert(`Error actualizando el proveedor: ${response.status}`);
         return;
       }
-      window.alert("Proveedor actualizado con éxito");
-      fetchProviders();
+      setOpen(false);
       setReload(!Reload);
+      setTimeout(() => {
+        fetchProviders();
+        window.alert("Proveedor actualizado con éxito");
+      }, 100);
     } catch (error) {
       console.error("Error: ", error);
       window.alert("Ocurrió un error al actualizar el proveedor");
     } finally {
       setLoadingRequest(false);
-      setOpen(false);
     }
   };
 

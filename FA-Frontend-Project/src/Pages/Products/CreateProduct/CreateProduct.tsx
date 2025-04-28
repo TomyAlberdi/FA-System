@@ -100,31 +100,39 @@ const CreateProduct = ({
   //#green Tabs & Loading Request state management
   const [currentTab, setCurrentTab] = useState("basicData");
   const handleNextTab = () => {
-    switch (currentTab) {
-      case "basicData":
-        setCurrentTab("saleData");
-        break;
-      case "saleData":
-        setCurrentTab("extraData");
-        break;
-    }
+    if (LoadingRequest) return;
+    setTimeout(() => {
+      switch (currentTab) {
+        case "basicData":
+          setCurrentTab("saleData");
+          break;
+        case "saleData":
+          setCurrentTab("extraData");
+          break;
+      }
+    }, 100);
   };
   const handlePreviousTab = () => {
-    switch (currentTab) {
-      case "saleData":
-        setCurrentTab("basicData");
-        break;
-      case "extraData":
-        setCurrentTab("saleData");
-        break;
-    }
+    if (LoadingRequest) return;
+    setTimeout(() => {
+      switch (currentTab) {
+        case "saleData":
+          setCurrentTab("basicData");
+          break;
+        case "extraData":
+          setCurrentTab("saleData");
+          break;
+      }
+    }, 100);
   };
   const [progress, setProgress] = useState(33);
   const [LoadingRequest, setLoadingRequest] = useState(false);
   useEffect(() => {
     if (LoadingRequest) {
       setProgress(100);
-    } else {
+      return;
+    }
+    const timer = setTimeout(() => {
       switch (currentTab) {
         case "basicData":
           setProgress(0);
@@ -136,7 +144,8 @@ const CreateProduct = ({
           setProgress(66);
           break;
       }
-    }
+    }, 100);
+    return () => clearTimeout(timer);
   }, [currentTab, LoadingRequest]);
   //#
 
@@ -161,19 +170,23 @@ const CreateProduct = ({
         window.alert(`Error creando el producto: ${response.status}`);
         return;
       }
-      window.alert("Producto creado con éxito");
-      fetchCategories();
-      fetchProviders();
-      fetchMeasures();
-      fetchPrices();
       const responseData = await response.json();
+      setDialogOpen(false);
+      window.alert("Producto creado con éxito");
+      await Promise.all([
+        fetchCategories(),
+        fetchProviders(),
+        fetchMeasures(),
+        fetchPrices(),
+      ]);
+
+      // Navigate last
       navigate(`/catalog/products/${responseData.id}`);
     } catch (error) {
       console.error("Error creating product: ", error);
       window.alert("Ocurrió un error al crear el producto");
     } finally {
       setLoadingRequest(false);
-      setDialogOpen(false);
     }
   };
 
@@ -193,24 +206,37 @@ const CreateProduct = ({
         },
         body: JSON.stringify(newProduct),
       });
+
       if (!response.ok) {
         window.alert(`Error actualizando el producto: ${response.status}`);
         return;
       }
+
+      // Close dialog first
+      setDialogOpen(false);
+
+      // Show success message
       window.alert("Producto actualizado con éxito");
-      fetchCategories();
-      fetchProviders();
-      fetchMeasures();
-      fetchPrices();
+
+      // Update data in parallel
+      await Promise.all([
+        fetchCategories(),
+        fetchProviders(),
+        fetchMeasures(),
+        fetchPrices(),
+      ]);
+
+      // Update reload state last
+      if (ReloadProduct !== null && setReloadProduct) {
+        setTimeout(() => {
+          setReloadProduct(!ReloadProduct);
+        }, 100);
+      }
     } catch (error) {
       console.error("Error updating product: ", error);
       window.alert("Ocurrió un error al actualizar el producto");
     } finally {
       setLoadingRequest(false);
-      setDialogOpen(false);
-      if (ReloadProduct !== null && setReloadProduct) {
-        setReloadProduct(!ReloadProduct);
-      }
     }
   };
   //#

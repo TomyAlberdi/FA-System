@@ -67,10 +67,6 @@ const Category = () => {
   const [SubcategoryName, setSubcategoryName] = useState<string>("");
 
   const onSubmitUpdate = () => {
-    if (Name === Category?.name) {
-      window.alert("El nombre de la categoría no puede ser igual al actual.");
-      return;
-    }
     if (Name === "") {
       window.alert("El nombre de la categoría no puede estar vacío.");
       return;
@@ -101,14 +97,14 @@ const Category = () => {
         window.alert(`Error actualizando la categoría: ${response.status}`);
         return;
       }
+      setOpen(false);
       window.alert("Categoría actualizada con éxito");
-      fetchCategories();
+      await fetchCategories();
     } catch (error) {
       console.error("Error: ", error);
       window.alert("Ocurrió un error al actualizar la categoría");
     } finally {
       setLoadingRequest(false);
-      setOpen(false);
     }
   };
 
@@ -143,14 +139,14 @@ const Category = () => {
         window.alert(`Error creando la subcategoría: ${response.status}`);
         return;
       }
-      window.alert("Subcategoría creada con éxito");
       const responseData = await response.json();
+      setOpenCreateSubcategory(false);
+      window.alert("Subcategoría creada con éxito");
       navigate(`/catalog/subcategory/${responseData.id}`);
     } catch (error) {
       console.error("Error: ", error);
       window.alert("Ocurrió un error al crear la subcategoría");
     } finally {
-      setOpenCreateSubcategory(false);
       setLoadingRequest(false);
     }
   };
@@ -167,7 +163,7 @@ const Category = () => {
         .finally(() => setLoading(false));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, BASE_URL, open, openCreateSubcategory]);
+  }, [id, BASE_URL, open]);
 
   useEffect(() => {
     if (id) {
@@ -213,7 +209,7 @@ const Category = () => {
         return;
       }
       window.alert("Categoría eliminada con éxito");
-      fetchCategories();
+      await fetchCategories();
       navigate("/catalog/categories");
     } catch (error) {
       console.error("Error: ", error);

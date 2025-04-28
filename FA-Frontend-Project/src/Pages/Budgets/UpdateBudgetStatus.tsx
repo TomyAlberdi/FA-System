@@ -77,15 +77,13 @@ export const UpdateBudgetStatus = ({
         );
         return;
       }
+      setOpenUpdateStatus(false);
       window.alert("El estado del presupuesto ha sido actualizado con éxito");
-      fetchRegisterTotalAmount();
-      fetchRecords();
+      await Promise.all([fetchRegisterTotalAmount(), fetchRecords()]);
+      setReload(!Reload);
     } catch (error) {
       console.error("Error: ", error);
       window.alert("Ocurrió un error al actualizar el estado del presupuesto");
-    } finally {
-      setOpenUpdateStatus(false);
-      setReload(!Reload);
     }
   };
 

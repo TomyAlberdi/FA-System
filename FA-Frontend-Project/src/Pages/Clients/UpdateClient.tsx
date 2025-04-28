@@ -56,10 +56,6 @@ export const UpdateClient = ({
       window.alert("El nombre del cliente no puede estar vacío.");
       return;
     }
-    if (Client.name === client?.name) {
-      window.alert("El nombre del cliente no puede ser igual al actual.");
-      return;
-    }
     if (Client.type === "") {
       window.alert("Seleccione un tipo de cliente (A / B).");
       return;
@@ -88,6 +84,7 @@ export const UpdateClient = ({
         window.alert(`Error actualizando el cliente: ${response.status}`);
         return;
       }
+      setOpen(false);
       window.alert("Cliente actualizado con éxito");
       setReload(!Reload);
     } catch (error) {
@@ -95,7 +92,6 @@ export const UpdateClient = ({
       window.alert("Ocurrió un error al actualizar el cliente");
     } finally {
       setLoadingRequest(false);
-      setOpen(false);
     }
   };
 
