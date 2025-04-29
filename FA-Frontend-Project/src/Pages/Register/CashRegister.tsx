@@ -14,52 +14,54 @@ const CashRegister = () => {
     setFormattedDate,
   } = useSalesContext();
 
-  //#blue calendar display and functionality
+  // Calendar display and functionality
   const [CurrentYearMonth, setCurrentYearMonth] = useState<string>(
     new Date().toISOString().slice(0, 7)
   );
   const [CurrentMonth, setCurrentMonth] = useState<string>("");
+
+  const formatMonth = (date: Date) => {
+    return new Intl.DateTimeFormat("es-ES", { month: "long" })
+      .format(date)
+      .replace(/^\w/, (c) => c.toUpperCase());
+  };
+
+  const formatYearMonth = (year: number, month: number) => {
+    return `${year}-${month.toString().padStart(2, "0")}`;
+  };
+
   useEffect(() => {
     const [year, month] = CurrentYearMonth.split("-").map(Number);
-    const date = new Date(year, month - 1); // month - 1 because Date months are 0-based
-    const currentMonth = new Intl.DateTimeFormat("es-ES", {
-      month: "long",
-    }).format(date);
-    setCurrentMonth(
-      currentMonth.charAt(0).toUpperCase() + currentMonth.slice(1)
-    );
+    const date = new Date(year, month - 1);
+    setCurrentMonth(formatMonth(date));
     fetchRegisterTypes(CurrentYearMonth);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [CurrentYearMonth]);
-  const nextYearMonth = () => {
+
+  const updateYearMonth = (increment: number) => {
     const [year, month] = CurrentYearMonth.split("-").map(Number);
-    const nextMonth = month + 1;
-    const nextYear = nextMonth > 12 ? year + 1 : year;
-    const adjustedMonth = nextMonth > 12 ? 1 : nextMonth;
-    const formattedMonth = adjustedMonth.toString().padStart(2, "0");
-    setCurrentYearMonth(`${nextYear}-${formattedMonth}`);
+    const newMonth = month + increment;
+    const newYear = year + Math.floor((newMonth - 1) / 12);
+    const adjustedMonth = ((newMonth - 1 + 12) % 12) + 1;
+    setCurrentYearMonth(formatYearMonth(newYear, adjustedMonth));
   };
-  const previousYearMonth = () => {
-    const [year, month] = CurrentYearMonth.split("-").map(Number);
-    const prevMonth = month - 1;
-    const prevYear = prevMonth < 1 ? year - 1 : year;
-    const adjustedMonth = prevMonth < 1 ? 12 : prevMonth;
-    const formattedMonth = adjustedMonth.toString().padStart(2, "0");
-    setCurrentYearMonth(`${prevYear}-${formattedMonth}`);
-  };
-  //#
-  //#green Records API request
+
+  const nextYearMonth = () => updateYearMonth(1);
+  const previousYearMonth = () => updateYearMonth(-1);
+
+  // Records API request
   const [SelectedDate, setSelectedDate] = useState(new Date());
+  const formatDate = (date: Date) => {
+    return `${date.getFullYear()}-${(date.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
+  };
   useEffect(() => {
     if (SelectedDate) {
-      const year = SelectedDate.getFullYear();
-      const month = (SelectedDate.getMonth() + 1).toString().padStart(2, "0");
-      const day = SelectedDate.getDate().toString().padStart(2, "0");
-      setFormattedDate(`${year}-${month}-${day}`);
+      setFormattedDate(formatDate(SelectedDate));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [SelectedDate]);
-  //#
 
   return (
     <div className="h-full flex md:flex-row flex-col justify-start items-start gap-3">

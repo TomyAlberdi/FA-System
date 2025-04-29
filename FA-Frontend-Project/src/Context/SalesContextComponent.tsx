@@ -4,7 +4,6 @@ import {
   CompleteClient,
   PartialBudget,
   PartialClient,
-  RegisterRecord,
 } from "@/hooks/SalesInterfaces";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useEffect, useState } from "react";
@@ -214,43 +213,7 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
     }
   };
 
-  const [Records, setRecords] = useState<Array<RegisterRecord> | undefined>([]);
   const [FormattedDate, setFormattedDate] = useState<string>("");
-  const fetchRecords = async () => {
-    let fetchDate = FormattedDate;
-    if (!fetchDate) {
-      const date = new Date();
-      const year = date.getFullYear();
-      const month = (date.getMonth() + 1).toString().padStart(2, "0");
-      const day = date.getDate().toString().padStart(2, "0");
-      fetchDate = `${year}-${month}-${day}`;
-    }
-    const url = `${BASE_URL}/cash-register/${fetchDate}`;
-    try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      if (!response.ok) {
-        console.error("Error fetching cash register: ", response.statusText);
-        return;
-      }
-      const result: Array<RegisterRecord> = await response.json();
-      setRecords(result);
-    } catch (error) {
-      console.error("Error fetching cash register: ", error);
-    }
-  };
-  useEffect(() => {
-    fetchRecords();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [FormattedDate]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -258,7 +221,6 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
         const accessToken = await getToken();
         if (accessToken) {
           fetchRegisterTotalAmount();
-          fetchRecords();
         }
       }
     };
@@ -278,8 +240,6 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
     RegisterTotalAmount,
     fetchRegisterTypes,
     RegisterTypes,
-    fetchRecords,
-    Records,
     FormattedDate,
     setFormattedDate,
   };

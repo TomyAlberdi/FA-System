@@ -30,111 +30,127 @@ const ExtraDataTab = ({
   const { BASE_URL } = useSalesContext();
   const { getToken } = useKindeAuth();
 
-  const toastDefaultError = () => {
-    window.alert("Ocurrió un error al cargar las imágenes");
-  };
-
   //#green Image uploading and preview logic
-  const [SelectedFiles, setSelectedFiles] = useState<Array<File>>([]);
-  const [PreviewUrls, setPreviewUrls] = useState<Array<string>>([]);
-
+  const [uploadState, setUploadState] = useState({
+    selectedFiles: [] as File[],
+    previewUrls: [] as string[],
+    isUploading: false,
+  });
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      const files = Array.from(event.target.files);
-      setSelectedFiles(files);
-      // Create preview URLs
+    if (!event.target.files || loading) return;
+    uploadState.previewUrls.forEach((url) => URL.revokeObjectURL(url));
+    setTimeout(() => {
+      const files = Array.from(event.target.files!);
       const urls = files.map((file) => URL.createObjectURL(file));
-      setPreviewUrls(urls);
-    }
+      setUploadState((prev) => ({
+        ...prev,
+        selectedFiles: files,
+        previewUrls: urls,
+      }));
+    }, 100);
   };
 
-  useEffect(() => {
-    return () => {
-      PreviewUrls.forEach((url) => URL.revokeObjectURL(url));
-    };
-  }, [PreviewUrls]);
-
-  const uploadImages = async (files: Array<File>) => {
+  const uploadImages = async (files: Array<File>): Promise<string[]> => {
+    if (!getToken) {
+      console.error("Token is undefined");
+      window.alert("Error: No se pudo autenticar la solicitud");
+      return [];
+    }
+    setUploadState((prev) => ({ ...prev, isUploading: true }));
     try {
-      if (!getToken) {
-        console.error("Token is undefined");
-        toastDefaultError();
-        return [];
-      }
+      const accessToken = await getToken();
       const uploadPromises = files.map(async (file) => {
-        const accessToken = await getToken();
-        const responseUrl = await fetch(
+        const urlResponse = await fetch(
           `${BASE_URL}/img?fileName=${file.name}`,
           {
             headers: {
-              "Content-Type": "application/json",
               Authorization: `Bearer ${accessToken}`,
+              "Content-Type": "application/json",
             },
           }
         );
-        if (!responseUrl.ok) {
-          throw new Error(
-            `Failed to get presigned URL: ${responseUrl.statusText}`
-          );
+        if (!urlResponse.ok) {
+          throw new Error(`Error obteniendo URL: ${urlResponse.status}`);
         }
-        const uploadUrl = await responseUrl.text();
-        await fetch(uploadUrl, {
+        const uploadUrl = await urlResponse.text();
+        const uploadResponse = await fetch(uploadUrl, {
           method: "PUT",
           body: file,
-          headers: {
-            "Content-Type": file.type,
-          },
+          headers: { "Content-Type": file.type },
         });
+        if (!uploadResponse.ok) {
+          throw new Error(`Error subiendo archivo: ${uploadResponse.status}`);
+        }
         return uploadUrl.split("?")[0];
       });
-      const uploadedUrls = await Promise.all(uploadPromises);
-      return uploadedUrls;
+      return await Promise.all(uploadPromises);
     } catch (error) {
-      console.error("Error during Image Upload: ", error);
-      toastDefaultError();
+      console.error("Error during image upload:", error);
+      window.alert("Error al subir las imágenes");
       return [];
+    } finally {
+      setUploadState((prev) => ({ ...prev, isUploading: false }));
     }
   };
   //#
 
   //#orange Remove existing product images and preview upload images
   const removeImage = (url: string) => {
-    setProduct((prev) => ({
-      ...prev,
-      images: prev.images.filter((image: string) => image !== url),
-    }));
+    setTimeout(() => {
+      setProduct((prev) => ({
+        ...prev,
+        images: prev.images.filter((image) => image !== url),
+      }));
+    }, 100);
   };
   const removePreviewImage = (url: string) => {
-    const index = PreviewUrls.indexOf(url);
-    if (index !== -1) {
-      URL.revokeObjectURL(url);
-      setPreviewUrls((prev) => prev.filter((_, i) => i !== index));
-      setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
-    }
+    const index = uploadState.previewUrls.indexOf(url);
+    if (index === -1) return;
+    URL.revokeObjectURL(url);
+    setTimeout(() => {
+      setUploadState((prev) => ({
+        ...prev,
+        selectedFiles: prev.selectedFiles.filter((_, i) => i !== index),
+        previewUrls: prev.previewUrls.filter((_, i) => i !== index),
+      }));
+    }, 100);
   };
   //#
 
   //#blue kickstart product creation
   const onSubmit = async () => {
+    if (loading || uploadState.isUploading) return;
     setLoading(true);
     try {
-      const fileInput = SelectedFiles;
-      if (fileInput && fileInput.length > 0) {
-        const newUrls = await uploadImages(fileInput);
+      const { selectedFiles } = uploadState;
+      if (selectedFiles.length > 0) {
+        const newUrls = await uploadImages(selectedFiles);
         const updatedProduct = {
           ...Product,
           images: [...(Product.images || []), ...newUrls],
         };
+        setUploadState({
+          selectedFiles: [],
+          previewUrls: [],
+          isUploading: false,
+        });
         createProduct(updatedProduct);
       } else {
         createProduct(Product);
       }
     } catch (error) {
-      console.error("Error during Image Upload: ", error);
-      toastDefaultError();
+      console.error("Error in submit:", error);
+      window.alert("Error al procesar el producto");
+      setLoading(false);
     }
   };
   //#
+
+  useEffect(() => {
+    return () => {
+      uploadState.previewUrls.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [uploadState.previewUrls]);
 
   return (
     <TabsContent value="extraData" className="h-full w-full">
@@ -164,7 +180,7 @@ const ExtraDataTab = ({
                 </span>
               </article>
             ))}
-            {PreviewUrls.map((url, index) => (
+            {uploadState.previewUrls.map((url, index) => (
               <article
                 key={index}
                 className="w-40 h-40 rounded-md border border-input bg-contain bg-no-repeat bg-center relative"

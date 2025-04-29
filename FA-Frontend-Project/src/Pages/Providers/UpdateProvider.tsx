@@ -71,11 +71,9 @@ export const UpdateProvider = ({
         return;
       }
       setOpen(false);
+      window.alert("Proveedor actualizado con éxito");
       setReload(!Reload);
-      setTimeout(() => {
-        fetchProviders();
-        window.alert("Proveedor actualizado con éxito");
-      }, 100);
+      await fetchProviders();
     } catch (error) {
       console.error("Error: ", error);
       window.alert("Ocurrió un error al actualizar el proveedor");

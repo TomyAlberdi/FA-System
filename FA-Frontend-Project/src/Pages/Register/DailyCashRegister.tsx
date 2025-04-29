@@ -11,24 +11,58 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useSalesContext } from "@/Context/UseSalesContext";
+import { RegisterRecord } from "@/hooks/SalesInterfaces";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { AlertCircle, ChevronDown, ChevronUp, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const DailyCashRegister = () => {
-  const {
-    BASE_URL,
-    fetchRegisterTotalAmount,
-    FormattedDate,
-    fetchRecords,
-    Records,
-  } = useSalesContext();
+  const { BASE_URL, fetchRegisterTotalAmount, FormattedDate } =
+    useSalesContext();
   const { getToken } = useKindeAuth();
   const navigate = useNavigate();
 
   const [DailyTypes, setDailyTypes] = useState<Array<number>>([0, 0]);
   const [DailyTotal, setDailyTotal] = useState<number>(0);
+
+  const [Records, setRecords] = useState<Array<RegisterRecord> | undefined>([]);
+
+  const formatDate = (date: Date) => {
+    return `${date.getFullYear()}-${(date.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
+  };
+
+  const fetchRecords = async () => {
+    let fetchDate = FormattedDate;
+    if (!fetchDate) {
+      const date = new Date();
+      fetchDate = formatDate(date);
+    }
+    const url = `${BASE_URL}/cash-register/${fetchDate}`;
+    try {
+      if (!getToken) {
+        console.error("getToken is undefined");
+        return;
+      }
+      const accessToken = await getToken();
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (!response.ok) {
+        console.error("Error fetching cash register: ", response.statusText);
+        return;
+      }
+      const result: Array<RegisterRecord> = await response.json();
+      setRecords(result);
+      getDailyTypes(result);
+    } catch (error) {
+      console.error("Error fetching cash register: ", error);
+    }
+  };
 
   const onDeletePress = (id: number) => {
     if (window.confirm("¿Desea eliminar el registro?")) {
@@ -56,18 +90,17 @@ const DailyCashRegister = () => {
         return;
       }
       window.alert("El registro ha sido eliminado con éxito.");
-      fetchRegisterTotalAmount();
-      fetchRecords();
+      await fetchRegisterTotalAmount();
     } catch (error) {
       console.error("Error deleting record: ", error);
       window.alert("Ocurrió un error al eliminar el registro.");
     }
   };
 
-  useEffect(() => {
+  const getDailyTypes = (records: Array<RegisterRecord>) => {
     let ingresos = 0;
     let gastos = 0;
-    Records?.forEach((record) => {
+    records?.forEach((record) => {
       if (record.type === "INGRESO") {
         ingresos += record.amount;
       } else {
@@ -76,7 +109,7 @@ const DailyCashRegister = () => {
     });
     setDailyTypes([ingresos, gastos]);
     setDailyTotal(Number((ingresos - gastos).toFixed(2)));
-  }, [Records]);
+  };
 
   const handleNavigateToBudget = (detail: string) => {
     if (detail.startsWith("PRESUPUESTO")) {
@@ -84,6 +117,11 @@ const DailyCashRegister = () => {
       navigate(`/sales/budgets/${id}`);
     }
   };
+
+  useEffect(() => {
+    fetchRecords();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [FormattedDate]);
 
   return (
     <>

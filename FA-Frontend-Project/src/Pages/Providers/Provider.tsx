@@ -42,63 +42,87 @@ export const Provider = () => {
   const [Reload, setReload] = useState(false);
 
   useEffect(() => {
-    if (id) {
-      fetchProvider(Number.parseInt(id))
-        .then((result) => {
-          if (!result) {
-            navigate(-1);
-          }
-          setProvider(result ?? null);
-        })
-        .finally(() => setLoading(false));
+    if (!id) {
+      window.alert("Error al obtener el proveedor");
+      navigate(-1);
+      return;
     }
+    const providerId = Number.parseInt(id);
+    if (isNaN(providerId)) {
+      window.alert("Error al obtener el proveedor");
+      navigate(-1);
+      return;
+    }
+    setLoading(true);
+    fetchProvider(providerId)
+      .then((result) => {
+        if (!result) {
+          window.alert("No se encontró el proveedor");
+          navigate(-1);
+          return;
+        }
+        setProvider(result);
+      })
+      .catch((error) => {
+        console.error("Error fetching provider:", error);
+        window.alert("Error al cargar el proveedor");
+        navigate(-1);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, BASE_URL, Reload]);
 
   useEffect(() => {
-    if (id) {
-      fetchProviderProducts(Number.parseInt(id), LastLoadedPage, 8).then(
-        (result) => {
-          setProducts(
-            Products ? [...Products, ...result.content] : result.content
-          );
-          setIsLastPage(result.last);
-        }
-      );
-    }
+    if (!id) return;
+    const providerId = Number.parseInt(id);
+    if (isNaN(providerId)) return;
+    fetchProviderProducts(providerId, LastLoadedPage, 8)
+      .then((result) => {
+        setProducts((prevProducts) =>
+          prevProducts ? [...prevProducts, ...result.content] : result.content
+        );
+        setIsLastPage(result.last);
+      })
+      .catch((error) => {
+        console.error("Error fetching products:", error);
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [LastLoadedPage]);
 
   useEffect(() => {
-    if (id) {
-      fetchProviderProducts(Number.parseInt(id), 0, 8).then((result) => {
+    if (!id) return;
+    const providerId = Number.parseInt(id);
+    if (isNaN(providerId)) return;
+    fetchProviderProducts(providerId, 0, 8)
+      .then((result) => {
         setProducts(result.content);
         setIsLastPage(result.last);
+      })
+      .catch((error) => {
+        console.error("Error fetching products:", error);
       });
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [Reload]);
 
-  const onDeletePres = () => {
-    if (
-      Provider &&
-      Provider?.productsAmount &&
-      Provider?.productsAmount !== 0
-    ) {
+  const onDeletePress = () => {
+    if (!Provider) return;
+    if (Provider.productsAmount && Provider.productsAmount > 0) {
       window.alert("El proveedor tiene productos asociados.");
-    } else {
-      if (window.confirm("¿Desea eliminar el proveedor?")) {
-        deleteProvider();
-      }
+      return;
+    }
+    if (window.confirm("¿Desea eliminar el proveedor?")) {
+      deleteProvider();
     }
   };
 
   const deleteProvider = async () => {
+    if (!getToken || !id) {
+      console.error("Missing requirements for deletion");
+      return;
+    }
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
       const accessToken = await getToken();
       const response = await fetch(`${BASE_URL}/provider/${id}`, {
         method: "DELETE",
@@ -108,15 +132,15 @@ export const Provider = () => {
         },
       });
       if (!response.ok) {
-        console.error("Error: ", response.statusText);
+        console.error("Error:", response.statusText);
         window.alert(`Error eliminando el proveedor: ${response.status}`);
         return;
       }
       window.alert("Proveedor eliminado con éxito");
-      fetchProviders();
+      await fetchProviders();
       navigate("/catalog/providers");
     } catch (error) {
-      console.error("Error: ", error);
+      console.error("Error:", error);
       window.alert("Ocurrió un error al eliminar el proveedor");
     }
   };
@@ -204,7 +228,7 @@ export const Provider = () => {
               <Button
                 variant="destructive"
                 className="w-full"
-                onClick={onDeletePres}
+                onClick={onDeletePress}
               >
                 <CircleX />
                 Eliminar

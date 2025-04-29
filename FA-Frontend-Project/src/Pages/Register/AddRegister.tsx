@@ -48,21 +48,18 @@ const AddRegister = ({ yearMonth }: AddRegisterProps) => {
 
   const [LoadingRequest, setLoadingRequest] = useState(false);
 
+  const validateRecord = (): string | null => {
+    if (Record.amount === 0) return "La cantidad no puede ser 0.";
+    if (Record.amount < 0) return "La cantidad no puede ser menor a 0.";
+    if (Record.type === "") return "Seleccione un tipo de operación.";
+    if (Record.date === "") return "Seleccione una fecha.";
+    return null;
+  };
+
   const onSubmit = () => {
-    if (Record.amount === 0) {
-      window.alert("La cantidad no puede ser 0.");
-      return;
-    }
-    if (Record.amount < 0) {
-      window.alert("La cantidad no puede ser menor a 0.");
-      return;
-    }
-    if (Record.type === "") {
-      window.alert("Seleccione un tipo de operación.");
-      return;
-    }
-    if (Record.date === "") {
-      window.alert("Seleccione una fecha.");
+    const error = validateRecord();
+    if (error) {
+      window.alert(error);
       return;
     }
     submitRegister(Record);
@@ -70,7 +67,6 @@ const AddRegister = ({ yearMonth }: AddRegisterProps) => {
 
   const submitRegister = async (Record: RegisterRecord) => {
     const url = `${BASE_URL}/cash-register`;
-    const body = JSON.stringify(Record);
     setLoadingRequest(true);
     try {
       const response = await fetch(url, {
@@ -78,7 +74,7 @@ const AddRegister = ({ yearMonth }: AddRegisterProps) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: body,
+        body: JSON.stringify(Record),
       });
       if (!response.ok) {
         console.error("Error submitting register: ", response.status);
@@ -86,11 +82,14 @@ const AddRegister = ({ yearMonth }: AddRegisterProps) => {
         return;
       }
       setOpen(false);
-      fetchRegisterTypes(yearMonth ?? new Date().toISOString().slice(0, 7));
-      fetchRegisterTotalAmount();
-      fetchRecords();
+      await Promise.all([
+        fetchRegisterTypes(yearMonth ?? new Date().toISOString().slice(0, 7)),
+        fetchRegisterTotalAmount(),
+        fetchRecords(),
+      ]);
     } catch (error) {
       console.error("Error submitting register: ", error);
+      window.alert("Ocurrió un error al crear el registro");
     } finally {
       setLoadingRequest(false);
     }

@@ -63,23 +63,17 @@ export const Subcategory = () => {
       window.alert("El nombre de la subcategoría no puede estar vacío.");
       return;
     }
-    if (Name === Subcategory?.name) {
-      window.alert(
-        "El nombre de la subcategoría no puede ser igual al actual."
-      );
-      return;
-    }
     submitUpdate(Name);
   };
 
   const submitUpdate = async (name: string) => {
+    setLoadingRequest(true);
     try {
       if (!getToken) {
         console.error("getToken is undefined");
         return;
       }
       const accessToken = await getToken();
-      setLoadingRequest(true);
       const response = await fetch(
         `${BASE_URL}/category/subcategory?name=${name}&subcategoryId=${id}`,
         {
@@ -95,14 +89,14 @@ export const Subcategory = () => {
         window.alert(`Error actualizando la subcategoría: ${response.status}`);
         return;
       }
-      fetchSubcategories();
+      setOpen(false);
       window.alert("La subcategoría ha sido actualizada con éxito");
+      await fetchSubcategories();
     } catch (error) {
       console.error("Error: ", error);
       window.alert("Ocurrió un error al actualizar la subcategoría");
     } finally {
       setLoadingRequest(false);
-      setOpen(false);
     }
   };
 
@@ -163,8 +157,8 @@ export const Subcategory = () => {
         window.alert(`Error eliminando la subcategoría: ${response.status}`);
         return;
       }
-      fetchSubcategories();
       window.alert("La subcategoría ha sido eliminada con éxito");
+      await fetchSubcategories();
       navigate(`/catalog/categories/${Subcategory?.categoryId}`);
     } catch (error) {
       console.error("Error: ", error);

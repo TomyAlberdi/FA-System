@@ -91,25 +91,50 @@ export const Stock = () => {
         window.alert(`Error actualizando el stock: ${response.status}`);
         return;
       }
-      window.alert("El stock ha sido actualizado con éxito");
+      setOpen(false);
+      setTimeout(() => {
+        window.alert("El stock ha sido actualizado con éxito");
+        if (id) {
+          fetchProductStock(Number.parseInt(id))
+            .then((result) => setStock(result ?? null))
+            .catch((error) => {
+              console.error("Error fetching updated stock:", error);
+            });
+        }
+      }, 100);
     } catch (error) {
       console.error("Error: ", error);
       window.alert("Ocurrió un error al actualizar el stock");
     } finally {
       setLoadingRequest(false);
-      setOpen(false);
     }
   };
 
   useEffect(() => {
-    if (id) {
-      setLoading(true);
-      fetchProductStock(Number.parseInt(id))
-        .then((result) => setStock(result ?? null))
-        .finally(() => setLoading(false));
+    if (!id) return;
+    const productId = Number.parseInt(id);
+    if (isNaN(productId)) {
+      window.alert("Error al obtener el stock");
+      return;
     }
+    setLoading(true);
+    fetchProductStock(productId)
+      .then((result) => {
+        if (!result) {
+          window.alert("No se encontró el stock del producto");
+          return;
+        }
+        setStock(result);
+      })
+      .catch((error) => {
+        console.error("Error fetching stock:", error);
+        window.alert("Error al cargar el stock del producto");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, open]);
+  }, [id]);
 
   const formatDateTime = (input: string) => {
     const parsedDate = new Date(input);

@@ -36,13 +36,13 @@ export const AddProvider: React.FC<CategoriesHeaderProps> = ({ setOpen }) => {
   };
 
   const submitProvider = async (provider: Provider) => {
+    setLoadingRequest(true);
     try {
       if (!getToken) {
         console.error("getToken is undefined");
         return;
       }
       const accessToken = await getToken();
-      setLoadingRequest(true);
       const response = await fetch(`${BASE_URL}/provider`, {
         method: "POST",
         headers: {
@@ -56,16 +56,16 @@ export const AddProvider: React.FC<CategoriesHeaderProps> = ({ setOpen }) => {
         window.alert(`Error creando el proveedor: ${response.status}`);
         return;
       }
-      window.alert("Proveedor creado con éxito");
-      fetchProviders();
       const responseData = await response.json();
+      setOpen(false);
+      window.alert("Proveedor creado con éxito");
+      await fetchProviders();
       navigate(`/catalog/providers/${responseData.id}`);
     } catch (error) {
       console.error("Error: ", error);
       window.alert("Ocurrió un error al crear el proveedor");
     } finally {
       setLoadingRequest(false);
-      setOpen(false);
     }
   };
 
