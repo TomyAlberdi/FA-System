@@ -26,7 +26,7 @@ export const UpdateBudgetStatus = ({
   Reload: boolean;
   setReload: (value: boolean) => void;
 }) => {
-  const { BASE_URL, fetchRegisterTotalAmount, fetchRecords } =
+  const { BASE_URL, fetchRegisterTotalAmount } =
     useSalesContext();
   const { getToken } = useKindeAuth();
 
@@ -79,7 +79,7 @@ export const UpdateBudgetStatus = ({
       }
       setOpenUpdateStatus(false);
       window.alert("El estado del presupuesto ha sido actualizado con éxito");
-      await Promise.all([fetchRegisterTotalAmount(), fetchRecords()]);
+      await Promise.all([fetchRegisterTotalAmount()]);
       setReload(!Reload);
     } catch (error) {
       console.error("Error: ", error);

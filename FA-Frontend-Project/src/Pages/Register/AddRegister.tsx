@@ -20,12 +20,8 @@ interface AddRegisterProps {
 }
 
 const AddRegister = ({ yearMonth }: AddRegisterProps) => {
-  const {
-    BASE_URL,
-    fetchRegisterTypes,
-    fetchRegisterTotalAmount,
-    fetchRecords,
-  } = useSalesContext();
+  const { BASE_URL, fetchRegisterTypes, fetchRegisterTotalAmount } =
+    useSalesContext();
   const [Open, setOpen] = useState(false);
   const [Record, setRecord] = useState<RegisterRecord>({
     amount: 0,
@@ -85,7 +81,6 @@ const AddRegister = ({ yearMonth }: AddRegisterProps) => {
       await Promise.all([
         fetchRegisterTypes(yearMonth ?? new Date().toISOString().slice(0, 7)),
         fetchRegisterTotalAmount(),
-        fetchRecords(),
       ]);
     } catch (error) {
       console.error("Error submitting register: ", error);

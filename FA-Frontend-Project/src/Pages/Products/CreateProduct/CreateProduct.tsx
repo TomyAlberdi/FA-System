@@ -37,6 +37,7 @@ const CreateProduct = ({
     BASE_URL,
     fetchProviders,
     fetchCategories,
+    fetchSubcategories,
     fetchMeasures,
     fetchPrices,
   } = useCatalogContext();
@@ -175,6 +176,7 @@ const CreateProduct = ({
       window.alert("Producto creado con éxito");
       await Promise.all([
         fetchCategories(),
+        fetchSubcategories(),
         fetchProviders(),
         fetchMeasures(),
         fetchPrices(),

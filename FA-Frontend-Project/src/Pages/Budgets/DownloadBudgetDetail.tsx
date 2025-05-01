@@ -27,16 +27,6 @@ export const DownloadBudgetDetail = ({
     const doc = new jsPDF();
 
     // Title
-    /* 
-    doc.addImage(
-      "https://fa-sa-bucket.s3.sa-east-1.amazonaws.com/logo_clp_2020.png",
-      "JPEG",
-      5,
-      10,
-      100,
-      20
-    );
-    */
     doc.setFontSize(25);
     doc.setFont("helvetica", "bold");
     doc.text("SB - Cerámicos Olavarría", 10, 20);

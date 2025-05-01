@@ -121,7 +121,7 @@ const DailyCashRegister = () => {
   useEffect(() => {
     fetchRecords();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [FormattedDate]);
+  }, [FormattedDate, handleDeleteRecord]);
 
   return (
     <>
