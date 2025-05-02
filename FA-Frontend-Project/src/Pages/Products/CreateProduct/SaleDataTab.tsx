@@ -50,44 +50,48 @@ const SaleDataTab = ({
   }, []);
   //#
 
-  //#green Calculate and set sale unit price if product has sale unit cost and profit margin
-  const getSalePrice = (profitability: number, saleUnitCost: number) => {
-    const markup = profitability / 100;
-    const salePrice = saleUnitCost * (1 + markup);
-    return Math.round(salePrice * 100) / 100;
-  };
-  useEffect(() => {
-    if (Rentabilidad > 0) {
-      setProduct((prev) => ({
-        ...prev,
-        saleUnitPrice: getSalePrice(Rentabilidad, Product?.saleUnitCost),
-      }));
-    } else {
-      setProduct((prev) => ({
-        ...prev,
-        saleUnitPrice: Product?.saleUnitCost,
-      }));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [Rentabilidad, Product?.saleUnitCost]);
-  //#
-
-  //#yellow Calculate and set measure price if product has measure per sale unit and sale unit price
+  //#green Calculate and set prices if product has measure unit cost and profit margin
   const [MeasurePrice, setMeasurePrice] = useState(0);
-  const getMeasurePrice = (
-    measurePerSaleUnit: number,
-    saleUnitPrice: number
-  ) => {
-    const measurePrice = saleUnitPrice / measurePerSaleUnit;
-    return Math.round(measurePrice * 100) / 100;
+  const getSalePrice = (profitability: number) => {
+    if (profitability === 0) {
+      const measureUnitPrice = Math.round(Product?.measureUnitCost * 100) / 100;
+      setMeasurePrice(measureUnitPrice);
+      if (Product?.saleUnit === Product?.measureType) {
+        return measureUnitPrice;
+      } else {
+        return (
+          Math.round(measureUnitPrice * Product?.measurePerSaleUnit * 100) / 100
+        );
+      }
+    }
+    const markup = 1 + profitability / 100;
+    const measureUnitPrice =
+      Math.round(Product?.measureUnitCost * markup * 100) / 100;
+    setMeasurePrice(measureUnitPrice);
+    if (Product?.saleUnit === Product?.measureType) {
+      return measureUnitPrice;
+    } else {
+      const saleUnitCost = measureUnitPrice * Product?.measurePerSaleUnit;
+      return Math.round(saleUnitCost * 100) / 100;
+    }
   };
   useEffect(() => {
-    if (Product?.saleUnitPrice > 0 && Product?.measurePerSaleUnit) {
-      setMeasurePrice(
-        getMeasurePrice(Product?.measurePerSaleUnit, Product?.saleUnitPrice)
-      );
-    }
-  }, [Product?.saleUnitPrice, Product?.measurePerSaleUnit]);
+    setProduct((prev) => ({
+      ...prev,
+      saleUnitPrice: getSalePrice(Rentabilidad),
+      saleUnitCost:
+        Product?.measureType === Product?.saleUnit
+          ? Product?.measureUnitCost
+          : Product?.measureUnitCost * Product?.measurePerSaleUnit,
+    }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    Rentabilidad,
+    Product?.measureUnitCost,
+    Product?.measurePerSaleUnit,
+    Product?.saleUnit,
+    Product?.measureType,
+  ]);
   //#
 
   //#orange set product measurePerSaleUnit to 1 if product saleUnit and measureType are equals
@@ -162,13 +166,15 @@ const SaleDataTab = ({
             </TooltipProvider>
           </Label>
           <Input
-            value={Product?.saleUnitCost}
+            value={Product?.measureUnitCost}
             type="number"
             min={0}
             onChange={(e) =>
               setProduct((prev) => ({
                 ...prev,
-                saleUnitCost: e.target.value ? parseFloat(e.target.value) : 0,
+                measureUnitCost: e.target.value
+                  ? parseFloat(e.target.value)
+                  : 0,
               }))
             }
           />

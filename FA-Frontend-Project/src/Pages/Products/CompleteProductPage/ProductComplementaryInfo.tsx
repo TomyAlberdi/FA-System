@@ -175,7 +175,9 @@ export const ProductComplementaryInfo = ({
             <AccordionContent className="flex md:flex-row flex-col items-center gap-2 md:flex-wrap w-full">
               <Card className="md:w-auto w-full">
                 <CardHeader>
-                  <CardTitle className="text-center">Costo de compra</CardTitle>
+                  <CardTitle className="text-center">
+                    Costo por {Product?.saleUnit}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="text-center">
                   <span className="text-xl">
@@ -183,6 +185,20 @@ export const ProductComplementaryInfo = ({
                   </span>
                 </CardContent>
               </Card>
+              {Product?.saleUnit !== Product?.measureType && (
+                <Card className="md:w-auto w-full">
+                  <CardHeader>
+                    <CardTitle className="text-center">
+                      Costo por {Product?.measureType}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="text-center">
+                    <span className="text-xl">
+                      $ {Product?.measureUnitCost} por {Product?.measureType}
+                    </span>
+                  </CardContent>
+                </Card>
+              )}
               <Card
                 className={
                   Rentabilidad < 0

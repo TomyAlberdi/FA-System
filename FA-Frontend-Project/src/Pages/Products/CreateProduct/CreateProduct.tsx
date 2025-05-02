@@ -57,6 +57,7 @@ const CreateProduct = ({
     saleUnit: ProductProp?.saleUnit ?? "Caja",
     saleUnitPrice: ProductProp?.saleUnitPrice ?? 0,
     saleUnitCost: ProductProp?.saleUnitCost ?? 0,
+    measureUnitCost: ProductProp?.measureUnitCost ?? 0,
     measurePerSaleUnit: ProductProp?.measurePerSaleUnit ?? 0,
     discountPercentage: ProductProp?.discountPercentage ?? 0,
     // Tab 3
