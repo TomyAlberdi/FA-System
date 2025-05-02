@@ -67,7 +67,7 @@ export const UpdateBudgetStatus = ({
         if (response.status === 409) {
           const responseData = await response.json();
           window.alert(
-            "Conflicto de Inventario\n. Los siguientes productos no tienen stock suficiente:\n" +
+            "Conflicto de Inventario.\nLos siguientes productos no tienen stock suficiente:\n" +
               responseData.join(", ")
           );
           return;

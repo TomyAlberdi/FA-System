@@ -158,7 +158,11 @@ const DailyCashRegister = () => {
           </TableHeader>
           <TableBody>
             {Records?.map((record, index) => (
-              <TableRow key={index}>
+              <TableRow
+                key={index}
+                className="cursor-pointer"
+                onClick={() => handleNavigateToBudget(record.detail)}
+              >
                 <TableCell>
                   {record.type === "INGRESO" ? (
                     <ChevronUp className="text-chart-2 large-icon" />
@@ -169,12 +173,7 @@ const DailyCashRegister = () => {
                 <TableCell>
                   {record.type === "GASTO" && "- "} $ {record.amount}
                 </TableCell>
-                <TableCell
-                  className="cursor-pointer"
-                  onClick={() => handleNavigateToBudget(record.detail)}
-                >
-                  {record.detail}
-                </TableCell>
+                <TableCell>{record.detail}</TableCell>
                 <TableCell>
                   <Button onClick={() => onDeletePress(record.id as number)}>
                     <Trash2 className="bigger-icon" color="red" />
