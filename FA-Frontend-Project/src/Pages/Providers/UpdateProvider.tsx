@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useCatalogContext } from "@/Context/UseCatalogContext";
-import { useToast } from "@/hooks/use-toast";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { Loader2, Pencil } from "lucide-react";
 import { useState } from "react";
@@ -28,7 +27,6 @@ export const UpdateProvider = ({
   const [Open, setOpen] = useState(false);
 
   const { BASE_URL, fetchProviders } = useCatalogContext();
-  const { toast } = useToast();
   const { getToken } = useKindeAuth();
 
   const [Provider, setProvider] = useState<ProviderInterface>(
@@ -42,11 +40,20 @@ export const UpdateProvider = ({
     }
   );
 
-  const updateProvider = async () => {
+  const onSubmit = () => {
+    if (Provider.name === "") {
+      window.alert("El nombre del proveedor no puede estar vacío.");
+      return;
+    }
+    submitProvider(Provider);
+  };
+
+  const submitProvider = async (provider: ProviderInterface) => {
     setLoadingRequest(true);
     try {
       if (!getToken) {
         console.error("getToken is undefined");
+        setLoadingRequest(false);
         return;
       }
       const accessToken = await getToken();
@@ -56,33 +63,22 @@ export const UpdateProvider = ({
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify(Provider),
+        body: JSON.stringify(provider),
       });
       if (!response.ok) {
         console.error("Error: ", response.statusText);
-        toast({
-          variant: "destructive",
-          title: `Error ${response.status}`,
-          description: `Ocurrió un error al actualizar el proveedor.`,
-        });
+        window.alert(`Error actualizando el proveedor: ${response.status}`);
         return;
       }
-      toast({
-        title: "Proveedor actualizado",
-        description: "El proveedor ha sido actualizada con éxito",
-      });
-      fetchProviders();
+      setOpen(false);
+      window.alert("Proveedor actualizado con éxito");
       setReload(!Reload);
+      await fetchProviders();
     } catch (error) {
       console.error("Error: ", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Ocurrió un error al actualizar el proveedor",
-      });
+      window.alert("Ocurrió un error al actualizar el proveedor");
     } finally {
       setLoadingRequest(false);
-      setOpen(false);
     }
   };
 
@@ -107,86 +103,80 @@ export const UpdateProvider = ({
           <div className="col-start-1 row-start-1">
             <Label>Nombre</Label>
             <Input
-              placeholder="Nombre del proveedor"
+              placeholder={Provider?.name}
               onChange={(e) => {
                 setProvider({
                   ...Provider,
                   name: e.target.value,
                 });
               }}
-              value={Provider?.name}
             />
           </div>
           <div className="col-start-1 row-start-2">
             <Label>Localidad (Opcional)</Label>
             <Input
-              placeholder="Localidad del proveedor"
+              placeholder={Provider?.locality}
               onChange={(e) => {
                 setProvider({
                   ...Provider,
                   locality: e.target.value,
                 });
               }}
-              value={Provider?.locality}
             />
           </div>
           <div className="col-start-1 row-start-3">
             <Label>Dirección (Opcional)</Label>
             <Input
-              placeholder="Dirección del proveedor"
+              placeholder={Provider?.address}
               onChange={(e) => {
                 setProvider({
                   ...Provider,
                   address: e.target.value,
                 });
               }}
-              value={Provider?.address}
             />
           </div>
           <div className="col-start-2 row-start-1">
             <Label>Teléfono (Opcional)</Label>
             <Input
-              placeholder="Teléfono del proveedor"
+              placeholder={Provider?.phone}
               onChange={(e) => {
                 setProvider({
                   ...Provider,
                   phone: e.target.value,
                 });
               }}
-              value={Provider?.phone}
             />
           </div>
           <div className="col-start-2 row-start-2">
             <Label>Email (Opcional)</Label>
             <Input
-              placeholder="Email del proveedor"
+              placeholder={Provider?.email}
               onChange={(e) => {
                 setProvider({
                   ...Provider,
                   email: e.target.value,
                 });
               }}
-              value={Provider?.email}
             />
           </div>
           <div className="col-start-2 row-start-3">
             <Label>CUIT (Opcional)</Label>
             <Input
-              placeholder="CUIT del proveedor"
+              placeholder={Provider?.cuit}
               onChange={(e) => {
                 setProvider({
                   ...Provider,
                   cuit: e.target.value,
                 });
               }}
-              value={Provider?.cuit}
             />
           </div>
           <div className="col-span-2 col-start-1 flex justify-center items-center">
             <Button
               className="w-full"
               disabled={LoadingRequest}
-              onClick={updateProvider}
+              onClick={onSubmit}
             >
               {LoadingRequest && <Loader2 className="animate-spin" />}
               Guardar

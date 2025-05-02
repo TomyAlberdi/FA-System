@@ -13,13 +13,11 @@ import {
 } from "@/components/ui/table";
 import { useSalesContext } from "@/Context/UseSalesContext";
 import { CompleteBudget, ProductBudget } from "@/hooks/SalesInterfaces";
-import { useToast } from "@/hooks/use-toast";
 import { CircleX, Info } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { UpdateBudgetStatus } from "@/Pages/Budgets/UpdateBudgetStatus";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { ToastAction } from "@/components/ui/toast";
 import {
   Tooltip,
   TooltipContent,
@@ -32,31 +30,41 @@ export const Budget = () => {
   const { id } = useParams();
   const { BASE_URL, fetchCompleteBudget } = useSalesContext();
   const { getToken } = useKindeAuth();
-  const { toast } = useToast();
   const navigate = useNavigate();
   const [Budget, setBudget] = useState<CompleteBudget | null>(null);
   const [Loading, setLoading] = useState(true);
   const [Reload, setReload] = useState(false);
 
   useEffect(() => {
-    if (id) {
-      setLoading(true);
-      fetchCompleteBudget(Number.parseInt(id))
-        .then((result) => {
-          if (!result) {
-            toast({
-              variant: "destructive",
-              title: "Error",
-              description: "Ocurrió un error al obtener el presupuesto.",
-            });
-            navigate(-1);
-          }
-          setBudget(result ?? null);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+    if (!id) {
+      window.alert("Ocurrió un error al obtener el presupuesto.");
+      navigate(-1);
+      return;
     }
+    const budgetId = Number.parseInt(id);
+    if (isNaN(budgetId)) {
+      window.alert("Ocurrió un error al obtener el presupuesto.");
+      navigate(-1);
+      return;
+    }
+    setLoading(true);
+    fetchCompleteBudget(budgetId)
+      .then((result) => {
+        if (!result) {
+          window.alert("Ocurrió un error al obtener el presupuesto.");
+          navigate(-1);
+          return;
+        }
+        setBudget(result ?? null);
+      })
+      .catch((error) => {
+        console.error("Error fetching budget:", error);
+        window.alert("Ocurrió un error al obtener el presupuesto.");
+        navigate(-1);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, Reload]);
 
@@ -64,16 +72,9 @@ export const Budget = () => {
 
   const onDeletePres = () => {
     if (Budget && Budget?.id) {
-      toast({
-        variant: "destructive",
-        title: "Confirmación",
-        description: "¿Desea eliminar el presupuesto?",
-        action: (
-          <ToastAction altText="Eliminar" onClick={deleteBudget}>
-            Eliminar
-          </ToastAction>
-        ),
-      });
+      if (window.confirm("¿Desea eliminar el presupuesto?")) {
+        deleteBudget();
+      }
     }
   };
 
@@ -93,27 +94,14 @@ export const Budget = () => {
       });
       if (!response.ok) {
         console.error("Error: ", response.statusText);
-        toast({
-          variant: "destructive",
-          title: `Error ${response.status}`,
-          description: `Ocurrió un error al eliminar el presupuesto.`,
-        });
+        window.alert(`Error eliminando el presupuesto: ${response.status}`);
         return;
       }
-      toast({
-        title: "Presupuesto eliminado",
-        description: "El presupuesto ha sido eliminado con éxito",
-      });
+      window.alert("El presupuesto ha sido eliminado con éxito");
       navigate("/sales/budgets");
     } catch (error) {
       console.error("Error: ", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Ocurrió un error al eliminar el presupuesto",
-      });
-    } finally {
-      navigate("/sales/budgets");
+      window.alert("Ocurrió un error al eliminar el presupuesto");
     }
   };
 

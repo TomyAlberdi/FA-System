@@ -29,7 +29,6 @@ import {
 } from "@/components/ui/table";
 import { useCatalogContext } from "@/Context/UseCatalogContext";
 import { ProductStock, StockRecord } from "@/hooks/CatalogInterfaces";
-import { toast } from "@/hooks/use-toast";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import {
   AlertCircle,
@@ -61,17 +60,16 @@ export const Stock = () => {
     type: "increase",
   });
 
-  const updateStock = async (data: StockForm) => {
-    setLoadingRequest(true);
-    if (UpdateStock.quantity === 0) {
-      toast({
-        title: "Cantidad incorrecta",
-        description: "La cantidad debe ser mayor a 0",
-        variant: "destructive",
-      });
-      setLoadingRequest(false);
+  const onSubmit = () => {
+    if (UpdateStock.quantity <= 0) {
+      window.alert("La cantidad debe ser mayor a 0");
       return;
     }
+    updateStock(UpdateStock);
+  };
+
+  const updateStock = async (data: StockForm) => {
+    setLoadingRequest(true);
     try {
       if (!getToken) {
         console.error("getToken is undefined");
@@ -90,40 +88,53 @@ export const Stock = () => {
       );
       if (!response.ok) {
         console.error("Error: ", response.statusText);
-        toast({
-          variant: "destructive",
-          title: `Error ${response.status}`,
-          description: `Ocurrió un error al actualizar el stock.`,
-        });
+        window.alert(`Error actualizando el stock: ${response.status}`);
         return;
       }
-      toast({
-        title: "Stock actualizado",
-        variant: "default",
-        description: "El stock ha sido actualizado con éxito",
-      });
+      setOpen(false);
+      setTimeout(() => {
+        window.alert("El stock ha sido actualizado con éxito");
+        if (id) {
+          fetchProductStock(Number.parseInt(id))
+            .then((result) => setStock(result ?? null))
+            .catch((error) => {
+              console.error("Error fetching updated stock:", error);
+            });
+        }
+      }, 100);
     } catch (error) {
       console.error("Error: ", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Ocurrió un error al actualizar el stock",
-      });
+      window.alert("Ocurrió un error al actualizar el stock");
     } finally {
       setLoadingRequest(false);
-      setOpen(false);
     }
   };
 
   useEffect(() => {
-    if (id) {
-      setLoading(true);
-      fetchProductStock(Number.parseInt(id))
-        .then((result) => setStock(result ?? null))
-        .finally(() => setLoading(false));
+    if (!id) return;
+    const productId = Number.parseInt(id);
+    if (isNaN(productId)) {
+      window.alert("Error al obtener el stock");
+      return;
     }
+    setLoading(true);
+    fetchProductStock(productId)
+      .then((result) => {
+        if (!result) {
+          window.alert("No se encontró el stock del producto");
+          return;
+        }
+        setStock(result);
+      })
+      .catch((error) => {
+        console.error("Error fetching stock:", error);
+        window.alert("Error al cargar el stock del producto");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, open]);
+  }, [id]);
 
   const formatDateTime = (input: string) => {
     const parsedDate = new Date(input);
@@ -247,7 +258,7 @@ export const Stock = () => {
                             type="submit"
                             className="w-full"
                             disabled={LoadingRequest}
-                            onClick={() => updateStock(UpdateStock)}
+                            onClick={() => onSubmit()}
                           >
                             {LoadingRequest && (
                               <Loader2 className="animate-spin" />

@@ -21,7 +21,6 @@ import {
   PartialClient,
   ProductBudget,
 } from "@/hooks/SalesInterfaces";
-import { useToast } from "@/hooks/use-toast";
 import { AlertCircle, Ban, CirclePlus, Loader2, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { FloatingProductPagination } from "@/Pages/Budgets/FloatingProductPagination";
@@ -33,21 +32,22 @@ import { useNavigate } from "react-router-dom";
 import { Slider } from "@/components/ui/slider";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
+interface CreationBudget {
+  client: {
+    id: number;
+    name: string;
+  };
+  products: ProductBudget[];
+}
+
 export const AddBudget = () => {
   const { BASE_URL } = useSalesContext();
   const { getToken } = useKindeAuth();
-  const { toast } = useToast();
   const navigate = useNavigate();
   const BUDGET_STORAGE_KEY = "currentBudget";
 
   // budget logic
-  const [Budget, setBudget] = useState<{
-    client: {
-      id: number;
-      name: string;
-    };
-    products: ProductBudget[];
-  }>(() => {
+  const [Budget, setBudget] = useState<CreationBudget>(() => {
     const savedBudget = sessionStorage.getItem(BUDGET_STORAGE_KEY);
     return savedBudget
       ? JSON.parse(savedBudget)
@@ -76,25 +76,24 @@ export const AddBudget = () => {
     });
   };
 
-  const submitBudget = async () => {
-    if (Budget?.products?.length === 0) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "El presupuesto no tiene productos asociados.",
-      });
-      return;
-    } else if (Budget?.client.id === 0) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "El presupuesto no tiene cliente asociado.",
-      });
+  const onSubmit = () => {
+    if (Budget?.client.id === 0) {
+      window.alert("El presupuesto no tiene cliente asociado.");
       return;
     }
+    if (Budget?.products?.length === 0) {
+      window.alert("El presupuesto no tiene productos asociados.");
+      return;
+    }
+    submitBudget(Budget);
+  };
+
+  const submitBudget = async (Budget: CreationBudget) => {
+    setLoadingRequest(true);
     try {
       if (!getToken) {
         console.error("getToken is undefined");
+        setLoadingRequest(false);
         return;
       }
       const accessToken = await getToken();
@@ -117,27 +116,16 @@ export const AddBudget = () => {
       });
       if (!response.ok) {
         console.error("Error submitting budget: ", response.status);
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Ocurrió un error al crear el presupuesto.",
-        });
+        window.alert(`Error creando el presupuesto: ${response.status}`);
         return;
       }
-      toast({
-        title: "Presupuesto creado",
-        description: "El presupuesto se ha creado correctamente.",
-      });
-      clearBudget();
       const responseData = await response.json();
+      clearBudget();
+      window.alert("El presupuesto se ha creado correctamente.");
       navigate(`/sales/budgets/${responseData.id}`);
     } catch (error) {
       console.error("Error submitting budget: ", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Ocurrió un error al crear el presupuesto.",
-      });
+      window.alert("Ocurrió un error al crear el presupuesto.");
     } finally {
       setLoadingRequest(false);
     }
@@ -290,7 +278,7 @@ export const AddBudget = () => {
                   type="submit"
                   className="w-full"
                   disabled={LoadingRequest}
-                  onClick={submitBudget}
+                  onClick={onSubmit}
                 >
                   {LoadingRequest && <Loader2 className="animate-spin" />}
                   Crear Presupuesto

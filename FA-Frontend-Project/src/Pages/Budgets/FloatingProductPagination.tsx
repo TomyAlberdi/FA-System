@@ -1,6 +1,5 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSalesContext } from "@/Context/UseSalesContext";
-import { useToast } from "@/hooks/use-toast";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useEffect, useState } from "react";
 import { ProductCard } from "@/Pages/Budgets/ProductCard";
@@ -25,7 +24,6 @@ export const FloatingProductPagination = ({
 }: FloatingProductPaginationProps) => {
   const { BASE_URL } = useSalesContext();
   const { getToken } = useKindeAuth();
-  const { toast } = useToast();
 
   const [Products, setProducts] = useState<Array<CardProduct>>([]);
   const [LastLoadedPage, setLastLoadedPage] = useState(0);
@@ -49,11 +47,7 @@ export const FloatingProductPagination = ({
       });
       if (!response.ok) {
         console.error("Error fetching products: ", response.status);
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Ocurrió un error al buscar productos.",
-        });
+        window.alert(`Error buscando productos: ${response.status}`);
         return;
       }
       const result = await response.json();
@@ -86,7 +80,12 @@ export const FloatingProductPagination = ({
       {Loading ? (
         <div className="w-full h-full flex md:flex-row flex-col flex-wrap justify-between">
           {Array.from({ length: 10 }, (_, i) => {
-            return <Skeleton key={i} className="md:w-[19.2%] w-full mb-3 h-[375px]" />;
+            return (
+              <Skeleton
+                key={i}
+                className="md:w-[19.2%] w-full mb-3 h-[375px]"
+              />
+            );
           })}
         </div>
       ) : (

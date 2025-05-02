@@ -36,7 +36,7 @@ export const Products = () => {
     const fetchProducts = async () => {
       setLoading(true);
       let filterURL = getFilteredURL();
-      filterURL += `&page=${CurrentPage}&size=15`;
+      filterURL += `&page=${CurrentPage}&size=16`;
       try {
         if (!getToken) {
           console.error("getToken is undefined");

@@ -1,7 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSalesContext } from "@/Context/UseSalesContext";
 import { CompleteClient } from "@/hooks/SalesInterfaces";
-import { useToast } from "@/hooks/use-toast";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -15,7 +14,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { CirclePlus, CircleX } from "lucide-react";
 import { UpdateClient } from "./UpdateClient";
-import { ToastAction } from "@/components/ui/toast";
 import { ClientBudgets } from "@/Pages/Clients/ClientBudgets";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -23,7 +21,6 @@ export const Client = () => {
   const { id } = useParams();
   const { fetchClient, BASE_URL } = useSalesContext();
   const navigate = useNavigate();
-  const { toast } = useToast();
   const { getToken } = useKindeAuth();
   const [Client, setClient] = useState<CompleteClient | null>(null);
   const [Loading, setLoading] = useState(true);
@@ -46,16 +43,9 @@ export const Client = () => {
   }, [id, Reload]);
 
   const onDeletePres = () => {
-    toast({
-      variant: "destructive",
-      title: "Confirmación",
-      description: "¿Desea eliminar el cliente?",
-      action: (
-        <ToastAction altText="Eliminar" onClick={deleteClient}>
-          Eliminar
-        </ToastAction>
-      ),
-    });
+    if (window.confirm("¿Desea eliminar el cliente?")) {
+      deleteClient();
+    }
   };
 
   const deleteClient = async () => {
@@ -74,25 +64,14 @@ export const Client = () => {
       });
       if (!response.ok) {
         console.error("Error: ", response.statusText);
-        toast({
-          variant: "destructive",
-          title: `Error ${response.status}`,
-          description: `Ocurrió un error al eliminar el cliente.`,
-        });
+        window.alert(`Error eliminando el cliente: ${response.status}`);
         return;
       }
-      toast({
-        title: "Cliente eliminado",
-        description: "El cliente ha sido eliminado con éxito",
-      });
+      window.alert("Cliente eliminado con éxito");
       navigate("/sales/clients");
     } catch (error) {
       console.error("Error: ", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Ocurrió un error al eliminar el cliente",
-      });
+      window.alert("Ocurrió un error al eliminar el cliente");
     }
   };
 

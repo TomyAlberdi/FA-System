@@ -3,7 +3,6 @@ import {
   CompleteClient,
   PartialBudget,
   PartialClient,
-  RegisterRecord,
 } from "@/hooks/SalesInterfaces";
 import { createContext } from "react";
 
@@ -29,8 +28,6 @@ export interface SalesContextType {
   RegisterTotalAmount: number;
   fetchRegisterTypes: (yearMonth: string) => Promise<void>;
   RegisterTypes: Array<number>;
-  fetchRecords: () => Promise<void>;
-  Records: Array<RegisterRecord> | undefined;
   FormattedDate: string;
   setFormattedDate: React.Dispatch<React.SetStateAction<string>>;
 }

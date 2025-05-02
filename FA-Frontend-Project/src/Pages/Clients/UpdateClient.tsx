@@ -11,7 +11,6 @@ import { Loader2, Pencil } from "lucide-react";
 import { CompleteClient } from "@/hooks/SalesInterfaces";
 import { useSalesContext } from "@/Context/UseSalesContext";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -29,7 +28,6 @@ export const UpdateClient = ({
   const [LoadingRequest, setLoadingRequest] = useState(false);
   const { getToken } = useKindeAuth();
   const { BASE_URL } = useSalesContext();
-  const { toast } = useToast();
 
   const [Client, setClient] = useState<CompleteClient>({
     id: 0,
@@ -53,7 +51,19 @@ export const UpdateClient = ({
     });
   }, [client]);
 
-  const updateClient = async (data: CompleteClient) => {
+  const onSubmit = () => {
+    if (Client.name === "") {
+      window.alert("El nombre del cliente no puede estar vacío.");
+      return;
+    }
+    if (Client.type === "") {
+      window.alert("Seleccione un tipo de cliente (A / B).");
+      return;
+    }
+    submitClient(Client);
+  };
+
+  const submitClient = async (data: CompleteClient) => {
     setLoadingRequest(true);
     try {
       if (!getToken) {
@@ -71,28 +81,17 @@ export const UpdateClient = ({
       });
       if (!response.ok) {
         console.error("Error: ", response.statusText);
-        toast({
-          variant: "destructive",
-          title: `Error ${response.status}`,
-          description: `Ocurrió un error al actualizar el cliente.`,
-        });
+        window.alert(`Error actualizando el cliente: ${response.status}`);
         return;
       }
-      toast({
-        title: "Cliente actualizado",
-        description: "El cliente ha sido actualizado con éxito",
-      });
+      setOpen(false);
+      window.alert("Cliente actualizado con éxito");
       setReload(!Reload);
     } catch (error) {
       console.log(error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Ocurrió un error al actualizar el cliente",
-      });
+      window.alert("Ocurrió un error al actualizar el cliente");
     } finally {
       setLoadingRequest(false);
-      setOpen(false);
     }
   };
 
@@ -118,9 +117,8 @@ export const UpdateClient = ({
             <Label>Nombre</Label>
             <Input
               type="text"
-              value={Client.name}
               onChange={(e) => setClient({ ...Client, name: e.target.value })}
-              placeholder="Nombre"
+              placeholder={Client.name}
               className="w-full"
             />
           </div>
@@ -128,11 +126,10 @@ export const UpdateClient = ({
             <Label>Dirección (Opcional)</Label>
             <Input
               type="text"
-              value={Client.address}
               onChange={(e) =>
                 setClient({ ...Client, address: e.target.value })
               }
-              placeholder="Dirección"
+              placeholder={Client.address}
               className="w-full"
             />
           </div>
@@ -140,9 +137,8 @@ export const UpdateClient = ({
             <Label>Teléfono (Opcional)</Label>
             <Input
               type="number"
-              value={Client.phone}
               onChange={(e) => setClient({ ...Client, phone: e.target.value })}
-              placeholder="Teléfono"
+              placeholder={Client.phone}
               className="w-full"
             />
           </div>
@@ -150,9 +146,8 @@ export const UpdateClient = ({
             <Label>Email (Opcional)</Label>
             <Input
               type="email"
-              value={Client.email}
               onChange={(e) => setClient({ ...Client, email: e.target.value })}
-              placeholder="Email"
+              placeholder={Client.email}
               className="w-full"
             />
           </div>
@@ -160,11 +155,10 @@ export const UpdateClient = ({
             <Label>CUIT / DNI (Opcional)</Label>
             <Input
               type="number"
-              value={Client.cuitDni}
               onChange={(e) =>
                 setClient({ ...Client, cuitDni: e.target.value })
               }
-              placeholder="CUIT / DNI"
+              placeholder={Client.cuitDni}
               className="w-full"
             />
           </div>
@@ -191,7 +185,7 @@ export const UpdateClient = ({
           </div>
           <div className="col-span-2 col-start-1 flex justify-center items-center">
             <Button
-              onClick={() => updateClient(Client)}
+              onClick={() => onSubmit()}
               className="w-full"
               disabled={LoadingRequest}
             >

@@ -40,18 +40,18 @@ export interface Price {
 }
 
 export interface CardProduct {
-  id: number,
-  name: string,
-  disabled: boolean,
-  measureType: string,
-  measurePrice: number,
-  saleUnit: string, 
-  saleUnitPrice: number,
-  measurePerSaleUnit: number,
-  discountPercentage: number, 
-  discountedPrice: number,
-  discountedMeasurePrice: number,
-  image: string,
+  id: number;
+  name: string;
+  disabled: boolean;
+  measureType: string;
+  measurePrice: number;
+  saleUnit: string;
+  saleUnitPrice: number;
+  measurePerSaleUnit: number;
+  discountPercentage: number;
+  discountedPrice: number;
+  discountedMeasurePrice: number;
+  image: string;
 }
 
 export interface StockProduct {
@@ -72,7 +72,7 @@ export interface CompleteProduct extends StockProduct {
   quality: string;
   code: string;
   measures: string;
-  discountedMeasurePrice: number,
+  discountedMeasurePrice: number;
   images: Array<string>;
   category: string;
   categoryId: number;
@@ -89,6 +89,7 @@ export interface CompleteProduct extends StockProduct {
   textura: string;
   transito: string;
   saleUnitCost: number;
+  measureUnitCost: number;
 }
 
 export interface CreateProductDTO {
@@ -101,6 +102,7 @@ export interface CreateProductDTO {
   saleUnit: string;
   saleUnitPrice: number;
   saleUnitCost: number;
+  measureUnitCost: number;
   measurePerSaleUnit: number;
   discountPercentage: number;
   providerId: number;
@@ -156,7 +158,7 @@ export interface BasicFilterCheck {
 }
 
 export interface MeasureCheck {
-  id: number,
+  id: number;
   measure: string;
   productsAmount: number;
   checked: boolean;
@@ -170,7 +172,7 @@ export interface PriceCheck {
 export interface BasicFilterProps {
   Filter: Array<FilterData | null>;
   setFilter: (value: Array<FilterData | null>) => void;
-  Loading: boolean
+  Loading: boolean;
 }
 
 export interface PaginationInfo {
@@ -190,11 +192,11 @@ export interface PaginationResponse {
       empty: boolean;
       sorted: boolean;
       unsorted: boolean;
-    },
+    };
     offset: number;
     paged: boolean;
     unpaged: boolean;
-  },
+  };
   last: boolean;
   totalElements: number;
   totalPages: number;
@@ -204,7 +206,7 @@ export interface PaginationResponse {
     empty: boolean;
     sorted: boolean;
     unsorted: boolean;
-  },
+  };
   first: boolean;
   numberOfElements: number;
   empty: boolean;

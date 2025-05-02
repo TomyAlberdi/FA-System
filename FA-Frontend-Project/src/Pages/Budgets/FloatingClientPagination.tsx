@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/table";
 import { useSalesContext } from "@/Context/UseSalesContext";
 import { PartialClient } from "@/hooks/SalesInterfaces";
-import { useToast } from "@/hooks/use-toast";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { Plus, Search } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -26,7 +25,6 @@ export const FloatingClientPagination = ({
 }: FloatingClientPaginationProps) => {
   const { BASE_URL } = useSalesContext();
   const { getToken } = useKindeAuth();
-  const { toast } = useToast();
 
   const [Clients, setClients] = useState<Array<PartialClient>>([]);
   const [LastLoadedPage, setLastLoadedPage] = useState(0);
@@ -50,11 +48,7 @@ export const FloatingClientPagination = ({
       });
       if (!response.ok) {
         console.error("Error fetching clients: ", response.status);
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Ocurrió un error al buscar clientes.",
-        });
+        window.alert(`Error buscando clientes: ${response.status}`);
         return;
       }
       const result = await response.json();

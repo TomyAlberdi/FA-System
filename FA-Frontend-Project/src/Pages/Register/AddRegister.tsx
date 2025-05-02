@@ -12,7 +12,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { useSalesContext } from "@/Context/UseSalesContext";
 import { RegisterRecord } from "@/hooks/SalesInterfaces";
-import { useToast } from "@/hooks/use-toast";
 import { CheckCircle2, DollarSign } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -21,13 +20,8 @@ interface AddRegisterProps {
 }
 
 const AddRegister = ({ yearMonth }: AddRegisterProps) => {
-  const {
-    BASE_URL,
-    fetchRegisterTypes,
-    fetchRegisterTotalAmount,
-    fetchRecords,
-  } = useSalesContext();
-  const { toast } = useToast();
+  const { BASE_URL, fetchRegisterTypes, fetchRegisterTotalAmount } =
+    useSalesContext();
   const [Open, setOpen] = useState(false);
   const [Record, setRecord] = useState<RegisterRecord>({
     amount: 0,
@@ -50,9 +44,25 @@ const AddRegister = ({ yearMonth }: AddRegisterProps) => {
 
   const [LoadingRequest, setLoadingRequest] = useState(false);
 
-  const submitRegister = async () => {
+  const validateRecord = (): string | null => {
+    if (Record.amount === 0) return "La cantidad no puede ser 0.";
+    if (Record.amount < 0) return "La cantidad no puede ser menor a 0.";
+    if (Record.type === "") return "Seleccione un tipo de operación.";
+    if (Record.date === "") return "Seleccione una fecha.";
+    return null;
+  };
+
+  const onSubmit = () => {
+    const error = validateRecord();
+    if (error) {
+      window.alert(error);
+      return;
+    }
+    submitRegister(Record);
+  };
+
+  const submitRegister = async (Record: RegisterRecord) => {
     const url = `${BASE_URL}/cash-register`;
-    const body = JSON.stringify(Record);
     setLoadingRequest(true);
     try {
       const response = await fetch(url, {
@@ -60,23 +70,21 @@ const AddRegister = ({ yearMonth }: AddRegisterProps) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: body,
+        body: JSON.stringify(Record),
       });
       if (!response.ok) {
         console.error("Error submitting register: ", response.status);
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Ocurrió un error al crear el registro.",
-        });
+        window.alert(`Error creando el registro: ${response.status}`);
         return;
       }
       setOpen(false);
-      fetchRegisterTypes(yearMonth ?? new Date().toISOString().slice(0, 7));
-      fetchRegisterTotalAmount();
-      fetchRecords();
+      await Promise.all([
+        fetchRegisterTypes(yearMonth ?? new Date().toISOString().slice(0, 7)),
+        fetchRegisterTotalAmount(),
+      ]);
     } catch (error) {
       console.error("Error submitting register: ", error);
+      window.alert("Ocurrió un error al crear el registro");
     } finally {
       setLoadingRequest(false);
     }
@@ -155,7 +163,7 @@ const AddRegister = ({ yearMonth }: AddRegisterProps) => {
                   </div>
                 </RadioGroup>
               </div>
-              <Button onClick={submitRegister} disabled={LoadingRequest}>
+              <Button onClick={onSubmit} disabled={LoadingRequest}>
                 <CheckCircle2 className="w-5 h-5" />
                 Registrar
               </Button>

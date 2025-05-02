@@ -82,6 +82,9 @@ public class Product {
     @Column
     private String saleUnitCost;
     
+    @Column
+    private String measureUnitCost;
+    
     @NotNull
     @Column(name = "sale_unit_price")
     private String saleUnitPrice;

@@ -4,7 +4,6 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useSalesContext } from "@/Context/UseSalesContext";
 import { AddClient as AddClientInterface } from "@/hooks/SalesInterfaces";
-import { useToast } from "@/hooks/use-toast";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
@@ -19,7 +18,6 @@ export const AddClient = ({ handleRefresh, setOpen }: AddClientProps) => {
   const [LoadingRequest, setLoadingRequest] = useState(false);
   const { BASE_URL } = useSalesContext();
   const { getToken } = useKindeAuth();
-  const { toast } = useToast();
   const navigate = useNavigate();
 
   const [Client, setClient] = useState<AddClientInterface>({
@@ -31,7 +29,19 @@ export const AddClient = ({ handleRefresh, setOpen }: AddClientProps) => {
     cuit_dni: "",
   });
 
-  async function onSubmit(client: AddClientInterface) {
+  const onSubmit = () => {
+    if (Client.name === "") {
+      window.alert("El nombre del cliente no puede estar vacío.");
+      return;
+    }
+    if (Client.type === "") {
+      window.alert("Seleccione un tipo de cliente (A / B).");
+      return;
+    }
+    submitClient(Client);
+  };
+
+  const submitClient = async (client: AddClientInterface) => {
     const url = `${BASE_URL}/client`;
     setLoadingRequest(true);
     try {
@@ -50,34 +60,23 @@ export const AddClient = ({ handleRefresh, setOpen }: AddClientProps) => {
       });
       if (!response.ok) {
         console.error("Error: ", response.statusText);
-        toast({
-          variant: "destructive",
-          title: `Error ${response.status}`,
-          description: `Ocurrió un error al crear el cliente.`,
-        });
+        window.alert(`Error creando el cliente: ${response.status}`);
         return;
       }
-      toast({
-        title: "Cliente creado",
-        description: "El cliente ha sido creado con éxito",
-      });
       const responseData = await response.json();
+      setOpen(false);
+      window.alert("Cliente creado con éxito");
       navigate(`/sales/clients/${responseData.id}`);
     } catch (error) {
       console.error("Error: ", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Ocurrió un error al crear el cliente",
-      });
+      window.alert("Ocurrió un error al crear el cliente");
     } finally {
-      setOpen(false);
       setLoadingRequest(false);
       if (handleRefresh) {
         handleRefresh();
       }
     }
-  }
+  };
 
   return (
     <div className="w-full md:grid grid-cols-2 grid-rows-5 gap-2">
@@ -154,7 +153,7 @@ export const AddClient = ({ handleRefresh, setOpen }: AddClientProps) => {
       </div>
       <div className="col-span-2 col-start-1 flex justify-center items-center">
         <Button
-          onClick={() => onSubmit(Client)}
+          onClick={() => onSubmit()}
           className="w-full"
           disabled={LoadingRequest}
         >

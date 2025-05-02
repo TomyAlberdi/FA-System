@@ -10,40 +10,64 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ToastAction } from "@/components/ui/toast";
 import { useSalesContext } from "@/Context/UseSalesContext";
-import { useToast } from "@/hooks/use-toast";
+import { RegisterRecord } from "@/hooks/SalesInterfaces";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { AlertCircle, ChevronDown, ChevronUp, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const DailyCashRegister = () => {
-  const {
-    BASE_URL,
-    fetchRegisterTotalAmount,
-    FormattedDate,
-    fetchRecords,
-    Records,
-  } = useSalesContext();
+  const { BASE_URL, fetchRegisterTotalAmount, FormattedDate } =
+    useSalesContext();
   const { getToken } = useKindeAuth();
-  const { toast } = useToast();
   const navigate = useNavigate();
 
   const [DailyTypes, setDailyTypes] = useState<Array<number>>([0, 0]);
   const [DailyTotal, setDailyTotal] = useState<number>(0);
 
+  const [Records, setRecords] = useState<Array<RegisterRecord> | undefined>([]);
+
+  const formatDate = (date: Date) => {
+    return `${date.getFullYear()}-${(date.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
+  };
+
+  const fetchRecords = async () => {
+    let fetchDate = FormattedDate;
+    if (!fetchDate) {
+      const date = new Date();
+      fetchDate = formatDate(date);
+    }
+    const url = `${BASE_URL}/cash-register/${fetchDate}`;
+    try {
+      if (!getToken) {
+        console.error("getToken is undefined");
+        return;
+      }
+      const accessToken = await getToken();
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (!response.ok) {
+        console.error("Error fetching cash register: ", response.statusText);
+        return;
+      }
+      const result: Array<RegisterRecord> = await response.json();
+      setRecords(result);
+      getDailyTypes(result);
+    } catch (error) {
+      console.error("Error fetching cash register: ", error);
+    }
+  };
+
   const onDeletePress = (id: number) => {
-    toast({
-      variant: "destructive",
-      title: "Confirmación",
-      description: "¿Desea eliminar el registro?",
-      action: (
-        <ToastAction altText="Eliminar" onClick={() => handleDeleteRecord(id)}>
-          Eliminar
-        </ToastAction>
-      ),
-    });
+    if (window.confirm("¿Desea eliminar el registro?")) {
+      handleDeleteRecord(id);
+    }
   };
 
   const handleDeleteRecord = async (id: number) => {
@@ -62,28 +86,21 @@ const DailyCashRegister = () => {
       });
       if (!response.ok) {
         console.error("Error deleting record: ", response.statusText);
+        window.alert(`Error eliminando el registro: ${response.status}`);
         return;
       }
-      toast({
-        title: "Registro eliminado",
-        description: "El registro ha sido eliminado con éxito.",
-      });
-      fetchRegisterTotalAmount();
-      fetchRecords();
+      window.alert("El registro ha sido eliminado con éxito.");
+      await fetchRegisterTotalAmount();
     } catch (error) {
       console.error("Error deleting record: ", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Ocurrió un error al eliminar el registro.",
-      });
+      window.alert("Ocurrió un error al eliminar el registro.");
     }
   };
 
-  useEffect(() => {
+  const getDailyTypes = (records: Array<RegisterRecord>) => {
     let ingresos = 0;
     let gastos = 0;
-    Records?.forEach((record) => {
+    records?.forEach((record) => {
       if (record.type === "INGRESO") {
         ingresos += record.amount;
       } else {
@@ -92,7 +109,7 @@ const DailyCashRegister = () => {
     });
     setDailyTypes([ingresos, gastos]);
     setDailyTotal(Number((ingresos - gastos).toFixed(2)));
-  }, [Records]);
+  };
 
   const handleNavigateToBudget = (detail: string) => {
     if (detail.startsWith("PRESUPUESTO")) {
@@ -100,6 +117,11 @@ const DailyCashRegister = () => {
       navigate(`/sales/budgets/${id}`);
     }
   };
+
+  useEffect(() => {
+    fetchRecords();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [FormattedDate, handleDeleteRecord]);
 
   return (
     <>
@@ -136,7 +158,11 @@ const DailyCashRegister = () => {
           </TableHeader>
           <TableBody>
             {Records?.map((record, index) => (
-              <TableRow key={index}>
+              <TableRow
+                key={index}
+                className="cursor-pointer"
+                onClick={() => handleNavigateToBudget(record.detail)}
+              >
                 <TableCell>
                   {record.type === "INGRESO" ? (
                     <ChevronUp className="text-chart-2 large-icon" />
@@ -147,12 +173,7 @@ const DailyCashRegister = () => {
                 <TableCell>
                   {record.type === "GASTO" && "- "} $ {record.amount}
                 </TableCell>
-                <TableCell
-                  className="cursor-pointer"
-                  onClick={() => handleNavigateToBudget(record.detail)}
-                >
-                  {record.detail}
-                </TableCell>
+                <TableCell>{record.detail}</TableCell>
                 <TableCell>
                   <Button onClick={() => onDeletePress(record.id as number)}>
                     <Trash2 className="bigger-icon" color="red" />

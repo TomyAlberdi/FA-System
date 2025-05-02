@@ -30,7 +30,7 @@ public class JwtAuthenticationFilter  extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String token = request.getHeader("Authorization");
-        logger.debug("Token: " + token);
+        //logger.debug("Token received for " + request.getMethod() + " " + request.getRequestURI());
         if (token != null && token.startsWith("Bearer ")) {
             try {
                 DecodedJWT jwt = verifier.verify(token.substring(7));
@@ -43,7 +43,7 @@ public class JwtAuthenticationFilter  extends OncePerRequestFilter {
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } catch (JWTVerificationException e) {
-                logger.error("JWT verification failed", e);
+                logger.error("JWT verification failed for " + request.getMethod() + " " + request.getRequestURI(), e);
                 SecurityContextHolder.clearContext();
             }
         }

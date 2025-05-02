@@ -24,6 +24,7 @@ public class CompleteProductDTO {
     private String measureType;
     private String measures;
     private Double measurePrice;
+    private Double measureUnitCost;
     
     private String saleUnit;
     private Double saleUnitCost;

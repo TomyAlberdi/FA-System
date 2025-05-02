@@ -3,7 +3,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useCatalogContext } from "@/Context/UseCatalogContext";
 import { Provider } from "@/hooks/CatalogInterfaces";
-import { useToast } from "@/hooks/use-toast";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
@@ -17,7 +16,6 @@ export const AddProvider: React.FC<CategoriesHeaderProps> = ({ setOpen }) => {
   const [LoadingRequest, setLoadingRequest] = useState(false);
   const { BASE_URL, fetchProviders } = useCatalogContext();
   const { getToken } = useKindeAuth();
-  const { toast } = useToast();
   const navigate = useNavigate();
 
   const [Provider, setProvider] = useState<Provider>({
@@ -29,50 +27,47 @@ export const AddProvider: React.FC<CategoriesHeaderProps> = ({ setOpen }) => {
     cuit: "",
   });
 
-  async function onSubmit() {
+  const onSubmit = () => {
+    if (Provider.name === "") {
+      window.alert("El nombre del proveedor no puede estar vacío.");
+      return;
+    }
+    submitProvider(Provider);
+  };
+
+  const submitProvider = async (provider: Provider) => {
+    setLoadingRequest(true);
     try {
       if (!getToken) {
         console.error("getToken is undefined");
         return;
       }
       const accessToken = await getToken();
-      setLoadingRequest(true);
       const response = await fetch(`${BASE_URL}/provider`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify(Provider),
+        body: JSON.stringify(provider),
       });
       if (!response.ok) {
         console.error("Error: ", response.statusText);
-        toast({
-          variant: "destructive",
-          title: `Error ${response.status}`,
-          description: `Ocurrió un error al crear el proveedor.`,
-        });
+        window.alert(`Error creando el proveedor: ${response.status}`);
         return;
       }
-      toast({
-        title: "Proveedor creado",
-        description: "El proveedor ha sido creado con éxito",
-      });
-      fetchProviders();
       const responseData = await response.json();
+      setOpen(false);
+      window.alert("Proveedor creado con éxito");
+      await fetchProviders();
       navigate(`/catalog/providers/${responseData.id}`);
     } catch (error) {
       console.error("Error: ", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Ocurrió un error al crear el proveedor",
-      });
+      window.alert("Ocurrió un error al crear el proveedor");
     } finally {
       setLoadingRequest(false);
-      setOpen(false);
     }
-  }
+  };
 
   return (
     <div className="w-full md:grid grid-cols-2 grid-rows-4 gap-4 flex flex-col">

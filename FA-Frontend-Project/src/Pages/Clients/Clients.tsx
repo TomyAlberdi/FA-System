@@ -38,7 +38,7 @@ export const Clients = () => {
 
   useEffect(() => {
     const handleSearch = async () => {
-      let url = `${BASE_URL}/client/search?page=${CurrentPage}&size=15`;
+      let url = `${BASE_URL}/client/search?page=${CurrentPage}&size=25`;
       if (Filters.keyword.length > 0) {
         url += `&keyword=${Filters.keyword}`;
       }

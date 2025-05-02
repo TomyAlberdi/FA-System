@@ -10,7 +10,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { CardProduct } from "@/hooks/CatalogInterfaces";
-import { useToast } from "@/hooks/use-toast";
 import { CirclePlus } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -28,7 +27,6 @@ export const ProductCard = ({
   ) => void;
 }) => {
   const [Open, setOpen] = useState(false);
-  const { toast } = useToast();
 
   const [Discount, setDiscount] = useState<Array<number>>([0]);
   const [Subtotal, setSubtotal] = useState(0);
@@ -72,11 +70,7 @@ export const ProductCard = ({
 
   const addProductToBudget = () => {
     if (data.saleUnitQuantity === 0 || data.saleUnitQuantity === null) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "La cantidad de unidades no puede ser 0.",
-      });
+      window.alert("La cantidad de unidades no puede ser 0.");
       return;
     }
     const measureUnitQuantity =

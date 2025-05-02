@@ -26,13 +26,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ToastAction } from "@/components/ui/toast";
 import { useCatalogContext } from "@/Context/UseCatalogContext";
 import {
   StockProduct,
   Subcategory as SubcategoryInterface,
 } from "@/hooks/CatalogInterfaces";
-import { useToast } from "@/hooks/use-toast";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { AlertCircle, CircleX, Loader2, Pencil, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -49,7 +47,6 @@ export const Subcategory = () => {
   const navigate = useNavigate();
   const { getToken } = useKindeAuth();
   const [Loading, setLoading] = useState(true);
-  const { toast } = useToast();
   const [Subcategory, setSubcategory] = useState<SubcategoryInterface | null>(
     null
   );
@@ -61,14 +58,22 @@ export const Subcategory = () => {
 
   const [Name, setName] = useState<string>(Subcategory?.name ?? "");
 
-  async function updateSubcategory(name: string) {
+  const onSubmit = () => {
+    if (Name === "") {
+      window.alert("El nombre de la subcategoría no puede estar vacío.");
+      return;
+    }
+    submitUpdate(Name);
+  };
+
+  const submitUpdate = async (name: string) => {
+    setLoadingRequest(true);
     try {
       if (!getToken) {
         console.error("getToken is undefined");
         return;
       }
       const accessToken = await getToken();
-      setLoadingRequest(true);
       const response = await fetch(
         `${BASE_URL}/category/subcategory?name=${name}&subcategoryId=${id}`,
         {
@@ -81,30 +86,19 @@ export const Subcategory = () => {
       );
       if (!response.ok) {
         console.error("Error: ", response.statusText);
-        toast({
-          variant: "destructive",
-          title: `Error ${response.status}`,
-          description: `Ocurrió un error al actualizar la subcategoría.`,
-        });
+        window.alert(`Error actualizando la subcategoría: ${response.status}`);
         return;
       }
-      fetchSubcategories();
-      toast({
-        title: "Categoría actualizada",
-        description: "La subcategoría ha sido actualizada con éxito",
-      });
+      setOpen(false);
+      window.alert("La subcategoría ha sido actualizada con éxito");
+      await fetchSubcategories();
     } catch (error) {
       console.error("Error: ", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Ocurrió un error al actualizar la subcategoría",
-      });
+      window.alert("Ocurrió un error al actualizar la subcategoría");
     } finally {
       setLoadingRequest(false);
-      setOpen(false);
     }
-  }
+  };
 
   useEffect(() => {
     if (id) {
@@ -136,22 +130,11 @@ export const Subcategory = () => {
 
   const onDeletePres = () => {
     if (Subcategory && Subcategory?.productsAmount > 0) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "La subcategoría tiene productos asociados.",
-      });
+      window.alert("La subcategoría tiene productos asociados.");
     } else {
-      toast({
-        variant: "destructive",
-        title: "Confirmación",
-        description: "¿Desea eliminar la subcategoría?",
-        action: (
-          <ToastAction altText="Eliminar" onClick={deleteSubcategory}>
-            Eliminar
-          </ToastAction>
-        ),
-      });
+      if (window.confirm("¿Desea eliminar la subcategoría?")) {
+        deleteSubcategory();
+      }
     }
   };
 
@@ -171,26 +154,15 @@ export const Subcategory = () => {
       });
       if (!response.ok) {
         console.error("Error: ", response.statusText);
-        toast({
-          variant: "destructive",
-          title: `Error ${response.status}`,
-          description: `Ocurrió un error al eliminar la subcategoría.`,
-        });
+        window.alert(`Error eliminando la subcategoría: ${response.status}`);
         return;
       }
-      fetchSubcategories();
-      toast({
-        title: "Subcategoría eliminada",
-        description: "La subcategoría ha sido eliminada con éxito",
-      });
+      window.alert("La subcategoría ha sido eliminada con éxito");
+      await fetchSubcategories();
       navigate(`/catalog/categories/${Subcategory?.categoryId}`);
     } catch (error) {
       console.error("Error: ", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Ocurrió un error al eliminar la subcategoría",
-      });
+      window.alert("Ocurrió un error al eliminar la subcategoría");
     }
   };
 
@@ -237,14 +209,13 @@ export const Subcategory = () => {
                   <div className="w-full flex flex-col gap-4">
                     <Label>Nombre</Label>
                     <Input
-                      placeholder="Nombre de la subcategoría"
+                      placeholder={Subcategory?.name}
                       onChange={(e) => setName(e.target.value)}
-                      defaultValue={Name}
                     />
                     <Button
                       type="submit"
                       disabled={LoadingRequest}
-                      onClick={() => updateSubcategory(Name)}
+                      onClick={() => onSubmit()}
                       className="w-full"
                     >
                       {LoadingRequest && <Loader2 className="animate-spin" />}

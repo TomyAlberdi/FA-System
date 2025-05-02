@@ -129,6 +129,11 @@ public class ProductService {
             returnProduct.setMeasureType(product.get().getMeasureType());
             returnProduct.setMeasures(product.get().getMeasures());
             returnProduct.setMeasurePrice(product.get().getMeasurePrice());
+            double parsedMeasureUnitCost = 0.0;
+            if (product.get().getMeasureUnitCost() != null) {
+                parsedMeasureUnitCost = Double.parseDouble(product.get().getMeasureUnitCost());
+            }
+            returnProduct.setMeasureUnitCost(parsedMeasureUnitCost);
             
             returnProduct.setSaleUnit(product.get().getSaleUnit());
             double parsedSaleUnitCost = 0.0;
