@@ -27,6 +27,7 @@ const DailyCashRegister = () => {
   const [DailyTotal, setDailyTotal] = useState<number>(0);
 
   const [Records, setRecords] = useState<Array<RegisterRecord> | undefined>([]);
+  const [Reload, setReload] = useState(false);
 
   const formatDate = (date: Date) => {
     return `${date.getFullYear()}-${(date.getMonth() + 1)
@@ -90,6 +91,7 @@ const DailyCashRegister = () => {
         return;
       }
       window.alert("El registro ha sido eliminado con éxito.");
+      setReload(!Reload);
       await fetchRegisterTotalAmount();
     } catch (error) {
       console.error("Error deleting record: ", error);
@@ -121,7 +123,7 @@ const DailyCashRegister = () => {
   useEffect(() => {
     fetchRecords();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [FormattedDate, handleDeleteRecord]);
+  }, [FormattedDate, Reload]);
 
   return (
     <>
