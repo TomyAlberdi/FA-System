@@ -27,6 +27,7 @@ import { DownloadBudgetDetail } from "@/Pages/Budgets/DownloadBudgetDetail";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 export const Budget = () => {
+  //TODO: Add share without download (mail or whatsapp)
   const { id } = useParams();
   const { BASE_URL, fetchCompleteBudget } = useSalesContext();
   const { getToken } = useKindeAuth();

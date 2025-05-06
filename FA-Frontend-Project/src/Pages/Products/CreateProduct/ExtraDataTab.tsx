@@ -270,7 +270,9 @@ const ExtraDataTab = ({
             onClick={onSubmit}
           >
             {loading && <Loader2 className="animate-spin" />}
-            {triggerTitle === "Nuevo Producto" ? "Crear" : "Actualizar"}
+            {triggerTitle === "Nuevo Producto" || triggerTitle == ""
+              ? "Crear"
+              : "Actualizar"}
             <CheckCircle2 size={16} />
           </Button>
         </div>

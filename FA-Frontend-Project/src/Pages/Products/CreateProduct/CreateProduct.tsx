@@ -210,18 +210,14 @@ const CreateProduct = ({
         },
         body: JSON.stringify(newProduct),
       });
-
       if (!response.ok) {
         window.alert(`Error actualizando el producto: ${response.status}`);
         return;
       }
-
       // Close dialog first
       setDialogOpen(false);
-
       // Show success message
       window.alert("Producto actualizado con éxito");
-
       // Update data in parallel
       await Promise.all([
         fetchCategories(),
@@ -229,7 +225,6 @@ const CreateProduct = ({
         fetchMeasures(),
         fetchPrices(),
       ]);
-
       // Update reload state last
       if (ReloadProduct !== null && setReloadProduct) {
         setTimeout(() => {
@@ -279,7 +274,11 @@ const CreateProduct = ({
                 ? "Crear Producto"
                 : "Actualizar Producto"}
             </DialogTitle>
-            <Progress value={progress} max={100} className="md:w-[50%] w-full md:ml-[3%] ml-0 md:my-0 my-2" />
+            <Progress
+              value={progress}
+              max={100}
+              className="md:w-[50%] w-full md:ml-[3%] ml-0 md:my-0 my-2"
+            />
           </div>
           <Tabs
             className="w-full md:h-full h-auto"
@@ -305,7 +304,8 @@ const CreateProduct = ({
               setLoading={setLoadingRequest}
               createProduct={
                 TriggerTitle === "Nuevo Producto" ||
-                TriggerTitle === "Añadir Producto"
+                TriggerTitle === "Añadir Producto" ||
+                TriggerTitle == ""
                   ? createProduct
                   : updateProduct
               }
