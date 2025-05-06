@@ -31,6 +31,7 @@ import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useNavigate } from "react-router-dom";
 import { Slider } from "@/components/ui/slider";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Input } from "@/components/ui/input";
 
 interface CreationBudget {
   client: {
@@ -257,19 +258,32 @@ export const AddBudget = () => {
                   </span>
                 </div>
                 <div className="flex flex-col align-center justify-center">
-                  <Label className="text-lg">Descuento: {Discount[0]}%</Label>
+                  <Label className="text-lg">
+                    Descuento:{" "}
+                    {!Number.isNaN(Discount[0]) ? `${Discount[0]} %` : "0 %"}
+                  </Label>
                   <Slider
-                    className="my-4"
+                    className="my-4 md:flex hidden"
                     min={0}
                     max={100}
                     step={1}
                     onValueChange={(value) => setDiscount(value)}
                   />
+                  <Input
+                    className="my-4 block md:hidden"
+                    type="number"
+                    min={0}
+                    max={100}
+                    value={Discount[0]}
+                    onChange={(e) => setDiscount([parseFloat(e.target.value)])}
+                  />
                 </div>
               </div>
               <div className="flex flex-col align-center justify-center">
                 <Label className="text-lg">Monto final:</Label>
-                <span className="text-3xl font-semibold">$ {FinalAmount}</span>
+                <span className="text-3xl font-semibold">
+                  $ {!Number.isNaN(FinalAmount) ? `${FinalAmount}` : "0"}
+                </span>
               </div>
             </section>
             <section className="md:w-1/6 w-full flex flex-col justify-evenly gap-4">
