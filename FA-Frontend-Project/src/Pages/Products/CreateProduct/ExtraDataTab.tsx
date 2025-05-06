@@ -154,7 +154,7 @@ const ExtraDataTab = ({
 
   return (
     <TabsContent value="extraData" className="h-full w-full">
-      <div className="h-full w-full grid grid-cols-6 grid-rows-8 gap-4">
+      <div className="h-full w-full md:grid grid-cols-6 grid-rows-8 gap-4 flex flex-col">
         <div className="row-start-1 row-end-8 col-start-1 col-end-4 flex flex-col justify-start">
           <section className="flex flex-col gap-4">
             <Label className="text-xl">Imágenes (Opcional)</Label>

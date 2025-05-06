@@ -118,17 +118,20 @@ export const ProductPagination: React.FC<ProductPaginationProps> = ({
             <Search className="bigger-icon" />
           </Button>
         </div>
-        <CreateProduct TriggerTitle="Nuevo Producto" TriggerIcon={CirclePlus} />
+        <CreateProduct TriggerIcon={CirclePlus} TriggerTitle="Nuevo Producto" />
       </section>
       <section className="listHeader flex md:hidden">
         <Button onClick={handleRefresh} className="text-lg">
           <RefreshCcw className="bigger-icon" />
         </Button>
-        <MobileFilters
-          Filter={Filter}
-          setFilter={setFilter}
-          Loading={Loading}
-        />
+        <div className="flex gap-5">
+          <CreateProduct TriggerTitle="" TriggerIcon={CirclePlus} />
+          <MobileFilters
+            Filter={Filter}
+            setFilter={setFilter}
+            Loading={Loading}
+          />
+        </div>
       </section>
       <section className="listBody md:gap-[1%] gap-2">
         {Loading ? (

@@ -68,7 +68,7 @@ const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
 
   return (
     <TabsContent value="basicData" className="h-full w-full">
-      <div className="h-full w-full grid grid-cols-6 grid-rows-9 gap-2">
+      <div className="h-full w-full md:grid grid-cols-6 grid-rows-9 gap-2 flex flex-col">
         <div className="row-start-1 col-span-4">
           <Label className="text-md">Nombre</Label>
           <Input
