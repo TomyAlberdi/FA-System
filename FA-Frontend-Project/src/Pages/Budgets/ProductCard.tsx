@@ -90,7 +90,7 @@ export const ProductCard = ({
 
   return (
     <Card className="md:w-[19.2%] h-min md:flex flex-col w-full gap-2 p-2 grid grid-cols-2 grid-rows-4">
-      <CardTitle className="truncate overflow-hidden whitespace-nowrap text-center md:h-1/6 flex justify-center items-center pb-2 row-start-1 row-span-3 col-start-2">
+      <CardTitle className="md:truncate md:overflow-hidden md:whitespace-nowrap text-center md:h-1/6 flex justify-center items-center pb-2 row-start-1 row-span-3 col-start-2"> 
         {product.name}
       </CardTitle>
       <div
