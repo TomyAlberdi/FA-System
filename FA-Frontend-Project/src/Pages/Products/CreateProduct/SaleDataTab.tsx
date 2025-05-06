@@ -179,7 +179,8 @@ const SaleDataTab = ({
         </div>
         <div className="row-start-1 col-start-5 col-span-2">
           <Label className="flex items-center text-md">
-            Rentabilidad: {Rentabilidad} %
+            Rentabilidad:{" "}
+            {!Number.isNaN(Rentabilidad) ? `${Rentabilidad} ` : "0 "}%
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -193,12 +194,19 @@ const SaleDataTab = ({
             </TooltipProvider>
           </Label>
           <Slider
-            className="my-4"
+            className="my-4 hidden md:flex"
             min={0}
             max={200}
             step={0.1}
             value={[Rentabilidad]}
             onValueChange={(value) => setRentabilidad(value[0])}
+          />
+          <Input
+            className="my-4 block md:hidden"
+            type="number"
+            min={0}
+            value={Rentabilidad}
+            onChange={(e) => setRentabilidad(parseFloat(e.target.value))}
           />
         </div>
         <div className="row-start-2 col-start-1 col-span-2">
@@ -251,17 +259,33 @@ const SaleDataTab = ({
         </div>
         <div className="row-start-3 row-span-1 col-start-1 col-span-6 flex flex-col justify-center md:items-center items-start">
           <Label className="md:text-lg text-md">
-            Descuento por {Product?.saleUnit}: % {Product?.discountPercentage}{" "}
-            (Opcional)
+            Descuento por {Product?.saleUnit}:{" "}
+            {!Number.isNaN(Product?.discountPercentage)
+              ? `${Product?.discountPercentage} `
+              : "0 "}
+            % (Opcional)
           </Label>
           <Slider
-            className="md:w-1/3 w-full my-4"
+            className="md:w-1/3 w-full my-4 hidden md:flex"
             min={0}
             max={100}
             step={1}
             value={[Product?.discountPercentage]}
             onValueChange={(value) =>
               setProduct((prev) => ({ ...prev, discountPercentage: value[0] }))
+            }
+          />
+          <Input
+            className="my-4 block md:hidden"
+            type="number"
+            min={0}
+            max={100}
+            value={Product?.discountPercentage}
+            onChange={(e) =>
+              setProduct((prev) => ({
+                ...prev,
+                discountPercentage: parseFloat(e.target.value),
+              }))
             }
           />
         </div>
