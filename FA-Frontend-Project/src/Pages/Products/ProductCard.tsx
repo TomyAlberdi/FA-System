@@ -48,17 +48,17 @@ export const ProductCard = ({ product }: { product: CardProduct }) => {
       <CardTitle className="w-full md:row-span-2 md:row-start-auto row-start-2 row-span-4 md:col-start-1 md:col-span-auto col-start-3 col-span-3 flex flex-col justify-center items-center overflow-hidden">
         {product.discountPercentage > 0 ? (
           <>
-            <span className="oldPrice line-through mr-1 text-xl text-muted-foreground">
+            <span className="oldPrice line-through mr-1 md:text-xl text-lg text-muted-foreground"> 
               $ {product?.measurePrice}
             </span>
-            <span className="newPrice text-destructive overflow-hidden">
+            <span className="newPrice md:text-xl text-lg text-destructive overflow-hidden">
               $ {product?.discountedMeasurePrice} X {product.measureType}
             </span>
           </>
         ) : (
-          <>
+          <span className="md:text-xl text-lg">
             $ {product?.measurePrice} X {product.measureType}
-          </>
+          </span>
         )}
         {product?.measureType !== product?.saleUnit && (
           <CardDescription className="w-full text-center text-base overflow-hidden">

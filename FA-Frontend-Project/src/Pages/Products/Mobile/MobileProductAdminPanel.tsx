@@ -4,8 +4,9 @@ import { useCatalogContext } from "@/Context/UseCatalogContext";
 import { CompleteProduct } from "@/hooks/CatalogInterfaces";
 import { ProductDetail } from "@/lib/ProductDetail";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { CircleX, ListPlus, ListX, Menu, Package } from "lucide-react";
+import { CircleX, ListPlus, ListX, Menu, Package, Pencil } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import CreateProduct from "@/Pages/Products/CreateProduct/CreateProduct";
 
 interface MobileProductAdminPanelProps {
   Product: CompleteProduct | null;
@@ -121,6 +122,13 @@ const MobileProductAdminPanel = ({
       </DrawerTrigger>
       <DrawerContent>
         <div className="mx-auto w-full max-w-sm flex flex-col justify-center items-center py-4 gap-4">
+          <CreateProduct
+            ProductProp={Product}
+            TriggerTitle="Editar Producto"
+            TriggerIcon={Pencil}
+            ReloadProduct={ReloadProduct}
+            setReloadProduct={setReloadProduct}
+          />
           <Button
             className="w-10/12 text-md"
             variant="destructive"

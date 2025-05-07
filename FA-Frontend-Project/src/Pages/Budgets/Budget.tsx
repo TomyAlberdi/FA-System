@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/table";
 import { useSalesContext } from "@/Context/UseSalesContext";
 import { CompleteBudget, ProductBudget } from "@/hooks/SalesInterfaces";
-import { CircleX, Info } from "lucide-react";
+import { CircleX, Info, ReceiptText } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { UpdateBudgetStatus } from "@/Pages/Budgets/UpdateBudgetStatus";
@@ -23,8 +23,10 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { DownloadBudgetDetail } from "@/Pages/Budgets/DownloadBudgetDetail";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { generatePDF } from "./CreateBudgetDetail";
+import jsPDF from "jspdf";
+import UploadAndShareBudgetDetail from "@/Pages/Budgets/UploadAndShareBudgetDetail";
 
 export const Budget = () => {
   const { id } = useParams();
@@ -104,6 +106,13 @@ export const Budget = () => {
       window.alert("Ocurrió un error al eliminar el presupuesto");
     }
   };
+
+  const [BudgetDetail, setBudgetDetail] = useState<jsPDF | undefined>();
+  useEffect(() => {
+    if (Budget) {
+      setBudgetDetail(generatePDF(Budget));
+    }
+  }, [Budget]);
 
   return Loading ? (
     <div className="flex md:flex-row flex-col gap-4 h-full">
@@ -201,7 +210,24 @@ export const Budget = () => {
             <CircleX />
             Eliminar
           </Button>
-          <DownloadBudgetDetail budget={Budget} />
+          <Button
+            className="w-full"
+            disabled={Budget === null}
+            onClick={() => {
+              if (BudgetDetail) {
+                BudgetDetail.save(`Presupuesto_${Budget?.id}.pdf`);
+              }
+            }}
+          >
+            <ReceiptText />
+            Descargar Detalle
+          </Button>
+          {Budget?.id !== undefined && (
+            <UploadAndShareBudgetDetail
+              budgetId={Budget.id}
+              budgetDetail={BudgetDetail ?? null}
+            />
+          )}
         </CardContent>
       </Card>
       <ScrollArea className="md:w-2/3 w-[95vw] h-auto">

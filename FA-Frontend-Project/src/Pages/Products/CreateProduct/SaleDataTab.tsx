@@ -131,7 +131,7 @@ const SaleDataTab = ({
 
   return (
     <TabsContent value="saleData" className="h-full w-full">
-      <div className="h-full w-full grid grid-cols-6 grid-rows-6 gap-4">
+      <div className="h-full w-full md:grid grid-cols-6 grid-rows-6 gap-4 flex flex-col">
         <div className="row-start-1 col-start-1 col-span-2">
           <Label className="text-md">Unidad de venta</Label>
           <Select
@@ -172,16 +172,15 @@ const SaleDataTab = ({
             onChange={(e) =>
               setProduct((prev) => ({
                 ...prev,
-                measureUnitCost: e.target.value
-                  ? parseFloat(e.target.value)
-                  : 0,
+                measureUnitCost: parseFloat(e.target.value),
               }))
             }
           />
         </div>
         <div className="row-start-1 col-start-5 col-span-2">
           <Label className="flex items-center text-md">
-            Rentabilidad: {Rentabilidad} %
+            Rentabilidad:{" "}
+            {!Number.isNaN(Rentabilidad) ? `${Rentabilidad} ` : "0 "}%
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -195,12 +194,19 @@ const SaleDataTab = ({
             </TooltipProvider>
           </Label>
           <Slider
-            className="my-4"
+            className="my-4 hidden md:flex"
             min={0}
             max={200}
             step={0.1}
             value={[Rentabilidad]}
             onValueChange={(value) => setRentabilidad(value[0])}
+          />
+          <Input
+            className="my-4 block md:hidden"
+            type="number"
+            min={0}
+            value={Rentabilidad}
+            onChange={(e) => setRentabilidad(parseFloat(e.target.value))}
           />
         </div>
         <div className="row-start-2 col-start-1 col-span-2">
@@ -236,9 +242,7 @@ const SaleDataTab = ({
             onChange={(e) =>
               setProduct((prev) => ({
                 ...prev,
-                measurePerSaleUnit: e.target.value
-                  ? parseFloat(e.target.value)
-                  : 1,
+                measurePerSaleUnit: parseFloat(e.target.value),
               }))
             }
           />
@@ -253,13 +257,16 @@ const SaleDataTab = ({
             }
           />
         </div>
-        <div className="row-start-3 row-span-1 col-start-1 col-span-6 flex flex-col justify-center items-center">
-          <Label className="text-lg">
-            Descuento por {Product?.saleUnit}: % {Product?.discountPercentage}{" "}
-            (Opcional)
+        <div className="row-start-3 row-span-1 col-start-1 col-span-6 flex flex-col justify-center md:items-center items-start">
+          <Label className="md:text-lg text-md">
+            Descuento por {Product?.saleUnit}:{" "}
+            {!Number.isNaN(Product?.discountPercentage)
+              ? `${Product?.discountPercentage} `
+              : "0 "}
+            % (Opcional)
           </Label>
           <Slider
-            className="w-1/3 my-4"
+            className="md:w-1/3 w-full my-4 hidden md:flex"
             min={0}
             max={100}
             step={1}
@@ -268,12 +275,25 @@ const SaleDataTab = ({
               setProduct((prev) => ({ ...prev, discountPercentage: value[0] }))
             }
           />
+          <Input
+            className="my-4 block md:hidden"
+            type="number"
+            min={0}
+            max={100}
+            value={Product?.discountPercentage}
+            onChange={(e) =>
+              setProduct((prev) => ({
+                ...prev,
+                discountPercentage: parseFloat(e.target.value),
+              }))
+            }
+          />
         </div>
         <div className="row-start-4 row-span-2 col-span-6 rounded flex flex-col justify-start items-center">
-          <h2 className="text-2xl font-semibold mb-4 text-center">
+          <h2 className="md:text-2xl text-xl font-semibold mb-4 text-center">
             Información de venta
           </h2>
-          <div className="flex flex-row gap-4">
+          <div className="flex md:flex-row flex-col gap-4 md:w-auto w-full">
             <Card className="bg-primary-foreground">
               <CardHeader>
                 <CardTitle className="text-center">
@@ -283,22 +303,27 @@ const SaleDataTab = ({
               <CardContent className="text-center flex flex-row gap-2 justify-center items-center">
                 <span
                   className={
-                    Product?.discountPercentage == 0
+                    Product?.discountPercentage == 0 ||
+                    Number.isNaN(Product?.saleUnitPrice)
                       ? "text-3xl"
                       : "text-xl line-through tetx-muted-foreground"
                   }
                 >
-                  $ {Product?.saleUnitPrice}
+                  ${" "}
+                  {!Number.isNaN(Product?.saleUnitPrice)
+                    ? Product?.saleUnitPrice
+                    : 0}
                 </span>
-                {Product?.discountPercentage > 0 && (
-                  <span className="text-3xl text-destructive overflow-hidden">
-                    $
-                    {Math.round(
-                      (1 - Product?.discountPercentage / 100.0) *
-                        Product?.saleUnitPrice
-                    )}
-                  </span>
-                )}
+                {Product?.discountPercentage > 0 &&
+                  Product?.saleUnitPrice > 0 && (
+                    <span className="text-3xl text-destructive overflow-hidden">
+                      $
+                      {Math.round(
+                        (1 - Product?.discountPercentage / 100.0) *
+                          Product?.saleUnitPrice
+                      )}
+                    </span>
+                  )}
               </CardContent>
             </Card>
             {Product?.saleUnit !== Product?.measureType && (
@@ -311,17 +336,20 @@ const SaleDataTab = ({
                 <CardContent className="text-center flex flex-row gap-2 justify-center items-center">
                   <span
                     className={
-                      Product?.discountPercentage == 0
+                      Product?.discountPercentage == 0 ||
+                      Number.isNaN(Product?.saleUnitPrice)
                         ? "text-3xl"
                         : "text-xl line-through tetx-muted-foreground"
                     }
                   >
                     $
-                    {Product?.saleUnit && Product?.measurePerSaleUnit
+                    {Product?.saleUnit &&
+                    Product?.measurePerSaleUnit &&
+                    !Number.isNaN(MeasurePrice)
                       ? MeasurePrice
                       : 0}
                   </span>
-                  {Product?.discountPercentage > 0 && (
+                  {Product?.discountPercentage > 0 && MeasurePrice > 0 && (
                     <span className="text-3xl text-destructive overflow-hidden">
                       $
                       {Math.round(

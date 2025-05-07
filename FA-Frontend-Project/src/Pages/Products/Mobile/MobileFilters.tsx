@@ -8,7 +8,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { FilterData } from "@/hooks/CatalogInterfaces";
-import { Menu, Search } from "lucide-react";
+import { ListFilter, Search } from "lucide-react";
 import { CategoryFilter } from "@/Pages/Products/Filters/CategoryFilter";
 import { ProviderFilter } from "@/Pages/Products/Filters/ProviderFilter";
 import { MeasureFilter } from "@/Pages/Products/Filters/MeasureFilter";
@@ -43,7 +43,7 @@ const MobileFilters = ({ Filter, setFilter, Loading }: MobileFiltersProps) => {
     <Drawer>
       <DrawerTrigger asChild className="flex md:hidden">
         <Button>
-          <Menu className="large-icon" />
+          <ListFilter className="large-icon" />
         </Button>
       </DrawerTrigger>
       <DrawerContent>

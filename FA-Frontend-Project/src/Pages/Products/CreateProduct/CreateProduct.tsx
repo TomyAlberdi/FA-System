@@ -209,18 +209,14 @@ const CreateProduct = ({
         },
         body: JSON.stringify(newProduct),
       });
-
       if (!response.ok) {
         window.alert(`Error actualizando el producto: ${response.status}`);
         return;
       }
-
       // Close dialog first
       setDialogOpen(false);
-
       // Show success message
       window.alert("Producto actualizado con éxito");
-
       // Update data in parallel
       await Promise.all([
         fetchCategories(),
@@ -228,7 +224,6 @@ const CreateProduct = ({
         fetchMeasures(),
         fetchPrices(),
       ]);
-
       // Update reload state last
       if (ReloadProduct !== null && setReloadProduct) {
         setTimeout(() => {
@@ -253,30 +248,39 @@ const CreateProduct = ({
               ? "text-lg w-[19.2%] max-w-[300px] min-w-[200px]"
               : TriggerTitle == "Añadir Producto"
               ? "h-full text-lg w-1/3"
+              : TriggerTitle == ""
+              ? ""
               : "w-10/12 text-md"
           }
         >
-          {TriggerTitle !== "Añadir Producto" ? <TriggerIcon /> : null}
+          {TriggerTitle !== "Añadir Producto" ? (
+            <TriggerIcon className={TriggerTitle == "" ? "large-icon" : ""} />
+          ) : null}
           {TriggerTitle}
         </Button>
       </DialogTrigger>
       <DialogContent
         aria-label="modal"
         aria-describedby={undefined}
-        className="lg:w-[70vw] xl:max-w-[1344px]"
+        className="lg:w-[70vw] xl:max-w-[1344px] w-[95vw] rounded-lg"
       >
-        <ScrollArea className="w-full max-h-[80vh] overflow-auto flex flex-col justify-start px-6 pt-6 pb-2">
-          <div className="flex flex-row items-center">
-            <DialogTitle className="text-3xl font-bold">
+        <ScrollArea className="w-full max-h-[80vh] overflow-auto flex flex-col justify-start md:px-6 px-3 md:pt-6 pt-3 pb-2">
+          <div className="flex md:flex-row flex-col items-center">
+            <DialogTitle className="md:text-3xl text-2xl font-bold">
               {TriggerTitle === "Nuevo Producto" ||
-              TriggerTitle === "Añadir Producto"
+              TriggerTitle === "Añadir Producto" ||
+              TriggerTitle == ""
                 ? "Crear Producto"
                 : "Actualizar Producto"}
             </DialogTitle>
-            <Progress value={progress} max={100} className="w-[50%] ml-[3%]" />
+            <Progress
+              value={progress}
+              max={100}
+              className="md:w-[50%] w-full md:ml-[3%] ml-0 md:my-0 my-2"
+            />
           </div>
           <Tabs
-            className="w-full h-full"
+            className="w-full md:h-full h-auto"
             value={currentTab}
             onValueChange={setCurrentTab}
           >
@@ -299,7 +303,8 @@ const CreateProduct = ({
               setLoading={setLoadingRequest}
               createProduct={
                 TriggerTitle === "Nuevo Producto" ||
-                TriggerTitle === "Añadir Producto"
+                TriggerTitle === "Añadir Producto" ||
+                TriggerTitle == ""
                   ? createProduct
                   : updateProduct
               }
