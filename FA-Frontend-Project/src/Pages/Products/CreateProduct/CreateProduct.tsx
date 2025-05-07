@@ -31,7 +31,6 @@ const CreateProduct = ({
   ReloadProduct?: boolean | null;
   setReloadProduct?: React.Dispatch<React.SetStateAction<boolean>> | null;
 }) => {
-  //TODO: Create mobile interface (S22 + Iphone 14/15/16)
   const navigate = useNavigate();
   const { getToken } = useKindeAuth();
   const {
