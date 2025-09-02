@@ -1,7 +1,7 @@
 package com.example.febackendproject.Repository;
 
-import com.example.febackendproject.DTO.PartialProductDTO;
-import com.example.febackendproject.DTO.PartialProductStockDTO;
+import com.example.febackendproject.DTO.Product.PartialProductDTO;
+import com.example.febackendproject.DTO.Product.PartialProductStockDTO;
 import com.example.febackendproject.Entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;

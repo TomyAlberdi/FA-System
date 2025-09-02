@@ -1,6 +1,9 @@
 package com.example.febackendproject.Service;
 
 import com.example.febackendproject.DTO.*;
+import com.example.febackendproject.DTO.Product.CompleteProductDTO;
+import com.example.febackendproject.DTO.Product.PartialProductDTO;
+import com.example.febackendproject.DTO.Product.PartialProductStockDTO;
 import com.example.febackendproject.Entity.Product;
 import com.example.febackendproject.Hooks.ProductSpecifications;
 import com.example.febackendproject.Repository.*;
@@ -390,6 +393,17 @@ public class ProductService {
     
     public long getTotalProducts() {
         return productRepository.count();
+    }
+    
+    // Provider, Category & Subcategory Utils
+    public List<Long> getProductIdsByProvider(Long providerId) {
+        return productRepository.getIdByProvider(providerId);
+    }
+    public List<Long> getProductIdsByCategory(Long categoryId) {
+        return productRepository.getIdByCategory(categoryId);
+    }
+    public List<Long> getProductIdsBySubcategory(Long subcategoryId) {
+        return productRepository.getIdBySubcategory(subcategoryId);
     }
     
 }

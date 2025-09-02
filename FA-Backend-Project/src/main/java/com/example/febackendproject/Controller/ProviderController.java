@@ -1,6 +1,6 @@
 package com.example.febackendproject.Controller;
 
-import com.example.febackendproject.DTO.PartialProductStockDTO;
+import com.example.febackendproject.DTO.Product.PartialProductStockDTO;
 import com.example.febackendproject.DTO.Provider.CreateProviderDTO;
 import com.example.febackendproject.Entity.Provider;
 import com.example.febackendproject.Service.ProductService;
@@ -11,9 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
 
 @AllArgsConstructor
 @RestController

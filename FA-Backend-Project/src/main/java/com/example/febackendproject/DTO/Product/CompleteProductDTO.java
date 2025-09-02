@@ -1,6 +1,6 @@
-package com.example.febackendproject.DTO;
+package com.example.febackendproject.DTO.Product;
 
-import jakarta.persistence.Column;
+import com.example.febackendproject.DTO.CharacteristicDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

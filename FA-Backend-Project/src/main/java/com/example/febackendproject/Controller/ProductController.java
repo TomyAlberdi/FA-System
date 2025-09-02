@@ -1,9 +1,9 @@
 package com.example.febackendproject.Controller;
 
 import com.example.febackendproject.DTO.Category.CompleteCategoryDTO;
-import com.example.febackendproject.DTO.CompleteProductDTO;
+import com.example.febackendproject.DTO.Product.CompleteProductDTO;
 import com.example.febackendproject.DTO.FilterProductDTO;
-import com.example.febackendproject.DTO.PartialProductDTO;
+import com.example.febackendproject.DTO.Product.PartialProductDTO;
 import com.example.febackendproject.Entity.*;
 import com.example.febackendproject.Repository.SubcategoryRepository;
 import com.example.febackendproject.Service.*;

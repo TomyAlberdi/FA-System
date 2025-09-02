@@ -1,7 +1,7 @@
 package com.example.febackendproject.Controller;
 
 import com.example.febackendproject.DTO.Category.CompleteCategoryDTO;
-import com.example.febackendproject.DTO.PartialProductStockDTO;
+import com.example.febackendproject.DTO.Product.PartialProductStockDTO;
 import com.example.febackendproject.Entity.Category;
 import com.example.febackendproject.Entity.Subcategory;
 import com.example.febackendproject.Service.CategoryService;
