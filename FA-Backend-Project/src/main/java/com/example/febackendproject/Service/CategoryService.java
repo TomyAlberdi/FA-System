@@ -3,11 +3,15 @@ package com.example.febackendproject.Service;
 import com.example.febackendproject.DTO.CompleteCategoryDTO;
 import com.example.febackendproject.Entity.Category;
 import com.example.febackendproject.Entity.Subcategory;
+import com.example.febackendproject.Exception.ExistingAttributeException;
+import com.example.febackendproject.Exception.ResourceNotFoundException;
+import com.example.febackendproject.Mapper.CategoryMapper;
 import com.example.febackendproject.Repository.CategoryRepository;
 import com.example.febackendproject.Repository.ProductRepository;
 import com.example.febackendproject.Repository.SubcategoryRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,8 +21,9 @@ import java.util.Optional;
 public class CategoryService {
     
     private final CategoryRepository categoryRepository;
-    private final SubcategoryRepository subcategoryRepository;
     private final ProductRepository productRepository;
+    private final SubcategoryRepository subcategoryRepository;
+    private final ProductService productService;
     
     public List<Category> list() {
         return categoryRepository.findAll();
@@ -28,85 +33,56 @@ public class CategoryService {
         return categoryRepository.listTopFiveByProductAmount();
     }
     
-    public Optional<CompleteCategoryDTO> findById(Long id) {
+    public CompleteCategoryDTO findById(Long id) {
         Optional<Category> category = categoryRepository.findById(id);
-        
-        CompleteCategoryDTO newCategory = new CompleteCategoryDTO();
-        if (category.isPresent()) {
-            newCategory.setName(category.get().getName());
-            newCategory.setId(id);
-            newCategory.setProductsAmount(category.get().getProductsAmount());
-            newCategory.setSubcategories(subcategoryRepository.findByCategoryId(id));
+        if (category.isEmpty()) {
+            throw new ResourceNotFoundException("Cateroría con ID " + id + " no encontrada.");
         }
-        
-        return Optional.of(newCategory);
+        List<Subcategory> subcategories = subcategoryRepository.findByCategoryId(id);
+        return CategoryMapper.toDTO(category.get(), subcategories);
     }
     
-    public Optional<CompleteCategoryDTO> findByName(String name) {
+    public CompleteCategoryDTO findByName(String name) {
         Optional<Category> category = categoryRepository.findByName(name);
         if (category.isEmpty()) {
-            return Optional.empty();
+            throw new ResourceNotFoundException("Cateroría " + name + " no encontrada.");
         }
-        CompleteCategoryDTO newCategory = new CompleteCategoryDTO();
-        newCategory.setName(category.get().getName());
-        newCategory.setId(category.get().getId());
-        newCategory.setSubcategories(subcategoryRepository.findByCategoryId(category.get().getId()));
-        return Optional.of(newCategory);
+        List<Subcategory> subcategories = subcategoryRepository.findByCategoryId(category.get().getId());
+        return CategoryMapper.toDTO(category.get(), subcategories);
     }
     
+    @Transactional
     public void update(String name, Long id) {
+        Optional<Category> repeatedCategory = categoryRepository.findByName(name);
+        if (repeatedCategory.isPresent()) {
+            throw new ExistingAttributeException("La categoría con nombre " + name + " ya existe.");
+        }
+        CompleteCategoryDTO category = this.findById(id);
         categoryRepository.updateById(name, id);
     }
     
+    @Transactional
     public Category save(String name) {
+        Optional<Category> repeatedCategory = categoryRepository.findByName(name);
+        if (repeatedCategory.isPresent()) {
+            throw new ExistingAttributeException("La categoría con nombre " + name + " ya existe.");
+        }
         Category newCategory = new Category();
         newCategory.setName(name);
         return categoryRepository.save(newCategory);
     }
     
-    public List<Long> getIdByCategory(Long categoryId) {
-        return productRepository.getIdByCategory(categoryId);
-    }
-    
+    @Transactional
     public void deleteById(Long id) {
+        CompleteCategoryDTO category = this.findById(id);
+        if (!category.getSubcategories().isEmpty()) {
+            throw new IllegalStateException("No se puede eliminar la categoría " + category.getName() + " porque tiene subcategorías asociadas.");
+        }
+        List<Long> productIds = productService.getProductIdsByCategory(id);
+        if (!productIds.isEmpty()) {
+            throw new IllegalStateException("No se puede eliminar la categoría " + category.getName() + " porque tiene productos asociados.");
+        }
         categoryRepository.deleteById(id);
-    }
-    
-    // Subcategories
-    
-    public List<Subcategory> listSubcategories() {
-        return subcategoryRepository.findAll();
-    }
-    
-    public Optional<Subcategory> findSubcategoryById(Long id) {
-        return subcategoryRepository.findById(id);
-    }
-    
-    public Optional<Subcategory> findSubcategoryByName(String name) {
-        return subcategoryRepository.findByName(name);
-    }
-    
-    public void updateSubcategory(String name, Long id) {
-        subcategoryRepository.updateById(name, id);
-    }
-    
-    public Subcategory saveSubcategory(String name, Long categoryId) {
-        Subcategory newSubcategory = new Subcategory();
-        newSubcategory.setName(name);
-        newSubcategory.setCategoryId(categoryId);
-        return subcategoryRepository.save(newSubcategory);
-    }
-    
-    public List<Long> getIdBySubcategory(Long subcategoryId) {
-        return productRepository.getIdBySubcategory(subcategoryId);
-    }
-    
-    public void deleteSubcategoryById(Long subcategoryId) {
-        subcategoryRepository.deleteById(subcategoryId);
-    }
-    
-    public List<Subcategory> getByCategoryId(Long categoryId) {
-        return subcategoryRepository.findByCategoryId(categoryId);
     }
     
 }
