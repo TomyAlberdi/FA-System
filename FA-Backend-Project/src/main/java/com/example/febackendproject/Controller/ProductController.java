@@ -1,6 +1,6 @@
 package com.example.febackendproject.Controller;
 
-import com.example.febackendproject.DTO.CompleteCategoryDTO;
+import com.example.febackendproject.DTO.Category.CompleteCategoryDTO;
 import com.example.febackendproject.DTO.CompleteProductDTO;
 import com.example.febackendproject.DTO.FilterProductDTO;
 import com.example.febackendproject.DTO.PartialProductDTO;

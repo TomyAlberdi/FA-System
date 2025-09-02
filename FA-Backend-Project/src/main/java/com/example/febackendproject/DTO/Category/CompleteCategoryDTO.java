@@ -1,4 +1,4 @@
-package com.example.febackendproject.DTO;
+package com.example.febackendproject.DTO.Category;
 
 import com.example.febackendproject.Entity.Subcategory;
 import lombok.AllArgsConstructor;

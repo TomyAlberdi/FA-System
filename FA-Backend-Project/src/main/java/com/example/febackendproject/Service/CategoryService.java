@@ -1,6 +1,6 @@
 package com.example.febackendproject.Service;
 
-import com.example.febackendproject.DTO.CompleteCategoryDTO;
+import com.example.febackendproject.DTO.Category.CompleteCategoryDTO;
 import com.example.febackendproject.Entity.Category;
 import com.example.febackendproject.Entity.Subcategory;
 import com.example.febackendproject.Exception.ExistingAttributeException;
@@ -55,7 +55,7 @@ public class CategoryService {
     public void update(String name, Long id) {
         Optional<Category> repeatedCategory = categoryRepository.findByName(name);
         if (repeatedCategory.isPresent()) {
-            throw new ExistingAttributeException("La categoría con nombre " + name + " ya existe.");
+            throw new ExistingAttributeException("La categoría " + name + " ya existe.");
         }
         CompleteCategoryDTO category = this.findById(id);
         categoryRepository.updateById(name, id);
@@ -65,7 +65,7 @@ public class CategoryService {
     public Category save(String name) {
         Optional<Category> repeatedCategory = categoryRepository.findByName(name);
         if (repeatedCategory.isPresent()) {
-            throw new ExistingAttributeException("La categoría con nombre " + name + " ya existe.");
+            throw new ExistingAttributeException("La categoría " + name + " ya existe.");
         }
         Category newCategory = new Category();
         newCategory.setName(name);

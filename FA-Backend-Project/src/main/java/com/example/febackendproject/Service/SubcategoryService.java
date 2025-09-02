@@ -1,6 +1,6 @@
 package com.example.febackendproject.Service;
 
-import com.example.febackendproject.DTO.CompleteCategoryDTO;
+import com.example.febackendproject.DTO.Category.CompleteCategoryDTO;
 import com.example.febackendproject.Entity.Subcategory;
 import com.example.febackendproject.Exception.ExistingAttributeException;
 import com.example.febackendproject.Exception.ResourceNotFoundException;
@@ -44,7 +44,7 @@ public class SubcategoryService {
     public void update(String name, Long id) {
         Optional<Subcategory> repeatedSubcategory = subcategoryRepository.findByName(name);
         if (repeatedSubcategory.isPresent()) {
-            throw new ExistingAttributeException("La subcategoría con nombre " + name + " ya existe.");
+            throw new ExistingAttributeException("La subcategoría " + name + " ya existe.");
         }
         subcategoryRepository.updateById(name, id);
     }
@@ -54,7 +54,7 @@ public class SubcategoryService {
         CompleteCategoryDTO category = categoryService.findById(categoryId);
         Optional<Subcategory> repeatedSubcategory = subcategoryRepository.findByName(name);
         if (repeatedSubcategory.isPresent()) {
-            throw new ExistingAttributeException("La subcategoría con nombre " + name + " ya existe.");
+            throw new ExistingAttributeException("La subcategoría " + name + " ya existe.");
         }
         Subcategory newSubcategory = new Subcategory();
         newSubcategory.setName(name);

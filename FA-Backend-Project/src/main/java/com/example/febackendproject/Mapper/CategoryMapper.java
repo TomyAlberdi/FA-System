@@ -1,6 +1,6 @@
 package com.example.febackendproject.Mapper;
 
-import com.example.febackendproject.DTO.CompleteCategoryDTO;
+import com.example.febackendproject.DTO.Category.CompleteCategoryDTO;
 import com.example.febackendproject.Entity.Category;
 import com.example.febackendproject.Entity.Subcategory;
 
