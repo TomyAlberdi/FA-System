@@ -53,16 +53,19 @@ public class CategoryService {
     
     @Transactional
     public void update(String name, Long id) {
+        // check name is available
         Optional<Category> repeatedCategory = categoryRepository.findByName(name);
         if (repeatedCategory.isPresent()) {
             throw new ExistingAttributeException("La categoría " + name + " ya existe.");
         }
+        // check categoría exists
         CompleteCategoryDTO category = this.findById(id);
         categoryRepository.updateById(name, id);
     }
     
     @Transactional
     public Category save(String name) {
+        // check name is available
         Optional<Category> repeatedCategory = categoryRepository.findByName(name);
         if (repeatedCategory.isPresent()) {
             throw new ExistingAttributeException("La categoría " + name + " ya existe.");

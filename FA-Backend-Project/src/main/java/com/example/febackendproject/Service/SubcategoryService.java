@@ -42,6 +42,7 @@ public class SubcategoryService {
     
     @Transactional
     public void update(String name, Long id) {
+        // Check name is available
         Optional<Subcategory> repeatedSubcategory = subcategoryRepository.findByName(name);
         if (repeatedSubcategory.isPresent()) {
             throw new ExistingAttributeException("La subcategoría " + name + " ya existe.");
@@ -51,7 +52,9 @@ public class SubcategoryService {
     
     @Transactional
     public Subcategory save(String name, Long categoryId) {
+        // Check categoría exists
         CompleteCategoryDTO category = categoryService.findById(categoryId);
+        // Check name is available
         Optional<Subcategory> repeatedSubcategory = subcategoryRepository.findByName(name);
         if (repeatedSubcategory.isPresent()) {
             throw new ExistingAttributeException("La subcategoría " + name + " ya existe.");
