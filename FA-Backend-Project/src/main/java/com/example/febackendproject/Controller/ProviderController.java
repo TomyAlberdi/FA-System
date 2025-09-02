@@ -1,6 +1,7 @@
 package com.example.febackendproject.Controller;
 
 import com.example.febackendproject.DTO.PartialProductStockDTO;
+import com.example.febackendproject.DTO.Provider.CreateProviderDTO;
 import com.example.febackendproject.Entity.Provider;
 import com.example.febackendproject.Service.ProductService;
 import com.example.febackendproject.Service.ProviderService;
@@ -24,14 +25,6 @@ public class ProviderController {
     private final ProviderService providerService;
     private final ProductService productService;
     
-    public ResponseEntity<?> notFound(String dataType, String data) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Provider with " + dataType + " " + data + " not found");
-    }
-    
-    public ResponseEntity<?> existingAttribute(String dataType, String data) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Provider with " + dataType + " " + data + " already exists");
-    }
-    
     @GetMapping()
     public ResponseEntity<?> list() {
         return ResponseEntity.status(HttpStatus.OK).body(providerService.list());
@@ -41,16 +34,33 @@ public class ProviderController {
     public ResponseEntity<?> get(@PathVariable String identifier) {
         try {
             Long id = Long.parseLong(identifier);
-            Optional<Provider> provider = providerService.findById(id);
-            return provider.isEmpty()
-                    ? notFound("ID", identifier)
-                    : ResponseEntity.ok(provider.get());
+            return ResponseEntity.ok(providerService.findById(id));
         } catch (NumberFormatException e) {
-            Optional<Provider> provider = providerService.findByName(identifier);
-            return provider.isEmpty()
-                    ? notFound("Name", identifier)
-                    : ResponseEntity.ok(provider.get());
+            return ResponseEntity.ok(providerService.findByName(identifier));
         }
+    }
+    
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody CreateProviderDTO dto) {
+        providerService.updateById(dto, id);
+        return ResponseEntity.ok().build();
+    }
+    
+    @PostMapping
+    public ResponseEntity<?> save(@RequestBody CreateProviderDTO dto) {
+        Provider newProvider = providerService.save(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newProvider);
+    }
+    
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        providerService.deleteById(id);
+        return ResponseEntity.ok().build();
+    }
+    
+    @GetMapping("/top5")
+    public ResponseEntity<?> topFive() {
+        return ResponseEntity.ok(providerService.listTopFive());
     }
     
     @GetMapping("/{providerId}/products")
@@ -59,43 +69,7 @@ public class ProviderController {
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "8") int size
     ) {
+        Provider provider = providerService.findById(providerId);
         return ResponseEntity.ok(productService.getPartialProductStockByProvider(providerId, page, size));
-    }
-    
-    @PostMapping
-    public ResponseEntity<?> save(@RequestBody Provider provider) {
-        Optional<Provider> repeatedProvider = providerService.findByName(provider.getName());
-        if (repeatedProvider.isPresent()) {
-            return existingAttribute("Name", provider.getName());
-        }
-        Provider newProvider = providerService.save(provider);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newProvider);
-    }
-    
-    @PatchMapping
-    public ResponseEntity<?> update(@RequestBody Provider provider) {
-        if (providerService.existsById(provider.getId())) {
-            providerService.updateById(provider);
-            return ResponseEntity.ok("Provider updated");
-        }
-        return notFound("ID", provider.getId().toString());
-    }
-    
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
-        if (providerService.existsById(id)) {
-            List<Long> productIds = providerService.getIdByProvider(id);
-            if (productIds.isEmpty()) {
-                providerService.deleteById(id);
-                return ResponseEntity.ok("Provider deleted successfully");
-            }
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("The provider has " + productIds.size() + " products associated to it.");
-        }
-        return notFound("ID", Long.toString(id));
-    }
-    
-    @GetMapping("/top5")
-    public ResponseEntity<?> topFive() {
-        return ResponseEntity.ok(providerService.listTopFive());
     }
 }
