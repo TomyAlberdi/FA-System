@@ -7,6 +7,7 @@ import com.example.febackendproject.Exception.ExistingAttributeException;
 import com.example.febackendproject.Exception.ResourceNotFoundException;
 import com.example.febackendproject.Mapper.CategoryMapper;
 import com.example.febackendproject.Repository.CategoryRepository;
+import com.example.febackendproject.Repository.ProductRepository;
 import com.example.febackendproject.Repository.SubcategoryRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,7 @@ public class CategoryService {
     
     private final CategoryRepository categoryRepository;
     private final SubcategoryRepository subcategoryRepository;
-    private final ProductService productService;
+    private final ProductRepository productRepository;
     
     public List<Category> list() {
         return categoryRepository.findAll();
@@ -85,7 +86,7 @@ public class CategoryService {
         if (!category.getSubcategories().isEmpty()) {
             throw new IllegalStateException("No se puede eliminar la categoría " + category.getName() + " porque tiene subcategorías asociadas.");
         }
-        List<Long> productIds = productService.getProductIdsByCategory(id);
+        List<Long> productIds = productRepository.getIdByCategory(id);
         if (!productIds.isEmpty()) {
             throw new IllegalStateException("No se puede eliminar la categoría " + category.getName() + " porque tiene productos asociados.");
         }

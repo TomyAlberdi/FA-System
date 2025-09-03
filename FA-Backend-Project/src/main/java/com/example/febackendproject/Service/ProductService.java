@@ -281,15 +281,4 @@ public class ProductService {
         return productRepository.count();
     }
     
-    // Provider, Category & Subcategory Utils
-    public List<Long> getProductIdsByProvider(Long providerId) {
-        return productRepository.getIdByProvider(providerId);
-    }
-    public List<Long> getProductIdsByCategory(Long categoryId) {
-        return productRepository.getIdByCategory(categoryId);
-    }
-    public List<Long> getProductIdsBySubcategory(Long subcategoryId) {
-        return productRepository.getIdBySubcategory(subcategoryId);
-    }
-    
 }

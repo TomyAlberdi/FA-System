@@ -20,7 +20,6 @@ public class ProviderService {
     
     private final ProviderRepository providerRepository;
     private final ProductRepository productRepository;
-    private final ProductService productService;
     
     public List<Provider> list() {
         return providerRepository.findAll();
@@ -79,7 +78,7 @@ public class ProviderService {
     @Transactional
     public void deleteById(Long id) {
         Provider provider = this.findById(id);
-        List<Long> productIds = productService.getProductIdsByProvider(id);
+        List<Long> productIds = productRepository.getIdByProvider(id);
         if (!productIds.isEmpty()) {
             throw new IllegalStateException("No se puede eliminar el proveedor " + provider.getName() + " porque tiene productos asociados.");
         }

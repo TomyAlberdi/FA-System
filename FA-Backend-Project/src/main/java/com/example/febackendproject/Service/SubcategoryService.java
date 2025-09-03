@@ -3,6 +3,7 @@ package com.example.febackendproject.Service;
 import com.example.febackendproject.Entity.Subcategory;
 import com.example.febackendproject.Exception.ExistingAttributeException;
 import com.example.febackendproject.Exception.ResourceNotFoundException;
+import com.example.febackendproject.Repository.ProductRepository;
 import com.example.febackendproject.Repository.SubcategoryRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ public class SubcategoryService {
     
     private final SubcategoryRepository subcategoryRepository;
     private final CategoryService categoryService;
-    private final ProductService productService;
+    private final ProductRepository productRepository;
     
     public List<Subcategory> list() {
         return subcategoryRepository.findAll();
@@ -73,7 +74,7 @@ public class SubcategoryService {
     @Transactional
     public void deleteById(Long subcategoryId) {
         Subcategory subcategory = this.findById(subcategoryId);
-        List<Long> productIds = productService.getProductIdsBySubcategory(subcategoryId);
+        List<Long> productIds = productRepository.getIdBySubcategory(subcategoryId);
         if (!productIds.isEmpty()) {
             throw new IllegalStateException("No se puede eliminar la subcategoría " + subcategory.getName() + " porque tiene productos asociados.");
         }
