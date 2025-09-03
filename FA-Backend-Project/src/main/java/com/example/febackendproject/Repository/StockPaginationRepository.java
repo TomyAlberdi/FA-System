@@ -1,6 +1,6 @@
 package com.example.febackendproject.Repository;
 
-import com.example.febackendproject.DTO.PartialStockDTO;
+import com.example.febackendproject.DTO.Stock.PartialStockDTO;
 import com.example.febackendproject.Entity.Stock;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

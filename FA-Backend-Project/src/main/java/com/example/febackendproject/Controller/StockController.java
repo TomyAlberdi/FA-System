@@ -1,7 +1,6 @@
 package com.example.febackendproject.Controller;
 
-import com.example.febackendproject.DTO.PartialStockDTO;
-import com.example.febackendproject.Entity.Product;
+import com.example.febackendproject.DTO.Stock.PartialStockDTO;
 import com.example.febackendproject.Entity.Stock;
 import com.example.febackendproject.Service.ProductService;
 import com.example.febackendproject.Service.StockService;

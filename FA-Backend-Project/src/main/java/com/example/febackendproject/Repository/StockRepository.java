@@ -1,8 +1,6 @@
 package com.example.febackendproject.Repository;
 
-import com.example.febackendproject.DTO.StockRecordDTO;
 import com.example.febackendproject.Entity.Stock;
-import com.example.febackendproject.Entity.StockRecord;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

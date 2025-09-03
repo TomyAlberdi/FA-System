@@ -1,5 +1,6 @@
-package com.example.febackendproject.DTO;
+package com.example.febackendproject.DTO.Stock;
 
+import com.example.febackendproject.Entity.StockRecord;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,13 +10,11 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PartialStockDTO {
+public class StockRecordDTO {
     
-    private Long id;
     private Long productId;
     private String productName;
     private String productSaleUnit;
-    private Integer quantity = 0;
-    private String productImage;
-    
+    private StockRecord record;
+
 }

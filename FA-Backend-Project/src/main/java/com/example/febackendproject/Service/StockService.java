@@ -1,8 +1,8 @@
 package com.example.febackendproject.Service;
 
-import com.example.febackendproject.DTO.PartialStockDTO;
-import com.example.febackendproject.DTO.StockRecordDTO;
-import com.example.febackendproject.DTO.StockReportMonthDTO;
+import com.example.febackendproject.DTO.Stock.PartialStockDTO;
+import com.example.febackendproject.DTO.Stock.StockRecordDTO;
+import com.example.febackendproject.DTO.Stock.StockReportMonthDTO;
 import com.example.febackendproject.Entity.Stock;
 import com.example.febackendproject.Entity.StockRecord;
 import com.example.febackendproject.Repository.StockPaginationRepository;

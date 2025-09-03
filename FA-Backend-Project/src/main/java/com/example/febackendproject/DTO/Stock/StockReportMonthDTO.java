@@ -1,4 +1,4 @@
-package com.example.febackendproject.DTO;
+package com.example.febackendproject.DTO.Stock;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
