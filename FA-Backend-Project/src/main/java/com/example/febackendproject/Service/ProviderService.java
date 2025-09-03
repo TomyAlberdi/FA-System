@@ -38,6 +38,12 @@ public class ProviderService {
         return provider.get();
     }
     
+    public void assertProviderExists(Long id) {
+        if (providerRepository.findById(id).isEmpty()) {
+            throw new ResourceNotFoundException("Proveedor con ID " + id + " no encontrado.");
+        }
+    }
+    
     public Provider findByName(String name) {
         Optional<Provider> provider = providerRepository.findByName(name);
         if (provider.isEmpty()) {

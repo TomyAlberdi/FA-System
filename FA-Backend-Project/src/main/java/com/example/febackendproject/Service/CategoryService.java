@@ -7,7 +7,6 @@ import com.example.febackendproject.Exception.ExistingAttributeException;
 import com.example.febackendproject.Exception.ResourceNotFoundException;
 import com.example.febackendproject.Mapper.CategoryMapper;
 import com.example.febackendproject.Repository.CategoryRepository;
-import com.example.febackendproject.Repository.ProductRepository;
 import com.example.febackendproject.Repository.SubcategoryRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,6 @@ import java.util.Optional;
 public class CategoryService {
     
     private final CategoryRepository categoryRepository;
-    private final ProductRepository productRepository;
     private final SubcategoryRepository subcategoryRepository;
     private final ProductService productService;
     
@@ -51,6 +49,12 @@ public class CategoryService {
         return CategoryMapper.toDTO(category.get(), subcategories);
     }
     
+    public void assertCategoryExists(Long id) {
+        if (categoryRepository.findById(id).isEmpty()) {
+            throw new ResourceNotFoundException("Categoría con ID " + id + " no encontrada.");
+        }
+    }
+    
     @Transactional
     public void update(String name, Long id) {
         // check name is available
@@ -59,7 +63,7 @@ public class CategoryService {
             throw new ExistingAttributeException("La categoría " + name + " ya existe.");
         }
         // check categoría exists
-        CompleteCategoryDTO category = this.findById(id);
+        this.assertCategoryExists(id);
         categoryRepository.updateById(name, id);
     }
     

@@ -73,10 +73,6 @@ public class StockService {
         }
     }
     
-    public void deleteStockByProductId(Long productId) {
-        stockRepository.deleteByProductId(productId);
-    }
-    
     private void addStockRecordToStock(Stock stock, StockRecord record) {
         if (stock.getStockRecords() == null) {
             stock.setStockRecords(new ArrayList<>());

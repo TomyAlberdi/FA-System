@@ -1,6 +1,5 @@
 package com.example.febackendproject.Service;
 
-import com.example.febackendproject.DTO.Category.CompleteCategoryDTO;
 import com.example.febackendproject.Entity.Subcategory;
 import com.example.febackendproject.Exception.ExistingAttributeException;
 import com.example.febackendproject.Exception.ResourceNotFoundException;
@@ -31,13 +30,19 @@ public class SubcategoryService {
         }
         return subcategory.get();
     }
-    
+
     public Subcategory findByName(String name) {
         Optional<Subcategory> subcategory = subcategoryRepository.findByName(name);
         if (subcategory.isEmpty()) {
             throw new ResourceNotFoundException("Subcategoría " + name + " no encontrada.");
         }
         return subcategory.get();
+    }
+    
+    public void assertSubcategoryExists(Long id) {
+        if (subcategoryRepository.findById(id).isEmpty()) {
+            throw new ResourceNotFoundException("Subcategoría con ID " + id + " no encontrada.");
+        }
     }
     
     @Transactional
@@ -53,7 +58,7 @@ public class SubcategoryService {
     @Transactional
     public Subcategory save(String name, Long categoryId) {
         // Check categoría exists
-        CompleteCategoryDTO category = categoryService.findById(categoryId);
+        categoryService.assertCategoryExists(categoryId);
         // Check name is available
         Optional<Subcategory> repeatedSubcategory = subcategoryRepository.findByName(name);
         if (repeatedSubcategory.isPresent()) {
@@ -76,7 +81,7 @@ public class SubcategoryService {
     }
     
     public List<Subcategory> getByCategoryId(Long categoryId) {
-        CompleteCategoryDTO category = categoryService.findById(categoryId);
+        categoryService.assertCategoryExists(categoryId);
         return subcategoryRepository.findByCategoryId(categoryId);
     }
     

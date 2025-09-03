@@ -1,6 +1,5 @@
 package com.example.febackendproject.Controller;
 
-import com.example.febackendproject.DTO.Category.CompleteCategoryDTO;
 import com.example.febackendproject.DTO.Product.PartialProductStockDTO;
 import com.example.febackendproject.Entity.Category;
 import com.example.febackendproject.Entity.Subcategory;
@@ -44,8 +43,8 @@ public class CategoryController {
         }
     }
     
-    @PatchMapping
-    public ResponseEntity<?> update(@RequestParam(value = "name") String name, @RequestParam(value = "id") Long id) {
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> update(@RequestParam(value = "name") String name, @PathVariable Long id) {
         categoryService.update(name, id);
         return ResponseEntity.ok().build();
     }
@@ -68,7 +67,7 @@ public class CategoryController {
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "8") int size
     ) {
-        CompleteCategoryDTO category = categoryService.findById(categoryId);
+        categoryService.assertCategoryExists(categoryId);
         return ResponseEntity.ok(productService.getPartialProductStockByCategory(categoryId, page, size));
     }
     
@@ -100,13 +99,13 @@ public class CategoryController {
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "8") int size
     ) {
-        Subcategory subcategory = subcategoryService.findById(subcategoryId);
+        subcategoryService.assertSubcategoryExists(subcategoryId);
         return ResponseEntity.ok(productService.getPartialProductStockBySubcategory(subcategoryId, page, size));
     }
     
-    @PatchMapping("/subcategory")
-    public ResponseEntity<?> updateSubcategory(@RequestParam String name, @RequestParam Long subcategoryId) {
-        subcategoryService.update(name, subcategoryId);
+    @PatchMapping("/subcategory/{id}")
+    public ResponseEntity<?> updateSubcategory(@RequestParam String name, @PathVariable Long id) {
+        subcategoryService.update(name, id);
         return ResponseEntity.ok().build();
     }
     

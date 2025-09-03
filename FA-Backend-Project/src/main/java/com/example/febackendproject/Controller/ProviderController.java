@@ -66,7 +66,7 @@ public class ProviderController {
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "8") int size
     ) {
-        Provider provider = providerService.findById(providerId);
+        providerService.assertProviderExists(providerId);
         return ResponseEntity.ok(productService.getPartialProductStockByProvider(providerId, page, size));
     }
 }

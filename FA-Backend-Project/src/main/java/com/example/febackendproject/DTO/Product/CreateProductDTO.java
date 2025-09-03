@@ -12,20 +12,26 @@ import java.util.List;
 @Getter
 @Setter
 public class CreateProductDTO {
-    private String code;
     private String name;
     private String description;
     private String quality;
-    private String mainImage;
-    private List<String> images;
+    private String code;
+    private String measureType;
+    private String measures;
+    private String saleUnit;
+    private String saleUnitPrice;
+    private String saleUnitCost;
+    private String measureUnitCost;
+    private Double measurePerSaleUnit;
+    private Integer discountPercentage;
     private Long providerId;
     private Long categoryId;
     private Long subcategoryId;
-    private String measureType;
-    private String measures;
-    private Double measurePrice;
-    private String saleUnit;
-    private String saleUnitCost;
-    private String measureUnitCost;
-    
+    private List<String> images;
+    private String color;
+    private String origen;
+    private String borde;
+    private String aspecto;
+    private String textura;
+    private String transito;
 }
