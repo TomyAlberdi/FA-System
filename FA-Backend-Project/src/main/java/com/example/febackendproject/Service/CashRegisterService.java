@@ -1,7 +1,9 @@
 package com.example.febackendproject.Service;
 
+import com.example.febackendproject.DTO.CreateCashRegisterRecordDTO;
 import com.example.febackendproject.DTO.PricesDTO;
 import com.example.febackendproject.Entity.CashRegisterRecord;
+import com.example.febackendproject.Mapper.CashRegisterRecordMapper;
 import com.example.febackendproject.Repository.CashRegisterRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,10 +20,12 @@ public class CashRegisterService {
 
     private final CashRegisterRepository cashRegisterRepository;
 
-    public CashRegisterRecord addRecord(CashRegisterRecord record) {
+    public CashRegisterRecord addRecord(CreateCashRegisterRecordDTO dto) {
+        CashRegisterRecord record = CashRegisterRecordMapper.createRecord(dto);
         return cashRegisterRepository.save(record);
     }
 
+    //TODO
     public List<CashRegisterRecord> getByDate(LocalDate date) {
         return cashRegisterRepository.getByDate(date);
     }

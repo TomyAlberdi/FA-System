@@ -1,5 +1,6 @@
 package com.example.febackendproject.Controller;
 
+import com.example.febackendproject.DTO.CreateCashRegisterRecordDTO;
 import com.example.febackendproject.DTO.PricesDTO;
 import com.example.febackendproject.Entity.CashRegisterRecord;
 import com.example.febackendproject.Service.CashRegisterService;
@@ -24,10 +25,8 @@ public class CashRegisterController {
     private final CashRegisterService cashRegisterService;
 
     @PostMapping
-    public ResponseEntity<CashRegisterRecord> save(
-            @RequestBody CashRegisterRecord record
-    ) {
-        CashRegisterRecord updatedRegister = cashRegisterService.addRecord(record);
+    public ResponseEntity<CashRegisterRecord> save(@RequestBody CreateCashRegisterRecordDTO dto) {
+        CashRegisterRecord updatedRegister = cashRegisterService.addRecord(dto);
         return ResponseEntity.ok(updatedRegister);
     }
 
