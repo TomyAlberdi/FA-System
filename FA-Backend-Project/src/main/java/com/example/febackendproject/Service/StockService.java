@@ -3,10 +3,14 @@ package com.example.febackendproject.Service;
 import com.example.febackendproject.DTO.Stock.PartialStockDTO;
 import com.example.febackendproject.DTO.Stock.StockRecordDTO;
 import com.example.febackendproject.DTO.Stock.StockReportMonthDTO;
+import com.example.febackendproject.Entity.Product;
 import com.example.febackendproject.Entity.Stock;
 import com.example.febackendproject.Entity.StockRecord;
+import com.example.febackendproject.Exception.ResourceNotFoundException;
+import com.example.febackendproject.Mapper.StockMapper;
 import com.example.febackendproject.Repository.StockPaginationRepository;
 import com.example.febackendproject.Repository.StockRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,48 +32,58 @@ public class StockService {
     private final StockRepository stockRepository;
     private final StockPaginationRepository stockPaginationRepository;
     
-    public Page<PartialStockDTO> getPaginatedStocks(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return stockPaginationRepository.listStocks(pageable);
-    }
-    
     public Page<PartialStockDTO> getPaginatedStocksByKeyword(String keyword, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
+        if (keyword == null || keyword.isEmpty()) {
+            return stockPaginationRepository.listStocks(pageable);
+        }
         return stockPaginationRepository.listStocksByKeyword(keyword, pageable);
     }
     
-    public Optional<Stock> getByProductId(Long productId) {
-        return stockRepository.findByProductId(productId);
+    public Stock getByProductId(Long productId) {
+        this.assertStockExists(productId);
+        return stockRepository.findByProductId(productId).orElse(null);
     }
     
-    public Stock save(Long productId, String productName, String productImage, String productSaleUnit, String productMeasureType, Double productMeasurePerSaleUnit) {
-        Stock stock = new Stock();
-        stock.setProductId(productId);
-        stock.setProductName(productName);
-        stock.setProductImage(productImage);
-        stock.setProductSaleUnit(productSaleUnit);
-        stock.setProductMeasureType(productMeasureType);
-        stock.setProductMeasurePerSaleUnit(productMeasurePerSaleUnit);
-        return stockRepository.save(stock);
-    }
-
-    public void increaseStockById(Long productId, Integer quantity) {
-        Optional<Stock> stock = stockRepository.findByProductId(productId);
-        if (stock.isPresent()) {
-                stock.get().setQuantity(stock.get().getQuantity() + quantity);
-                StockRecord record = new StockRecord("INCREASE", quantity, LocalDateTime.now());
-                addStockRecordToStock(stock.get(), record);
-                stockRepository.save(stock.get());
+    public void assertStockExists(Long productId) {
+        if (stockRepository.findByProductId(productId).isEmpty()) {
+            throw new ResourceNotFoundException("El Stock del producto ID " + productId + " no existe.");
         }
     }
     
+    @Transactional
+    public Stock save(Product product) {
+        Stock stock = StockMapper.createNewStock(product);
+        return stockRepository.save(stock);
+    }
+
+    @Transactional
+    public void increaseStockById(Long productId, Integer quantity) {
+        Optional<Stock> search = stockRepository.findByProductId(productId);
+        if (search.isEmpty()) {
+            throw new ResourceNotFoundException("Stock del producto ID " + productId + " no encontrado.");
+        }
+        Stock stock = search.get();
+        Integer newStock = stock.getQuantity() + quantity;
+        stock.setQuantity(newStock);
+        StockRecord record = new StockRecord("INCREASE", quantity, LocalDateTime.now());
+        addStockRecordToStock(stock, record);
+        stockRepository.save(stock);
+    }
+    
+    @Transactional
     public void decreaseStockById(Long productId, Integer quantity) {
-        Optional<Stock> stock = stockRepository.findByProductId(productId);
-        if (stock.isPresent() && stock.get().getQuantity() >= quantity) {
-            stock.get().setQuantity(stock.get().getQuantity() - quantity);
+        Optional<Stock> search = stockRepository.findByProductId(productId);
+        if (search.isEmpty()) {
+            throw new ResourceNotFoundException("Stock del producto ID " + productId + " no encontrado.");
+        }
+        Stock stock = search.get();
+        if (stock.getQuantity() >= quantity) {
+            Integer newStock = stock.getQuantity() - quantity;
+            stock.setQuantity(newStock);
             StockRecord record = new StockRecord("DECREASE", quantity, LocalDateTime.now());
-            addStockRecordToStock(stock.get(), record);
-            stockRepository.save(stock.get());
+            addStockRecordToStock(stock, record);
+            stockRepository.save(stock);
         }
     }
     
@@ -77,7 +91,7 @@ public class StockService {
         if (stock.getStockRecords() == null) {
             stock.setStockRecords(new ArrayList<>());
         }
-        stock.getStockRecords().add(0, record);
+        stock.getStockRecords().add(record);
     }
     
     public List<StockRecordDTO> getLastRecords() {

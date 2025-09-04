@@ -6,9 +6,11 @@ import com.example.febackendproject.DTO.Product.CreateProductDTO;
 import com.example.febackendproject.DTO.Product.PartialProductDTO;
 import com.example.febackendproject.DTO.Product.PartialProductStockDTO;
 import com.example.febackendproject.Entity.Product;
+import com.example.febackendproject.Entity.Stock;
 import com.example.febackendproject.Exception.ResourceNotFoundException;
 import com.example.febackendproject.Hooks.ProductSpecifications;
 import com.example.febackendproject.Mapper.ProductMapper;
+import com.example.febackendproject.Mapper.StockMapper;
 import com.example.febackendproject.Repository.*;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -31,6 +33,7 @@ public class ProductService {
     private final SubcategoryRepository subcategoryRepository;
     private final ProviderRepository providerRepository;
     private final StockRepository stockRepository;
+    private final StockService stockService;
     private final ProviderService providerService;
     private final CategoryService categoryService;
     private final SubcategoryService subcategoryService;
@@ -49,13 +52,7 @@ public class ProductService {
         categoryRepository.incrementProductsAmount(dto.getCategoryId());
         subcategoryRepository.incrementProductsAmount(dto.getSubcategoryId());
         providerRepository.incrementProductsAmount(dto.getProviderId());
-        //FIXME update after refactoring stock service
-        
-        //        if (newProduct.getImages().isEmpty()) {
-        //            Stock newStock = stockService.save(newProduct.getId(), newProduct.getName(), "", newProduct.getSaleUnit(), newProduct.getMeasureType(), newProduct.getMeasurePerSaleUnit());
-        //        } else {
-        //            Stock newStock = stockService.save(newProduct.getId(), newProduct.getName(), newProduct.getImages().get(0), newProduct.getSaleUnit(), newProduct.getMeasureType(), newProduct.getMeasurePerSaleUnit());
-        //        }
+        stockService.save(product);
         return productRepository.save(product);
     }
     
@@ -78,8 +75,11 @@ public class ProductService {
         providerService.assertProviderExists(dto.getProviderId());
         providerRepository.decrementProductsAmount(product.getProviderId());
         providerRepository.incrementProductsAmount(dto.getProviderId());
-        
         ProductMapper.updateProduct(product, dto);
+        // Update product stock
+        Stock stock = stockService.getByProductId(product.getId());
+        StockMapper.updateStock(stock, product);
+        stockRepository.save(stock);
         return productRepository.save(product);
     }
     
@@ -149,11 +149,6 @@ public class ProductService {
         if (productRepository.findById(id).isEmpty()) {
             throw new ResourceNotFoundException("Producto con ID " + id + " no encontrado.");
         }
-    }
-    
-    //FIXME check if usages can be delegated to repository
-    public Boolean existById(Long id) {
-        return productRepository.existsById(id);
     }
     
     @Transactional
