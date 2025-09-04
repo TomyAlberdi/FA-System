@@ -1,4 +1,4 @@
-package com.example.febackendproject.DTO;
+package com.example.febackendproject.DTO.Client;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,10 +9,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class PartialClientDTO {
-    
-    private Long id;
+public class CreateClientDTO {
     private String type;
     private String name;
-    
+    private String address;
+    private String cuitDni;
+    private String email;
+    private String phone;
 }
