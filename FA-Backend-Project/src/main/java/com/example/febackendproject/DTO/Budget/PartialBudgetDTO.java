@@ -1,4 +1,4 @@
-package com.example.febackendproject.DTO;
+package com.example.febackendproject.DTO.Budget;
 
 import com.example.febackendproject.Entity.Budget;
 import lombok.AllArgsConstructor;
