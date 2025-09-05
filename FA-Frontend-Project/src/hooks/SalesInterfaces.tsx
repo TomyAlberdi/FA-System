@@ -33,6 +33,13 @@ export enum BudgetStatus {
   CANCELADO = "CANCELADO",
 }
 
+export interface CreateBudgetDTO {
+  discount: number;
+  client?: CreateClientDTO;
+  products: Array<ProductBudget>;
+  total: number;
+}
+
 export interface PartialBudget {
   id: number;
   clientName: string;

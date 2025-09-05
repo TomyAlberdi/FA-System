@@ -6,6 +6,7 @@ import ScrollToHashElement from "@/hooks/ScrollToHasComponent.tsx";
 import { KindeProvider } from "@kinde-oss/kinde-auth-react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
+import BudgetContextComponent from "./Context/Budget/BudgetContextComponent";
 import ClientContextComponent from "./Context/Client/ClientContextComponent";
 import ProductContextComponent from "./Context/Product/ProductContextComponent";
 import ProviderContextComponent from "./Context/Provider/ProviderContextComponent";
@@ -32,13 +33,15 @@ createRoot(document.getElementById("root")!).render(
             <ProductContextComponent>
               <StockContextComponent>
                 <ClientContextComponent>
-                  <ThemeProvider
-                    defaultTheme="light"
-                    storageKey="vite-ui-theme"
-                  >
-                    <ScrollToHashElement />
-                    <App />
-                  </ThemeProvider>
+                  <BudgetContextComponent>
+                    <ThemeProvider
+                      defaultTheme="light"
+                      storageKey="vite-ui-theme"
+                    >
+                      <ScrollToHashElement />
+                      <App />
+                    </ThemeProvider>
+                  </BudgetContextComponent>
                 </ClientContextComponent>
               </StockContextComponent>
             </ProductContextComponent>
