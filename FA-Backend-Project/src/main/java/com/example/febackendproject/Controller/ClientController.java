@@ -43,7 +43,7 @@ public class ClientController {
         return ResponseEntity.ok(newClient);
     }
     
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> updateClient(@RequestBody CreateClientDTO client, @PathVariable Long id) {
         Client newClient = clientService.update(client, id);
         return ResponseEntity.ok(newClient);

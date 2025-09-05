@@ -11,7 +11,7 @@ export interface CompleteClient extends PartialClient {
   cuitDni: string;
 }
 
-export interface AddClient {
+export interface CreateClientDTO {
   name: string;
   type: string;
   address: string;
