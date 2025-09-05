@@ -22,11 +22,11 @@ public class ClientMapper {
     
     public static void updateFromDTO(Client client, CreateClientDTO dto) {
         client.setType(dto.getType());
-        client.setName(client.getName());
-        client.setAddress(client.getAddress());
-        client.setCuitDni(client.getCuitDni());
-        client.setEmail(client.getEmail());
-        client.setPhone(client.getPhone());
+        client.setName(dto.getName());
+        client.setAddress(dto.getAddress());
+        client.setCuitDni(dto.getCuitDni());
+        client.setEmail(dto.getEmail());
+        client.setPhone(dto.getPhone());
     }
     
 }

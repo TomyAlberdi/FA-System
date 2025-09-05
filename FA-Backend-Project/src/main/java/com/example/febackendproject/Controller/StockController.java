@@ -1,28 +1,20 @@
 package com.example.febackendproject.Controller;
 
 import com.example.febackendproject.DTO.Stock.PartialStockDTO;
-import com.example.febackendproject.Entity.Stock;
-import com.example.febackendproject.Service.ProductService;
 import com.example.febackendproject.Service.StockService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @AllArgsConstructor
 @RestController
 @RestControllerAdvice
-@Validated
 @RequestMapping("/stock")
 public class StockController {
     
     private final StockService stockService;
-    private final ProductService productService;
-    
+
     @GetMapping
     public ResponseEntity<Page<PartialStockDTO>> search(
             @RequestParam(value = "keyword", defaultValue = "") String keyword,

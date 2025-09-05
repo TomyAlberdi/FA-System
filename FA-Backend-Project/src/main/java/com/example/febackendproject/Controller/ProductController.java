@@ -10,19 +10,17 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @AllArgsConstructor
 @RestController
-@Validated
 @RequestMapping("/product")
 public class ProductController {
     
     private final ProductService productService;
 
     @GetMapping
-    public ResponseEntity<Page<PartialProductDTO>> list(
+    public ResponseEntity<?> list(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "9") int size) {
         return ResponseEntity.ok().body(productService.getPaginatedPartialProducts(page, size));
@@ -34,7 +32,7 @@ public class ProductController {
     }
     
     @GetMapping("/search")
-    public ResponseEntity<Page<PartialProductDTO>> getFilteredPartialProducts(
+    public ResponseEntity<?> getFilteredPartialProducts(
             FilterProductDTO filter,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "9") int size

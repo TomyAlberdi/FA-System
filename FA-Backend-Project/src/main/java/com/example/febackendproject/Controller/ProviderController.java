@@ -1,28 +1,24 @@
 package com.example.febackendproject.Controller;
 
-import com.example.febackendproject.DTO.Product.PartialProductStockDTO;
 import com.example.febackendproject.DTO.Provider.CreateProviderDTO;
 import com.example.febackendproject.Entity.Provider;
 import com.example.febackendproject.Service.ProductService;
 import com.example.febackendproject.Service.ProviderService;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @AllArgsConstructor
 @RestController
 @RestControllerAdvice
-@Validated
 @RequestMapping("/provider")
 public class ProviderController {
     
     private final ProviderService providerService;
     private final ProductService productService;
     
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<?> list() {
         return ResponseEntity.status(HttpStatus.OK).body(providerService.list());
     }
@@ -37,7 +33,7 @@ public class ProviderController {
         }
     }
     
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody CreateProviderDTO dto) {
         providerService.updateById(dto, id);
         return ResponseEntity.ok().build();
@@ -61,7 +57,7 @@ public class ProviderController {
     }
     
     @GetMapping("/{providerId}/products")
-    public ResponseEntity<Page<PartialProductStockDTO>> getPartialByProvider(
+    public ResponseEntity<?> getPartialByProvider(
             @PathVariable Long providerId,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "8") int size

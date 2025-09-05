@@ -61,7 +61,7 @@ public class ProductMapper {
     }
     
     public static void updateProduct(Product product, CreateProductDTO dto) {
-        double parsedSaleUnitPrice = Double.parseDouble(dto.getSaleUnitPrice());
+        double parsedSaleUnitPrice = dto.getSaleUnitPrice();
         double measurePrice = 0.0;
         if (dto.getSaleUnit().equals(dto.getMeasureType())) {
             dto.setMeasurePerSaleUnit(1.0);
@@ -90,9 +90,9 @@ public class ProductMapper {
         product.setMeasures(dto.getMeasures());
         product.setMeasurePrice(measurePrice);
         product.setSaleUnit(dto.getSaleUnit());
-        product.setSaleUnitCost(dto.getSaleUnitCost());
-        product.setMeasureUnitCost(dto.getMeasureUnitCost());
-        product.setSaleUnitPrice(dto.getSaleUnitPrice());
+        product.setSaleUnitCost(dto.getSaleUnitCost().toString());
+        product.setMeasureUnitCost(dto.getMeasureUnitCost().toString());
+        product.setSaleUnitPrice(dto.getSaleUnitPrice().toString());
         product.setMeasurePerSaleUnit(dto.getMeasurePerSaleUnit());
         product.setDiscountPercentage(dto.getDiscountPercentage());
         product.setDiscountedPrice(discountedPrice);

@@ -3,22 +3,16 @@ package com.example.febackendproject.Controller;
 
 import com.example.febackendproject.DTO.Client.CreateClientDTO;
 import com.example.febackendproject.DTO.FilterClientDTO;
-import com.example.febackendproject.DTO.Client.PartialClientDTO;
 import com.example.febackendproject.Entity.Client;
 import com.example.febackendproject.Service.ClientService;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @AllArgsConstructor
 @RestController
 @RestControllerAdvice
-@Validated
 @RequestMapping("/client")
 public class ClientController {
     
@@ -30,7 +24,7 @@ public class ClientController {
     }
     
     @GetMapping("/search")
-    public ResponseEntity<Page<PartialClientDTO>> list(
+    public ResponseEntity<?> list(
             FilterClientDTO filter,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size
@@ -39,18 +33,18 @@ public class ClientController {
     }
     
     @GetMapping("/list")
-    public ResponseEntity<List<PartialClientDTO>> listComplete() {
+    public ResponseEntity<?> listComplete() {
         return ResponseEntity.ok(clientService.list());
     }
     
     @PostMapping
-    public ResponseEntity<?> addClient(@Validated @RequestBody CreateClientDTO client) {
+    public ResponseEntity<?> addClient(@RequestBody CreateClientDTO client) {
         Client newClient = clientService.save(client);
         return ResponseEntity.ok(newClient);
     }
     
     @PatchMapping("/{id}")
-    public ResponseEntity<?> updateClient(@Validated @RequestBody CreateClientDTO client, @PathVariable Long id) {
+    public ResponseEntity<?> updateClient(@RequestBody CreateClientDTO client, @PathVariable Long id) {
         Client newClient = clientService.update(client, id);
         return ResponseEntity.ok(newClient);
     }

@@ -10,12 +10,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@Validated
 @RequestMapping("/category")
 public class CategoryController {
 
@@ -62,7 +60,7 @@ public class CategoryController {
     }
     
     @GetMapping("/{categoryId}/products")
-    public ResponseEntity<Page<PartialProductStockDTO>> getPartialByCategory(
+    public ResponseEntity<?> getPartialByCategory(
             @PathVariable Long categoryId,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "8") int size
@@ -103,14 +101,14 @@ public class CategoryController {
         return ResponseEntity.ok(productService.getPartialProductStockBySubcategory(subcategoryId, page, size));
     }
     
-    @PatchMapping("/subcategory/{id}")
-    public ResponseEntity<?> updateSubcategory(@RequestParam String name, @PathVariable Long id) {
+    @PatchMapping("/subcategory/{id}/{name}")
+    public ResponseEntity<?> updateSubcategory(@PathVariable String name, @PathVariable Long id) {
         subcategoryService.update(name, id);
         return ResponseEntity.ok().build();
     }
     
-    @PostMapping("/subcategory")
-    public ResponseEntity<?> save(@RequestParam String name, @RequestParam Long categoryId) {
+    @PostMapping("/{categoryId}/subcategory/{name}")
+    public ResponseEntity<?> save(@PathVariable Long categoryId, @PathVariable String name) {
         Subcategory subcategory = subcategoryService.save(name, categoryId);
         return ResponseEntity.status(HttpStatus.CREATED).body(subcategory);
     }

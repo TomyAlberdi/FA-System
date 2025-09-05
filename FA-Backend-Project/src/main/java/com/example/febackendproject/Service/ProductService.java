@@ -52,8 +52,9 @@ public class ProductService {
         categoryRepository.incrementProductsAmount(dto.getCategoryId());
         subcategoryRepository.incrementProductsAmount(dto.getSubcategoryId());
         providerRepository.incrementProductsAmount(dto.getProviderId());
-        stockService.save(product);
-        return productRepository.save(product);
+        Product savedProduct = productRepository.save(product);
+        stockService.save(savedProduct);
+        return savedProduct;
     }
     
     @Transactional
@@ -63,16 +64,16 @@ public class ProductService {
             throw new ResourceNotFoundException("Producto con ID " + id + " no encontrado.");
         }
         Product product = search.get();
-        // Update categories amounts
         categoryService.assertCategoryExists(dto.getCategoryId());
+        subcategoryService.assertSubcategoryExists(dto.getSubcategoryId());
+        providerService.assertProviderExists(dto.getProviderId());
+        // Update categories amounts
         categoryRepository.decrementProductsAmount(product.getCategoryId());
         categoryRepository.incrementProductsAmount(dto.getCategoryId());
         // Update subcategories amounts
-        subcategoryService.assertSubcategoryExists(dto.getSubcategoryId());
         subcategoryRepository.decrementProductsAmount(product.getSubcategoryId());
         subcategoryRepository.incrementProductsAmount(dto.getSubcategoryId());
         // Update provider amounts
-        providerService.assertProviderExists(dto.getProviderId());
         providerRepository.decrementProductsAmount(product.getProviderId());
         providerRepository.incrementProductsAmount(dto.getProviderId());
         ProductMapper.updateProduct(product, dto);
@@ -172,8 +173,6 @@ public class ProductService {
     }
     
     public Page<PartialProductDTO> getFilteredPartialProducts(FilterProductDTO filterProductDTO, int page, int size) {
-        subcategoryService.assertSubcategoryExists(filterProductDTO.getSubcategoryId());
-        providerService.assertProviderExists(filterProductDTO.getProviderId());
         Pageable pageable = PageRequest.of(page, size);
         Specification<Product> spec = Specification
                 .where(ProductSpecifications.hasSubcategory(filterProductDTO.getSubcategoryId()))

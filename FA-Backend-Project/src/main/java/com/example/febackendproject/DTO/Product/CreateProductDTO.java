@@ -1,9 +1,6 @@
 package com.example.febackendproject.DTO.Product;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -11,6 +8,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString
 public class CreateProductDTO {
     private String name;
     private String description;
@@ -19,9 +17,9 @@ public class CreateProductDTO {
     private String measureType;
     private String measures;
     private String saleUnit;
-    private String saleUnitPrice;
-    private String saleUnitCost;
-    private String measureUnitCost;
+    private Double saleUnitPrice;
+    private Double saleUnitCost;
+    private Double measureUnitCost;
     private Double measurePerSaleUnit;
     private Integer discountPercentage;
     private Long providerId;

@@ -1,7 +1,6 @@
 package com.example.febackendproject.Controller;
 
 import com.example.febackendproject.DTO.Budget.CreateBudgetDTO;
-import com.example.febackendproject.DTO.Budget.PartialBudgetDTO;
 import com.example.febackendproject.Entity.Budget;
 import com.example.febackendproject.Service.BudgetService;
 import com.example.febackendproject.Service.ClientService;
@@ -9,7 +8,6 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -18,7 +16,6 @@ import java.util.List;
 @AllArgsConstructor
 @RestController
 @RestControllerAdvice
-@Validated
 @RequestMapping("/budget")
 public class BudgetController {
 
