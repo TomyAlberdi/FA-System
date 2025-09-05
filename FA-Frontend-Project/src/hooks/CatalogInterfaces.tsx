@@ -183,8 +183,8 @@ export interface PaginationInfo {
   last: boolean;
 }
 
-export interface PaginationResponse {
-  content: Array<never>;
+export interface PaginationResponse<T> {
+  content: Array<T>;
   pageable: {
     pageNumber: number;
     pageSize: number;
@@ -221,4 +221,9 @@ export interface StockReport {
   month: string;
   in: number;
   out: number;
+}
+
+export enum StockChangeType {
+  INCREASE = "increase",
+  REDUCE = "reduce",
 }
