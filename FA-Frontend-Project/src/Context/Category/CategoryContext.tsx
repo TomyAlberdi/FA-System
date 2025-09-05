@@ -7,7 +7,7 @@ import {
 import { createContext } from "react";
 
 export interface CategoryContextType {
-  Categories: ReturnData;
+  Categories: ReturnData<Category>;
   fetchCategories: () => Promise<void>;
   fetchCategory: (identifier: number | string) => Promise<Category | undefined>;
   fetchCategoryProducts: (

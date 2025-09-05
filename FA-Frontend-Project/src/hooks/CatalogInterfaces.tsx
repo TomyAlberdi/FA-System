@@ -17,12 +17,15 @@ export interface Subcategory extends PartialCSP {
   categoryId: number;
 }
 
-export interface Provider extends PartialCSP {
+export interface CreateProviderDTO {
   locality: string;
   address: string;
   phone: string;
   email: string;
   cuit: string;
+}
+
+export interface Provider extends PartialCSP, CreateProviderDTO {
   productsDiscount?: number;
 }
 
