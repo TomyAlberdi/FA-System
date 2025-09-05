@@ -37,7 +37,7 @@ public class BudgetController {
     }
 
     @PostMapping
-    public ResponseEntity<Budget> createBudget(
+    public ResponseEntity<?> createBudget(
             @RequestBody @Valid CreateBudgetDTO dto,
             @RequestParam(required = false) Long clientId
     ) {
@@ -58,12 +58,12 @@ public class BudgetController {
     }
 
     @GetMapping("/date/{date}")
-    public ResponseEntity<List<PartialBudgetDTO>> getBudgetByDate(@PathVariable LocalDate date) {
+    public ResponseEntity<?> getBudgetByDate(@PathVariable LocalDate date) {
         return ResponseEntity.ok(budgetService.getByDate(date));
     }
     
     @GetMapping("/range")
-    public ResponseEntity<List<PartialBudgetDTO>> getBudgetByRange(
+    public ResponseEntity<?> getBudgetByRange(
             @RequestParam(value = "start") LocalDate start,
             @RequestParam(value = "end") LocalDate end
     ) {
@@ -71,7 +71,7 @@ public class BudgetController {
     }
 
     @PutMapping
-    public ResponseEntity<Budget> updateBudget(
+    public ResponseEntity<?> updateBudget(
             @RequestBody @Valid CreateBudgetDTO dto,
             @RequestParam(required = false) Long clientId,
             @RequestParam Long budgetId
@@ -80,13 +80,13 @@ public class BudgetController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBudget(@PathVariable Long id) {
+    public ResponseEntity<?> deleteBudget(@PathVariable Long id) {
         budgetService.delete(id);
         return ResponseEntity.ok().build();
     }
     
     @GetMapping("/lastBudgets")
-    public ResponseEntity<List<PartialBudgetDTO>> getLastBudgets() {
+    public ResponseEntity<?> getLastBudgets() {
         return ResponseEntity.ok(budgetService.getLastBudgets());
     }
     

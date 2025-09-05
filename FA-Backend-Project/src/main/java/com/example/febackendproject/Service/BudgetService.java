@@ -3,11 +3,14 @@ package com.example.febackendproject.Service;
 import com.example.febackendproject.DTO.Budget.CreateBudgetDTO;
 import com.example.febackendproject.DTO.BudgetReportMonthDTO;
 import com.example.febackendproject.DTO.Budget.PartialBudgetDTO;
+import com.example.febackendproject.DTO.CreateCashRegisterRecordDTO;
 import com.example.febackendproject.Entity.Budget;
+import com.example.febackendproject.Entity.CashRegisterRecord;
 import com.example.febackendproject.Entity.Client;
 import com.example.febackendproject.Entity.ProductBudget;
 import com.example.febackendproject.Exception.ResourceNotFoundException;
 import com.example.febackendproject.Mapper.BudgetMapper;
+import com.example.febackendproject.Mapper.CashRegisterRecordMapper;
 import com.example.febackendproject.Repository.BudgetRepository;
 import com.example.febackendproject.Repository.ClientRepository;
 import com.example.febackendproject.Repository.StockRepository;
@@ -83,18 +86,11 @@ public class BudgetService {
         }
         if (unavailableProducts.isEmpty()) {
             budgetProducts.forEach(product -> stockService.decreaseStockById(product.getId(), product.getSaleUnitQuantity()));
-            //FIXME after refactoring cash register
-//            if (paid) {
-//                // Create Cash Register Record on Budget Status Change (Budget ID as Record Detail)
-//                CashRegisterRecord newRecord = new CashRegisterRecord();
-//                LocalDate today = LocalDate.now();
-//                today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-//                newRecord.setDate(today);
-//                newRecord.setType(CashRegisterRecord.Type.INGRESO);
-//                newRecord.setAmount(budget.getFinalAmount());
-//                newRecord.setDetail("PRESUPUESTO " + budget.getId());
-//                cashRegisterService.addRecord(newRecord);
-//            }
+            if (paid) {
+                // Create Cash Register Record on Budget Status Change (Budget ID as Record Detail)
+                CreateCashRegisterRecordDTO dto = CashRegisterRecordMapper.createDTO(budget);
+                cashRegisterService.addRecord(dto);
+            }
             budget.setStatus(status);
             budget.setStockDecreased(true);
             budgetRepository.save(budget);

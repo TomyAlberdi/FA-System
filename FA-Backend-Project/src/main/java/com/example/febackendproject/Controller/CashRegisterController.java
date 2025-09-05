@@ -4,6 +4,7 @@ import com.example.febackendproject.DTO.CreateCashRegisterRecordDTO;
 import com.example.febackendproject.DTO.PricesDTO;
 import com.example.febackendproject.Entity.CashRegisterRecord;
 import com.example.febackendproject.Service.CashRegisterService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -25,19 +26,27 @@ public class CashRegisterController {
     private final CashRegisterService cashRegisterService;
 
     @PostMapping
-    public ResponseEntity<CashRegisterRecord> save(@RequestBody CreateCashRegisterRecordDTO dto) {
+    public ResponseEntity<?> save(@RequestBody CreateCashRegisterRecordDTO dto) {
         CashRegisterRecord updatedRegister = cashRegisterService.addRecord(dto);
         return ResponseEntity.ok(updatedRegister);
     }
 
-    @GetMapping("/total")
-    public ResponseEntity<Double> getTotal() {
-        return ResponseEntity.ok(cashRegisterService.getTotalAmount());
+    @PutMapping
+    public ResponseEntity<?> updateRecord(
+            @RequestBody @Valid CreateCashRegisterRecordDTO dto,
+            @RequestParam Long recordId
+    ) {
+        return ResponseEntity.ok(cashRegisterService.update(dto, recordId));
     }
 
     @GetMapping("/{date}")
     public ResponseEntity<List<CashRegisterRecord>> getByDate(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         return ResponseEntity.ok(cashRegisterService.getByDate(date));
+    }
+
+    @GetMapping("/total")
+    public ResponseEntity<Double> getTotal() {
+        return ResponseEntity.ok(cashRegisterService.getTotalAmount());
     }
 
     @GetMapping("/types/{yearMonth}")

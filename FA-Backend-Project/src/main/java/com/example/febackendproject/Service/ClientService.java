@@ -52,11 +52,6 @@ public class ClientService {
         }
     }
     
-    //FIXME check if it can be delegated when refactoring budget
-    public Boolean existsById(Long id) {
-        return clientRepository.existsById(id);
-    }
-    
     public Client save(CreateClientDTO dto) {
         Client client = ClientMapper.createClient(dto);
         return clientRepository.save(client);
