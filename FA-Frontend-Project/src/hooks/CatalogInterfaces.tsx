@@ -1,6 +1,6 @@
-export interface ReturnData {
+export interface ReturnData<T> {
   Loading: boolean;
-  data: Array<unknown> | Price;
+  data: Array<T> | T;
 }
 
 export interface PartialCSP {

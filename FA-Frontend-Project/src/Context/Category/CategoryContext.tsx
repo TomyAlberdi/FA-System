@@ -9,7 +9,7 @@ import { createContext } from "react";
 export interface CategoryContextType {
   Categories: ReturnData;
   fetchCategories: () => Promise<void>;
-  fetchCategory: (id: number) => Promise<Category | undefined>;
+  fetchCategory: (identifier: number | string) => Promise<Category | undefined>;
   fetchCategoryProducts: (
     id: number,
     page: number,

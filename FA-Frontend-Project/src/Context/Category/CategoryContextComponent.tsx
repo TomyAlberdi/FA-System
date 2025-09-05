@@ -4,7 +4,7 @@ import {
 } from "@/Context/Category/CategoryContext";
 import { Category, PartialCSP, ReturnData } from "@/hooks/CatalogInterfaces";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 
 interface CategoryContextComponentProps {
   children: ReactNode;
@@ -16,7 +16,7 @@ const CategoryContextComponent: React.FC<CategoryContextComponentProps> = ({
   const { getToken } = useKindeAuth();
   const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-  const [Categories, setCategories] = useState<ReturnData>({
+  const [Categories, setCategories] = useState<ReturnData<Category>>({
     Loading: true,
     data: Array<Category>(),
   });
@@ -45,14 +45,14 @@ const CategoryContextComponent: React.FC<CategoryContextComponentProps> = ({
     }
   };
 
-  const fetchCategory = async (id: number) => {
+  const fetchCategory = async (identifier: number | string) => {
     try {
       if (!getToken) {
         console.error("getToken is undefined");
         return;
       }
       const accessToken = await getToken();
-      const response = await fetch(`${BASE_URL}/category/${id}`, {
+      const response = await fetch(`${BASE_URL}/category/${identifier}`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -175,6 +175,19 @@ const CategoryContextComponent: React.FC<CategoryContextComponentProps> = ({
       console.error("Error fetching Category: ", error);
     }
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (getToken) {
+        const accessToken = await getToken();
+        if (accessToken) {
+          fetchCategories();
+        }
+      }
+    };
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [getToken]);
 
   const exportData: CategoryContextType = {
     Categories,
