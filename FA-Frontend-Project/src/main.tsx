@@ -1,5 +1,6 @@
 import App from "@/App.tsx";
 import CatalogContextComponent from "@/Context/CatalogContextComponent.tsx";
+import CategoryContextComponent from "@/Context/Category/CategoryContextComponent.tsx";
 import SalesContextComponent from "@/Context/SalesContextComponent.tsx";
 import { ThemeProvider } from "@/Context/theme-provider.tsx";
 import ScrollToHashElement from "@/hooks/ScrollToHasComponent.tsx";
@@ -23,12 +24,14 @@ createRoot(document.getElementById("root")!).render(
       audience={audience}
     >
       <CatalogContextComponent>
-        <SalesContextComponent>
-          <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-            <ScrollToHashElement />
-            <App />
-          </ThemeProvider>
-        </SalesContextComponent>
+        <CategoryContextComponent>
+          <SalesContextComponent>
+            <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+              <ScrollToHashElement />
+              <App />
+            </ThemeProvider>
+          </SalesContextComponent>
+        </CategoryContextComponent>
       </CatalogContextComponent>
     </KindeProvider>
   </BrowserRouter>

@@ -1,16 +1,15 @@
 import { CatalogContext, CatalogContextType } from "@/Context/CatalogContext";
-import { ReactNode, useEffect, useState } from "react";
 import {
-  Category,
   CompleteProduct,
   Measure,
   Price,
   ProductStock,
   Provider,
   ReturnData,
-  Subcategory,
+  Subcategory
 } from "@/hooks/CatalogInterfaces";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import { ReactNode, useEffect, useState } from "react";
 
 interface CatalogContextComponentProps {
   children: ReactNode;
@@ -39,92 +38,6 @@ const CatalogContextComponent: React.FC<CatalogContextComponentProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getToken]);
 
-  /// CATEGORY GET /////
-
-  const [Categories, setCategories] = useState<ReturnData>({
-    Loading: true,
-    data: Array<Category>(),
-  });
-
-  const fetchCategories = async () => {
-    try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(`${BASE_URL}/category`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      if (!response.ok) {
-        console.error("Error fetching data: ", response.statusText);
-        return;
-      }
-      const result: Array<Category> = await response.json();
-      setCategories({ Loading: false, data: result });
-    } catch (error) {
-      console.error("Error fetching categories: ", error);
-      setCategories({ Loading: false, data: [] });
-    }
-  };
-
-  const fetchCategory = async (id: number) => {
-    try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(`${BASE_URL}/category/${id}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      if (!response.ok) {
-        console.error("Error fetching Category: ", response.statusText);
-        return;
-      }
-      const result: Category = await response.json();
-      return result;
-    } catch (error) {
-      console.error("Error fetching Category: ", error);
-    }
-  };
-
-  const fetchCategoryProducts = async (
-    id: number,
-    page: number,
-    size: number
-  ) => {
-    try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(
-        `${BASE_URL}/category/${id}/products?page=${page}&size=${size}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-      if (!response.ok) {
-        console.error("Error fetching Category: ", response.statusText);
-        window.alert(
-          `Error obteniendo los productos de la categoría: ${response.status}`
-        );
-        return;
-      }
-      const result = await response.json();
-      return result;
-    } catch (error) {
-      console.error("Error fetching Provider: ", error);
-    }
-  };
 
   /// SUBCATEGORY GET /////
 

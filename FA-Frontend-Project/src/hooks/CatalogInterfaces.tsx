@@ -3,29 +3,26 @@ export interface ReturnData {
   data: Array<unknown> | Price;
 }
 
-export interface Category {
+export interface PartialCSP {
   id: number;
   name: string;
   productsAmount: number;
+}
+
+export interface Category extends PartialCSP {
   subcategories: Array<Subcategory>;
 }
 
-export interface Subcategory {
-  id: number;
+export interface Subcategory extends PartialCSP {
   categoryId: number;
-  name: string;
-  productsAmount: number;
 }
 
-export interface Provider {
-  id?: number;
-  name: string;
+export interface Provider extends PartialCSP {
   locality: string;
   address: string;
   phone: string;
   email: string;
   cuit: string;
-  productsAmount?: number;
   productsDiscount?: number;
 }
 
