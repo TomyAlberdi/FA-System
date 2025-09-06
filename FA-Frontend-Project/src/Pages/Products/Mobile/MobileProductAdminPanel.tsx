@@ -1,12 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
-import { useCatalogContext } from "@/Context/UseCatalogContext";
+import { useCategoryContext } from "@/Context/Category/UseCategoryContext";
+import { useProductContext } from "@/Context/Product/UseProductContext";
+import { useProviderContext } from "@/Context/Provider/UseProviderContext";
 import { CompleteProduct } from "@/hooks/CatalogInterfaces";
 import { ProductDetail } from "@/lib/ProductDetail";
+import CreateProduct from "@/Pages/Products/CreateProduct/CreateProduct";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { CircleX, ListPlus, ListX, Menu, Package, Pencil } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import CreateProduct from "@/Pages/Products/CreateProduct/CreateProduct";
 
 interface MobileProductAdminPanelProps {
   Product: CompleteProduct | null;
@@ -19,14 +21,10 @@ const MobileProductAdminPanel = ({
   ReloadProduct,
   setReloadProduct,
 }: MobileProductAdminPanelProps) => {
-  const {
-    BASE_URL,
-    // Re fetch the filter data when deleting a product
-    fetchCategories,
-    fetchProviders,
-    fetchMeasures,
-    fetchPrices,
-  } = useCatalogContext();
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
+  const { fetchMeasures, fetchPrices } = useProductContext();
+  const { fetchCategories } = useCategoryContext();
+  const { fetchProviders } = useProviderContext();
   const { getToken } = useKindeAuth();
   const navigate = useNavigate();
 
@@ -126,8 +124,6 @@ const MobileProductAdminPanel = ({
             ProductProp={Product}
             TriggerTitle="Editar Producto"
             TriggerIcon={Pencil}
-            ReloadProduct={ReloadProduct}
-            setReloadProduct={setReloadProduct}
           />
           <Button
             className="w-10/12 text-md"

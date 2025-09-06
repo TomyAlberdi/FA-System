@@ -14,15 +14,14 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
-import { useCatalogContext } from "@/Context/UseCatalogContext";
+import { Slider } from "@/components/ui/slider";
+import { Provider as ProviderInterface } from "@/hooks/CatalogInterfaces";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { DollarSign, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Provider as ProviderInterface } from "@/hooks/CatalogInterfaces";
-import { Slider } from "@/components/ui/slider";
 
 const formSchema = z.object({
   id: z.number(),
@@ -40,7 +39,7 @@ export const UpdatePriceProvider = ({
 }) => {
   const [LoadingRequest, setLoadingRequest] = useState(false);
   const [Open, setOpen] = useState(false);
-  const { BASE_URL } = useCatalogContext();
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
   const { getToken } = useKindeAuth();
 
   const form = useForm<z.infer<typeof formSchema>>({

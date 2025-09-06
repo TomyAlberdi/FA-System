@@ -5,20 +5,20 @@ import {
 } from "@/components/ui/accordion";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { useCatalogContext } from "@/Context/UseCatalogContext";
-import { useEffect, useState } from "react";
+import { useSubcategoryContext } from "@/Context/Subcategory/UseSubcategoryContext";
 import {
   BasicFilterCheck as CategoryCheck,
   BasicFilterProps as CategoryFilterProps,
   Subcategory,
 } from "@/hooks/CatalogInterfaces";
+import { useEffect, useState } from "react";
 
 export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   Filter,
   setFilter,
   Loading,
 }) => {
-  const { Subcategories } = useCatalogContext();
+  const { Subcategories } = useSubcategoryContext();
   const [Data, setData] = useState<Array<CategoryCheck> | null>([]);
 
   const handleCheckboxChange = (id: number) => {
@@ -50,12 +50,16 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   };
 
   useEffect(() => {
-    if (Subcategories && Subcategories?.length > 0) {
+    if (
+      Subcategories &&
+      Array.isArray(Subcategories.data) &&
+      Subcategories?.data.length > 0
+    ) {
       if (Filter?.find((filter) => filter?.type === "subcategoryId")) {
         return;
       }
       const checkedCategories: Array<CategoryCheck> = [];
-      Subcategories?.forEach((category: Subcategory) => {
+      Subcategories.data.forEach((category: Subcategory) => {
         const newItem: CategoryCheck = {
           id: category.id,
           name: category.name,
@@ -103,7 +107,9 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
                     className="checkboxLabel text-sm w-full cursor-pointer"
                   >
                     {category.name}
-                    <span className="hidden md:block">{category.productsAmount}</span>
+                    <span className="hidden md:block">
+                      {category.productsAmount}
+                    </span>
                   </Label>
                 </div>
               )

@@ -5,7 +5,7 @@ import {
 } from "@/components/ui/accordion";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { useCatalogContext } from "@/Context/UseCatalogContext";
+import { useProductContext } from "@/Context/Product/UseProductContext";
 import {
   Measure,
   MeasureCheck,
@@ -18,7 +18,7 @@ export const MeasureFilter: React.FC<MeasureFilterProps> = ({
   setFilter,
   Loading,
 }) => {
-  const { Measures } = useCatalogContext();
+  const { Measures } = useProductContext();
   const [Data, setData] = useState<Array<MeasureCheck> | null>([]);
 
   const handleCheckboxChange = (id: number) => {
@@ -50,12 +50,12 @@ export const MeasureFilter: React.FC<MeasureFilterProps> = ({
   };
 
   useEffect(() => {
-    if (Measures && Measures?.length > 0) {
+    if (Measures && Array.isArray(Measures.data) && Measures.data.length > 0) {
       if (Filter?.find((filter) => filter?.type === "measures")) {
         return;
       }
       const checkedMeasures: Array<MeasureCheck> = [];
-      Measures?.forEach((measure: Measure, i: number) => {
+      Measures.data.forEach((measure: Measure, i: number) => {
         if (measure.measure !== null) {
           const newItem: MeasureCheck = {
             id: i,
@@ -105,7 +105,9 @@ export const MeasureFilter: React.FC<MeasureFilterProps> = ({
                     className="checkboxLabel text-sm w-full cursor-pointer"
                   >
                     {measure.measure}
-                    <span className="hidden md:block">{measure.productsAmount}</span>
+                    <span className="hidden md:block">
+                      {measure.productsAmount}
+                    </span>
                   </Label>
                 </div>
               )

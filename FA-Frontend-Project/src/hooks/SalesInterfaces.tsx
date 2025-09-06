@@ -77,10 +77,13 @@ export interface BudgetReport {
   CANCELADO: number;
 }
 
-export interface RegisterRecord {
-  id?: number;
+export interface createCashRegisterRecordDTO {
   date: string;
   amount: number;
   type: string;
   detail: string;
+}
+
+export interface RegisterRecord extends createCashRegisterRecordDTO {
+  id: number;
 }

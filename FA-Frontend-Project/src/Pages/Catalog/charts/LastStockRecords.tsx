@@ -9,15 +9,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useCatalogContext } from "@/Context/UseCatalogContext";
 import { StockRecordInfo } from "@/hooks/CatalogInterfaces";
+import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronDown, ChevronUp } from "lucide-react";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 
 export const LastStockRecords = () => {
-  const { BASE_URL } = useCatalogContext();
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
   const { getToken } = useKindeAuth();
   const [Loading, setLoading] = useState(true);
   const [Data, setData] = useState<Array<StockRecordInfo>>([]);

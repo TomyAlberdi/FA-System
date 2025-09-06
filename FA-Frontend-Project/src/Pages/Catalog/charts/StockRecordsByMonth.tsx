@@ -14,7 +14,6 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useCatalogContext } from "@/Context/UseCatalogContext";
 import { StockReport } from "@/hooks/CatalogInterfaces";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useEffect, useState } from "react";
@@ -32,7 +31,7 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export const StockRecordsByMonth = () => {
-  const { BASE_URL } = useCatalogContext();
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
   const { getToken } = useKindeAuth();
   const [Loading, setLoading] = useState(true);
   const [ChartData, setChartData] = useState<Array<StockReport>>([]);

@@ -10,7 +10,9 @@ import {
 } from "@/components/ui/select";
 import { TabsContent } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { useCatalogContext } from "@/Context/UseCatalogContext";
+import { useCategoryContext } from "@/Context/Category/UseCategoryContext";
+import { useProviderContext } from "@/Context/Provider/UseProviderContext";
+import { useSubcategoryContext } from "@/Context/Subcategory/UseSubcategoryContext";
 import {
   Category,
   CreateProductDTO,
@@ -27,8 +29,9 @@ interface BasicDataTabProps {
 }
 
 const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
-  const { fetchSubcategoriesByCategoryId, Providers, Categories } =
-    useCatalogContext();
+  const { Categories } = useCategoryContext();
+  const { Providers } = useProviderContext();
+  const { fetchSubcategoriesByCategoryId } = useSubcategoryContext();
 
   //#green Fetch subcategories by category id if product has category id
   const [Subcategories, setSubcategories] = useState<Array<Subcategory>>([]);

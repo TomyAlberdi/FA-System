@@ -4,7 +4,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Slider } from "@/components/ui/slider";
-import { useCatalogContext } from "@/Context/UseCatalogContext";
+import { useProductContext } from "@/Context/Product/UseProductContext";
 import {
   PriceCheck,
   BasicFilterProps as PricesFilterProps,
@@ -16,7 +16,7 @@ export const PricesFilter: React.FC<PricesFilterProps> = ({
   setFilter,
   Loading,
 }) => {
-  const { Prices } = useCatalogContext();
+  const { Prices } = useProductContext();
 
   const [Data, setData] = useState<PriceCheck | null>(null);
 
@@ -29,11 +29,13 @@ export const PricesFilter: React.FC<PricesFilterProps> = ({
     useState<number>(0);
 
   useEffect(() => {
-    setData(Prices ?? null);
-    setSelectedMinPrice(Prices?.minPrice ?? 0);
-    setSelectedMaxPrice(Prices?.maxPrice ?? 0);
-    setDisplaySelectedMinPrice(Prices?.minPrice ?? 0);
-    setDisplaySelectedMaxPrice(Prices?.maxPrice ?? 0);
+    if (!Array.isArray(Prices?.data)) {
+      setData(Prices.data ?? null);
+      setSelectedMinPrice(Prices.data.minPrice ?? 0);
+      setSelectedMaxPrice(Prices.data.maxPrice ?? 0);
+      setDisplaySelectedMinPrice(Prices.data.minPrice ?? 0);
+      setDisplaySelectedMaxPrice(Prices.data.maxPrice ?? 0);
+    }
   }, [Prices]);
 
   useEffect(() => {

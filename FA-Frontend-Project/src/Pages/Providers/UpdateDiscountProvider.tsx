@@ -15,7 +15,6 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Slider } from "@/components/ui/slider";
-import { useCatalogContext } from "@/Context/UseCatalogContext";
 import { Provider as ProviderIntefrace } from "@/hooks/CatalogInterfaces";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
@@ -40,7 +39,7 @@ export const UpdateDiscountProvider = ({
 }) => {
   const [LoadingRequest, setLoadingRequest] = useState(false);
   const [Open, setOpen] = useState(false);
-  const { BASE_URL } = useCatalogContext();
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
   const { getToken } = useKindeAuth();
 
   const form = useForm<z.infer<typeof formSchema>>({
