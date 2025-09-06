@@ -1,20 +1,22 @@
-import { SalesContext, SalesContextType } from "@/Context/SalesContext";
+import {
+  CashRegisterContext,
+  CashRegisterContextType,
+} from "@/Context/CashRegister/CashRegisterContext";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 
-interface SalesContextComponentProps {
-  children: React.ReactNode;
+interface CashRegisterContextComponentProps {
+  children: ReactNode;
 }
 
-const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
-  children,
-}) => {
+const CashRegisterContextComponent: React.FC<
+  CashRegisterContextComponentProps
+> = ({ children }) => {
   const { getToken } = useKindeAuth();
   const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-  /// CASH REGISTER GET ///
-  const [RegisterTotalAmount, setRegisterTotalAmount] = useState(0);
-  const fetchRegisterTotalAmount = async () => {
+  const [CashRegisterTotalAmount, setCashRegisterTotalAmount] = useState(0);
+  const fetchCashRegisterTotalAmount = async () => {
     const url = `${BASE_URL}/cash-register/total`;
     try {
       if (!getToken) {
@@ -32,14 +34,14 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
         return;
       }
       const result: number = await response.json();
-      setRegisterTotalAmount(Number(result.toFixed(2)));
+      setCashRegisterTotalAmount(Number(result.toFixed(2)));
     } catch (error) {
       console.error("Error fetching cash register: ", error);
     }
   };
 
   const [RegisterTypes, setRegisterTypes] = useState<Array<number>>([0, 0]);
-  const fetchRegisterTypes = async (yearMonth: string) => {
+  const fetchCashRegisterTypes = async (yearMonth: string) => {
     const url = `${BASE_URL}/cash-register/types/${yearMonth}`;
     try {
       if (!getToken) {
@@ -71,7 +73,7 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
       if (getToken) {
         const accessToken = await getToken();
         if (accessToken) {
-          fetchRegisterTotalAmount();
+          fetchCashRegisterTotalAmount();
         }
       }
     };
@@ -79,25 +81,20 @@ const SalesContextComponent: React.FC<SalesContextComponentProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getToken]);
 
-  const exportData: SalesContextType = {
-    BASE_URL,
-    fetchClient,
-    fetchBudgetsByClient,
-    fetchListOfClients,
-    fetchCompleteBudget,
-    fetchBudgetsByDate,
-    fetchBudgetsByDateRange,
-    fetchRegisterTotalAmount,
-    RegisterTotalAmount,
-    fetchRegisterTypes,
+  const exportData: CashRegisterContextType = {
+    fetchCashRegisterTotalAmount,
+    CashRegisterTotalAmount,
+    fetchCashRegisterTypes,
     RegisterTypes,
     FormattedDate,
     setFormattedDate,
   };
 
   return (
-    <SalesContext.Provider value={exportData}>{children}</SalesContext.Provider>
+    <CashRegisterContext.Provider value={exportData}>
+      {children}
+    </CashRegisterContext.Provider>
   );
 };
 
-export default SalesContextComponent;
+export default CashRegisterContextComponent;
