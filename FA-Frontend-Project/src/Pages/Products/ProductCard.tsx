@@ -1,12 +1,12 @@
-import { CardProduct } from "@/hooks/CatalogInterfaces";
-import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { SquarePlus } from "lucide-react";
+import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { CardProduct } from "@/hooks/CatalogInterfaces";
+import { SquarePlus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export const ProductCard = ({ product }: { product: CardProduct }) => {
@@ -78,7 +78,7 @@ export const ProductCard = ({ product }: { product: CardProduct }) => {
       </CardTitle>
       <Button
         className={
-          "w-full row-span-1 md:row-start-9 row-start-5 col-span-full text-center row-start-9" +
+          "w-full row-span-1 md:row-start-9 col-span-full text-center row-start-9" +
           (product.disabled ? " bg-red-700" : "")
         }
       >

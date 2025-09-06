@@ -1,11 +1,13 @@
 import { Button } from "@/components/ui/button";
-import { useCatalogContext } from "@/Context/UseCatalogContext";
+import { useCategoryContext } from "@/Context/Category/UseCategoryContext";
+import { useProductContext } from "@/Context/Product/UseProductContext";
+import { useProviderContext } from "@/Context/Provider/UseProviderContext";
 import { CompleteProduct } from "@/hooks/CatalogInterfaces";
 import { ProductDetail } from "@/lib/ProductDetail";
+import CreateProduct from "@/Pages/Products/CreateProduct/CreateProduct";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { CircleX, ListPlus, ListX, Package, Pencil } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import CreateProduct from "@/Pages/Products/CreateProduct/CreateProduct";
 
 export const ProductPageAdminPanel = ({
   Product,
@@ -16,16 +18,12 @@ export const ProductPageAdminPanel = ({
   ReloadProduct: boolean;
   setReloadProduct: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const {
-    BASE_URL,
-    // Re fetch the filter data when deleting a product
-    fetchCategories,
-    fetchProviders,
-    fetchMeasures,
-    fetchPrices,
-  } = useCatalogContext();
+  const { fetchMeasures, fetchPrices } = useProductContext();
+  const { fetchCategories } = useCategoryContext();
+  const { fetchProviders } = useProviderContext();
   const { getToken } = useKindeAuth();
   const navigate = useNavigate();
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
 
   const onDisablePress = () => {
     if (window.confirm("¿Desea desactivar el producto?")) {
