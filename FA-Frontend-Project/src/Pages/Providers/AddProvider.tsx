@@ -1,12 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useCatalogContext } from "@/Context/UseCatalogContext";
-import { Provider } from "@/hooks/CatalogInterfaces";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import { useProviderContext } from "@/Context/Provider/UseProviderContext";
+import { CreateProviderDTO } from "@/hooks/CatalogInterfaces";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 interface CategoriesHeaderProps {
   setOpen: (value: boolean) => void;
@@ -14,11 +12,9 @@ interface CategoriesHeaderProps {
 
 export const AddProvider: React.FC<CategoriesHeaderProps> = ({ setOpen }) => {
   const [LoadingRequest, setLoadingRequest] = useState(false);
-  const { BASE_URL, fetchProviders } = useCatalogContext();
-  const { getToken } = useKindeAuth();
-  const navigate = useNavigate();
+  const { createProvider, fetchProviders } = useProviderContext();
 
-  const [Provider, setProvider] = useState<Provider>({
+  const [Provider, setProvider] = useState<CreateProviderDTO>({
     name: "",
     locality: "",
     address: "",
@@ -35,32 +31,13 @@ export const AddProvider: React.FC<CategoriesHeaderProps> = ({ setOpen }) => {
     submitProvider(Provider);
   };
 
-  const submitProvider = async (provider: Provider) => {
-    setLoadingRequest(true);
+  const submitProvider = async (provider: CreateProviderDTO) => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(`${BASE_URL}/provider`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify(provider),
-      });
-      if (!response.ok) {
-        console.error("Error: ", response.statusText);
-        window.alert(`Error creando el proveedor: ${response.status}`);
-        return;
-      }
-      const responseData = await response.json();
+      setLoadingRequest(true);
+      await createProvider(provider);
       setOpen(false);
       window.alert("Proveedor creado con éxito");
       await fetchProviders();
-      navigate(`/catalog/providers/${responseData.id}`);
     } catch (error) {
       console.error("Error: ", error);
       window.alert("Ocurrió un error al crear el proveedor");

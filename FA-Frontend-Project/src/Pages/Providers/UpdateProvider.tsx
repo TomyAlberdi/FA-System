@@ -7,73 +7,48 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { useCatalogContext } from "@/Context/UseCatalogContext";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import { Label } from "@/components/ui/label";
+import { useProviderContext } from "@/Context/Provider/UseProviderContext";
+import {
+  CreateProviderDTO,
+  Provider as ProviderInterface,
+} from "@/hooks/CatalogInterfaces";
 import { Loader2, Pencil } from "lucide-react";
 import { useState } from "react";
-import { Provider as ProviderInterface } from "@/hooks/CatalogInterfaces";
-import { Label } from "@/components/ui/label";
 
-export const UpdateProvider = ({
-  provider,
-  Reload,
-  setReload,
-}: {
-  provider: ProviderInterface | null;
-  Reload: boolean;
-  setReload: (value: boolean) => void;
-}) => {
+interface UpdateProviderProps {
+  defaultProvider: ProviderInterface | null;
+}
+
+export const UpdateProvider = ({ defaultProvider }: UpdateProviderProps) => {
   const [LoadingRequest, setLoadingRequest] = useState(false);
   const [Open, setOpen] = useState(false);
 
-  const { BASE_URL, fetchProviders } = useCatalogContext();
-  const { getToken } = useKindeAuth();
+  const { fetchProviders, updateProvider } = useProviderContext();
 
-  const [Provider, setProvider] = useState<ProviderInterface>(
-    provider ?? {
-      name: "",
-      locality: "",
-      address: "",
-      phone: "",
-      email: "",
-      cuit: "",
-    }
-  );
+  const [Provider, setProvider] = useState<CreateProviderDTO>({
+    name: defaultProvider?.name ?? "",
+    locality: defaultProvider?.locality ?? "",
+    address: defaultProvider?.address ?? "",
+    phone: defaultProvider?.phone ?? "",
+    email: defaultProvider?.email ?? "",
+    cuit: defaultProvider?.cuit ?? "",
+  });
 
   const onSubmit = () => {
     if (Provider.name === "") {
       window.alert("El nombre del proveedor no puede estar vacío.");
       return;
     }
-    submitProvider(Provider);
+    submitProvider();
   };
 
-  const submitProvider = async (provider: ProviderInterface) => {
-    setLoadingRequest(true);
+  const submitProvider = async () => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        setLoadingRequest(false);
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(`${BASE_URL}/provider`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify(provider),
-      });
-      if (!response.ok) {
-        console.error("Error: ", response.statusText);
-        window.alert(`Error actualizando el proveedor: ${response.status}`);
-        return;
-      }
-      setOpen(false);
+      await updateProvider(Number(defaultProvider?.id), Provider);
       window.alert("Proveedor actualizado con éxito");
-      setReload(!Reload);
       await fetchProviders();
+      window.location.reload();
     } catch (error) {
       console.error("Error: ", error);
       window.alert("Ocurrió un error al actualizar el proveedor");

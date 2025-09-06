@@ -18,6 +18,7 @@ export interface Subcategory extends PartialCSP {
 }
 
 export interface CreateProviderDTO {
+  name: string;
   locality: string;
   address: string;
   phone: string;

@@ -3,6 +3,7 @@ import {
   PaginationResponse,
   Provider,
   ReturnData,
+  StockProduct,
 } from "@/hooks/CatalogInterfaces";
 import { createContext } from "react";
 
@@ -14,7 +15,7 @@ export interface ProviderContextType {
     id: number,
     page: number,
     size: number
-  ) => Promise<PaginationResponse>;
+  ) => Promise<PaginationResponse<StockProduct>>;
   createProvider: (dto: CreateProviderDTO) => Promise<Provider | undefined>;
   updateProvider: (
     id: number,
