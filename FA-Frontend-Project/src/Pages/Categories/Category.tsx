@@ -1,7 +1,5 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { useCatalogContext } from "@/Context/UseCatalogContext";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -9,19 +7,33 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useCategoryContext } from "@/Context/Category/UseCategoryContext";
+import { useSubcategoryContext } from "@/Context/Subcategory/UseSubcategoryContext";
+import {
+  Category as CategoryInterface,
+  StockProduct,
+} from "@/hooks/CatalogInterfaces";
+import AddSubcategory from "@/Pages/Categories/AddSubcategory";
+import Subcategories from "@/Pages/Categories/Subcategories";
 import {
   AlertCircle,
   CirclePlus,
@@ -30,26 +42,20 @@ import {
   Pencil,
   Plus,
 } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogTrigger,
-  DialogHeader,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import {
-  Category as CategoryInterface,
-  StockProduct,
-} from "@/hooks/CatalogInterfaces";
-import { Label } from "@/components/ui/label";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 const Category = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { BASE_URL, fetchCategory, fetchCategoryProducts, fetchCategories } =
-    useCatalogContext();
-  const { getToken } = useKindeAuth();
+  const {
+    fetchCategory,
+    updateCategory,
+    deleteCategory,
+    fetchCategoryProducts,
+    fetchCategories,
+  } = useCategoryContext();
+  const { createSubcategory } = useSubcategoryContext();
   const [Category, setCategory] = useState<CategoryInterface | null>(null);
   const [Products, setProducts] = useState<Array<StockProduct> | null>([]);
   const [IsLastPage, setIsLastPage] = useState(false);
@@ -77,29 +83,11 @@ const Category = () => {
   const submitUpdateCategory = async (name: string) => {
     setLoadingRequest(true);
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(
-        `${BASE_URL}/category?name=${name}&id=${id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-      if (!response.ok) {
-        console.error("Error: ", response.statusText);
-        window.alert(`Error actualizando la categoría: ${response.status}`);
-        return;
-      }
-      setOpen(false);
+      await updateCategory(Number(id), name);
       window.alert("Categoría actualizada con éxito");
       await fetchCategories();
+      await loadCategory();
+      setOpen(false);
     } catch (error) {
       console.error("Error: ", error);
       window.alert("Ocurrió un error al actualizar la categoría");
@@ -117,32 +105,12 @@ const Category = () => {
   };
 
   const submitSubcategory = async (name: string) => {
+    setLoadingRequest(true);
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      setLoadingRequest(true);
-      const response = await fetch(
-        `${BASE_URL}/category/subcategory?name=${name}&categoryId=${id}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-      if (!response.ok) {
-        console.error("Error: ", response.statusText);
-        window.alert(`Error creando la subcategoría: ${response.status}`);
-        return;
-      }
-      const responseData = await response.json();
+      await createSubcategory(Number(id), name);
       setOpenCreateSubcategory(false);
       window.alert("Subcategoría creada con éxito");
-      navigate(`/catalog/subcategory/${responseData.id}`);
+      await loadCategory();
     } catch (error) {
       console.error("Error: ", error);
       window.alert("Ocurrió un error al crear la subcategoría");
@@ -151,9 +119,9 @@ const Category = () => {
     }
   };
 
-  useEffect(() => {
+  const loadCategory = async () => {
     if (id) {
-      fetchCategory(Number.parseInt(id))
+      await fetchCategory(Number.parseInt(id))
         .then((result) => {
           if (!result) {
             navigate(-1);
@@ -162,8 +130,12 @@ const Category = () => {
         })
         .finally(() => setLoading(false));
     }
+  };
+
+  useEffect(() => {
+    loadCategory();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, BASE_URL, open]);
+  }, [id]);
 
   useEffect(() => {
     if (id) {
@@ -184,36 +156,23 @@ const Category = () => {
       window.alert("La categoría tiene productos asociados.");
     } else {
       if (window.confirm("¿Desea eliminar la categoría?")) {
-        deleteCategory();
+        submitDeleteCategory();
       }
     }
   };
 
-  const deleteCategory = async () => {
+  const submitDeleteCategory = async () => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(`${BASE_URL}/category/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      if (!response.ok) {
-        console.error("Error: ", response.statusText);
-        window.alert(`Error eliminando la categoría: ${response.status}`);
-        return;
-      }
+      setLoadingRequest(true);
+      await deleteCategory(Number(id));
       window.alert("Categoría eliminada con éxito");
       await fetchCategories();
-      navigate("/catalog/categories");
+      navigate(-1);
     } catch (error) {
       console.error("Error: ", error);
       window.alert("Ocurrió un error al eliminar la categoría");
+    } finally {
+      setLoadingRequest(false);
     }
   };
 
@@ -290,65 +249,15 @@ const Category = () => {
                     Añadir subcategoría
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="p-6" aria-describedby={undefined}>
-                  <DialogHeader>
-                    <DialogTitle className="text-xl font-bold">
-                      Añadir subcategoría
-                    </DialogTitle>
-                  </DialogHeader>
-                  <div className="w-full flex flex-col gap-4">
-                    <Label>Nombre</Label>
-                    <Input
-                      placeholder="Nombre de la categoría"
-                      onChange={(e) => setSubcategoryName(e.target.value)}
-                    />
-                    <Button
-                      onClick={onSubmitSubcategory}
-                      disabled={LoadingRequest}
-                      className="w-full"
-                    >
-                      {LoadingRequest && <Loader2 className="animate-spin" />}
-                      Guardar
-                    </Button>
-                  </div>
-                </DialogContent>
+                <AddSubcategory
+                  LoadingRequest={LoadingRequest}
+                  setSubcategoryName={setSubcategoryName}
+                  onSubmitSubcategory={onSubmitSubcategory}
+                />
               </Dialog>
             </CardContent>
             {Category.subcategories.length > 0 && (
-              <CardContent>
-                <CardTitle>Subcategorías</CardTitle>
-                <ScrollArea className="md:max-h-20rem max-h-auto">
-                  <Table>
-                    <TableCaption>Subcategorías</TableCaption>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="w-1/12">ID</TableHead>
-                        <TableHead className="w-1/2">Nombre</TableHead>
-                        <TableHead className="w-1/10">№ de productos</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {Category.subcategories?.map((item, index) => {
-                        return (
-                          <TableRow
-                            className="cursor-pointer"
-                            key={index}
-                            onClick={() =>
-                              navigate(`/catalog/subcategory/${item.id}`)
-                            }
-                          >
-                            <TableCell className="font-medium">
-                              {item.id}
-                            </TableCell>
-                            <TableCell>{item.name}</TableCell>
-                            <TableCell>{item.productsAmount}</TableCell>
-                          </TableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </ScrollArea>
-              </CardContent>
+              <Subcategories category={Category} />
             )}
           </Card>
           <ScrollArea className="md:h-[85vh] md:w-2/3 w-full h-auto">

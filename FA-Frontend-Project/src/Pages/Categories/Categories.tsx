@@ -1,17 +1,17 @@
+import { useCategoryContext } from "@/Context/Category/UseCategoryContext";
+import { CategoriesHeader } from "@/Pages/Categories/CategoriesHeader";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Category } from "@/hooks/CatalogInterfaces";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { AlertCircle } from "lucide-react";
-import { useCatalogContext } from "@/Context/UseCatalogContext";
-import { CategoriesHeader } from "@/Pages/Categories/CategoriesHeader";
-import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Category } from "@/hooks/CatalogInterfaces";
 
 export const Categories = () => {
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
-  const { Categories: Data } = useCatalogContext();
+  const { Categories: Data } = useCategoryContext();
 
   return (
     <div className="Categories">

@@ -3,6 +3,7 @@ import {
   PaginationResponse,
   PartialCSP,
   ReturnData,
+  StockProduct,
 } from "@/hooks/CatalogInterfaces";
 import { createContext } from "react";
 
@@ -14,7 +15,7 @@ export interface CategoryContextType {
     id: number,
     page: number,
     size: number
-  ) => Promise<PaginationResponse>;
+  ) => Promise<PaginationResponse<StockProduct>>;
   createCategory: (name: string) => Promise<PartialCSP | undefined>;
   updateCategory: (id: number, name: string) => Promise<PartialCSP | undefined>;
   deleteCategory: (id: number) => Promise<void>;
