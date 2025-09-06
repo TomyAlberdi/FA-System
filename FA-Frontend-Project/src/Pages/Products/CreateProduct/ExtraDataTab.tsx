@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { TabsContent } from "@/components/ui/tabs";
-import { useSalesContext } from "@/Context/UseSalesContext";
 import { CreateProductDTO } from "@/hooks/CatalogInterfaces";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { CheckCircle2, ChevronLeft, Loader2, Trash2 } from "lucide-react";
@@ -27,7 +26,7 @@ const ExtraDataTab = ({
   createProduct,
   triggerTitle,
 }: ExtraDataTabProps) => {
-  const { BASE_URL } = useSalesContext();
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
   const { getToken } = useKindeAuth();
 
   //#green Image uploading and preview logic

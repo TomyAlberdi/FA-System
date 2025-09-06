@@ -1,13 +1,12 @@
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { useSalesContext } from "@/Context/UseSalesContext";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { useEffect, useState } from "react";
 import { ProductCard } from "@/Pages/Budgets/ProductCard";
-import { CardProduct } from "@/hooks/CatalogInterfaces";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { Plus, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Skeleton } from "@/components/ui/skeleton";
+import { CardProduct } from "@/hooks/CatalogInterfaces";
+import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import { Plus, Search } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface FloatingProductPaginationProps {
   handleAddProduct: (
@@ -22,7 +21,7 @@ interface FloatingProductPaginationProps {
 export const FloatingProductPagination = ({
   handleAddProduct,
 }: FloatingProductPaginationProps) => {
-  const { BASE_URL } = useSalesContext();
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
   const { getToken } = useKindeAuth();
 
   const [Products, setProducts] = useState<Array<CardProduct>>([]);

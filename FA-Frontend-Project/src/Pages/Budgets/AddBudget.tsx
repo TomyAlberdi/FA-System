@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/table";
 import {
   BudgetStatus,
+  CreateBudgetDTO,
   PartialClient,
   ProductBudget,
 } from "@/hooks/SalesInterfaces";
@@ -26,12 +27,11 @@ import { useEffect, useState } from "react";
 import { FloatingProductPagination } from "@/Pages/Budgets/FloatingProductPagination";
 import { CardProduct } from "@/hooks/CatalogInterfaces";
 import { FloatingClientPagination } from "@/Pages/Budgets/FloatingClientPagination";
-import { useSalesContext } from "@/Context/UseSalesContext";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useNavigate } from "react-router-dom";
 import { Slider } from "@/components/ui/slider";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
+import { useBudgetContext } from "@/Context/Budget/UseBudgetContext";
 
 interface CreationBudget {
   client: {
@@ -42,13 +42,11 @@ interface CreationBudget {
 }
 
 export const AddBudget = () => {
-  const { BASE_URL } = useSalesContext();
-  const { getToken } = useKindeAuth();
-  const navigate = useNavigate();
+  const { createBudget } = useBudgetContext();
   const BUDGET_STORAGE_KEY = "currentBudget";
 
   // budget logic
-  const [Budget, setBudget] = useState<CreationBudget>(() => {
+  const [Budget, setBudget] = useState<CreateBudgetDTO>(() => {
     const savedBudget = sessionStorage.getItem(BUDGET_STORAGE_KEY);
     return savedBudget
       ? JSON.parse(savedBudget)
@@ -89,47 +87,17 @@ export const AddBudget = () => {
     submitBudget(Budget);
   };
 
-  const submitBudget = async (Budget: CreationBudget) => {
-    setLoadingRequest(true);
+  const submitBudget = async (Budget: CreateBudgetDTO) => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        setLoadingRequest(false);
-        return;
-      }
-      const accessToken = await getToken();
-      const body = JSON.stringify({
-        date: formattedDate,
-        clientId: Budget.client.id,
-        clientName: Budget.client.name,
-        status: BudgetStatus.PENDIENTE,
-        products: Budget.products,
-        discount: Discount[0] ?? 0,
-        finalAmount: FinalAmount,
-      });
-      const response = await fetch(`${BASE_URL}/budget`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-        body: body,
-      });
-      if (!response.ok) {
-        console.error("Error submitting budget: ", response.status);
-        window.alert(`Error creando el presupuesto: ${response.status}`);
-        return;
-      }
-      const responseData = await response.json();
-      clearBudget();
+      setLoadingRequest(true);
+      await createBudget(Budget);
       window.alert("El presupuesto se ha creado correctamente.");
-      navigate(`/sales/budgets/${responseData.id}`);
+      clearBudget()
     } catch (error) {
       console.error("Error submitting budget: ", error);
       window.alert("Ocurrió un error al crear el presupuesto.");
     } finally {
       setLoadingRequest(false);
-    }
   };
 
   // Client list for selection

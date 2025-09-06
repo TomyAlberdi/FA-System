@@ -1,3 +1,4 @@
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -6,19 +7,18 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useSalesContext } from "@/Context/UseSalesContext";
+import { useBudgetContext } from "@/Context/Budget/UseBudgetContext";
 import { PartialBudget } from "@/hooks/SalesInterfaces";
 import { cn } from "@/lib/utils";
+import { BudgetCard } from "@/Pages/Budgets/BudgetCard";
 import { format, subDays } from "date-fns";
 import { AlertCircle, CalendarIcon, PlusCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
-import { BudgetCard } from "@/Pages/Budgets/BudgetCard";
 import { Link } from "react-router-dom";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export const Budgets = () => {
-  const { fetchBudgetsByDateRange } = useSalesContext();
+  const { fetchBudgetsByDateRange } = useBudgetContext();
 
   const [Dates, setDates] = useState<DateRange>({
     from: subDays(new Date(), 7),

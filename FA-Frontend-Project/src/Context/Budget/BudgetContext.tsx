@@ -1,11 +1,11 @@
-import { CreateBudgetDTO, PartialBudget } from "@/hooks/SalesInterfaces";
+import { CompleteBudget, CreateBudgetDTO, PartialBudget } from "@/hooks/SalesInterfaces";
 import { createContext } from "react";
 
 export interface BudgetContextType {
   fetchBudgetsByClient: (
     id: number
   ) => Promise<Array<PartialBudget> | undefined>;
-  fetchBudget: (id: number) => Promise<PartialBudget | undefined>;
+  fetchBudget: (id: number) => Promise<CompleteBudget | undefined>;
   fetchBudgetsByDate: (
     date: string
   ) => Promise<Array<PartialBudget> | undefined>;
@@ -19,7 +19,7 @@ export interface BudgetContextType {
     budgetId: number,
     clientId?: number
   ) => Promise<void>;
-  updateBudgetStatus: (status: string, budgetId: number) => Promise<void>;
+  updateBudgetStatus: (status: string, budgetId: number) => Promise<Response>;
   deleteBudget: (budgetId: number) => Promise<void>;
 }
 

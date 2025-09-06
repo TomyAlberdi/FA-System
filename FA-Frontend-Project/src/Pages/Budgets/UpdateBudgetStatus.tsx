@@ -8,27 +8,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useSalesContext } from "@/Context/UseSalesContext";
+import { useBudgetContext } from "@/Context/Budget/UseBudgetContext";
+import { useCashRegisterContext } from "@/Context/CashRegister/UseCashRegisterContext";
 import { BudgetStatus } from "@/hooks/SalesInterfaces";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useState } from "react";
 
 export const UpdateBudgetStatus = ({
   id,
   stockDecreased,
-  setOpenUpdateStatus,
-  Reload,
-  setReload,
 }: {
   id: number | undefined;
   stockDecreased: boolean | undefined;
-  setOpenUpdateStatus: (value: boolean) => void;
-  Reload: boolean;
-  setReload: (value: boolean) => void;
 }) => {
-  const { BASE_URL, fetchRegisterTotalAmount } =
-    useSalesContext();
-  const { getToken } = useKindeAuth();
+  const { fetchCashRegisterTotalAmount } = useCashRegisterContext();
+  const { updateBudgetStatus } = useBudgetContext();
 
   const [updateStatus, setupdateStatus] = useState<string>("");
 
@@ -49,20 +42,8 @@ export const UpdateBudgetStatus = ({
   };
 
   const onSubmit = async (status: string) => {
-    const url = `${BASE_URL}/budget/${id}?status=${status}`;
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(url, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await updateBudgetStatus(status, id ?? 0);
       if (!response.ok) {
         if (response.status === 409) {
           const responseData = await response.json();
@@ -77,10 +58,9 @@ export const UpdateBudgetStatus = ({
         );
         return;
       }
-      setOpenUpdateStatus(false);
       window.alert("El estado del presupuesto ha sido actualizado con éxito");
-      await Promise.all([fetchRegisterTotalAmount()]);
-      setReload(!Reload);
+      await fetchCashRegisterTotalAmount();
+      window.location.reload();
     } catch (error) {
       console.error("Error: ", error);
       window.alert("Ocurrió un error al actualizar el estado del presupuesto");
