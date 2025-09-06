@@ -27,7 +27,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useCatalogContext } from "@/Context/UseCatalogContext";
+import { useStockContext } from "@/Context/Stock/UseStockContext";
 import { ProductStock, StockRecord } from "@/hooks/CatalogInterfaces";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import {
@@ -47,9 +47,9 @@ interface StockForm {
 
 export const Stock = () => {
   const { id } = useParams();
-  const { fetchProductStock, BASE_URL } = useCatalogContext();
+  const { fetchStockByProduct } = useStockContext();
   const { getToken } = useKindeAuth();
-
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
   const [Loading, setLoading] = useState(true);
   const [stock, setStock] = useState<ProductStock | null>(null);
   const [open, setOpen] = useState(false);
@@ -92,16 +92,7 @@ export const Stock = () => {
         return;
       }
       setOpen(false);
-      setTimeout(() => {
-        window.alert("El stock ha sido actualizado con éxito");
-        if (id) {
-          fetchProductStock(Number.parseInt(id))
-            .then((result) => setStock(result ?? null))
-            .catch((error) => {
-              console.error("Error fetching updated stock:", error);
-            });
-        }
-      }, 100);
+      window.location.reload();
     } catch (error) {
       console.error("Error: ", error);
       window.alert("Ocurrió un error al actualizar el stock");
@@ -118,7 +109,7 @@ export const Stock = () => {
       return;
     }
     setLoading(true);
-    fetchProductStock(productId)
+    fetchStockByProduct(productId)
       .then((result) => {
         if (!result) {
           window.alert("No se encontró el stock del producto");

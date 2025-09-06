@@ -1,5 +1,6 @@
 import {
   PaginationResponse,
+  PartialProductStock,
   ProductStock,
   StockChangeType,
 } from "@/hooks/CatalogInterfaces";
@@ -11,7 +12,7 @@ export interface StockContextType {
     keyword: string,
     page: number,
     size: number
-  ) => Promise<PaginationResponse<ProductStock | undefined>>;
+  ) => Promise<PaginationResponse<PartialProductStock>>;
   changeStock: (
     productId: number,
     quantity: number,
