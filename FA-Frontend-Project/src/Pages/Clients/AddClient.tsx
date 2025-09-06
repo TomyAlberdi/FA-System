@@ -2,25 +2,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useSalesContext } from "@/Context/UseSalesContext";
-import { AddClient as AddClientInterface } from "@/hooks/SalesInterfaces";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import { useClientContext } from "@/Context/Client/UseClientContext";
+import { CreateClientDTO } from "@/hooks/SalesInterfaces";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
-interface AddClientProps {
-  handleRefresh?: () => void;
-  setOpen: (value: boolean) => void;
-}
-
-export const AddClient = ({ handleRefresh, setOpen }: AddClientProps) => {
+export const AddClient = () => {
+  const { createClient } = useClientContext();
   const [LoadingRequest, setLoadingRequest] = useState(false);
-  const { BASE_URL } = useSalesContext();
-  const { getToken } = useKindeAuth();
-  const navigate = useNavigate();
 
-  const [Client, setClient] = useState<AddClientInterface>({
+  const [Client, setClient] = useState<CreateClientDTO>({
     name: "",
     type: "",
     address: "",
@@ -41,40 +32,17 @@ export const AddClient = ({ handleRefresh, setOpen }: AddClientProps) => {
     submitClient(Client);
   };
 
-  const submitClient = async (client: AddClientInterface) => {
-    const url = `${BASE_URL}/client`;
-    setLoadingRequest(true);
+  const submitClient = async (client: CreateClientDTO) => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify(client),
-      });
-      if (!response.ok) {
-        console.error("Error: ", response.statusText);
-        window.alert(`Error creando el cliente: ${response.status}`);
-        return;
-      }
-      const responseData = await response.json();
-      setOpen(false);
+      setLoadingRequest(true);
+      await createClient(client);
       window.alert("Cliente creado con éxito");
-      navigate(`/sales/clients/${responseData.id}`);
+      window.location.reload();
     } catch (error) {
       console.error("Error: ", error);
       window.alert("Ocurrió un error al crear el cliente");
     } finally {
       setLoadingRequest(false);
-      if (handleRefresh) {
-        handleRefresh();
-      }
     }
   };
 

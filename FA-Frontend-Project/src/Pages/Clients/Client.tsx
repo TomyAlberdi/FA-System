@@ -1,9 +1,4 @@
-import { Skeleton } from "@/components/ui/skeleton";
-import { useSalesContext } from "@/Context/UseSalesContext";
-import { CompleteClient } from "@/hooks/SalesInterfaces";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -11,22 +6,22 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { CirclePlus, CircleX } from "lucide-react";
-import { UpdateClient } from "./UpdateClient";
-import { ClientBudgets } from "@/Pages/Clients/ClientBudgets";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useClientContext } from "@/Context/Client/UseClientContext";
+import { CompleteClient } from "@/hooks/SalesInterfaces";
+import { ClientBudgets } from "@/Pages/Clients/ClientBudgets";
+import { CirclePlus, CircleX } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { UpdateClient } from "./UpdateClient";
 
 export const Client = () => {
   const { id } = useParams();
-  const { fetchClient, BASE_URL } = useSalesContext();
+  const { fetchClient, deleteClient } = useClientContext();
   const navigate = useNavigate();
-  const { getToken } = useKindeAuth();
   const [Client, setClient] = useState<CompleteClient | null>(null);
   const [Loading, setLoading] = useState(true);
-  const [Reload, setReload] = useState(false);
-
-  // Future implementation
 
   useEffect(() => {
     if (id) {
@@ -40,33 +35,17 @@ export const Client = () => {
         .finally(() => setLoading(false));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, Reload]);
+  }, [id]);
 
   const onDeletePres = () => {
     if (window.confirm("¿Desea eliminar el cliente?")) {
-      deleteClient();
+      submitDeleteClient();
     }
   };
 
-  const deleteClient = async () => {
+  const submitDeleteClient = async () => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(`${BASE_URL}/client/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      if (!response.ok) {
-        console.error("Error: ", response.statusText);
-        window.alert(`Error eliminando el cliente: ${response.status}`);
-        return;
-      }
+      await deleteClient(Number(id));
       window.alert("Cliente eliminado con éxito");
       navigate("/sales/clients");
     } catch (error) {
@@ -132,11 +111,7 @@ export const Client = () => {
                   Crear Presupuesto
                 </Link>
               </Button>
-              <UpdateClient
-                client={Client}
-                setReload={setReload}
-                Reload={Reload}
-              />
+              <UpdateClient client={Client} />
               <Button
                 variant="destructive"
                 className="w-full mb-2"

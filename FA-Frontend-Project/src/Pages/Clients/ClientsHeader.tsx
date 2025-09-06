@@ -1,10 +1,4 @@
-import { ClientsFilter } from "@/hooks/SalesInterfaces";
-import { AddClient } from "@/Pages/Clients/AddClient";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { CirclePlus, Search, SearchIcon } from "lucide-react";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
@@ -12,11 +6,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { ClientsFilter } from "@/hooks/SalesInterfaces";
+import { AddClient } from "@/Pages/Clients/AddClient";
+import { CirclePlus, SearchIcon } from "lucide-react";
 import { useState } from "react";
 
 export interface ClientsHeaderProps {
   setFilters: React.Dispatch<React.SetStateAction<ClientsFilter>>;
-  handleRefresh: () => void;
 }
 
 export interface Search {
@@ -24,10 +23,7 @@ export interface Search {
   type: "" | "A" | "B";
 }
 
-export const ClientsHeader = ({
-  setFilters,
-  handleRefresh,
-}: ClientsHeaderProps) => {
+export const ClientsHeader = ({ setFilters }: ClientsHeaderProps) => {
   const [Search, setSearch] = useState<Search>({
     keyword: "",
     type: "",
@@ -87,7 +83,7 @@ export const ClientsHeader = ({
               Añadir Cliente
             </DialogTitle>
           </DialogHeader>
-          <AddClient handleRefresh={handleRefresh} setOpen={setOpen} />
+          <AddClient />
         </DialogContent>
       </Dialog>
     </section>

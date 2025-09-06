@@ -10,7 +10,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useSalesContext } from "@/Context/UseSalesContext";
 import { PartialClient } from "@/hooks/SalesInterfaces";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { Plus, Search } from "lucide-react";
@@ -23,9 +22,8 @@ interface FloatingClientPaginationProps {
 export const FloatingClientPagination = ({
   handleSelectClient,
 }: FloatingClientPaginationProps) => {
-  const { BASE_URL } = useSalesContext();
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
   const { getToken } = useKindeAuth();
-
   const [Clients, setClients] = useState<Array<PartialClient>>([]);
   const [LastLoadedPage, setLastLoadedPage] = useState(0);
   const [IsLastPage, setIsLastPage] = useState(false);

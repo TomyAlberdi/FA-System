@@ -6,18 +6,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { AddClient } from "@/Pages/Clients/AddClient";
 import { ClientsHeaderProps, Search } from "@/Pages/Clients/ClientsHeader";
 import { CirclePlus, SearchIcon } from "lucide-react";
 import { useState } from "react";
-import { AddClient } from "@/Pages/Clients/AddClient";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
-const MobileClientsHeader = ({
-  setFilters,
-  handleRefresh,
-}: ClientsHeaderProps) => {
+const MobileClientsHeader = ({ setFilters }: ClientsHeaderProps) => {
   const [Search, setSearch] = useState<Search>({
     keyword: "",
     type: "",
@@ -104,7 +101,7 @@ const MobileClientsHeader = ({
                 Añadir Cliente
               </DialogTitle>
             </DialogHeader>
-            <AddClient handleRefresh={handleRefresh} setOpen={setOpenCreate} />
+            <AddClient />
           </DialogContent>
         </Dialog>
       </div>
