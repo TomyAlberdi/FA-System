@@ -1,6 +1,7 @@
 import {
   PaginationResponse,
   ReturnData,
+  StockProduct,
   Subcategory,
 } from "@/hooks/CatalogInterfaces";
 import { createContext } from "react";
@@ -18,7 +19,7 @@ export interface SubcategoryContextType {
     id: number,
     page: number,
     size: number
-  ) => Promise<PaginationResponse>;
+  ) => Promise<PaginationResponse<StockProduct>>;
   createSubcategory: (
     categoryId: number,
     name: string

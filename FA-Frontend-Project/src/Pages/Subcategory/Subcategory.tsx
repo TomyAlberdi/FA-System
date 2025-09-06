@@ -26,12 +26,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useCatalogContext } from "@/Context/UseCatalogContext";
+import { useSubcategoryContext } from "@/Context/Subcategory/UseSubcategoryContext";
 import {
   StockProduct,
   Subcategory as SubcategoryInterface,
 } from "@/hooks/CatalogInterfaces";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { AlertCircle, CircleX, Loader2, Pencil, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -39,13 +38,13 @@ import { useNavigate, useParams } from "react-router-dom";
 export const Subcategory = () => {
   const { id } = useParams();
   const {
-    fetchSubcategoryById,
+    fetchSubcategory,
+    updateSubcategory,
     fetchSubcategoryProducts,
-    BASE_URL,
     fetchSubcategories,
-  } = useCatalogContext();
+    deleteSubcategory,
+  } = useSubcategoryContext();
   const navigate = useNavigate();
-  const { getToken } = useKindeAuth();
   const [Loading, setLoading] = useState(true);
   const [Subcategory, setSubcategory] = useState<SubcategoryInterface | null>(
     null
@@ -67,31 +66,11 @@ export const Subcategory = () => {
   };
 
   const submitUpdate = async (name: string) => {
-    setLoadingRequest(true);
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(
-        `${BASE_URL}/category/subcategory?name=${name}&subcategoryId=${id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-      if (!response.ok) {
-        console.error("Error: ", response.statusText);
-        window.alert(`Error actualizando la subcategoría: ${response.status}`);
-        return;
-      }
-      setOpen(false);
+      await updateSubcategory(Number(id), name);
       window.alert("La subcategoría ha sido actualizada con éxito");
       await fetchSubcategories();
+      window.location.reload();
     } catch (error) {
       console.error("Error: ", error);
       window.alert("Ocurrió un error al actualizar la subcategoría");
@@ -100,9 +79,9 @@ export const Subcategory = () => {
     }
   };
 
-  useEffect(() => {
+  const loadSubcategory = async () => {
     if (id) {
-      fetchSubcategoryById(Number.parseInt(id))
+      await fetchSubcategory(Number.parseInt(id))
         .then((result) => {
           if (!result) {
             navigate(-1);
@@ -111,8 +90,12 @@ export const Subcategory = () => {
         })
         .finally(() => setLoading(false));
     }
+  };
+
+  useEffect(() => {
+    loadSubcategory();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, BASE_URL, Open]);
+  }, [id]);
 
   useEffect(() => {
     if (id) {
@@ -133,33 +116,17 @@ export const Subcategory = () => {
       window.alert("La subcategoría tiene productos asociados.");
     } else {
       if (window.confirm("¿Desea eliminar la subcategoría?")) {
-        deleteSubcategory();
+        submitDeleteSubcategory();
       }
     }
   };
 
-  const deleteSubcategory = async () => {
+  const submitDeleteSubcategory = async () => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(`${BASE_URL}/category/subcategory/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      if (!response.ok) {
-        console.error("Error: ", response.statusText);
-        window.alert(`Error eliminando la subcategoría: ${response.status}`);
-        return;
-      }
+      await deleteSubcategory(Number(id));
       window.alert("La subcategoría ha sido eliminada con éxito");
       await fetchSubcategories();
-      navigate(`/catalog/categories/${Subcategory?.categoryId}`);
+      window.location.reload();
     } catch (error) {
       console.error("Error: ", error);
       window.alert("Ocurrió un error al eliminar la subcategoría");
