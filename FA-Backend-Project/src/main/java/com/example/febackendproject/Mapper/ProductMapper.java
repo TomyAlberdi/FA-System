@@ -118,7 +118,7 @@ public class ProductMapper {
         dto.setDiscountPercentage(product.getDiscountPercentage());
         dto.setDiscountedPrice(product.getDiscountedPrice());
         dto.setDiscountedMeasurePrice(product.getDiscountedMeasurePrice());
-        dto.setImage(product.getMainImage());
+        dto.setImage(product.getImages().get(0));
         return dto;
     }
     

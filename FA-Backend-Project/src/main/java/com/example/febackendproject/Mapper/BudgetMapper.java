@@ -16,8 +16,13 @@ public class BudgetMapper {
 
     public static void updateFromDTO(Budget budget, CreateBudgetDTO dto, Client client) {
         budget.setDate(LocalDateTime.now());
-        budget.setClientId(client.getId());
-        budget.setClientName(client.getName());
+        if (client != null) {
+            budget.setClientId(client.getId());
+            budget.setClientName(client.getName());
+        } else {
+            budget.setClientId(null);
+            budget.setClientName(null);
+        }
         budget.setStatus(Budget.Status.PENDIENTE);
         budget.setDiscount(dto.getDiscount());
         budget.setProducts(dto.getProducts());

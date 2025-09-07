@@ -52,11 +52,11 @@ public class BudgetService {
     }
     
     public Budget save(CreateBudgetDTO dto, Long clientId) {
-        Client client;
+        Client client = null;
         if (clientId != null) {
             client = clientRepository.findById(clientId)
                     .orElseGet(() -> clientService.save(dto.getClient()));
-        } else {
+        } else if (dto.getClient() != null) {
             client = clientService.save(dto.getClient());
         }
         Budget newBudget = BudgetMapper.createBudget(dto, client);
@@ -113,11 +113,11 @@ public class BudgetService {
             throw new ResourceNotFoundException("El presupuesto ID " + budgetId + " no existe.");
         }
         Budget budget = search.get();
-        Client client;
+        Client client = null;
         if (clientId != null) {
             client = clientRepository.findById(clientId)
                     .orElseGet(() -> clientService.save(dto.getClient()));
-        } else {
+        } else if (dto.getClient() != null ){
             client = clientService.save(dto.getClient());
         }
         BudgetMapper.updateFromDTO(budget, dto, client);
