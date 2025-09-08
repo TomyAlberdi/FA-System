@@ -58,25 +58,18 @@ export const UpdateClient = ({
   };
 
   const submitClient = async (data: CompleteClient) => {
-    try {
-      setLoadingRequest(true);
-      const clientWithoutId: CreateClientDTO = {
-        name: data.name,
-        type: data.type,
-        address: data.address,
-        phone: data.phone,
-        email: data.email,
-        cuit_dni: data.cuitDni,
-      };
-      await updateClient(data.id, clientWithoutId);
-      window.alert("Cliente actualizado con éxito");
-      window.location.reload();
-    } catch (error) {
-      console.error("Error: ", error);
-      window.alert("Ocurrió un error al actualizar el cliente");
-    } finally {
-      setLoadingRequest(false);
-    }
+    setLoadingRequest(true);
+    const clientWithoutId: CreateClientDTO = {
+      name: data.name,
+      type: data.type,
+      address: data.address,
+      phone: data.phone,
+      email: data.email,
+      cuitDni: data.cuitDni,
+    };
+    await updateClient(data.id, clientWithoutId).finally(() =>
+      setLoadingRequest(false)
+    );
   };
 
   return (

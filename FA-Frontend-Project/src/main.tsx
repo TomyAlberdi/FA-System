@@ -28,14 +28,14 @@ createRoot(document.getElementById("root")!).render(
       logoutUri={logoutUri}
       audience={audience}
     >
-      <CategoryContextComponent>
-        <SubcategoryContextComponent>
-          <ProviderContextComponent>
-            <ProductContextComponent>
-              <StockContextComponent>
-                <ClientContextComponent>
-                  <BudgetContextComponent>
-                    <CashRegisterContextComponent>
+      <CashRegisterContextComponent>
+        <CategoryContextComponent>
+          <SubcategoryContextComponent>
+            <ProviderContextComponent>
+              <ProductContextComponent>
+                <StockContextComponent>
+                  <ClientContextComponent>
+                    <BudgetContextComponent>
                       <ThemeProvider
                         defaultTheme="light"
                         storageKey="vite-ui-theme"
@@ -43,14 +43,14 @@ createRoot(document.getElementById("root")!).render(
                         <ScrollToHashElement />
                         <App />
                       </ThemeProvider>
-                    </CashRegisterContextComponent>
-                  </BudgetContextComponent>
-                </ClientContextComponent>
-              </StockContextComponent>
-            </ProductContextComponent>
-          </ProviderContextComponent>
-        </SubcategoryContextComponent>
-      </CategoryContextComponent>
+                    </BudgetContextComponent>
+                  </ClientContextComponent>
+                </StockContextComponent>
+              </ProductContextComponent>
+            </ProviderContextComponent>
+          </SubcategoryContextComponent>
+        </CategoryContextComponent>
+      </CashRegisterContextComponent>
     </KindeProvider>
   </BrowserRouter>
 );

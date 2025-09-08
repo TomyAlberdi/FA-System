@@ -9,7 +9,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useBudgetContext } from "@/Context/Budget/UseBudgetContext";
-import { useCashRegisterContext } from "@/Context/CashRegister/UseCashRegisterContext";
 import { BudgetStatus } from "@/hooks/SalesInterfaces";
 import { useState } from "react";
 
@@ -20,7 +19,6 @@ export const UpdateBudgetStatus = ({
   id: number | undefined;
   stockDecreased: boolean | undefined;
 }) => {
-  const { fetchCashRegisterTotalAmount } = useCashRegisterContext();
   const { updateBudgetStatus } = useBudgetContext();
 
   const [updateStatus, setupdateStatus] = useState<string>("");
@@ -42,29 +40,7 @@ export const UpdateBudgetStatus = ({
   };
 
   const onSubmit = async (status: string) => {
-    try {
-      const response = await updateBudgetStatus(status, id ?? 0);
-      if (!response.ok) {
-        if (response.status === 409) {
-          const responseData = await response.json();
-          window.alert(
-            "Conflicto de Inventario.\nLos siguientes productos no tienen stock suficiente:\n" +
-              responseData.join(", ")
-          );
-          return;
-        }
-        window.alert(
-          `Error actualizando el estado del presupuesto: ${response.status}`
-        );
-        return;
-      }
-      window.alert("El estado del presupuesto ha sido actualizado con éxito");
-      await fetchCashRegisterTotalAmount();
-      window.location.reload();
-    } catch (error) {
-      console.error("Error: ", error);
-      window.alert("Ocurrió un error al actualizar el estado del presupuesto");
-    }
+    await updateBudgetStatus(status, id ?? 0);
   };
 
   return (

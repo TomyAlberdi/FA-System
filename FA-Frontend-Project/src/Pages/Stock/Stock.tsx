@@ -28,8 +28,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useStockContext } from "@/Context/Stock/UseStockContext";
-import { ProductStock, StockRecord } from "@/hooks/CatalogInterfaces";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import {
+  ProductStock,
+  StockChangeType,
+  StockRecord,
+} from "@/hooks/CatalogInterfaces";
 import {
   AlertCircle,
   ChevronDown,
@@ -47,9 +50,7 @@ interface StockForm {
 
 export const Stock = () => {
   const { id } = useParams();
-  const { fetchStockByProduct } = useStockContext();
-  const { getToken } = useKindeAuth();
-  const BASE_URL = import.meta.env.VITE_BASE_URL;
+  const { fetchStockByProduct, changeStock, StockUpdater } = useStockContext();
   const [Loading, setLoading] = useState(true);
   const [stock, setStock] = useState<ProductStock | null>(null);
   const [open, setOpen] = useState(false);
@@ -70,35 +71,16 @@ export const Stock = () => {
 
   const updateStock = async (data: StockForm) => {
     setLoadingRequest(true);
-    try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(
-        `${BASE_URL}/stock/${data.type}?productId=${stock?.productId}&quantity=${data.quantity}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-      if (!response.ok) {
-        console.error("Error: ", response.statusText);
-        window.alert(`Error actualizando el stock: ${response.status}`);
-        return;
-      }
-      setOpen(false);
-      window.location.reload();
-    } catch (error) {
-      console.error("Error: ", error);
-      window.alert("Ocurrió un error al actualizar el stock");
-    } finally {
-      setLoadingRequest(false);
-    }
+    // Convert string to StockChangeType enum
+    const stockChangeType =
+      data.type === "increase"
+        ? StockChangeType.INCREASE
+        : StockChangeType.REDUCE;
+    await changeStock(
+      stock?.productId ?? 0,
+      data.quantity,
+      stockChangeType
+    ).finally(() => setLoadingRequest(false));
   };
 
   useEffect(() => {
@@ -112,20 +94,15 @@ export const Stock = () => {
     fetchStockByProduct(productId)
       .then((result) => {
         if (!result) {
-          window.alert("No se encontró el stock del producto");
           return;
         }
         setStock(result);
-      })
-      .catch((error) => {
-        console.error("Error fetching stock:", error);
-        window.alert("Error al cargar el stock del producto");
       })
       .finally(() => {
         setLoading(false);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [id, StockUpdater]);
 
   const formatDateTime = (input: string) => {
     const parsedDate = new Date(input);

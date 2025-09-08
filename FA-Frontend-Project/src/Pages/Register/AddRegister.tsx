@@ -62,21 +62,22 @@ const AddRegister = ({ yearMonth }: AddRegisterProps) => {
   };
 
   const submitRegister = async (Record: createCashRegisterRecordDTO) => {
-    try {
-      setLoadingRequest(true);
-      await createRecord(Record);
-      window.alert("Registro creado con éxito");
-      await fetchCashRegisterTotalAmount();
-      await fetchCashRegisterTypes(
-        yearMonth ?? new Date().toISOString().slice(0, 7)
-      );
-      setOpen(false);
-    } catch (error) {
-      console.error("Error submitting register: ", error);
-      window.alert("Ocurrió un error al crear el registro");
-    } finally {
+    setLoadingRequest(true);
+    await createRecord(Record).finally(() => {
       setLoadingRequest(false);
-    }
+      setOpen(false);
+      setRecord({
+        amount: 0,
+        detail: "",
+        type: "",
+        date: "",
+      });
+      setLongDate(new Date());
+    });
+    await fetchCashRegisterTotalAmount();
+    await fetchCashRegisterTypes(
+      yearMonth ?? new Date().toISOString().slice(0, 7)
+    );
   };
 
   return (

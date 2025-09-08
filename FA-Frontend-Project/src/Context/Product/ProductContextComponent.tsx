@@ -1,7 +1,10 @@
+import { useCategoryContext } from "@/Context/Category/UseCategoryContext";
 import {
   ProductContext,
   ProductContextType,
 } from "@/Context/Product/ProductContext";
+import { useProviderContext } from "@/Context/Provider/UseProviderContext";
+import { useSubcategoryContext } from "@/Context/Subcategory/UseSubcategoryContext";
 import {
   CompleteProduct,
   CreateProductDTO,
@@ -10,7 +13,8 @@ import {
   ReturnData,
 } from "@/hooks/CatalogInterfaces";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface ProductContextComponentProps {
   children: ReactNode;
@@ -21,6 +25,10 @@ const ProductContextComponent: React.FC<ProductContextComponentProps> = ({
 }) => {
   const { getToken } = useKindeAuth();
   const BASE_URL = import.meta.env.VITE_BASE_URL;
+  const navigate = useNavigate();
+  const { fetchCategories } = useCategoryContext();
+  const { fetchProviders } = useProviderContext();
+  const { fetchSubcategories } = useSubcategoryContext();
 
   const fetchProduct = async (id: number) => {
     try {
@@ -36,6 +44,9 @@ const ProductContextComponent: React.FC<ProductContextComponentProps> = ({
       });
       if (!response.ok) {
         console.error("Error fetching Product: ", response.statusText);
+        window.alert(
+          "Ocurrió un error al obtener el producto: " + response.status
+        );
         return;
       }
       const result: CompleteProduct = await response.json();
@@ -56,18 +67,28 @@ const ProductContextComponent: React.FC<ProductContextComponentProps> = ({
         method: "POST",
         headers: {
           Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(dto),
       });
       if (!response.ok) {
         console.error("Error fetching Product: ", response.statusText);
-        return;
+        window.alert(
+          "Ocurrió un error al crear el producto: " + response.status
+        );
       }
-      return;
+      window.alert("Producto creado con éxito.");
+      await fetchCategories();
+      await fetchProviders();
+      await fetchSubcategories();
+      await fetchMeasures();
+      await fetchPrices();
     } catch (error) {
       console.error("Error fetching Product: ", error);
     }
   };
+
+  const [ProductUpdater, setProductUpdater] = useState(0);
 
   const updateProduct = async (id: number, dto: CreateProductDTO) => {
     try {
@@ -80,14 +101,23 @@ const ProductContextComponent: React.FC<ProductContextComponentProps> = ({
         method: "PUT",
         headers: {
           Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(dto),
       });
       if (!response.ok) {
         console.error("Error fetching Product: ", response.statusText);
-        return;
+        window.alert(
+          "Ocurrió un error al actualizar el producto: " + response.status
+        );
       }
-      return;
+      window.alert("Producto actualizado con éxito.");
+      setProductUpdater((prev) => prev + 1);
+      await fetchCategories();
+      await fetchProviders();
+      await fetchMeasures();
+      await fetchSubcategories();
+      await fetchPrices();
     } catch (error) {
       console.error("Error fetching Product: ", error);
     }
@@ -108,11 +138,47 @@ const ProductContextComponent: React.FC<ProductContextComponentProps> = ({
       });
       if (!response.ok) {
         console.error("Error fetching Product: ", response.statusText);
-        return;
+        window.alert(
+          "Ocurrió un error al eliminar el producto: " + response.status
+        );
       }
-      return;
+      await fetchCategories();
+      await fetchProviders();
+      await fetchMeasures();
+      await fetchPrices();
+      await fetchSubcategories();
+      navigate(-1);
     } catch (error) {
       console.error("Error fetching Product: ", error);
+    }
+  };
+
+  const updateProductDisabledStatus = async (id: number, disabled: boolean) => {
+    try {
+      if (!getToken) {
+        console.error("getToken is undefined");
+        return;
+      }
+      const accessToken = await getToken();
+      const response = await fetch(
+        `${BASE_URL}/product?productId=${id}&disabled=${disabled}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      if (!response.ok) {
+        console.error("Error: ", response.statusText);
+        window.alert(`Error actualizando el producto: ${response.status}`);
+        return;
+      }
+      setProductUpdater((prev) => prev + 1);
+    } catch (error) {
+      console.error("Error: ", error);
+      window.alert("Ocurrió un error al actualizar el producto");
     }
   };
 
@@ -174,15 +240,23 @@ const ProductContextComponent: React.FC<ProductContextComponentProps> = ({
     }
   };
 
+  useEffect(() => {
+    fetchMeasures();
+    fetchPrices();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const exportData: ProductContextType = {
     fetchProduct,
     createProduct,
     updateProduct,
     deleteProduct,
+    updateProductDisabledStatus,
     Measures,
     fetchMeasures,
     Prices,
     fetchPrices,
+    ProductUpdater,
   };
 
   return (

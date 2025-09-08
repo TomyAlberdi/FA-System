@@ -19,8 +19,13 @@ export interface BudgetContextType {
     budgetId: number,
     clientId?: number
   ) => Promise<void>;
-  updateBudgetStatus: (status: string, budgetId: number) => Promise<Response>;
+  updateBudgetStatus: (status: string, budgetId: number) => Promise<void>;
+  BudgetUpdater: number;
   deleteBudget: (budgetId: number) => Promise<void>;
+  // CART
+  CurrentBudget: CreateBudgetDTO;
+  updateCurrentBudget: (budget: CreateBudgetDTO) => CreateBudgetDTO;
+  clearCurrentBudget: () => void;
 }
 
 export const BudgetContext = createContext<BudgetContextType | null>(null);

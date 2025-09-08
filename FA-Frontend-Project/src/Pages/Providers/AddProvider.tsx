@@ -12,7 +12,7 @@ interface CategoriesHeaderProps {
 
 export const AddProvider: React.FC<CategoriesHeaderProps> = ({ setOpen }) => {
   const [LoadingRequest, setLoadingRequest] = useState(false);
-  const { createProvider, fetchProviders } = useProviderContext();
+  const { createProvider } = useProviderContext();
 
   const [Provider, setProvider] = useState<CreateProviderDTO>({
     name: "",
@@ -32,18 +32,11 @@ export const AddProvider: React.FC<CategoriesHeaderProps> = ({ setOpen }) => {
   };
 
   const submitProvider = async (provider: CreateProviderDTO) => {
-    try {
-      setLoadingRequest(true);
-      await createProvider(provider);
-      setOpen(false);
-      window.alert("Proveedor creado con éxito");
-      await fetchProviders();
-    } catch (error) {
-      console.error("Error: ", error);
-      window.alert("Ocurrió un error al crear el proveedor");
-    } finally {
+    setLoadingRequest(true);
+    await createProvider(provider).finally(() => {
       setLoadingRequest(false);
-    }
+      setOpen(false);
+    });
   };
 
   return (

@@ -1,7 +1,7 @@
 import { StockContext, StockContextType } from "@/Context/Stock/StockContext";
 import { ProductStock, StockChangeType } from "@/hooks/CatalogInterfaces";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 
 interface StockContextComponentProps {
   children: ReactNode;
@@ -27,6 +27,7 @@ const StockContextComponent: React.FC<StockContextComponentProps> = ({
       });
       if (!response.ok) {
         console.error("Error fetching Product Stock: ", response.statusText);
+        window.alert("Ocurrió un error al obtener el stock del producto: " + response.status);
         return;
       }
       const result: ProductStock = await response.json();
@@ -53,6 +54,7 @@ const StockContextComponent: React.FC<StockContextComponentProps> = ({
       );
       if (!response.ok) {
         console.error("Error fetching Product Stock: ", response.statusText);
+        window.alert("Ocurrió un error al obtener el stock del producto: " + response.status);
         return;
       }
       const result = await response.json();
@@ -61,6 +63,8 @@ const StockContextComponent: React.FC<StockContextComponentProps> = ({
       console.error("Error fetching Product Stock: ", error);
     }
   };
+
+  const [StockUpdater, setStockUpdater] = useState(0);
 
   const changeStock = async (
     id: number,
@@ -83,14 +87,17 @@ const StockContextComponent: React.FC<StockContextComponentProps> = ({
           method: "PATCH",
           headers: {
             Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
           },
         }
       );
       if (!response.ok) {
         console.error("Error fetching Product Stock: ", response.statusText);
+        window.alert("Ocurrió un error al actualizar el stock del producto: " + response.status);
         return;
       }
-      return;
+      window.alert("Stock actualizado con éxito.");
+      setStockUpdater((prev) => prev + 1);
     } catch (error) {
       console.error("Error fetching Product Stock: ", error);
     }
@@ -100,6 +107,7 @@ const StockContextComponent: React.FC<StockContextComponentProps> = ({
     fetchStockByProduct,
     fetchStocks,
     changeStock,
+    StockUpdater,
   };
 
   return (

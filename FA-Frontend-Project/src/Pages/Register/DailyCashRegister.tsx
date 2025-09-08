@@ -17,12 +17,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const DailyCashRegister = () => {
-  const {
-    fetchCashRegisterTotalAmount,
-    FormattedDate,
-    getRecordsByDate,
-    deleteRecord,
-  } = useCashRegisterContext();
+  const { FormattedDate, getRecordsByDate, deleteRecord, CashRegisterUpdater } =
+    useCashRegisterContext();
   const navigate = useNavigate();
 
   const [DailyTypes, setDailyTypes] = useState<Array<number>>([0, 0]);
@@ -42,13 +38,9 @@ const DailyCashRegister = () => {
       const date = new Date();
       fetchDate = formatDate(date);
     }
-    try {
-      const records = await getRecordsByDate(fetchDate);
-      setRecords(records);
-      getDailyTypes(records ?? []);
-    } catch (error) {
-      console.error("Error fetching cash register: ", error);
-    }
+    const records = await getRecordsByDate(fetchDate);
+    setRecords(records);
+    getDailyTypes(records ?? []);
   };
 
   const onDeletePress = (id: number) => {
@@ -58,14 +50,7 @@ const DailyCashRegister = () => {
   };
 
   const handleDeleteRecord = async (id: number) => {
-    try {
-      await deleteRecord(id);
-      window.alert("El registro ha sido eliminado con éxito.");
-      await fetchCashRegisterTotalAmount();
-    } catch (error) {
-      console.error("Error: ", error);
-      window.alert("Ocurrió un error al eliminar el registro");
-    }
+    await deleteRecord(id);
   };
 
   const getDailyTypes = (records: Array<RegisterRecord>) => {
@@ -92,7 +77,7 @@ const DailyCashRegister = () => {
   useEffect(() => {
     fetchRecords();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [FormattedDate]);
+  }, [FormattedDate, CashRegisterUpdater]);
 
   return (
     <>

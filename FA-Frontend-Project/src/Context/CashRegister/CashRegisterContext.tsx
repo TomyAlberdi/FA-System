@@ -14,6 +14,7 @@ export interface CashRegisterContextType {
   createRecord: (record: createCashRegisterRecordDTO) => Promise<void>;
   getRecordsByDate: (date: string) => Promise<Array<RegisterRecord> | undefined>;
   deleteRecord: (id: number) => Promise<void>;
+  CashRegisterUpdater: number;
 }
 
 export const CashRegisterContext =

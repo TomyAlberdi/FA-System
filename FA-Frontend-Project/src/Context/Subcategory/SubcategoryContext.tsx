@@ -29,6 +29,7 @@ export interface SubcategoryContextType {
     name: string
   ) => Promise<Subcategory | undefined>;
   deleteSubcategory: (id: number) => Promise<void>;
+  SubcategoryUpdater: number;
 }
 
 export const SubcategoryContext = createContext<SubcategoryContextType | null>(

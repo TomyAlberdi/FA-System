@@ -6,10 +6,12 @@ export interface ProductContextType {
   createProduct: (dto: CreateProductDTO) => Promise<void>;
   updateProduct: (id: number, dto: CreateProductDTO) => Promise<void>;
   deleteProduct: (id: number) => Promise<void>;
+  updateProductDisabledStatus: (id: number, disabled: boolean) => Promise<void>;
   Measures: ReturnData<Measure>,
   fetchMeasures: () => Promise<void>;
   Prices: ReturnData<Price>;
   fetchPrices: () => Promise<void>;
+  ProductUpdater: number;
 }
 
 export const ProductContext = createContext<ProductContextType | null>(null);

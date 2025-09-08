@@ -8,10 +8,7 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs } from "@/components/ui/tabs";
-import { useCategoryContext } from "@/Context/Category/UseCategoryContext";
 import { useProductContext } from "@/Context/Product/UseProductContext";
-import { useProviderContext } from "@/Context/Provider/UseProviderContext";
-import { useSubcategoryContext } from "@/Context/Subcategory/UseSubcategoryContext";
 import { CompleteProduct, CreateProductDTO } from "@/hooks/CatalogInterfaces";
 import BasicDataTab from "@/Pages/Products/CreateProduct/BasicDataTab";
 import ExtraDataTab from "@/Pages/Products/CreateProduct/ExtraDataTab";
@@ -28,11 +25,7 @@ const CreateProduct = ({
   TriggerTitle: string;
   TriggerIcon: FC<LucideProps>;
 }) => {
-  const { fetchProviders } = useProviderContext();
-  const { fetchCategories } = useCategoryContext();
-  const { fetchSubcategories } = useSubcategoryContext();
-  const { fetchMeasures, fetchPrices, createProduct, updateProduct } =
-    useProductContext();
+  const { createProduct, updateProduct } = useProductContext();
 
   const [Product, setProduct] = useState<CreateProductDTO>({
     // Tab 1
@@ -145,41 +138,15 @@ const CreateProduct = ({
 
   //#blue Submit creation logic
   const submitCreateProduct = async (newProduct: CreateProductDTO) => {
-    try {
-      setLoadingRequest(true);
-      await createProduct(newProduct);
-    } catch (error) {
-      console.error("Error creating product: ", error);
-      window.alert("Ocurrió un error al crear el producto");
-      await Promise.all([
-        fetchCategories(),
-        fetchSubcategories(),
-        fetchProviders(),
-        fetchMeasures(),
-        fetchPrices(),
-      ]);
-    } finally {
-      setLoadingRequest(false);
-    }
+    setLoadingRequest(true);
+    await createProduct(newProduct).finally(() => setLoadingRequest(false));
   };
 
   const submitUpdateProduct = async (newProduct: CreateProductDTO) => {
-    try {
-      setLoadingRequest(true);
-      await updateProduct(ProductProp?.id ?? 0, newProduct);
-      window.alert("Producto actualizado con éxito");
-      await Promise.all([
-        fetchCategories(),
-        fetchProviders(),
-        fetchMeasures(),
-        fetchPrices(),
-      ]);
-      window.location.reload();
-    } catch (error) {
-      console.error("Error updating product: ", error);
-    } finally {
-      setLoadingRequest(false);
-    }
+    setLoadingRequest(true);
+    await updateProduct(ProductProp?.id ?? 0, newProduct).finally(() =>
+      setLoadingRequest(false)
+    );
   };
   //#
 

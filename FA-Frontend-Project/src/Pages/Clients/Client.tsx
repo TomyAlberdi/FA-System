@@ -11,14 +11,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useClientContext } from "@/Context/Client/UseClientContext";
 import { CompleteClient } from "@/hooks/SalesInterfaces";
 import { ClientBudgets } from "@/Pages/Clients/ClientBudgets";
-import { CirclePlus, CircleX } from "lucide-react";
+import { CircleX } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { UpdateClient } from "./UpdateClient";
 
 export const Client = () => {
   const { id } = useParams();
-  const { fetchClient, deleteClient } = useClientContext();
+  const { fetchClient, deleteClient, ClientUpdater } = useClientContext();
   const navigate = useNavigate();
   const [Client, setClient] = useState<CompleteClient | null>(null);
   const [Loading, setLoading] = useState(true);
@@ -35,7 +35,7 @@ export const Client = () => {
         .finally(() => setLoading(false));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [id, ClientUpdater]);
 
   const onDeletePres = () => {
     if (window.confirm("¿Desea eliminar el cliente?")) {
@@ -44,14 +44,7 @@ export const Client = () => {
   };
 
   const submitDeleteClient = async () => {
-    try {
-      await deleteClient(Number(id));
-      window.alert("Cliente eliminado con éxito");
-      navigate("/sales/clients");
-    } catch (error) {
-      console.error("Error: ", error);
-      window.alert("Ocurrió un error al eliminar el cliente");
-    }
+    await deleteClient(Number(id));
   };
 
   return (
@@ -105,12 +98,6 @@ export const Client = () => {
               </CardDescription>
             </CardContent>
             <CardContent>
-              <Button asChild className="w-full mb-2">
-                <Link to={`/sales/budgets/add`}>
-                  <CirclePlus />
-                  Crear Presupuesto
-                </Link>
-              </Button>
               <UpdateClient client={Client} />
               <Button
                 variant="destructive"

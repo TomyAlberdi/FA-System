@@ -41,8 +41,8 @@ export const Subcategory = () => {
     fetchSubcategory,
     updateSubcategory,
     fetchSubcategoryProducts,
-    fetchSubcategories,
     deleteSubcategory,
+    SubcategoryUpdater,
   } = useSubcategoryContext();
   const navigate = useNavigate();
   const [Loading, setLoading] = useState(true);
@@ -66,17 +66,10 @@ export const Subcategory = () => {
   };
 
   const submitUpdate = async (name: string) => {
-    try {
-      await updateSubcategory(Number(id), name);
-      window.alert("La subcategoría ha sido actualizada con éxito");
-      await fetchSubcategories();
-      window.location.reload();
-    } catch (error) {
-      console.error("Error: ", error);
-      window.alert("Ocurrió un error al actualizar la subcategoría");
-    } finally {
-      setLoadingRequest(false);
-    }
+    setLoadingRequest(true);
+    await updateSubcategory(Number(id), name).finally(() =>
+      setLoadingRequest(false)
+    );
   };
 
   const loadSubcategory = async () => {
@@ -95,7 +88,7 @@ export const Subcategory = () => {
   useEffect(() => {
     loadSubcategory();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [id, SubcategoryUpdater]);
 
   useEffect(() => {
     if (id) {
@@ -122,15 +115,8 @@ export const Subcategory = () => {
   };
 
   const submitDeleteSubcategory = async () => {
-    try {
-      await deleteSubcategory(Number(id));
-      window.alert("La subcategoría ha sido eliminada con éxito");
-      await fetchSubcategories();
-      window.location.reload();
-    } catch (error) {
-      console.error("Error: ", error);
-      window.alert("Ocurrió un error al eliminar la subcategoría");
-    }
+    setLoadingRequest(true);
+    await deleteSubcategory(Number(id)).finally(() => setLoadingRequest(false));
   };
 
   return (

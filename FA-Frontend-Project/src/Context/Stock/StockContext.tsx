@@ -18,6 +18,7 @@ export interface StockContextType {
     quantity: number,
     type: StockChangeType
   ) => Promise<void>;
+  StockUpdater: number;
 }
 
 export const StockContext = createContext<StockContextType | null>(null);

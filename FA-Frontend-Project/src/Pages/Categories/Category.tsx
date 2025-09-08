@@ -53,9 +53,9 @@ const Category = () => {
     updateCategory,
     deleteCategory,
     fetchCategoryProducts,
-    fetchCategories,
+    CategoryUpdater,
   } = useCategoryContext();
-  const { createSubcategory } = useSubcategoryContext();
+  const { createSubcategory, SubcategoryUpdater } = useSubcategoryContext();
   const [Category, setCategory] = useState<CategoryInterface | null>(null);
   const [Products, setProducts] = useState<Array<StockProduct> | null>([]);
   const [IsLastPage, setIsLastPage] = useState(false);
@@ -82,18 +82,9 @@ const Category = () => {
 
   const submitUpdateCategory = async (name: string) => {
     setLoadingRequest(true);
-    try {
-      await updateCategory(Number(id), name);
-      window.alert("Categoría actualizada con éxito");
-      await fetchCategories();
-      await loadCategory();
-      setOpen(false);
-    } catch (error) {
-      console.error("Error: ", error);
-      window.alert("Ocurrió un error al actualizar la categoría");
-    } finally {
-      setLoadingRequest(false);
-    }
+    await updateCategory(Number(id), name).finally(() =>
+      setLoadingRequest(false)
+    );
   };
 
   const onSubmitSubcategory = () => {
@@ -106,17 +97,9 @@ const Category = () => {
 
   const submitSubcategory = async (name: string) => {
     setLoadingRequest(true);
-    try {
-      await createSubcategory(Number(id), name);
-      setOpenCreateSubcategory(false);
-      window.alert("Subcategoría creada con éxito");
-      await loadCategory();
-    } catch (error) {
-      console.error("Error: ", error);
-      window.alert("Ocurrió un error al crear la subcategoría");
-    } finally {
-      setLoadingRequest(false);
-    }
+    await createSubcategory(Number(id), name).finally(() =>
+      setLoadingRequest(false)
+    );
   };
 
   const loadCategory = async () => {
@@ -135,7 +118,7 @@ const Category = () => {
   useEffect(() => {
     loadCategory();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [id, CategoryUpdater, SubcategoryUpdater]);
 
   useEffect(() => {
     if (id) {
@@ -162,18 +145,8 @@ const Category = () => {
   };
 
   const submitDeleteCategory = async () => {
-    try {
-      setLoadingRequest(true);
-      await deleteCategory(Number(id));
-      window.alert("Categoría eliminada con éxito");
-      await fetchCategories();
-      navigate(-1);
-    } catch (error) {
-      console.error("Error: ", error);
-      window.alert("Ocurrió un error al eliminar la categoría");
-    } finally {
-      setLoadingRequest(false);
-    }
+    setLoadingRequest(true);
+    await deleteCategory(Number(id)).finally(() => setLoadingRequest(false));
   };
 
   return (

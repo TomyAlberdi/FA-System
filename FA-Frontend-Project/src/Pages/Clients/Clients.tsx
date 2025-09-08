@@ -1,3 +1,4 @@
+import { useClientContext } from "@/Context/Client/UseClientContext";
 import { PaginationInfo } from "@/hooks/CatalogInterfaces";
 import { ClientsFilter, PartialClient } from "@/hooks/SalesInterfaces";
 import { ClientsHeader } from "@/Pages/Clients/ClientsHeader";
@@ -9,7 +10,7 @@ import { useEffect, useState } from "react";
 export const Clients = () => {
   const { getToken } = useKindeAuth();
   const BASE_URL = import.meta.env.VITE_BASE_URL;
-
+  const { ClientUpdater } = useClientContext();
   const [CurrentPage, setCurrentPage] = useState(0);
   const [PaginationInfo, setPaginationInfo] = useState<PaginationInfo>({
     pageNumber: 0,
@@ -49,6 +50,7 @@ export const Clients = () => {
         });
         if (!response.ok) {
           console.error("Error fetching clients: ", response.status);
+          window.alert("Ocurrió un error al obtener los clientes: " + response.status);
           return;
         }
         const result = await response.json();
@@ -69,7 +71,7 @@ export const Clients = () => {
     };
     handleSearch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [Filters, CurrentPage, BASE_URL]);
+  }, [Filters, CurrentPage, BASE_URL, ClientUpdater]);
 
   return (
     <div className="Clients">

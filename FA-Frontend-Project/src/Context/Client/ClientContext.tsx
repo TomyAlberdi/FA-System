@@ -9,6 +9,7 @@ export interface ClientContextType {
   createClient: (dto: CreateClientDTO) => Promise<void>;
   updateClient: (id: number, dto: CreateClientDTO) => Promise<void>;
   deleteClient: (id: number) => Promise<void>;
+  ClientUpdater: number;
 }
 
 export const ClientContext = createContext<ClientContextType | null>(null);

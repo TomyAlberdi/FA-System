@@ -12,10 +12,9 @@ import { PartialBudget } from "@/hooks/SalesInterfaces";
 import { cn } from "@/lib/utils";
 import { BudgetCard } from "@/Pages/Budgets/BudgetCard";
 import { format, subDays } from "date-fns";
-import { AlertCircle, CalendarIcon, PlusCircle } from "lucide-react";
+import { AlertCircle, CalendarIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
-import { Link } from "react-router-dom";
 
 export const Budgets = () => {
   const { fetchBudgetsByDateRange } = useBudgetContext();
@@ -97,14 +96,6 @@ export const Budgets = () => {
               />
             </PopoverContent>
           </Popover>
-        </div>
-        <div className="md:w-auto w-full">
-          <Button asChild className="md:w-auto w-full">
-            <Link to="/sales/budgets/add">
-              <PlusCircle />
-              Crear presupuesto
-            </Link>
-          </Button>
         </div>
       </section>
       <section className="flex md:flex-row flex-col items-start justify-start md:gap-[1%]">

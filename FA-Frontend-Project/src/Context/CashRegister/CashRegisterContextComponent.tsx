@@ -2,7 +2,10 @@ import {
   CashRegisterContext,
   CashRegisterContextType,
 } from "@/Context/CashRegister/CashRegisterContext";
-import { createCashRegisterRecordDTO, RegisterRecord } from "@/hooks/SalesInterfaces";
+import {
+  createCashRegisterRecordDTO,
+  RegisterRecord,
+} from "@/hooks/SalesInterfaces";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { ReactNode, useEffect, useState } from "react";
 
@@ -32,6 +35,9 @@ const CashRegisterContextComponent: React.FC<
       });
       if (!response.ok) {
         console.error("Error fetching cash register: ", response.statusText);
+        window.alert(
+          "Ocurrió un error al obtener la caja registradora: " + response.status
+        );
         return;
       }
       const result: number = await response.json();
@@ -57,6 +63,9 @@ const CashRegisterContextComponent: React.FC<
       });
       if (!response.ok) {
         console.error("Error fetching cash register: ", response.statusText);
+        window.alert(
+          "Ocurrió un error al obtener la caja registradora: " + response.status
+        );
         return;
       }
       const result: Array<number> = await response.json();
@@ -68,6 +77,7 @@ const CashRegisterContextComponent: React.FC<
   };
 
   const [FormattedDate, setFormattedDate] = useState<string>("");
+  const [CashRegisterUpdater, setCashRegisterUpdater] = useState(0);
 
   const createRecord = async (record: createCashRegisterRecordDTO) => {
     try {
@@ -80,14 +90,20 @@ const CashRegisterContextComponent: React.FC<
         method: "POST",
         headers: {
           Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(record),
       });
       if (!response.ok) {
         console.error("Error fetching cash register: ", response.statusText);
+        window.alert(
+          "Ocurrió un error al registrar en la caja: " + response.status
+        );
         return;
       }
-      return;
+      setCashRegisterUpdater((prev) => prev + 1);
+      window.alert("Registro creado con éxito");
+      await fetchCashRegisterTotalAmount();
     } catch (error) {
       console.error("Error fetching cash register: ", error);
     }
@@ -108,6 +124,9 @@ const CashRegisterContextComponent: React.FC<
       });
       if (!response.ok) {
         console.error("Error fetching cash register: ", response.statusText);
+        window.alert(
+          "Ocurrió un error al obtener la caja registradora: " + response.status
+        );
         return;
       }
       const result: Array<RegisterRecord> = await response.json();
@@ -136,7 +155,7 @@ const CashRegisterContextComponent: React.FC<
         window.alert(`Error eliminando el registro: ${response.status}`);
         return;
       }
-      window.alert("El registro ha sido eliminado con éxito.");
+      setCashRegisterUpdater((prev) => prev + 1);
     } catch (error) {
       console.error("Error deleting record: ", error);
       window.alert("Ocurrió un error al eliminar el registro.");
@@ -166,6 +185,7 @@ const CashRegisterContextComponent: React.FC<
     createRecord,
     getRecordsByDate,
     deleteRecord,
+    CashRegisterUpdater,
   };
 
   return (

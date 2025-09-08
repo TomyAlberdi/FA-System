@@ -17,8 +17,9 @@ export interface CategoryContextType {
     size: number
   ) => Promise<PaginationResponse<StockProduct>>;
   createCategory: (name: string) => Promise<PartialCSP | undefined>;
-  updateCategory: (id: number, name: string) => Promise<PartialCSP | undefined>;
+  updateCategory: (id: number, name: string) => Promise<void>;
   deleteCategory: (id: number) => Promise<void>;
+  CategoryUpdater: number;
 }
 
 export const CategoryContext = createContext<CategoryContextType | null>(null);

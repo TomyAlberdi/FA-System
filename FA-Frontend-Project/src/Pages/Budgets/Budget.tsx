@@ -29,7 +29,7 @@ import { generatePDF } from "./CreateBudgetDetail";
 
 export const Budget = () => {
   const { id } = useParams();
-  const { fetchBudget, deleteBudget } = useBudgetContext();
+  const { fetchBudget, deleteBudget, BudgetUpdater } = useBudgetContext();
   const navigate = useNavigate();
   const [Budget, setBudget] = useState<CompleteBudget | null>(null);
   const [Loading, setLoading] = useState(true);
@@ -65,7 +65,7 @@ export const Budget = () => {
         setLoading(false);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [id, BudgetUpdater]);
 
   const [OpenUpdateStatus, setOpenUpdateStatus] = useState(false);
 
@@ -112,7 +112,7 @@ export const Budget = () => {
           <Separator />
           <div className="flex flex-col gap-2">
             <span className="text-lg">Cliente:</span>
-            <span className="text-2xl">{Budget?.clientName}</span>
+            <span className="text-2xl">{Budget?.clientName ?? "N/A"}</span>
           </div>
         </CardContent>
         <CardContent className="flex flex-col gap-4">

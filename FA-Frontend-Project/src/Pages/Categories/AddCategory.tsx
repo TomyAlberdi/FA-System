@@ -12,7 +12,7 @@ interface CategoriesHeaderProps {
 export const AddCategory: React.FC<CategoriesHeaderProps> = ({ setOpen }) => {
   const [LoadingRequest, setLoadingRequest] = useState(false);
 
-  const { createCategory, fetchCategories } = useCategoryContext();
+  const { createCategory } = useCategoryContext();
 
   const [Name, setName] = useState<string>("");
 
@@ -26,17 +26,10 @@ export const AddCategory: React.FC<CategoriesHeaderProps> = ({ setOpen }) => {
 
   const submitCategory = async (name: string) => {
     setLoadingRequest(true);
-    try {
-      await createCategory(name);
-      setOpen(false);
-      window.alert("Categoría creada con éxito");
-      await fetchCategories();
-    } catch (error) {
-      console.error("Error: ", error);
-      window.alert("Ocurrió un error al crear la categoría");
-    } finally {
+    await createCategory(name).finally(() => {
       setLoadingRequest(false);
-    }
+      setOpen(false);
+    });
   };
 
   return (

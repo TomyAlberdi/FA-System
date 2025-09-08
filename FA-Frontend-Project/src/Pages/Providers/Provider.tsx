@@ -32,8 +32,8 @@ export const Provider = () => {
   const {
     fetchProvider,
     fetchProviderProducts,
-    fetchProviders,
     deleteProvider,
+    ProviderUpdater,
   } = useProviderContext();
   const [Provider, setProvider] = useState<ProviderInterface | null>(null);
   const [Products, setProducts] = useState<Array<StockProduct> | null>([]);
@@ -58,7 +58,7 @@ export const Provider = () => {
   useEffect(() => {
     loadProvider();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [id, ProviderUpdater]);
 
   useEffect(() => {
     if (id) {
@@ -85,14 +85,7 @@ export const Provider = () => {
   };
 
   const submitDeleteProvider = async () => {
-    try {
-      await deleteProvider(Number(id));
-      await fetchProviders();
-      navigate(-1);
-    } catch (error) {
-      console.error("Error: ", error);
-      window.alert("Ocurrió un error al eliminar el proveedor");
-    }
+    await deleteProvider(Number(id));
   };
 
   return (

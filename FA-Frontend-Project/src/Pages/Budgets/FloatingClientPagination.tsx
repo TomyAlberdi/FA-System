@@ -10,18 +10,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useBudgetContext } from "@/Context/Budget/UseBudgetContext";
 import { PartialClient } from "@/hooks/SalesInterfaces";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { Plus, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 
-interface FloatingClientPaginationProps {
-  handleSelectClient: (client: PartialClient) => void;
-}
-
-export const FloatingClientPagination = ({
-  handleSelectClient,
-}: FloatingClientPaginationProps) => {
+export const FloatingClientPagination = () => {
   const BASE_URL = import.meta.env.VITE_BASE_URL;
   const { getToken } = useKindeAuth();
   const [Clients, setClients] = useState<Array<PartialClient>>([]);
@@ -29,6 +24,7 @@ export const FloatingClientPagination = ({
   const [IsLastPage, setIsLastPage] = useState(false);
   const [Keyword, setKeyword] = useState("");
   const [Loading, setLoading] = useState(true);
+  const { CurrentBudget, updateCurrentBudget } = useBudgetContext();
 
   const fetchClients = async (keyword: string) => {
     setLoading(true);
@@ -106,7 +102,20 @@ export const FloatingClientPagination = ({
                   <TableRow
                     key={i}
                     className="cursor-pointer"
-                    onClick={() => handleSelectClient(client)}
+                    onClick={() =>
+                      updateCurrentBudget({
+                        ...CurrentBudget,
+                        clientId: client.id,
+                        client: {
+                          name: client.name,
+                          type: client.type,
+                          address: "",
+                          phone: "",
+                          email: "",
+                          cuit_dni: "",
+                        },
+                      })
+                    }
                   >
                     <TableCell className="font-medium">{client.name}</TableCell>
                     <TableCell className="font-medium">{client.type}</TableCell>

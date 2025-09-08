@@ -2,14 +2,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useClientContext } from "@/Context/Client/UseClientContext";
+import { useBudgetContext } from "@/Context/Budget/UseBudgetContext";
 import { CreateClientDTO } from "@/hooks/SalesInterfaces";
-import { Loader2 } from "lucide-react";
 import { useState } from "react";
 
-export const AddClient = () => {
-  const { createClient } = useClientContext();
-  const [LoadingRequest, setLoadingRequest] = useState(false);
+const CreateBudgetClient = () => {
+  const { CurrentBudget, updateCurrentBudget } = useBudgetContext();
 
   const [Client, setClient] = useState<CreateClientDTO>({
     name: "",
@@ -20,7 +18,7 @@ export const AddClient = () => {
     cuit_dni: "",
   });
 
-  const onSubmit = () => {
+  const createBudgetClient = () => {
     if (Client.name === "") {
       window.alert("El nombre del cliente no puede estar vacío.");
       return;
@@ -29,12 +27,11 @@ export const AddClient = () => {
       window.alert("Seleccione un tipo de cliente (A / B).");
       return;
     }
-    submitClient(Client);
-  };
-
-  const submitClient = async (client: CreateClientDTO) => {
-    setLoadingRequest(true);
-    await createClient(client).finally(() => setLoadingRequest(false));
+    updateCurrentBudget({
+      ...CurrentBudget,
+      clientId: undefined,
+      client: Client,
+    });
   };
 
   return (
@@ -111,15 +108,11 @@ export const AddClient = () => {
         </RadioGroup>
       </div>
       <div className="col-span-2 col-start-1 flex justify-center items-center">
-        <Button
-          onClick={() => onSubmit()}
-          className="w-full"
-          disabled={LoadingRequest}
-        >
-          {LoadingRequest && <Loader2 className="animate-spin" />}
-          Guardar
+        <Button onClick={createBudgetClient} className="w-full">
+          Crear
         </Button>
       </div>
     </div>
   );
 };
+export default CreateBudgetClient;

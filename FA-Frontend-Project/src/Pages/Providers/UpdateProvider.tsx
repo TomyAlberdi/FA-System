@@ -24,7 +24,7 @@ export const UpdateProvider = ({ defaultProvider }: UpdateProviderProps) => {
   const [LoadingRequest, setLoadingRequest] = useState(false);
   const [Open, setOpen] = useState(false);
 
-  const { fetchProviders, updateProvider } = useProviderContext();
+  const { updateProvider } = useProviderContext();
 
   const [Provider, setProvider] = useState<CreateProviderDTO>({
     name: defaultProvider?.name ?? "",
@@ -44,17 +44,10 @@ export const UpdateProvider = ({ defaultProvider }: UpdateProviderProps) => {
   };
 
   const submitProvider = async () => {
-    try {
-      await updateProvider(Number(defaultProvider?.id), Provider);
-      window.alert("Proveedor actualizado con éxito");
-      await fetchProviders();
-      window.location.reload();
-    } catch (error) {
-      console.error("Error: ", error);
-      window.alert("Ocurrió un error al actualizar el proveedor");
-    } finally {
-      setLoadingRequest(false);
-    }
+    setLoadingRequest(true);
+    await updateProvider(Number(defaultProvider?.id), Provider).finally(() =>
+      setLoadingRequest(false)
+    );
   };
 
   return (

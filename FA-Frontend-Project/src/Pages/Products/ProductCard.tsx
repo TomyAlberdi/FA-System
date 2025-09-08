@@ -1,22 +1,22 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { CardProduct } from "@/hooks/CatalogInterfaces";
-import { SquarePlus } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { ShoppingCart, SquarePlus } from "lucide-react";
+import { Link } from "react-router-dom";
+import AddProductToBudget from "../Budgets/AddProductToBudget";
 
 export const ProductCard = ({ product }: { product: CardProduct }) => {
-  const navigate = useNavigate();
-
+  //TODO: Add "add to cart" button and create new dialog component
   return (
     <Card
-      onClick={() => navigate(`/catalog/products/${product.id}`)}
       className={
-        "ProductCard relative bg-primary-foreground h-[200px] w-full grid-cols-5 grid-rows-5 md:h-[400px] md:w-[24.2%] md:max-w-[300px] md:min-w-[220px] p-2 grid md:grid-cols-1 md:grid-rows-9 cursor-pointer" +
+        "ProductCard relative bg-primary-foreground h-[200px] w-full grid-cols-5 grid-rows-5 md:h-[400px] md:w-[24.2%] md:max-w-[300px] md:min-w-[220px] p-2 grid md:grid-cols-1 md:grid-rows-9" +
         (product.disabled ? " opacity-50 border-red-700" : "")
       }
     >
@@ -48,7 +48,7 @@ export const ProductCard = ({ product }: { product: CardProduct }) => {
       <CardTitle className="w-full md:row-span-2 md:row-start-auto row-start-2 row-span-4 md:col-start-1 md:col-span-auto col-start-3 col-span-3 flex flex-col justify-center items-center overflow-hidden">
         {product.discountPercentage > 0 ? (
           <>
-            <span className="oldPrice line-through mr-1 md:text-xl text-lg text-muted-foreground"> 
+            <span className="oldPrice line-through mr-1 md:text-xl text-lg text-muted-foreground">
               $ {product?.measurePrice}
             </span>
             <span className="newPrice md:text-xl text-lg text-destructive overflow-hidden">
@@ -76,15 +76,25 @@ export const ProductCard = ({ product }: { product: CardProduct }) => {
           </CardDescription>
         )}
       </CardTitle>
-      <Button
-        className={
-          "w-full row-span-1 md:row-start-9 col-span-full text-center row-start-9" +
-          (product.disabled ? " bg-red-700" : "")
-        }
-      >
-        <SquarePlus />
-        Ver más
-      </Button>
+      <div className="w-full row-span-1 md:row-start-9 col-span-full text-center row-start-9 flex gap-1">
+        <Button
+          className={"w-4/5" + (product.disabled ? " bg-red-700" : "")}
+          asChild
+        >
+          <Link to={`/catalog/products/${product.id}`}>
+            <SquarePlus />
+            Ver más
+          </Link>
+        </Button>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button className="w-1/5">
+              <ShoppingCart />
+            </Button>
+          </DialogTrigger>
+          <AddProductToBudget product={product} />
+        </Dialog>
+      </div>
     </Card>
   );
 };

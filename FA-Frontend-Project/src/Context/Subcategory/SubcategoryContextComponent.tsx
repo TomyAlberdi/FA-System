@@ -5,6 +5,7 @@ import {
 import { ReturnData, Subcategory } from "@/hooks/CatalogInterfaces";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { ReactNode, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface CategoryContextComponentProps {
   children: ReactNode;
@@ -15,6 +16,7 @@ const SubcategoryContextComponent: React.FC<CategoryContextComponentProps> = ({
 }) => {
   const { getToken } = useKindeAuth();
   const BASE_URL = import.meta.env.VITE_BASE_URL;
+  const navigate = useNavigate();
 
   const [Subcategories, setSubcategories] = useState<ReturnData<Subcategory>>({
     Loading: true,
@@ -35,6 +37,7 @@ const SubcategoryContextComponent: React.FC<CategoryContextComponentProps> = ({
       });
       if (!response.ok) {
         console.error("Error fetching data: ", response.statusText);
+        window.alert("Ocurrió un error al obtener las subcategorías: " + response.status);
       }
       const result: Array<Subcategory> = await response.json();
       setSubcategories({ Loading: false, data: result });
@@ -61,6 +64,7 @@ const SubcategoryContextComponent: React.FC<CategoryContextComponentProps> = ({
       );
       if (!response.ok) {
         console.error("Error fetching data: ", response.statusText);
+        window.alert("Ocurrió un error al obtener la subcategoría: " + response.status);
         return;
       }
       const result: Subcategory = await response.json();
@@ -84,6 +88,7 @@ const SubcategoryContextComponent: React.FC<CategoryContextComponentProps> = ({
       });
       if (!response.ok) {
         console.error("Error fetching data: ", response.statusText);
+        window.alert("Ocurrió un error al obtener las subcategorías: " + response.status);
         return;
       }
       const result: Array<Subcategory> = await response.json();
@@ -114,6 +119,7 @@ const SubcategoryContextComponent: React.FC<CategoryContextComponentProps> = ({
       );
       if (!response.ok) {
         console.error("Error fetching data: ", response.statusText);
+        window.alert("Ocurrió un error al obtener los productos de la subcategoría: " + response.status);
         return;
       }
       const result = await response.json();
@@ -122,6 +128,8 @@ const SubcategoryContextComponent: React.FC<CategoryContextComponentProps> = ({
       console.error("Error fetching subcategory products: ", error);
     }
   };
+
+  const [SubcategoryUpdater, SetSubcategoryUpdater] = useState(0);
 
   const createSubcategory = async (categoryId: number, name: string) => {
     try {
@@ -141,8 +149,11 @@ const SubcategoryContextComponent: React.FC<CategoryContextComponentProps> = ({
       );
       if (!response.ok) {
         console.error("Error fetching data: ", response.statusText);
+        window.alert("Ocurrió un error al crear la subcategoría: " + response.status);
         return;
       }
+      await fetchSubcategories();
+      SetSubcategoryUpdater((prev) => prev + 1);
       const result: Subcategory = await response.json();
       return result;
     } catch (error) {
@@ -158,10 +169,9 @@ const SubcategoryContextComponent: React.FC<CategoryContextComponentProps> = ({
       }
       const accessToken = await getToken();
       const response = await fetch(
-        `${BASE_URL}/category/subcategory/${id}?` +
-          new URLSearchParams({ name }).toString(),
+        `${BASE_URL}/category/subcategory/${id}/${name}`,
         {
-          method: "PUT",
+          method: "PATCH",
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -169,8 +179,11 @@ const SubcategoryContextComponent: React.FC<CategoryContextComponentProps> = ({
       );
       if (!response.ok) {
         console.error("Error fetching data: ", response.statusText);
+        window.alert("Ocurrió un error al actualizar la subcategoría: " + response.status);
         return;
       }
+      SetSubcategoryUpdater((prev) => prev + 1);
+      await fetchSubcategories();
       const result: Subcategory = await response.json();
       return result;
     } catch (error) {
@@ -195,7 +208,8 @@ const SubcategoryContextComponent: React.FC<CategoryContextComponentProps> = ({
         console.error("Error fetching data: ", response.statusText);
         return;
       }
-      return;
+      await fetchSubcategories();
+      navigate(-1);
     } catch (error) {
       console.error("Error fetching subcategory: ", error);
     }
@@ -223,6 +237,7 @@ const SubcategoryContextComponent: React.FC<CategoryContextComponentProps> = ({
     createSubcategory,
     updateSubcategory,
     deleteSubcategory,
+    SubcategoryUpdater,
   };
 
   return (

@@ -10,6 +10,7 @@ import {
 } from "@/hooks/SalesInterfaces";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { ReactNode, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface ClientContextComponentProps {
   children: ReactNode;
@@ -20,6 +21,7 @@ const ClientContextComponent: React.FC<ClientContextComponentProps> = ({
 }) => {
   const { getToken } = useKindeAuth();
   const BASE_URL = import.meta.env.VITE_BASE_URL;
+  const navigate = useNavigate();
 
   const [Clients, setClients] = useState<ReturnData<PartialClient>>({
     Loading: true,
@@ -40,6 +42,9 @@ const ClientContextComponent: React.FC<ClientContextComponentProps> = ({
       });
       if (!response.ok) {
         console.error("Error fetching data: ", response.statusText);
+        window.alert(
+          "Ocurrió un error al obtener los clientes: " + response.status
+        );
         return;
       }
       const result: Array<PartialClient> = await response.json();
@@ -64,6 +69,9 @@ const ClientContextComponent: React.FC<ClientContextComponentProps> = ({
       });
       if (!response.ok) {
         console.error("Error fetching data: ", response.statusText);
+        window.alert(
+          "Ocurrió un error al obtener el cliente: " + response.status
+        );
         return;
       }
       const result: CompleteClient = await response.json();
@@ -73,6 +81,8 @@ const ClientContextComponent: React.FC<ClientContextComponentProps> = ({
     }
   };
 
+  const [ClientUpdater, setClientUpdater] = useState(0);
+
   const createClient = async (dto: CreateClientDTO) => {
     try {
       if (!getToken) {
@@ -80,18 +90,26 @@ const ClientContextComponent: React.FC<ClientContextComponentProps> = ({
         return;
       }
       const accessToken = await getToken();
+      const finalDTO = {
+        ...dto,
+        "cuit_dni": dto.cuitDni,
+      };
+      console.log(finalDTO);
       const response = await fetch(`${BASE_URL}/client`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(dto),
+        body: JSON.stringify(finalDTO),
       });
       if (!response.ok) {
         console.error("Error fetching data: ", response.statusText);
-        return;
+        window.alert(
+          "Ocurrió un error al crear el cliente: " + response.status
+        );
       }
-      return;
+      setClientUpdater((prev) => prev + 1);
     } catch (error) {
       console.error("Error fetching data: ", error);
     }
@@ -104,18 +122,26 @@ const ClientContextComponent: React.FC<ClientContextComponentProps> = ({
         return;
       }
       const accessToken = await getToken();
+      const finalDTO = {
+        ...dto,
+        cuit_dni: dto.cuitDni,
+      };
       const response = await fetch(`${BASE_URL}/client/${id}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(dto),
+        body: JSON.stringify(finalDTO),
       });
       if (!response.ok) {
         console.error("Error fetching data: ", response.statusText);
+        window.alert(
+          "Ocurrió un error al actualizar el cliente: " + response.status
+        );
         return;
       }
-      return;
+      setClientUpdater((prev) => prev + 1);
     } catch (error) {
       console.error("Error fetching data: ", error);
     }
@@ -136,9 +162,11 @@ const ClientContextComponent: React.FC<ClientContextComponentProps> = ({
       });
       if (!response.ok) {
         console.error("Error fetching data: ", response.statusText);
-        return;
+        window.alert(
+          "Ocurrió un error al eliminar el cliente: " + response.status
+        );
       }
-      return;
+      navigate(-1);
     } catch (error) {
       console.error("Error fetching data: ", error);
     }
@@ -151,6 +179,7 @@ const ClientContextComponent: React.FC<ClientContextComponentProps> = ({
     createClient,
     updateClient,
     deleteClient,
+    ClientUpdater,
   };
 
   return (

@@ -22,6 +22,7 @@ export interface ProviderContextType {
     dto: CreateProviderDTO
   ) => Promise<Provider | undefined>;
   deleteProvider: (id: number) => Promise<void>;
+  ProviderUpdater: number;
 }
 
 export const ProviderContext = createContext<ProviderContextType | null>(null);
