@@ -15,7 +15,7 @@ const CreateBudgetClient = () => {
     address: "",
     phone: "",
     email: "",
-    cuit_dni: "",
+    cuitDni: "",
   });
 
   const createBudgetClient = () => {
@@ -80,8 +80,8 @@ const CreateBudgetClient = () => {
         <Label>CUIT / DNI (Opcional)</Label>
         <Input
           type="number"
-          value={Client.cuit_dni}
-          onChange={(e) => setClient({ ...Client, cuit_dni: e.target.value })}
+          value={Client.cuitDni}
+          onChange={(e) => setClient({ ...Client, cuitDni: e.target.value })}
           placeholder="CUIT / DNI"
           className="w-full"
         />
