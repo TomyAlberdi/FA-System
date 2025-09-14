@@ -1,4 +1,3 @@
-import { Label, Pie, PieChart } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   ChartConfig,
@@ -6,14 +5,13 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { useEffect, useMemo, useState } from "react";
-import { useCatalogContext } from "@/Context/UseCatalogContext";
-import { Category } from "@/hooks/CatalogInterfaces";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Category } from "@/hooks/CatalogInterfaces";
+import { useEffect, useMemo, useState } from "react";
+import { Label, Pie, PieChart } from "recharts";
 
 export const ProductsByProvider = () => {
-
-  const { BASE_URL } = useCatalogContext();
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
   const [Loading, setLoading] = useState(true);
   const [ChartData, setChartData] = useState<
     Array<{ category: string; products: number; fill: string }>

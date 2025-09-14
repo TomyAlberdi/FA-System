@@ -1,6 +1,6 @@
 package com.example.febackendproject.Repository;
 
-import com.example.febackendproject.DTO.PartialClientDTO;
+import com.example.febackendproject.DTO.Client.PartialClientDTO;
 import com.example.febackendproject.Entity.Client;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,7 +15,7 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     @Query("SELECT c FROM Client c WHERE c.name = ?1")
     Optional<Client> findByName(String name);
     
-    @Query("SELECT new com.example.febackendproject.DTO.PartialClientDTO(c.id, c.type, c.name) FROM Client c")
+    @Query("SELECT new com.example.febackendproject.DTO.Client.PartialClientDTO(c.id, c.type, c.name) FROM Client c")
     List<PartialClientDTO> list();
     
     @Query("SELECT c.name FROM Client c WHERE c.id = ?1")

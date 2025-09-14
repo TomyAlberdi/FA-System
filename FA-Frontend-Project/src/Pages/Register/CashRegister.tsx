@@ -1,18 +1,18 @@
+import { CustomCalendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useSalesContext } from "@/Context/UseSalesContext";
+import { useCashRegisterContext } from "@/Context/CashRegister/UseCashRegisterContext";
+import AddRegister from "@/Pages/Register/AddRegister";
+import DailyCashRegister from "@/Pages/Register/DailyCashRegister";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useEffect, useState } from "react";
-import AddRegister from "@/Pages/Register/AddRegister";
-import { CustomCalendar } from "@/components/ui/calendar";
-import DailyCashRegister from "@/Pages/Register/DailyCashRegister";
 
 const CashRegister = () => {
   const {
-    RegisterTotalAmount,
+    CashRegisterTotalAmount,
     RegisterTypes,
-    fetchRegisterTypes,
+    fetchCashRegisterTypes,
     setFormattedDate,
-  } = useSalesContext();
+  } = useCashRegisterContext();
 
   // Calendar display and functionality
   const [CurrentYearMonth, setCurrentYearMonth] = useState<string>(
@@ -34,7 +34,7 @@ const CashRegister = () => {
     const [year, month] = CurrentYearMonth.split("-").map(Number);
     const date = new Date(year, month - 1);
     setCurrentMonth(formatMonth(date));
-    fetchRegisterTypes(CurrentYearMonth);
+    fetchCashRegisterTypes(CurrentYearMonth);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [CurrentYearMonth]);
 
@@ -70,7 +70,7 @@ const CashRegister = () => {
           <CardHeader>
             <CardTitle className="">Total en Caja Registradora</CardTitle>
             <span className="font-medium text-3xl">
-              $ {RegisterTotalAmount}
+              $ {CashRegisterTotalAmount}
             </span>
           </CardHeader>
           <CardContent>

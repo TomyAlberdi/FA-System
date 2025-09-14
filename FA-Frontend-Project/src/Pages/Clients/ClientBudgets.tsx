@@ -7,22 +7,22 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useSalesContext } from "@/Context/UseSalesContext";
+import { useBudgetContext } from "@/Context/Budget/UseBudgetContext";
 import { PartialBudget } from "@/hooks/SalesInterfaces";
 import {
   AlertCircle,
-  Clock8,
-  CircleDollarSign,
-  Truck,
-  CircleCheck,
   Ban,
+  CircleCheck,
+  CircleDollarSign,
+  Clock8,
+  Truck,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 export const ClientBudgets = () => {
   const { id } = useParams();
-  const { fetchBudgetsByClient } = useSalesContext();
+  const { fetchBudgetsByClient } = useBudgetContext();
   const navigate = useNavigate();
 
   const [Budgets, setBudgets] = useState<Array<PartialBudget> | undefined>([]);
@@ -50,7 +50,9 @@ export const ClientBudgets = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-3/6 hidden md:table-cell">Fecha</TableHead>
+              <TableHead className="w-3/6 hidden md:table-cell">
+                Fecha
+              </TableHead>
               <TableHead className="md:w-2/6 w-1/2">Monto</TableHead>
               <TableHead className="md:w-1/6 w-1/2">Estado</TableHead>
             </TableRow>

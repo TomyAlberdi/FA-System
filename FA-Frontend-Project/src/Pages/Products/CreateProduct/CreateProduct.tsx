@@ -5,42 +5,27 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Progress } from "@/components/ui/progress";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs } from "@/components/ui/tabs";
+import { useProductContext } from "@/Context/Product/UseProductContext";
+import { CompleteProduct, CreateProductDTO } from "@/hooks/CatalogInterfaces";
+import BasicDataTab from "@/Pages/Products/CreateProduct/BasicDataTab";
+import ExtraDataTab from "@/Pages/Products/CreateProduct/ExtraDataTab";
+import SaleDataTab from "@/Pages/Products/CreateProduct/SaleDataTab";
 import { LucideProps } from "lucide-react";
 import { FC, useEffect, useState } from "react";
-import BasicDataTab from "@/Pages/Products/CreateProduct/BasicDataTab";
-import SaleDataTab from "@/Pages/Products/CreateProduct/SaleDataTab";
-import ExtraDataTab from "@/Pages/Products/CreateProduct/ExtraDataTab";
-import { CompleteProduct, CreateProductDTO } from "@/hooks/CatalogInterfaces";
-import { Progress } from "@/components/ui/progress";
-import { useNavigate } from "react-router-dom";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { useCatalogContext } from "@/Context/UseCatalogContext";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 const CreateProduct = ({
   ProductProp,
   TriggerTitle,
   TriggerIcon,
-  ReloadProduct,
-  setReloadProduct,
 }: {
   ProductProp?: CompleteProduct | null;
   TriggerTitle: string;
   TriggerIcon: FC<LucideProps>;
-  ReloadProduct?: boolean | null;
-  setReloadProduct?: React.Dispatch<React.SetStateAction<boolean>> | null;
 }) => {
-  const navigate = useNavigate();
-  const { getToken } = useKindeAuth();
-  const {
-    BASE_URL,
-    fetchProviders,
-    fetchCategories,
-    fetchSubcategories,
-    fetchMeasures,
-    fetchPrices,
-  } = useCatalogContext();
+  const { createProduct, updateProduct } = useProductContext();
 
   const [Product, setProduct] = useState<CreateProductDTO>({
     // Tab 1
@@ -152,90 +137,16 @@ const CreateProduct = ({
   //#
 
   //#blue Submit creation logic
-  const createProduct = async (newProduct: CreateProductDTO) => {
+  const submitCreateProduct = async (newProduct: CreateProductDTO) => {
     setLoadingRequest(true);
-    try {
-      if (!getToken) {
-        console.error("Token is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(`${BASE_URL}/product`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify(newProduct),
-      });
-      if (!response.ok) {
-        window.alert(`Error creando el producto: ${response.status}`);
-        return;
-      }
-      const responseData = await response.json();
-      setDialogOpen(false);
-      window.alert("Producto creado con éxito");
-      await Promise.all([
-        fetchCategories(),
-        fetchSubcategories(),
-        fetchProviders(),
-        fetchMeasures(),
-        fetchPrices(),
-      ]);
-
-      // Navigate last
-      navigate(`/catalog/products/${responseData.id}`);
-    } catch (error) {
-      console.error("Error creating product: ", error);
-      window.alert("Ocurrió un error al crear el producto");
-    } finally {
-      setLoadingRequest(false);
-    }
+    await createProduct(newProduct).finally(() => setLoadingRequest(false));
   };
 
-  const updateProduct = async (newProduct: CreateProductDTO) => {
+  const submitUpdateProduct = async (newProduct: CreateProductDTO) => {
     setLoadingRequest(true);
-    try {
-      if (!getToken) {
-        console.error("Token is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(`${BASE_URL}/product`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify(newProduct),
-      });
-      if (!response.ok) {
-        window.alert(`Error actualizando el producto: ${response.status}`);
-        return;
-      }
-      // Close dialog first
-      setDialogOpen(false);
-      // Show success message
-      window.alert("Producto actualizado con éxito");
-      // Update data in parallel
-      await Promise.all([
-        fetchCategories(),
-        fetchProviders(),
-        fetchMeasures(),
-        fetchPrices(),
-      ]);
-      // Update reload state last
-      if (ReloadProduct !== null && setReloadProduct) {
-        setTimeout(() => {
-          setReloadProduct(!ReloadProduct);
-        }, 100);
-      }
-    } catch (error) {
-      console.error("Error updating product: ", error);
-      window.alert("Ocurrió un error al actualizar el producto");
-    } finally {
-      setLoadingRequest(false);
-    }
+    await updateProduct(ProductProp?.id ?? 0, newProduct).finally(() =>
+      setLoadingRequest(false)
+    );
   };
   //#
 
@@ -305,8 +216,8 @@ const CreateProduct = ({
                 TriggerTitle === "Nuevo Producto" ||
                 TriggerTitle === "Añadir Producto" ||
                 TriggerTitle == ""
-                  ? createProduct
-                  : updateProduct
+                  ? submitCreateProduct
+                  : submitUpdateProduct
               }
               triggerTitle={TriggerTitle}
             />

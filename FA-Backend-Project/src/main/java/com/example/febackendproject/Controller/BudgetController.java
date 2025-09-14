@@ -1,6 +1,6 @@
 package com.example.febackendproject.Controller;
 
-import com.example.febackendproject.DTO.PartialBudgetDTO;
+import com.example.febackendproject.DTO.Budget.CreateBudgetDTO;
 import com.example.febackendproject.Entity.Budget;
 import com.example.febackendproject.Service.BudgetService;
 import com.example.febackendproject.Service.ClientService;
@@ -8,17 +8,14 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @AllArgsConstructor
 @RestController
 @RestControllerAdvice
-@Validated
 @RequestMapping("/budget")
 public class BudgetController {
 
@@ -26,70 +23,67 @@ public class BudgetController {
     public final ClientService clientService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Budget>> getBudgetById(@PathVariable Long id) {
+    public ResponseEntity<?> getById(@PathVariable Long id) {
         return ResponseEntity.ok(budgetService.getById(id));
     }
-    
+
+    @GetMapping("/client/{clientId}")
+    public ResponseEntity<?> getBudgetByClientId(@PathVariable("clientId") Long clientId) {
+        clientService.assertClientExists(clientId);
+        return ResponseEntity.ok(budgetService.getByClientId(clientId));
+    }
+
+    @PostMapping
+    public ResponseEntity<?> createBudget(
+            @RequestBody @Valid CreateBudgetDTO dto,
+            @RequestParam(required = false) Long clientId
+    ) {
+        return ResponseEntity.ok(budgetService.save(dto, clientId));
+    }
+
     @PatchMapping("/{id}")
-    public ResponseEntity<Optional<List<String>>> updateBudgetStatus(
+    public ResponseEntity<?> updateBudgetStatus(
             @PathVariable Long id,
             @RequestParam(value = "status") Budget.Status status
     ) {
-        Optional<Budget> budget = budgetService.getById(id);
-        if (budget.isPresent()) {
-            Optional<List<String>> unavailableProducts = budgetService.updateStatus(budget.get(), status);
-            if (unavailableProducts.isPresent() && !unavailableProducts.get().isEmpty()) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body(unavailableProducts);
-            } else {
-                return ResponseEntity.ok(unavailableProducts);
-            }
+        List<String> unavailableProducts = budgetService.updateStatus(id, status);
+        if (unavailableProducts.isEmpty()) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(unavailableProducts);
         }
-        return ResponseEntity.notFound().build();
-    }
-    
-
-    @GetMapping("/client/{clientId}")
-    public ResponseEntity<List<PartialBudgetDTO>> getBudgetByClientId(@PathVariable("clientId") Long clientId) {
-        if (clientService.existsById(clientId)) {
-            return ResponseEntity.ok(budgetService.getByClientId(clientId));
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @GetMapping("/date/{date}")
-    public ResponseEntity<List<PartialBudgetDTO>> getBudgetByDate(@PathVariable LocalDate date) {
+    public ResponseEntity<?> getBudgetByDate(@PathVariable LocalDate date) {
         return ResponseEntity.ok(budgetService.getByDate(date));
     }
     
     @GetMapping("/range")
-    public ResponseEntity<List<PartialBudgetDTO>> getBudgetByRange(
+    public ResponseEntity<?> getBudgetByRange(
             @RequestParam(value = "start") LocalDate start,
             @RequestParam(value = "end") LocalDate end
     ) {
         return ResponseEntity.ok(budgetService.getByDateRange(start, end));
     }
 
-    @PostMapping
-    public ResponseEntity<Budget> createBudget(@RequestBody @Valid Budget budget) {
-        if (clientService.existsById(budget.getClientId())) {
-            return ResponseEntity.ok(budgetService.save(budget));
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-    }
-
-    @PatchMapping
-    public ResponseEntity<Budget> updateBudget(@RequestBody @Valid Budget budget) {
-        return ResponseEntity.ok(budgetService.update(budget));
+    @PutMapping
+    public ResponseEntity<?> updateBudget(
+            @RequestBody @Valid CreateBudgetDTO dto,
+            @RequestParam(required = false) Long clientId,
+            @RequestParam Long budgetId
+    ) {
+        return ResponseEntity.ok(budgetService.update(dto, clientId, budgetId));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBudget(@PathVariable Long id) {
+    public ResponseEntity<?> deleteBudget(@PathVariable Long id) {
         budgetService.delete(id);
         return ResponseEntity.ok().build();
     }
     
     @GetMapping("/lastBudgets")
-    public ResponseEntity<List<PartialBudgetDTO>> getLastBudgets() {
+    public ResponseEntity<?> getLastBudgets() {
         return ResponseEntity.ok(budgetService.getLastBudgets());
     }
     

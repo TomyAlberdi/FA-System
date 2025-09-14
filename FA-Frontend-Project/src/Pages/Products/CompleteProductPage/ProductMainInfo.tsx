@@ -11,7 +11,7 @@ export const ProductMainInfo = ({
 }) => {
   return (
     <Card className="p-2 flex flex-col justify-start items-start relative md:w-3/4 w-full h-full">
-      <div className="categoryLinks flex flex-row justify-start items-center gap-2 font-semibold hidden md:flex">
+      <div className="categoryLinks flex-row justify-start items-center gap-2 font-semibold hidden md:flex">
         <Button variant={"ghost"}>
           <Link to={`/catalog/categories/${Product?.categoryId}`}>
             {Product?.category}

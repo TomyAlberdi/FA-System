@@ -5,11 +5,11 @@ import {
 } from "@/components/ui/accordion";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { useCatalogContext } from "@/Context/UseCatalogContext";
+import { useProviderContext } from "@/Context/Provider/UseProviderContext";
 import {
-  BasicFilterProps as ProviderFilterProps,
-  BasicFilterCheck as ProviderCheck,
   Provider,
+  BasicFilterCheck as ProviderCheck,
+  BasicFilterProps as ProviderFilterProps,
 } from "@/hooks/CatalogInterfaces";
 import { useEffect, useState } from "react";
 
@@ -18,7 +18,7 @@ export const ProviderFilter: React.FC<ProviderFilterProps> = ({
   setFilter,
   Loading,
 }) => {
-  const { Providers } = useCatalogContext();
+  const { Providers } = useProviderContext();
   const [Data, setData] = useState<Array<ProviderCheck> | null>([]);
 
   const handleCheckboxChange = (id: number) => {
@@ -106,7 +106,9 @@ export const ProviderFilter: React.FC<ProviderFilterProps> = ({
                     className="checkboxLabel text-sm w-full cursor-pointer"
                   >
                     {provider.name}
-                    <span className="hidden md:block">{provider.productsAmount}</span>
+                    <span className="hidden md:block">
+                      {provider.productsAmount}
+                    </span>
                   </Label>
                 </div>
               )

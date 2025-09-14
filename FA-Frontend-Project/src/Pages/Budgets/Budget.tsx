@@ -1,6 +1,10 @@
+import { useBudgetContext } from "@/Context/Budget/UseBudgetContext";
+import { UpdateBudgetStatus } from "@/Pages/Budgets/UpdateBudgetStatus";
+import UploadAndShareBudgetDetail from "@/Pages/Budgets/UploadAndShareBudgetDetail";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -11,31 +15,24 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useSalesContext } from "@/Context/UseSalesContext";
-import { CompleteBudget, ProductBudget } from "@/hooks/SalesInterfaces";
-import { CircleX, Info, ReceiptText } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { UpdateBudgetStatus } from "@/Pages/Budgets/UpdateBudgetStatus";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { generatePDF } from "./CreateBudgetDetail";
+import { CompleteBudget, ProductBudget } from "@/hooks/SalesInterfaces";
 import jsPDF from "jspdf";
-import UploadAndShareBudgetDetail from "@/Pages/Budgets/UploadAndShareBudgetDetail";
+import { CircleX, Info, ReceiptText } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { generatePDF } from "./CreateBudgetDetail";
 
 export const Budget = () => {
   const { id } = useParams();
-  const { BASE_URL, fetchCompleteBudget } = useSalesContext();
-  const { getToken } = useKindeAuth();
+  const { fetchBudget, deleteBudget, BudgetUpdater } = useBudgetContext();
   const navigate = useNavigate();
   const [Budget, setBudget] = useState<CompleteBudget | null>(null);
   const [Loading, setLoading] = useState(true);
-  const [Reload, setReload] = useState(false);
 
   useEffect(() => {
     if (!id) {
@@ -50,7 +47,7 @@ export const Budget = () => {
       return;
     }
     setLoading(true);
-    fetchCompleteBudget(budgetId)
+    fetchBudget(budgetId)
       .then((result) => {
         if (!result) {
           window.alert("Ocurrió un error al obtener el presupuesto.");
@@ -68,37 +65,21 @@ export const Budget = () => {
         setLoading(false);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, Reload]);
+  }, [id, BudgetUpdater]);
 
   const [OpenUpdateStatus, setOpenUpdateStatus] = useState(false);
 
   const onDeletePres = () => {
     if (Budget && Budget?.id) {
       if (window.confirm("¿Desea eliminar el presupuesto?")) {
-        deleteBudget();
+        submitDeleteBudget();
       }
     }
   };
 
-  const deleteBudget = async () => {
+  const submitDeleteBudget = async () => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(`${BASE_URL}/budget/${Budget?.id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      if (!response.ok) {
-        console.error("Error: ", response.statusText);
-        window.alert(`Error eliminando el presupuesto: ${response.status}`);
-        return;
-      }
+      await deleteBudget(Budget?.id ?? 0);
       window.alert("El presupuesto ha sido eliminado con éxito");
       navigate("/sales/budgets");
     } catch (error) {
@@ -131,7 +112,7 @@ export const Budget = () => {
           <Separator />
           <div className="flex flex-col gap-2">
             <span className="text-lg">Cliente:</span>
-            <span className="text-2xl">{Budget?.clientName}</span>
+            <span className="text-2xl">{Budget?.clientName ?? "N/A"}</span>
           </div>
         </CardContent>
         <CardContent className="flex flex-col gap-4">
@@ -184,9 +165,6 @@ export const Budget = () => {
               <UpdateBudgetStatus
                 id={Budget?.id}
                 stockDecreased={Budget?.stockDecreased}
-                setOpenUpdateStatus={setOpenUpdateStatus}
-                Reload={Reload}
-                setReload={setReload}
               />
             </Dialog>
           </div>

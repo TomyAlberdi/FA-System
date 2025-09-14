@@ -1,7 +1,6 @@
 package com.example.febackendproject.Repository;
 
 import com.example.febackendproject.DTO.MeasureDTO;
-import com.example.febackendproject.DTO.PartialProductStockDTO;
 import com.example.febackendproject.DTO.PricesDTO;
 import com.example.febackendproject.Entity.Product;
 import jakarta.transaction.Transactional;

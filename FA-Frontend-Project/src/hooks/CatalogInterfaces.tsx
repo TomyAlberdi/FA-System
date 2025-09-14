@@ -1,31 +1,32 @@
-export interface ReturnData {
+export interface ReturnData<T> {
   Loading: boolean;
-  data: Array<unknown> | Price;
+  data: Array<T> | T;
 }
 
-export interface Category {
+export interface PartialCSP {
   id: number;
   name: string;
   productsAmount: number;
+}
+
+export interface Category extends PartialCSP {
   subcategories: Array<Subcategory>;
 }
 
-export interface Subcategory {
-  id: number;
+export interface Subcategory extends PartialCSP {
   categoryId: number;
-  name: string;
-  productsAmount: number;
 }
 
-export interface Provider {
-  id?: number;
+export interface CreateProviderDTO {
   name: string;
   locality: string;
   address: string;
   phone: string;
   email: string;
   cuit: string;
-  productsAmount?: number;
+}
+
+export interface Provider extends PartialCSP, CreateProviderDTO {
   productsDiscount?: number;
 }
 
@@ -183,8 +184,8 @@ export interface PaginationInfo {
   last: boolean;
 }
 
-export interface PaginationResponse {
-  content: Array<never>;
+export interface PaginationResponse<T> {
+  content: Array<T>;
   pageable: {
     pageNumber: number;
     pageSize: number;
@@ -221,4 +222,9 @@ export interface StockReport {
   month: string;
   in: number;
   out: number;
+}
+
+export enum StockChangeType {
+  INCREASE = "increase",
+  REDUCE = "reduce",
 }

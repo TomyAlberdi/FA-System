@@ -1,33 +1,27 @@
-import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogHeader,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Loader2, Pencil } from "lucide-react";
-import { CompleteClient } from "@/hooks/SalesInterfaces";
-import { useSalesContext } from "@/Context/UseSalesContext";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { Input } from "@/components/ui/input";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useClientContext } from "@/Context/Client/UseClientContext";
+import { CompleteClient, CreateClientDTO } from "@/hooks/SalesInterfaces";
+import { Loader2, Pencil } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export const UpdateClient = ({
   client,
-  Reload,
-  setReload,
 }: {
   client: CompleteClient;
-  Reload: boolean;
-  setReload: (value: boolean) => void;
 }) => {
   const [Open, setOpen] = useState(false);
   const [LoadingRequest, setLoadingRequest] = useState(false);
-  const { getToken } = useKindeAuth();
-  const { BASE_URL } = useSalesContext();
+  const { updateClient } = useClientContext();
 
   const [Client, setClient] = useState<CompleteClient>({
     id: 0,
@@ -65,34 +59,17 @@ export const UpdateClient = ({
 
   const submitClient = async (data: CompleteClient) => {
     setLoadingRequest(true);
-    try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(`${BASE_URL}/client`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify(data),
-      });
-      if (!response.ok) {
-        console.error("Error: ", response.statusText);
-        window.alert(`Error actualizando el cliente: ${response.status}`);
-        return;
-      }
-      setOpen(false);
-      window.alert("Cliente actualizado con éxito");
-      setReload(!Reload);
-    } catch (error) {
-      console.log(error);
-      window.alert("Ocurrió un error al actualizar el cliente");
-    } finally {
-      setLoadingRequest(false);
-    }
+    const clientWithoutId: CreateClientDTO = {
+      name: data.name,
+      type: data.type,
+      address: data.address,
+      phone: data.phone,
+      email: data.email,
+      cuitDni: data.cuitDni,
+    };
+    await updateClient(data.id, clientWithoutId).finally(() =>
+      setLoadingRequest(false)
+    );
   };
 
   return (

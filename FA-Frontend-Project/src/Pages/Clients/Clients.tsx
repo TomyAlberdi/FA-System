@@ -1,16 +1,16 @@
-import { useSalesContext } from "@/Context/UseSalesContext";
+import { useClientContext } from "@/Context/Client/UseClientContext";
 import { PaginationInfo } from "@/hooks/CatalogInterfaces";
 import { ClientsFilter, PartialClient } from "@/hooks/SalesInterfaces";
 import { ClientsHeader } from "@/Pages/Clients/ClientsHeader";
+import { ClientsPagination } from "@/Pages/Clients/ClientsPagination";
+import MobileClientsHeader from "@/Pages/Clients/Mobile/MobileClientsHeader";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useEffect, useState } from "react";
-import { ClientsPagination } from "@/Pages/Clients/ClientsPagination";
-import MobileClientsHeader from '@/Pages/Clients/Mobile/MobileClientsHeader'
 
 export const Clients = () => {
-  const { BASE_URL } = useSalesContext();
   const { getToken } = useKindeAuth();
-
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
+  const { ClientUpdater } = useClientContext();
   const [CurrentPage, setCurrentPage] = useState(0);
   const [PaginationInfo, setPaginationInfo] = useState<PaginationInfo>({
     pageNumber: 0,
@@ -27,14 +27,6 @@ export const Clients = () => {
     keyword: "",
     type: "",
   });
-
-  const handleRefresh = () => {
-    setCurrentPage(0);
-    setFilters({
-      keyword: "",
-      type: "",
-    });
-  };
 
   useEffect(() => {
     const handleSearch = async () => {
@@ -58,6 +50,7 @@ export const Clients = () => {
         });
         if (!response.ok) {
           console.error("Error fetching clients: ", response.status);
+          window.alert("Ocurrió un error al obtener los clientes: " + response.status);
           return;
         }
         const result = await response.json();
@@ -78,15 +71,12 @@ export const Clients = () => {
     };
     handleSearch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [Filters, CurrentPage, BASE_URL]);
+  }, [Filters, CurrentPage, BASE_URL, ClientUpdater]);
 
   return (
     <div className="Clients">
-      <ClientsHeader
-        setFilters={setFilters}
-        handleRefresh={handleRefresh}
-      />
-      <MobileClientsHeader setFilters={setFilters} handleRefresh={handleRefresh} />
+      <ClientsHeader setFilters={setFilters} />
+      <MobileClientsHeader setFilters={setFilters} />
       <ClientsPagination
         Clients={Clients}
         CurrentPage={CurrentPage}

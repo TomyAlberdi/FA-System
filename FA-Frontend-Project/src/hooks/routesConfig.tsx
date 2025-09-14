@@ -1,22 +1,22 @@
+import { Budget } from "@/Pages/Budgets/Budget";
+import { Budgets } from "@/Pages/Budgets/Budgets";
+import Cart from "@/Pages/Cart/Cart";
 import { Catalog } from "@/Pages/Catalog/Catalog";
 import { Categories } from "@/Pages/Categories/Categories";
 import Category from "@/Pages/Categories/Category";
-import Home from "@/Pages/Home/Home";
-import { Products } from "@/Pages/Products/Products";
-import { Providers } from "@/Pages/Providers/Providers";
-import { Provider } from "@/Pages/Providers/Provider";
-import { Subcategory } from "@/Pages/Subcategory/Subcategory";
-import { ProductPage } from "@/Pages/Products/CompleteProductPage/ProductPage";
-import { Stock } from "@/Pages/Stock/Stock";
-import { StockList } from "@/Pages/Stock/StockList";
-import { Sales } from "@/Pages/Sales/Sales";
-import { Clients } from "@/Pages/Clients/Clients";
 import { Client } from "@/Pages/Clients/Client";
-import { Budgets } from "@/Pages/Budgets/Budgets";
-import { AddBudget } from "@/Pages/Budgets/AddBudget";
-import { Budget } from "@/Pages/Budgets/Budget";
+import { Clients } from "@/Pages/Clients/Clients";
+import Home from "@/Pages/Home/Home";
+import { ProductPage } from "@/Pages/Products/CompleteProductPage/ProductPage";
+import { Products } from "@/Pages/Products/Products";
+import { Provider } from "@/Pages/Providers/Provider";
+import { Providers } from "@/Pages/Providers/Providers";
 import CashRegister from "@/Pages/Register/CashRegister";
 import DailyCashRegister from "@/Pages/Register/DailyCashRegister";
+import { Sales } from "@/Pages/Sales/Sales";
+import { Stock } from "@/Pages/Stock/Stock";
+import { StockList } from "@/Pages/Stock/StockList";
+import { Subcategory } from "@/Pages/Subcategory/Subcategory";
 
 export const routesConfig = [
   { index: true, element: <Home /> },
@@ -37,7 +37,8 @@ export const routesConfig = [
   { path: "/sales/clients/:id", element: <Client /> },
   { path: "/sales/budgets", element: <Budgets /> },
   { path: "/sales/budgets/:id", element: <Budget /> },
-  { path: "/sales/budgets/add", element: <AddBudget /> },
+  { path: "/sales/cart", element: <Cart /> },
+  //{ path: "/sales/budgets/add", element: <AddBudget /> },
   { path: "/sales/register", element: <CashRegister /> },
   { path: "/sales/register/:date", element: <DailyCashRegister /> },
 ];

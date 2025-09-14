@@ -1,16 +1,16 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useCatalogContext } from "@/Context/UseCatalogContext";
+import { useStockContext } from "@/Context/Stock/UseStockContext";
 import { PaginationInfo, PartialProductStock } from "@/hooks/CatalogInterfaces";
+import { StockPagination } from "@/Pages/Stock/StockPagination";
 import { AlertCircle, Search } from "lucide-react";
 import { useEffect, useState } from "react";
-import { StockPagination } from "@/Pages/Stock/StockPagination";
-import { Label } from "@/components/ui/label";
 
 export const StockList = () => {
-  const { fetchStockListByKeyword } = useCatalogContext();
+  const { fetchStocks } = useStockContext();
 
   const [Keyword, setKeyword] = useState("");
   const [CurrentPage, setCurrentPage] = useState(0);
@@ -26,7 +26,7 @@ export const StockList = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetchStockListByKeyword(Keyword, CurrentPage, 15)
+    fetchStocks(Keyword, CurrentPage, 15)
       .then((result) => {
         setStocks(result.content);
         setPaginationInfo({
@@ -47,7 +47,7 @@ export const StockList = () => {
 
   const handleSearch = (keyword: string) => {
     setLoading(true);
-    fetchStockListByKeyword(keyword, 0, 15)
+    fetchStocks(keyword, 0, 15)
       .then((result) => {
         setStocks(result.content);
         setPaginationInfo({

@@ -1,3 +1,4 @@
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -6,11 +7,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useCatalogContext } from "@/Context/UseCatalogContext";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -19,130 +17,75 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle, CircleX, Plus } from "lucide-react";
+import { useProviderContext } from "@/Context/Provider/UseProviderContext";
 import {
   Provider as ProviderInterface,
   StockProduct,
 } from "@/hooks/CatalogInterfaces";
 import { UpdateProvider } from "@/Pages/Providers/UpdateProvider";
+import { AlertCircle, CircleX, Plus } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 export const Provider = () => {
   const { id } = useParams();
-  const { BASE_URL, fetchProvider, fetchProviderProducts, fetchProviders } =
-    useCatalogContext();
+  const {
+    fetchProvider,
+    fetchProviderProducts,
+    deleteProvider,
+    ProviderUpdater,
+  } = useProviderContext();
   const [Provider, setProvider] = useState<ProviderInterface | null>(null);
   const [Products, setProducts] = useState<Array<StockProduct> | null>([]);
   const [LastLoadedPage, setLastLoadedPage] = useState(0);
   const [IsLastPage, setIsLastPage] = useState(false);
   const [Loading, setLoading] = useState(true);
-  const { getToken } = useKindeAuth();
   const navigate = useNavigate();
-  const [Reload, setReload] = useState(false);
+
+  const loadProvider = async () => {
+    if (id) {
+      await fetchProvider(Number.parseInt(id))
+        .then((result) => {
+          if (!result) {
+            navigate(-1);
+          }
+          setProvider(result ?? null);
+        })
+        .finally(() => setLoading(false));
+    }
+  };
 
   useEffect(() => {
-    if (!id) {
-      window.alert("Error al obtener el proveedor");
-      navigate(-1);
-      return;
-    }
-    const providerId = Number.parseInt(id);
-    if (isNaN(providerId)) {
-      window.alert("Error al obtener el proveedor");
-      navigate(-1);
-      return;
-    }
-    setLoading(true);
-    fetchProvider(providerId)
-      .then((result) => {
-        if (!result) {
-          window.alert("No se encontró el proveedor");
-          navigate(-1);
-          return;
-        }
-        setProvider(result);
-      })
-      .catch((error) => {
-        console.error("Error fetching provider:", error);
-        window.alert("Error al cargar el proveedor");
-        navigate(-1);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    loadProvider();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, BASE_URL, Reload]);
+  }, [id, ProviderUpdater]);
 
   useEffect(() => {
-    if (!id) return;
-    const providerId = Number.parseInt(id);
-    if (isNaN(providerId)) return;
-    fetchProviderProducts(providerId, LastLoadedPage, 8)
-      .then((result) => {
-        setProducts((prevProducts) =>
-          prevProducts ? [...prevProducts, ...result.content] : result.content
-        );
-        setIsLastPage(result.last);
-      })
-      .catch((error) => {
-        console.error("Error fetching products:", error);
-      });
+    if (id) {
+      fetchProviderProducts(Number.parseInt(id), LastLoadedPage, 8).then(
+        (result) => {
+          setProducts(
+            Products ? [...Products, ...result.content] : result.content
+          );
+          setIsLastPage(result.last);
+        }
+      );
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [LastLoadedPage]);
 
-  useEffect(() => {
-    if (!id) return;
-    const providerId = Number.parseInt(id);
-    if (isNaN(providerId)) return;
-    fetchProviderProducts(providerId, 0, 8)
-      .then((result) => {
-        setProducts(result.content);
-        setIsLastPage(result.last);
-      })
-      .catch((error) => {
-        console.error("Error fetching products:", error);
-      });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [Reload]);
-
-  const onDeletePress = () => {
-    if (!Provider) return;
-    if (Provider.productsAmount && Provider.productsAmount > 0) {
+  const onSubmitDelete = () => {
+    if (Provider && Provider.productsAmount > 0) {
       window.alert("El proveedor tiene productos asociados.");
       return;
     }
     if (window.confirm("¿Desea eliminar el proveedor?")) {
-      deleteProvider();
+      submitDeleteProvider();
     }
   };
 
-  const deleteProvider = async () => {
-    if (!getToken || !id) {
-      console.error("Missing requirements for deletion");
-      return;
-    }
-    try {
-      const accessToken = await getToken();
-      const response = await fetch(`${BASE_URL}/provider/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      if (!response.ok) {
-        console.error("Error:", response.statusText);
-        window.alert(`Error eliminando el proveedor: ${response.status}`);
-        return;
-      }
-      window.alert("Proveedor eliminado con éxito");
-      await fetchProviders();
-      navigate("/catalog/providers");
-    } catch (error) {
-      console.error("Error:", error);
-      window.alert("Ocurrió un error al eliminar el proveedor");
-    }
+  const submitDeleteProvider = async () => {
+    await deleteProvider(Number(id));
   };
 
   return (
@@ -210,11 +153,7 @@ export const Provider = () => {
                 </CardContent>
               )} */}
             <CardContent>
-              <UpdateProvider
-                provider={Provider}
-                setReload={setReload}
-                Reload={Reload}
-              />
+              <UpdateProvider defaultProvider={Provider} />
               {/*<UpdatePriceProvider
                   provider={Provider}
                   setReload={setReload}
@@ -228,7 +167,7 @@ export const Provider = () => {
               <Button
                 variant="destructive"
                 className="w-full"
-                onClick={onDeletePress}
+                onClick={onSubmitDelete}
               >
                 <CircleX />
                 Eliminar

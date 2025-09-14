@@ -14,7 +14,6 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useSalesContext } from "@/Context/UseSalesContext";
 import { BudgetReport } from "@/hooks/SalesInterfaces";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useEffect, useState } from "react";
@@ -44,7 +43,7 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export const BudgetsByMonth = () => {
-  const { BASE_URL } = useSalesContext();
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
   const { getToken } = useKindeAuth();
   const [Loading, setLoading] = useState(true);
   const [ChartData, setChartData] = useState<Array<BudgetReport>>([]);

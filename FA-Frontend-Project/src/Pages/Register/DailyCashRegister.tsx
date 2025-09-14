@@ -10,24 +10,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useSalesContext } from "@/Context/UseSalesContext";
+import { useCashRegisterContext } from "@/Context/CashRegister/UseCashRegisterContext";
 import { RegisterRecord } from "@/hooks/SalesInterfaces";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { AlertCircle, ChevronDown, ChevronUp, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const DailyCashRegister = () => {
-  const { BASE_URL, fetchRegisterTotalAmount, FormattedDate } =
-    useSalesContext();
-  const { getToken } = useKindeAuth();
+  const { FormattedDate, getRecordsByDate, deleteRecord, CashRegisterUpdater } =
+    useCashRegisterContext();
   const navigate = useNavigate();
 
   const [DailyTypes, setDailyTypes] = useState<Array<number>>([0, 0]);
   const [DailyTotal, setDailyTotal] = useState<number>(0);
 
   const [Records, setRecords] = useState<Array<RegisterRecord> | undefined>([]);
-  const [Reload, setReload] = useState(false);
 
   const formatDate = (date: Date) => {
     return `${date.getFullYear()}-${(date.getMonth() + 1)
@@ -41,28 +38,9 @@ const DailyCashRegister = () => {
       const date = new Date();
       fetchDate = formatDate(date);
     }
-    const url = `${BASE_URL}/cash-register/${fetchDate}`;
-    try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      if (!response.ok) {
-        console.error("Error fetching cash register: ", response.statusText);
-        return;
-      }
-      const result: Array<RegisterRecord> = await response.json();
-      setRecords(result);
-      getDailyTypes(result);
-    } catch (error) {
-      console.error("Error fetching cash register: ", error);
-    }
+    const records = await getRecordsByDate(fetchDate);
+    setRecords(records);
+    getDailyTypes(records ?? []);
   };
 
   const onDeletePress = (id: number) => {
@@ -72,31 +50,7 @@ const DailyCashRegister = () => {
   };
 
   const handleDeleteRecord = async (id: number) => {
-    const url = `${BASE_URL}/cash-register/${id}`;
-    try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(url, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      if (!response.ok) {
-        console.error("Error deleting record: ", response.statusText);
-        window.alert(`Error eliminando el registro: ${response.status}`);
-        return;
-      }
-      window.alert("El registro ha sido eliminado con éxito.");
-      setReload(!Reload);
-      await fetchRegisterTotalAmount();
-    } catch (error) {
-      console.error("Error deleting record: ", error);
-      window.alert("Ocurrió un error al eliminar el registro.");
-    }
+    await deleteRecord(id);
   };
 
   const getDailyTypes = (records: Array<RegisterRecord>) => {
@@ -123,7 +77,7 @@ const DailyCashRegister = () => {
   useEffect(() => {
     fetchRecords();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [FormattedDate, Reload]);
+  }, [FormattedDate, CashRegisterUpdater]);
 
   return (
     <>

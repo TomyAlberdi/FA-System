@@ -1,4 +1,3 @@
-import { useCatalogContext } from "@/Context/UseCatalogContext";
 import {
   CardProduct,
   FilterData,
@@ -10,7 +9,7 @@ import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useEffect, useState } from "react";
 
 export const Products = () => {
-  const { BASE_URL } = useCatalogContext();
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
   const { getToken } = useKindeAuth();
   const [CurrentPage, setCurrentPage] = useState(0);
   const [PaginationInfo, setPaginationInfo] = useState<PaginationInfo>({

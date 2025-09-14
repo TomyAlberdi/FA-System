@@ -1,11 +1,18 @@
 package com.example.febackendproject.Service;
 
+import com.example.febackendproject.DTO.Budget.CreateBudgetDTO;
 import com.example.febackendproject.DTO.BudgetReportMonthDTO;
-import com.example.febackendproject.DTO.PartialBudgetDTO;
+import com.example.febackendproject.DTO.Budget.PartialBudgetDTO;
+import com.example.febackendproject.DTO.CreateCashRegisterRecordDTO;
 import com.example.febackendproject.Entity.Budget;
 import com.example.febackendproject.Entity.CashRegisterRecord;
+import com.example.febackendproject.Entity.Client;
 import com.example.febackendproject.Entity.ProductBudget;
+import com.example.febackendproject.Exception.ResourceNotFoundException;
+import com.example.febackendproject.Mapper.BudgetMapper;
+import com.example.febackendproject.Mapper.CashRegisterRecordMapper;
 import com.example.febackendproject.Repository.BudgetRepository;
+import com.example.febackendproject.Repository.ClientRepository;
 import com.example.febackendproject.Repository.StockRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,54 +28,50 @@ public class BudgetService {
     
     private final BudgetRepository budgetRepository;
     private final ClientService clientService;
+    private final ClientRepository clientRepository;
     private final StockService stockService;
     private final StockRepository stockRepository;
     private final CashRegisterService cashRegisterService;
     
-    public Boolean existsById(Long id) {
-        return budgetRepository.existsById(id);
+    public Budget getById(Long id) {
+        Optional<Budget> budget = budgetRepository.findById(id);
+        if (budget.isEmpty()) {
+            throw new ResourceNotFoundException("El presupuesto ID " + id + " no existe.");
+        }
+        return budget.get();
     }
-    
-    public Optional<Budget> getById(Long id) {
-        return budgetRepository.findById(id);
-    }
-    
+
     public List<PartialBudgetDTO> getByClientId(Long clientId) {
         return budgetRepository.findByClientId(clientId);
     }
-    
-    public Budget save(Budget budget) {
-        List<ProductBudget> products = budget.getProducts();
-        budget.setProducts(null);
-        
-        Budget savedBudget = budgetRepository.save(budget);
-        
-        savedBudget.setProducts(products);
-        return budgetRepository.save(savedBudget);
-    }
-    
-    public Budget update(Budget budget) {
-        return budgetRepository.save(budget);
-    }
-    
-    public void delete(Long id) {
-        if (budgetRepository.existsById(id)) {
-            budgetRepository.deleteById(id);
+
+    public void assertBudgetExists(Long id) {
+        if (!budgetRepository.existsById(id)) {
+            throw new ResourceNotFoundException("El presupuesto ID " + id + " no existe.");
         }
     }
     
-    public List<PartialBudgetDTO> getByDate(LocalDate date) {
-        return budgetRepository.findByDate(date);
+    public Budget save(CreateBudgetDTO dto, Long clientId) {
+        Client client = null;
+        if (clientId != null) {
+            client = clientRepository.findById(clientId)
+                    .orElseGet(() -> clientService.save(dto.getClient()));
+        } else if (dto.getClient() != null) {
+            client = clientService.save(dto.getClient());
+        }
+        Budget newBudget = BudgetMapper.createBudget(dto, client);
+        return budgetRepository.save(newBudget);
     }
-    
-    public List<PartialBudgetDTO> getByDateRange(LocalDate start, LocalDate end) {
-        return budgetRepository.findByDateBetween(start, end);
-    }
-    
-    public Optional<List<String>> updateStatus(Budget budget, Budget.Status status) {
-        if (budget.getStockDecreased()) {
+
+    public List<String> updateStatus(Long id, Budget.Status status) {
+        Optional<Budget> search = budgetRepository.findById(id);
+        if (search.isEmpty()) {
+            throw new ResourceNotFoundException("El presupuesto ID " + id + " no existe.");
+        }
+        Budget budget = search.get();
+        if (budget.getStockDecreased() ) {
             budgetRepository.updateStatus(status, budget.getId());
-            return Optional.empty();
+            return Collections.emptyList();
         }
         List<String> unavailableProducts = new ArrayList<>();
         List<ProductBudget> budgetProducts = budget.getProducts();
@@ -82,27 +85,50 @@ public class BudgetService {
             });
         }
         if (unavailableProducts.isEmpty()) {
-            budgetProducts.forEach(product -> {
-                stockService.decreaseStockById(product.getId(), product.getSaleUnitQuantity());
-            });
-            // Create Cash Register Record on Budget Status Change (Budget ID as Record Detail)
+            budgetProducts.forEach(product -> stockService.decreaseStockById(product.getId(), product.getSaleUnitQuantity()));
             if (paid) {
-                CashRegisterRecord newRecord = new CashRegisterRecord();
-                LocalDate today = LocalDate.now();
-                today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                newRecord.setDate(today);
-                newRecord.setType(CashRegisterRecord.Type.INGRESO);
-                newRecord.setAmount(budget.getFinalAmount());
-                newRecord.setDetail("PRESUPUESTO " + budget.getId());
-                cashRegisterService.addRecord(newRecord);
+                // Create Cash Register Record on Budget Status Change (Budget ID as Record Detail)
+                CreateCashRegisterRecordDTO dto = CashRegisterRecordMapper.createDTO(budget);
+                cashRegisterService.addRecord(dto);
             }
-            budgetRepository.updateStatus(status, budget.getId());
-            budgetRepository.updateStockDecreased(budget.getId());
-            return Optional.empty();
+            budget.setStatus(status);
+            budget.setStockDecreased(true);
+            budgetRepository.save(budget);
+            return Collections.emptyList();
         }
-        return Optional.of(unavailableProducts);
+        return unavailableProducts;
     }
-    
+
+    public List<PartialBudgetDTO> getByDate(LocalDate date) {
+        return budgetRepository.findByDate(date);
+    }
+
+    public List<PartialBudgetDTO> getByDateRange(LocalDate start, LocalDate end) {
+        return budgetRepository.findByDateBetween(start, end);
+    }
+
+    public Budget update(CreateBudgetDTO dto, Long clientId, Long budgetId) {
+        Optional<Budget> search = budgetRepository.findById(budgetId);
+        if (search.isEmpty()) {
+            throw new ResourceNotFoundException("El presupuesto ID " + budgetId + " no existe.");
+        }
+        Budget budget = search.get();
+        Client client = null;
+        if (clientId != null) {
+            client = clientRepository.findById(clientId)
+                    .orElseGet(() -> clientService.save(dto.getClient()));
+        } else if (dto.getClient() != null ){
+            client = clientService.save(dto.getClient());
+        }
+        BudgetMapper.updateFromDTO(budget, dto, client);
+        return budgetRepository.save(budget);
+    }
+
+    public void delete(Long id) {
+        assertBudgetExists(id);
+        budgetRepository.deleteById(id);
+    }
+
     public List<PartialBudgetDTO> getLastBudgets() {
         return budgetRepository.getLastBudgets();
     }
@@ -124,7 +150,7 @@ public class BudgetService {
             String rawMonth = (String) record[0];
             Byte status = (Byte) record[1];
             Integer total = ((Number) record[2]).intValue();
-            
+
             YearMonth yearMonth = YearMonth.parse(rawMonth, DateTimeFormatter.ofPattern("yyyy-MM"));
             String month = yearMonth.format(formatter);
             

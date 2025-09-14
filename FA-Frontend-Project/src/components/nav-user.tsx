@@ -1,7 +1,9 @@
 "use client";
 
-import { ChevronsUpDown, LogOut, User } from "lucide-react";
+import { ChevronsUpDown, LogOut, ShoppingCart, User } from "lucide-react";
 
+import { useBudgetContext } from "@/Context/Budget/UseBudgetContext";
+import { useTheme } from "@/Context/theme-provider";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,24 +13,39 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Label } from "@/components/ui/label";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { useTheme } from "@/Context/theme-provider";
 import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
+import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import { Link } from "react-router-dom";
+import { Button } from "./ui/button";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
   const { setTheme, theme } = useTheme();
   const { user, logout } = useKindeAuth();
+  const { CurrentBudget } = useBudgetContext();
 
   return (
     <SidebarMenu>
+      <SidebarMenuItem>
+        <Button asChild className="w-full">
+          <Link to="/sales/cart">
+            <ShoppingCart />
+            <span className="text-md font-semibold">Carrito</span>
+            {CurrentBudget?.products?.length > 0 && (
+              <span className="text-sm font-semibold rounded-full bg-destructive text-white px-2 flex justify-center items-center">
+                {CurrentBudget?.products?.length}
+              </span>
+            )}
+          </Link>
+        </Button>
+      </SidebarMenuItem>
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -64,7 +81,7 @@ export function NavUser() {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-{/*             <DropdownMenuGroup>
+            {/*             <DropdownMenuGroup>
               <Link to={"/user"}>
                 <DropdownMenuItem>
                   <Cog />

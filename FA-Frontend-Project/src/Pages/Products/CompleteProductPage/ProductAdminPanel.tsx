@@ -1,30 +1,26 @@
 import { Button } from "@/components/ui/button";
-import { useCatalogContext } from "@/Context/UseCatalogContext";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { useProductContext } from "@/Context/Product/UseProductContext";
 import { CompleteProduct } from "@/hooks/CatalogInterfaces";
 import { ProductDetail } from "@/lib/ProductDetail";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { CircleX, ListPlus, ListX, Package, Pencil } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import AddProductToBudget from "@/Pages/Budgets/AddProductToBudget";
 import CreateProduct from "@/Pages/Products/CreateProduct/CreateProduct";
+import {
+  CircleX,
+  ListPlus,
+  ListX,
+  Package,
+  Pencil,
+  ShoppingCart,
+} from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 
 export const ProductPageAdminPanel = ({
   Product,
-  ReloadProduct,
-  setReloadProduct,
 }: {
   Product: CompleteProduct | null;
-  ReloadProduct: boolean;
-  setReloadProduct: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const {
-    BASE_URL,
-    // Re fetch the filter data when deleting a product
-    fetchCategories,
-    fetchProviders,
-    fetchMeasures,
-    fetchPrices,
-  } = useCatalogContext();
-  const { getToken } = useKindeAuth();
+  const { updateProductDisabledStatus, deleteProduct } = useProductContext();
   const navigate = useNavigate();
 
   const onDisablePress = () => {
@@ -40,73 +36,17 @@ export const ProductPageAdminPanel = ({
   };
 
   const updateProductStatus = async (disabled: boolean) => {
-    try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(
-        `${BASE_URL}/product?productId=${Product?.id}&disabled=${disabled}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-      if (!response.ok) {
-        console.error("Error: ", response.statusText);
-        window.alert(`Error actualizando el producto: ${response.status}`);
-        return;
-      }
-      window.alert("Producto actualizado con éxito");
-      setReloadProduct(!ReloadProduct);
-    } catch (error) {
-      console.error("Error: ", error);
-      window.alert("Ocurrió un error al actualizar el producto");
-    }
+    await updateProductDisabledStatus(Product?.id ?? 0, disabled);
   };
 
   const onDeletePress = () => {
     if (window.confirm("¿Desea eliminar el producto?")) {
-      deleteProduct();
+      submitDeleteProduct();
     }
   };
 
-  const deleteProduct = async () => {
-    if (!getToken || !Product?.id) {
-      console.error("Missing requirements for deletion");
-      window.alert("Error: No se puede eliminar el producto");
-      return;
-    }
-    try {
-      const accessToken = await getToken();
-      const response = await fetch(`${BASE_URL}/product/${Product.id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      if (!response.ok) {
-        console.error("Error:", response.statusText);
-        window.alert(`Error eliminando el producto: ${response.status}`);
-        return;
-      }
-      window.alert("Producto eliminado con éxito");
-      await Promise.all([
-        fetchMeasures(),
-        fetchPrices(),
-        fetchCategories(),
-        fetchProviders(),
-      ]);
-      navigate(-1);
-    } catch (error) {
-      console.error("Error:", error);
-      window.alert("Ocurrió un error al eliminar el producto");
-    }
+  const submitDeleteProduct = async () => {
+    await deleteProduct(Product?.id ?? 0).then(() => navigate(-1));
   };
 
   return (
@@ -115,8 +55,6 @@ export const ProductPageAdminPanel = ({
         ProductProp={Product}
         TriggerTitle="Editar Producto"
         TriggerIcon={Pencil}
-        ReloadProduct={ReloadProduct}
-        setReloadProduct={setReloadProduct}
       />
       <Button
         className="w-10/12 text-md"
@@ -148,6 +86,17 @@ export const ProductPageAdminPanel = ({
         </Link>
       </Button>
       <ProductDetail Product={Product} />
+      {Product && (
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button className="w-10/12 text-md">
+              <ShoppingCart />
+              Añadir al carrito
+            </Button>
+          </DialogTrigger>
+          <AddProductToBudget product={Product} />
+        </Dialog>
+      )}
     </div>
   );
 };

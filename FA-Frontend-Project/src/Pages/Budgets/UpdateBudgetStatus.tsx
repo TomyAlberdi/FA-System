@@ -8,27 +8,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useSalesContext } from "@/Context/UseSalesContext";
+import { useBudgetContext } from "@/Context/Budget/UseBudgetContext";
 import { BudgetStatus } from "@/hooks/SalesInterfaces";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useState } from "react";
 
 export const UpdateBudgetStatus = ({
   id,
   stockDecreased,
-  setOpenUpdateStatus,
-  Reload,
-  setReload,
 }: {
   id: number | undefined;
   stockDecreased: boolean | undefined;
-  setOpenUpdateStatus: (value: boolean) => void;
-  Reload: boolean;
-  setReload: (value: boolean) => void;
 }) => {
-  const { BASE_URL, fetchRegisterTotalAmount } =
-    useSalesContext();
-  const { getToken } = useKindeAuth();
+  const { updateBudgetStatus } = useBudgetContext();
 
   const [updateStatus, setupdateStatus] = useState<string>("");
 
@@ -49,42 +40,7 @@ export const UpdateBudgetStatus = ({
   };
 
   const onSubmit = async (status: string) => {
-    const url = `${BASE_URL}/budget/${id}?status=${status}`;
-    try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(url, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      if (!response.ok) {
-        if (response.status === 409) {
-          const responseData = await response.json();
-          window.alert(
-            "Conflicto de Inventario.\nLos siguientes productos no tienen stock suficiente:\n" +
-              responseData.join(", ")
-          );
-          return;
-        }
-        window.alert(
-          `Error actualizando el estado del presupuesto: ${response.status}`
-        );
-        return;
-      }
-      setOpenUpdateStatus(false);
-      window.alert("El estado del presupuesto ha sido actualizado con éxito");
-      await Promise.all([fetchRegisterTotalAmount()]);
-      setReload(!Reload);
-    } catch (error) {
-      console.error("Error: ", error);
-      window.alert("Ocurrió un error al actualizar el estado del presupuesto");
-    }
+    await updateBudgetStatus(status, id ?? 0);
   };
 
   return (

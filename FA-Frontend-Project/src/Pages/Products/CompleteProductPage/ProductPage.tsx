@@ -1,23 +1,20 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { useCatalogContext } from "@/Context/UseCatalogContext";
+import { useProductContext } from "@/Context/Product/UseProductContext";
 import { CompleteProduct } from "@/hooks/CatalogInterfaces";
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 import { ProductPageAdminPanel } from "@/Pages/Products/CompleteProductPage/ProductAdminPanel";
 import { ProductCarousel } from "@/Pages/Products/CompleteProductPage/ProductCarousel";
-import { ProductMainInfo } from "@/Pages/Products/CompleteProductPage/ProductMainInfo";
 import { ProductComplementaryInfo } from "@/Pages/Products/CompleteProductPage/ProductComplementaryInfo";
+import { ProductMainInfo } from "@/Pages/Products/CompleteProductPage/ProductMainInfo";
 import MobileProductAdminPanel from "@/Pages/Products/Mobile/MobileProductAdminPanel";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 export const ProductPage = () => {
   const { id } = useParams();
-  const { fetchProduct } = useCatalogContext();
+  const { fetchProduct, ProductUpdater } = useProductContext();
 
   const [Loading, setLoading] = useState(true);
   const [Product, setProduct] = useState<CompleteProduct | null>(null);
-
-  const [ReloadProduct, setReloadProduct] = useState(false);
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,7 +29,7 @@ export const ProductPage = () => {
         .finally(() => setLoading(false));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, ReloadProduct]);
+  }, [id, ProductUpdater]);
 
   return (
     <div className="w-full h-full flex flex-col md:gap-4 gap-2">
@@ -54,16 +51,8 @@ export const ProductPage = () => {
             <ProductMainInfo Product={Product} />
           </div>
           <div className="w-full md:min-h-[58vh] h-auto flex md:flex-row flex-col md:gap-4 gap-0">
-            <ProductPageAdminPanel
-              Product={Product}
-              ReloadProduct={ReloadProduct}
-              setReloadProduct={setReloadProduct}
-            />
-            <MobileProductAdminPanel
-              Product={Product}
-              ReloadProduct={ReloadProduct}
-              setReloadProduct={setReloadProduct}
-            />
+            <ProductPageAdminPanel Product={Product} />
+            <MobileProductAdminPanel Product={Product} />
             <ProductComplementaryInfo Product={Product} />
           </div>
         </>

@@ -10,8 +10,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
-import { useSalesContext } from "@/Context/UseSalesContext";
-import { RegisterRecord } from "@/hooks/SalesInterfaces";
+import { useCashRegisterContext } from "@/Context/CashRegister/UseCashRegisterContext";
+import { createCashRegisterRecordDTO } from "@/hooks/SalesInterfaces";
 import { CheckCircle2, DollarSign } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -20,10 +20,10 @@ interface AddRegisterProps {
 }
 
 const AddRegister = ({ yearMonth }: AddRegisterProps) => {
-  const { BASE_URL, fetchRegisterTypes, fetchRegisterTotalAmount } =
-    useSalesContext();
+  const { fetchCashRegisterTypes, fetchCashRegisterTotalAmount, createRecord } =
+    useCashRegisterContext();
   const [Open, setOpen] = useState(false);
-  const [Record, setRecord] = useState<RegisterRecord>({
+  const [Record, setRecord] = useState<createCashRegisterRecordDTO>({
     amount: 0,
     date: "",
     detail: "",
@@ -61,33 +61,23 @@ const AddRegister = ({ yearMonth }: AddRegisterProps) => {
     submitRegister(Record);
   };
 
-  const submitRegister = async (Record: RegisterRecord) => {
-    const url = `${BASE_URL}/cash-register`;
+  const submitRegister = async (Record: createCashRegisterRecordDTO) => {
     setLoadingRequest(true);
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(Record),
-      });
-      if (!response.ok) {
-        console.error("Error submitting register: ", response.status);
-        window.alert(`Error creando el registro: ${response.status}`);
-        return;
-      }
-      setOpen(false);
-      await Promise.all([
-        fetchRegisterTypes(yearMonth ?? new Date().toISOString().slice(0, 7)),
-        fetchRegisterTotalAmount(),
-      ]);
-    } catch (error) {
-      console.error("Error submitting register: ", error);
-      window.alert("Ocurrió un error al crear el registro");
-    } finally {
+    await createRecord(Record).finally(() => {
       setLoadingRequest(false);
-    }
+      setOpen(false);
+      setRecord({
+        amount: 0,
+        detail: "",
+        type: "",
+        date: "",
+      });
+      setLongDate(new Date());
+    });
+    await fetchCashRegisterTotalAmount();
+    await fetchCashRegisterTypes(
+      yearMonth ?? new Date().toISOString().slice(0, 7)
+    );
   };
 
   return (
