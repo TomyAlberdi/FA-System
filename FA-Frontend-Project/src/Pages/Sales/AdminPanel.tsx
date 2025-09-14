@@ -7,10 +7,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { AddClient } from "@/Pages/Clients/AddClient";
 import AddRegister from "@/Pages/Register/AddRegister";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const AdminPanel = () => {
   const navigate = useNavigate();
@@ -25,9 +25,7 @@ export const AdminPanel = () => {
       <CardContent className="flex flex-row space-x-1 h-2/3">
         <Dialog open={ClientOpen} onOpenChange={setClientOpen}>
           <DialogTrigger asChild>
-            <Button className="h-full text-lg w-1/3">
-              Crear Cliente
-            </Button>
+            <Button className="h-full text-lg w-1/3">Crear Cliente</Button>
           </DialogTrigger>
           <DialogContent
             className="sm:max-w-[500px] w-full p-6"
@@ -38,7 +36,7 @@ export const AdminPanel = () => {
                 Crear Cliente
               </DialogTitle>
             </DialogHeader>
-            <AddClient setOpen={setClientOpen} />
+            <AddClient />
           </DialogContent>
         </Dialog>
         <Button

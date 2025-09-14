@@ -112,7 +112,7 @@ export const FloatingClientPagination = () => {
                           address: "",
                           phone: "",
                           email: "",
-                          cuit_dni: "",
+                          cuitDni: "",
                         },
                       })
                     }
