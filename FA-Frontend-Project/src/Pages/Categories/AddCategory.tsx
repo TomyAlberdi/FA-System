@@ -34,16 +34,20 @@ export const AddCategory: React.FC<CategoriesHeaderProps> = ({ setOpen }) => {
 
   return (
     <div className="w-full flex flex-col gap-4">
-      <Label>Nombre</Label>
-      <Input
-        placeholder="Nombre de la categoría"
-        onChange={(e) => setName(e.target.value)}
-        value={Name}
-      />
-      <Button onClick={onSubmit} disabled={LoadingRequest} className="w-full">
-        {LoadingRequest && <Loader2 className="animate-spin" />}
-        Guardar
-      </Button>
+      <section>
+        <Label>Nombre</Label>
+        <Input
+          placeholder="Nombre de la categoría"
+          onChange={(e) => setName(e.target.value)}
+          value={Name}
+        />
+      </section>
+      <div>
+        <Button onClick={onSubmit} disabled={LoadingRequest} className="w-full">
+          {LoadingRequest && <Loader2 className="animate-spin" />}
+          Guardar
+        </Button>
+      </div>
     </div>
   );
 };

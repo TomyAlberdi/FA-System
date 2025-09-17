@@ -97,214 +97,193 @@ const SaleDataTab = ({ Product, setProduct, loading }: SaleDataTabProps) => {
 
   return (
     <section className="h-full w-full">
-      <div className="h-full w-full md:grid grid-cols-6 grid-rows-6 gap-4 flex flex-col px-1">
-        <div className="row-start-1 col-start-1 col-span-2">
-          <Label className="text-md">Unidad de venta</Label>
-          <Select
-            value={Product?.saleUnit}
-            disabled={loading}
-            onValueChange={(value) =>
-              setProduct((prev) => ({ ...prev, saleUnit: value }))
-            }
-          >
-            <SelectTrigger>
-              <SelectValue defaultValue={Product?.saleUnit} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Caja">Caja</SelectItem>
-              <SelectItem value="Unidad">Unidad</SelectItem>
-              <SelectItem value="Juego">Juego</SelectItem>
-              <SelectItem value="Bolsa">Bolsa</SelectItem>
-            </SelectContent>
-          </Select>
+      <div className="h-full w-full gap-4 flex flex-col px-1 py-4">
+        <div className="flex justify-evenly items-center gap-4">
+          <section className="w-1/3 flex flex-col gap-2">
+            <div>
+              <Label className="text-md">Unidad de venta</Label>
+              <Select
+                value={Product?.saleUnit}
+                disabled={loading}
+                onValueChange={(value) =>
+                  setProduct((prev) => ({ ...prev, saleUnit: value }))
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue defaultValue={Product?.saleUnit} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Caja">Caja</SelectItem>
+                  <SelectItem value="Unidad">Unidad</SelectItem>
+                  <SelectItem value="Juego">Juego</SelectItem>
+                  <SelectItem value="Bolsa">Bolsa</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-md">Unidad de medida</Label>
+              <Select
+                value={Product?.measureType}
+                disabled={loading}
+                onValueChange={(value) =>
+                  setProduct((prev) => ({ ...prev, measureType: value }))
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue defaultValue={Product?.measureType} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="M2">M2</SelectItem>
+                  <SelectItem value="ML">ML</SelectItem>
+                  <SelectItem value="Unidad">Unidad</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </section>
+          <section className="w-1/3 flex flex-col gap-2">
+            <div>
+              <Label className="flex items-center text-md">
+                Costo de compra
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="w-4 h-4 ml-2" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      El costo al que se adquirió el producto del proveedor.
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </Label>
+              <Input
+                value={Product?.measureUnitCost}
+                type="number"
+                disabled={loading}
+                min={0}
+                onChange={(e) =>
+                  setProduct((prev) => ({
+                    ...prev,
+                    measureUnitCost: parseFloat(e.target.value),
+                  }))
+                }
+              />
+            </div>
+            <div>
+              <Label className="text-md">
+                {Product?.measureType === Product?.saleUnit
+                  ? "Cantidad"
+                  : `Cantidad de ${Product?.measureType} por ${Product?.saleUnit}`}
+              </Label>
+              <Input
+                type="number"
+                min={0}
+                value={Product?.measurePerSaleUnit}
+                placeholder="Ej: 2.35"
+                disabled={Product?.measureType === Product?.saleUnit || loading}
+                onChange={(e) =>
+                  setProduct((prev) => ({
+                    ...prev,
+                    measurePerSaleUnit: parseFloat(e.target.value),
+                  }))
+                }
+              />
+            </div>
+          </section>
+          <section className="w-1/3 flex flex-col gap-2">
+            <div>
+              <Label className="flex items-center text-md">
+                Rentabilidad:{" "}
+                {!Number.isNaN(Rentabilidad) ? `${Rentabilidad} ` : "0 "}%
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className="w-4 h-4 ml-2" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      El porcentaje de beneficio que se obtiene sobre el costo
+                      de compra.
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </Label>
+              <Slider
+                className="my-4 hidden md:flex"
+                min={0}
+                max={200}
+                step={0.1}
+                disabled={loading}
+                value={[Rentabilidad]}
+                onValueChange={(value) => setRentabilidad(value[0])}
+              />
+              <Input
+                className="my-4 block md:hidden"
+                type="number"
+                min={0}
+                disabled={loading}
+                value={Rentabilidad}
+                onChange={(e) => setRentabilidad(parseFloat(e.target.value))}
+              />
+            </div>
+            <div>
+              <Label className="text-md">Medidas o Peso (Opcional)</Label>
+              <Input
+                value={Product?.measures}
+                placeholder="Ej: 20x20 / 10kg"
+                disabled={loading}
+                onChange={(e) =>
+                  setProduct((prev) => ({ ...prev, measures: e.target.value }))
+                }
+              />
+            </div>
+          </section>
         </div>
-        <div className="row-start-1 col-start-3 col-span-2">
-          <Label className="flex items-center text-md">
-            Costo de compra
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Info className="w-4 h-4 ml-2" />
-                </TooltipTrigger>
-                <TooltipContent>
-                  El costo al que se adquirió el producto del proveedor.
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </Label>
-          <Input
-            value={Product?.measureUnitCost}
-            type="number"
-            disabled={loading}
-            min={0}
-            onChange={(e) =>
-              setProduct((prev) => ({
-                ...prev,
-                measureUnitCost: parseFloat(e.target.value),
-              }))
-            }
-          />
-        </div>
-        <div className="row-start-1 col-start-5 col-span-2">
-          <Label className="flex items-center text-md">
-            Rentabilidad:{" "}
-            {!Number.isNaN(Rentabilidad) ? `${Rentabilidad} ` : "0 "}%
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Info className="w-4 h-4 ml-2" />
-                </TooltipTrigger>
-                <TooltipContent>
-                  El porcentaje de beneficio que se obtiene sobre el costo de
-                  compra.
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </Label>
-          <Slider
-            className="my-4 hidden md:flex"
-            min={0}
-            max={200}
-            step={0.1}
-            disabled={loading}
-            value={[Rentabilidad]}
-            onValueChange={(value) => setRentabilidad(value[0])}
-          />
-          <Input
-            className="my-4 block md:hidden"
-            type="number"
-            min={0}
-            disabled={loading}
-            value={Rentabilidad}
-            onChange={(e) => setRentabilidad(parseFloat(e.target.value))}
-          />
-        </div>
-        <div className="row-start-2 col-start-1 col-span-2">
-          <Label className="text-md">Unidad de medida</Label>
-          <Select
-            value={Product?.measureType}
-            disabled={loading}
-            onValueChange={(value) =>
-              setProduct((prev) => ({ ...prev, measureType: value }))
-            }
-          >
-            <SelectTrigger>
-              <SelectValue defaultValue={Product?.measureType} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="M2">M2</SelectItem>
-              <SelectItem value="ML">ML</SelectItem>
-              <SelectItem value="Unidad">Unidad</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="row-start-2 col-start-3 col-span-2">
-          <Label className="text-md">
-            {Product?.measureType === Product?.saleUnit
-              ? "Cantidad"
-              : `Cantidad de ${Product?.measureType} por ${Product?.saleUnit}`}
-          </Label>
-          <Input
-            type="number"
-            min={0}
-            value={Product?.measurePerSaleUnit}
-            placeholder="Ej: 2.35"
-            disabled={Product?.measureType === Product?.saleUnit || loading}
-            onChange={(e) =>
-              setProduct((prev) => ({
-                ...prev,
-                measurePerSaleUnit: parseFloat(e.target.value),
-              }))
-            }
-          />
-        </div>
-        <div className="row-start-2 col-start-5 col-span-2">
-          <Label className="text-md">Medidas o Peso (Opcional)</Label>
-          <Input
-            value={Product?.measures}
-            placeholder="Ej: 20x20 / 10kg"
-            disabled={loading}
-            onChange={(e) =>
-              setProduct((prev) => ({ ...prev, measures: e.target.value }))
-            }
-          />
-        </div>
-        <div className="row-start-3 row-span-1 col-start-1 col-span-6 flex flex-col justify-center md:items-center items-start">
-          <Label className="md:text-lg text-md">
-            Descuento por {Product?.saleUnit}:{" "}
-            {!Number.isNaN(Product?.discountPercentage)
-              ? `${Product?.discountPercentage} `
-              : "0 "}
-            % (Opcional)
-          </Label>
-          <Slider
-            className="md:w-1/3 w-full my-4 hidden md:flex"
-            min={0}
-            max={100}
-            disabled={loading}
-            step={1}
-            value={[Product?.discountPercentage]}
-            onValueChange={(value) =>
-              setProduct((prev) => ({ ...prev, discountPercentage: value[0] }))
-            }
-          />
-          <Input
-            className="my-4 block md:hidden"
-            type="number"
-            min={0}
-            disabled={loading}
-            max={100}
-            value={Product?.discountPercentage}
-            onChange={(e) =>
-              setProduct((prev) => ({
-                ...prev,
-                discountPercentage: parseFloat(e.target.value),
-              }))
-            }
-          />
-        </div>
-        <div className="row-start-4 row-span-2 col-span-6 rounded flex flex-col justify-start items-center">
-          <h2 className="md:text-2xl text-xl font-semibold mb-4 text-center">
-            Información de venta
-          </h2>
-          <div className="flex md:flex-row flex-col gap-4 md:w-auto w-full">
-            <Card className="bg-primary-foreground">
-              <CardHeader>
-                <CardTitle className="text-center">
-                  Precio por {Product?.saleUnit}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="text-center flex flex-row gap-2 justify-center items-center">
-                <span
-                  className={
-                    Product?.discountPercentage == 0 ||
-                    Number.isNaN(Product?.saleUnitPrice)
-                      ? "text-3xl"
-                      : "text-xl line-through tetx-muted-foreground"
-                  }
-                >
-                  ${" "}
-                  {!Number.isNaN(Product?.saleUnitPrice)
-                    ? Product?.saleUnitPrice
-                    : 0}
-                </span>
-                {Product?.discountPercentage > 0 &&
-                  Product?.saleUnitPrice > 0 && (
-                    <span className="text-3xl text-destructive overflow-hidden">
-                      $
-                      {Math.round(
-                        (1 - Product?.discountPercentage / 100.0) *
-                          Product?.saleUnitPrice
-                      )}
-                    </span>
-                  )}
-              </CardContent>
-            </Card>
-            {Product?.saleUnit !== Product?.measureType && (
+        <div className="flex flex-col gap-4 justify-evenly items-center">
+          <div className="flex flex-col justify-center md:items-center items-start w-1/3">
+            <Label className="md:text-lg text-md">
+              Descuento por {Product?.saleUnit}:{" "}
+              {!Number.isNaN(Product?.discountPercentage)
+                ? `${Product?.discountPercentage} `
+                : "0 "}
+              % (Opcional)
+            </Label>
+            <Slider
+              className="w-full my-4 hidden md:flex"
+              min={0}
+              max={100}
+              disabled={loading}
+              step={1}
+              value={[Product?.discountPercentage]}
+              onValueChange={(value) =>
+                setProduct((prev) => ({
+                  ...prev,
+                  discountPercentage: value[0],
+                }))
+              }
+            />
+            <Input
+              className="my-4 block md:hidden"
+              type="number"
+              min={0}
+              disabled={loading}
+              max={100}
+              value={Product?.discountPercentage}
+              onChange={(e) =>
+                setProduct((prev) => ({
+                  ...prev,
+                  discountPercentage: parseFloat(e.target.value),
+                }))
+              }
+            />
+          </div>
+          <div className="rounded flex flex-col justify-start items-center">
+            <h2 className="md:text-2xl text-xl font-semibold mb-4 text-center">
+              Información de venta
+            </h2>
+            <div className="flex md:flex-row flex-col gap-4 md:w-auto w-full">
               <Card className="bg-primary-foreground">
                 <CardHeader>
                   <CardTitle className="text-center">
-                    Precio por {Product?.measureType}
+                    Precio por {Product?.saleUnit}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="text-center flex flex-row gap-2 justify-center items-center">
@@ -316,24 +295,59 @@ const SaleDataTab = ({ Product, setProduct, loading }: SaleDataTabProps) => {
                         : "text-xl line-through tetx-muted-foreground"
                     }
                   >
-                    $
-                    {Product?.saleUnit &&
-                    Product?.measurePerSaleUnit &&
-                    !Number.isNaN(MeasurePrice)
-                      ? MeasurePrice
+                    ${" "}
+                    {!Number.isNaN(Product?.saleUnitPrice)
+                      ? Product?.saleUnitPrice
                       : 0}
                   </span>
-                  {Product?.discountPercentage > 0 && MeasurePrice > 0 && (
-                    <span className="text-3xl text-destructive overflow-hidden">
-                      $
-                      {Math.round(
-                        (1 - Product?.discountPercentage / 100.0) * MeasurePrice
-                      )}
-                    </span>
-                  )}
+                  {Product?.discountPercentage > 0 &&
+                    Product?.saleUnitPrice > 0 && (
+                      <span className="text-3xl text-destructive overflow-hidden">
+                        $
+                        {Math.round(
+                          (1 - Product?.discountPercentage / 100.0) *
+                            Product?.saleUnitPrice
+                        )}
+                      </span>
+                    )}
                 </CardContent>
               </Card>
-            )}
+              {Product?.saleUnit !== Product?.measureType && (
+                <Card className="bg-primary-foreground">
+                  <CardHeader>
+                    <CardTitle className="text-center">
+                      Precio por {Product?.measureType}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="text-center flex flex-row gap-2 justify-center items-center">
+                    <span
+                      className={
+                        Product?.discountPercentage == 0 ||
+                        Number.isNaN(Product?.saleUnitPrice)
+                          ? "text-3xl"
+                          : "text-xl line-through tetx-muted-foreground"
+                      }
+                    >
+                      $
+                      {Product?.saleUnit &&
+                      Product?.measurePerSaleUnit &&
+                      !Number.isNaN(MeasurePrice)
+                        ? MeasurePrice
+                        : 0}
+                    </span>
+                    {Product?.discountPercentage > 0 && MeasurePrice > 0 && (
+                      <span className="text-3xl text-destructive overflow-hidden">
+                        $
+                        {Math.round(
+                          (1 - Product?.discountPercentage / 100.0) *
+                            MeasurePrice
+                        )}
+                      </span>
+                    )}
+                  </CardContent>
+                </Card>
+              )}
+            </div>
           </div>
         </div>
       </div>

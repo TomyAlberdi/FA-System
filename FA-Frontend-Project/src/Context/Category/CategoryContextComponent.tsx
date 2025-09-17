@@ -122,8 +122,8 @@ const CategoryContextComponent: React.FC<CategoryContextComponentProps> = ({
         console.error("Error fetching Category: ", response.statusText);
         return;
       }
-      const result: PartialCSP = await response.json();
       await fetchCategories();
+      const result: PartialCSP = await response.json();
       return result;
     } catch (error) {
       console.error("Error fetching Category: ", error);

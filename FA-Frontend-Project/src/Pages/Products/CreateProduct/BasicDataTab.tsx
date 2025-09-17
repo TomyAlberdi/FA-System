@@ -44,40 +44,43 @@ const BasicDataTab = ({ Product, setProduct, loading }: BasicDataTabProps) => {
 
   return (
     <section className="h-full w-full">
-      <div className="h-full w-full md:grid grid-cols-6 grid-rows-9 gap-2 flex flex-col px-1">
-        <div className="row-start-1 col-span-4">
-          <Label className="text-md">Nombre</Label>
-          <Input
-            disabled={loading}
-            value={Product?.name}
-            onChange={(e) =>
-              setProduct((prev) => ({ ...prev, name: e.target.value }))
-            }
-          />
-        </div>
-        <div className="row-start-1 col-start-5">
-          <Label className="text-md">Código</Label>
-          <Input
-            disabled={loading}
-            value={Product?.code}
-            min={0}
-            type="number"
-            onChange={(e) =>
-              setProduct((prev) => ({ ...prev, code: e.target.value }))
-            }
-          />
-        </div>
-        <div className="row-start-1 col-start-6">
-          <Label className="text-md">Calidad (Opcional)</Label>
-          <Input
-            value={Product?.quality}
-            disabled={loading}
-            onChange={(e) =>
-              setProduct((prev) => ({ ...prev, quality: e.target.value }))
-            }
-            placeholder="Ej: 1ra"
-          />
-        </div>
+      <div className="h-full w-full gap-2 flex flex-col px-1">
+        <section className="flex gap-2">
+          <div className="w-4/6">
+            <Label className="text-md">Nombre</Label>
+            <Input
+              disabled={loading}
+              value={Product?.name}
+              onChange={(e) =>
+                setProduct((prev) => ({ ...prev, name: e.target.value }))
+              }
+            />
+          </div>
+          <div className="w-1/6">
+            <Label className="text-md">Código</Label>
+            <Input
+              disabled={loading}
+              value={Product?.code}
+              min={0}
+              type="number"
+              onChange={(e) =>
+                setProduct((prev) => ({ ...prev, code: e.target.value }))
+              }
+            />
+          </div>
+          <div className="w-1/6">
+            <Label className="text-md">Calidad (Opcional)</Label>
+            <Input
+              value={Product?.quality}
+              disabled={loading}
+              onChange={(e) =>
+                setProduct((prev) => ({ ...prev, quality: e.target.value }))
+              }
+              placeholder="Ej: 1ra"
+            />
+          </div>
+        </section>
+
         <div className="row-start-2 row-end-6 col-span-6">
           <Label className="text-md">Descripción</Label>
           <Textarea

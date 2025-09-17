@@ -147,117 +147,122 @@ const ExtraDataTab = ({
 
   return (
     <section className="h-full w-full">
-      <div className="h-full w-full md:grid grid-cols-6 grid-rows-8 gap-4 flex flex-col px-1">
-        <div className="row-start-1 row-end-8 col-start-1 col-end-4 flex flex-col justify-start">
-          <section className="flex flex-col gap-4">
-            <Label className="text-xl">Imágenes (Opcional)</Label>
-            <Input
-              type="file"
-              multiple
-              disabled={loading}
-              onChange={handleFileUpload}
-              accept="image/*"
-            />
-          </section>
-          <section className="pt-4 flex flex-row gap-2 flex-wrap">
-            {Product?.images?.map((image: string, index: number) => (
-              <article
-                key={index}
-                className="w-40 h-40 rounded-md border border-input bg-contain bg-no-repeat bg-center relative"
-                style={{ backgroundImage: `url(${image})` }}
-              >
-                <span
-                  className="p-2 absolute right-1 bottom-1 bg-destructive rounded-md cursor-pointer hover:opacity-85"
-                  onClick={() => removeImage(image)}
+      <div className="h-full w-full flex flex-col px-1 gap-4">
+        <section className="w-full flex gap-4">
+          <div className="flex flex-col justify-start w-1/2">
+            <section className="flex flex-col gap-4">
+              <Label className="text-xl">Imágenes (Opcional)</Label>
+              <Input
+                type="file"
+                multiple
+                disabled={loading}
+                onChange={handleFileUpload}
+                accept="image/*"
+              />
+            </section>
+            <section className="pt-4 flex flex-row gap-2 flex-wrap">
+              {Product?.images?.map((image: string, index: number) => (
+                <article
+                  key={index}
+                  className="w-40 h-40 rounded-md border border-input bg-contain bg-no-repeat bg-center relative"
+                  style={{ backgroundImage: `url(${image})` }}
                 >
-                  <Trash2 color="white" />
-                </span>
-              </article>
-            ))}
-            {uploadState.previewUrls.map((url, index) => (
-              <article
-                key={index}
-                className="w-40 h-40 rounded-md border border-input bg-contain bg-no-repeat bg-center relative"
-                style={{ backgroundImage: `url(${url})` }}
-              >
-                <span
-                  className="p-2 absolute right-1 bottom-1 bg-destructive rounded-md cursor-pointer hover:opacity-85"
-                  onClick={() => removePreviewImage(url)}
+                  <span
+                    className="p-2 absolute right-1 bottom-1 bg-destructive rounded-md cursor-pointer hover:opacity-85"
+                    onClick={() => removeImage(image)}
+                  >
+                    <Trash2 color="white" />
+                  </span>
+                </article>
+              ))}
+              {uploadState.previewUrls.map((url, index) => (
+                <article
+                  key={index}
+                  className="w-40 h-40 rounded-md border border-input bg-contain bg-no-repeat bg-center relative"
+                  style={{ backgroundImage: `url(${url})` }}
                 >
-                  <Trash2 color="white" />
-                </span>
-              </article>
-            ))}
-          </section>
-        </div>
-        <div className="row-start-1 row-end-8 col-start-4 col-end-7 flex flex-col justify-start">
-          <Label className="text-xl">Características (Opcional)</Label>
-          <section className="flex flex-col justify-evenly h-full">
-            <div className="flex flex-col gap-2">
-              <Label className="text-md">Color</Label>
-              <Input
-                value={Product?.color}
-                disabled={loading}
-                onChange={(e) =>
-                  setProduct((prev) => ({ ...prev, color: e.target.value }))
-                }
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label className="text-md">Origen</Label>
-              <Input
-                value={Product?.origen}
-                disabled={loading}
-                onChange={(e) =>
-                  setProduct((prev) => ({ ...prev, origen: e.target.value }))
-                }
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label className="text-md">Borde</Label>
-              <Input
-                value={Product?.borde}
-                disabled={loading}
-                onChange={(e) =>
-                  setProduct((prev) => ({ ...prev, borde: e.target.value }))
-                }
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label className="text-md">Aspecto</Label>
-              <Input
-                value={Product?.aspecto}
-                disabled={loading}
-                onChange={(e) =>
-                  setProduct((prev) => ({ ...prev, aspecto: e.target.value }))
-                }
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label className="text-md">Textura</Label>
-              <Input
-                value={Product?.textura}
-                disabled={loading}
-                onChange={(e) =>
-                  setProduct((prev) => ({ ...prev, textura: e.target.value }))
-                }
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label className="text-md">Tránsito</Label>
-              <Input
-                value={Product?.transito}
-                disabled={loading}
-                onChange={(e) =>
-                  setProduct((prev) => ({ ...prev, transito: e.target.value }))
-                }
-              />
-            </div>
-          </section>
-        </div>
-        <div className="row-start-8 col-span-2 col-start-3 flex flex-row justify-between items-center gap-2">
+                  <span
+                    className="p-2 absolute right-1 bottom-1 bg-destructive rounded-md cursor-pointer hover:opacity-85"
+                    onClick={() => removePreviewImage(url)}
+                  >
+                    <Trash2 color="white" />
+                  </span>
+                </article>
+              ))}
+            </section>
+          </div>
+          <div className="flex flex-col justify-start w-1/2">
+            <Label className="text-xl">Características (Opcional)</Label>
+            <section className="flex flex-col justify-evenly h-full">
+              <div className="flex flex-col gap-2">
+                <Label className="text-md">Color</Label>
+                <Input
+                  value={Product?.color}
+                  disabled={loading}
+                  onChange={(e) =>
+                    setProduct((prev) => ({ ...prev, color: e.target.value }))
+                  }
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label className="text-md">Origen</Label>
+                <Input
+                  value={Product?.origen}
+                  disabled={loading}
+                  onChange={(e) =>
+                    setProduct((prev) => ({ ...prev, origen: e.target.value }))
+                  }
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label className="text-md">Borde</Label>
+                <Input
+                  value={Product?.borde}
+                  disabled={loading}
+                  onChange={(e) =>
+                    setProduct((prev) => ({ ...prev, borde: e.target.value }))
+                  }
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label className="text-md">Aspecto</Label>
+                <Input
+                  value={Product?.aspecto}
+                  disabled={loading}
+                  onChange={(e) =>
+                    setProduct((prev) => ({ ...prev, aspecto: e.target.value }))
+                  }
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label className="text-md">Textura</Label>
+                <Input
+                  value={Product?.textura}
+                  disabled={loading}
+                  onChange={(e) =>
+                    setProduct((prev) => ({ ...prev, textura: e.target.value }))
+                  }
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label className="text-md">Tránsito</Label>
+                <Input
+                  value={Product?.transito}
+                  disabled={loading}
+                  onChange={(e) =>
+                    setProduct((prev) => ({
+                      ...prev,
+                      transito: e.target.value,
+                    }))
+                  }
+                />
+              </div>
+            </section>
+          </div>
+        </section>
+        <div className="flex flex-row justify-center items-center gap-2">
           <Button
-            className="gap-2 w-full bg-chart-2"
+            className="gap-2 bg-chart-2 w-1/6"
             disabled={loading}
             onClick={onSubmit}
           >
