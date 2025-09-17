@@ -2,14 +2,13 @@ import {
   ClientContext,
   ClientContextType,
 } from "@/Context/Client/ClientContext";
-import { ReturnData } from "@/hooks/CatalogInterfaces";
 import {
   CompleteClient,
   CreateClientDTO,
   PartialClient,
 } from "@/hooks/SalesInterfaces";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface ClientContextComponentProps {
@@ -23,16 +22,11 @@ const ClientContextComponent: React.FC<ClientContextComponentProps> = ({
   const BASE_URL = import.meta.env.VITE_BASE_URL;
   const navigate = useNavigate();
 
-  const [Clients, setClients] = useState<ReturnData<PartialClient>>({
-    Loading: true,
-    data: Array<PartialClient>(),
-  });
-
   const fetchClients = async () => {
     try {
       if (!getToken) {
         console.error("getToken is undefined");
-        return;
+        return [];
       }
       const accessToken = await getToken();
       const response = await fetch(`${BASE_URL}/client/list`, {
@@ -45,13 +39,13 @@ const ClientContextComponent: React.FC<ClientContextComponentProps> = ({
         window.alert(
           "Ocurrió un error al obtener los clientes: " + response.status
         );
-        return;
+        return [];
       }
       const result: Array<PartialClient> = await response.json();
-      setClients({ Loading: false, data: result });
+      return result;
     } catch (error) {
       console.error("Error fetching clients: ", error);
-      setClients({ Loading: false, data: [] });
+      return [];
     }
   };
 
@@ -81,8 +75,6 @@ const ClientContextComponent: React.FC<ClientContextComponentProps> = ({
     }
   };
 
-  const [ClientUpdater, setClientUpdater] = useState(0);
-
   const createClient = async (dto: CreateClientDTO) => {
     try {
       if (!getToken) {
@@ -92,7 +84,7 @@ const ClientContextComponent: React.FC<ClientContextComponentProps> = ({
       const accessToken = await getToken();
       const finalDTO = {
         ...dto,
-        "cuit_dni": dto.cuitDni,
+        cuit_dni: dto.cuitDni,
       };
       console.log(finalDTO);
       const response = await fetch(`${BASE_URL}/client`, {
@@ -109,7 +101,6 @@ const ClientContextComponent: React.FC<ClientContextComponentProps> = ({
           "Ocurrió un error al crear el cliente: " + response.status
         );
       }
-      setClientUpdater((prev) => prev + 1);
     } catch (error) {
       console.error("Error fetching data: ", error);
     }
@@ -141,7 +132,6 @@ const ClientContextComponent: React.FC<ClientContextComponentProps> = ({
         );
         return;
       }
-      setClientUpdater((prev) => prev + 1);
     } catch (error) {
       console.error("Error fetching data: ", error);
     }
@@ -173,13 +163,11 @@ const ClientContextComponent: React.FC<ClientContextComponentProps> = ({
   };
 
   const exportData: ClientContextType = {
-    Clients,
     fetchClients,
     fetchClient,
     createClient,
     updateClient,
     deleteClient,
-    ClientUpdater,
   };
 
   return (

@@ -18,7 +18,19 @@ export const ProviderFilter: React.FC<ProviderFilterProps> = ({
   setFilter,
   Loading,
 }) => {
-  const { Providers } = useProviderContext();
+  const { fetchProviders } = useProviderContext();
+  const [Providers, setProviders] = useState<Provider[]>([]);
+  const [LoadingProviders, setLoadingProviders] = useState(true);
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoadingProviders(true);
+      const result = await fetchProviders();
+      setProviders(result);
+      setLoadingProviders(false);
+    };
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const [Data, setData] = useState<Array<ProviderCheck> | null>([]);
 
   const handleCheckboxChange = (id: number) => {
@@ -50,16 +62,12 @@ export const ProviderFilter: React.FC<ProviderFilterProps> = ({
   };
 
   useEffect(() => {
-    if (
-      !Providers?.Loading &&
-      Array.isArray(Providers?.data) &&
-      Providers?.data?.length > 0
-    ) {
+    if (!LoadingProviders && Providers.length > 0) {
       if (Filter?.find((filter) => filter?.type === "providerId")) {
         return;
       }
       const checkedProviders: Array<ProviderCheck> = [];
-      (Providers?.data as Provider[]).forEach((provider: Provider) => {
+      Providers.forEach((provider: Provider) => {
         const newItem: ProviderCheck = {
           id: provider?.id ?? 0,
           name: provider.name,
@@ -70,6 +78,7 @@ export const ProviderFilter: React.FC<ProviderFilterProps> = ({
       });
       setData(checkedProviders ?? null);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [Filter, Providers]);
 
   return (

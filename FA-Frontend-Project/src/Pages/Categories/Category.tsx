@@ -53,7 +53,6 @@ const Category = () => {
     updateCategory,
     deleteCategory,
     fetchCategoryProducts,
-    CategoryUpdater,
   } = useCategoryContext();
   const { createSubcategory, SubcategoryUpdater } = useSubcategoryContext();
   const [Category, setCategory] = useState<CategoryInterface | null>(null);
@@ -102,35 +101,37 @@ const Category = () => {
     );
   };
 
-  const loadCategory = async () => {
-    if (id) {
-      await fetchCategory(Number.parseInt(id))
-        .then((result) => {
-          if (!result) {
-            navigate(-1);
-          }
-          setCategory(result ?? null);
-        })
-        .finally(() => setLoading(false));
-    }
-  };
-
   useEffect(() => {
-    loadCategory();
+    const fetchData = async () => {
+      if (id) {
+        await fetchCategory(Number.parseInt(id))
+          .then((result) => {
+            if (!result) {
+              navigate(-1);
+            }
+            setCategory(result ?? null);
+          })
+          .finally(() => setLoading(false));
+      }
+    };
+    fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, CategoryUpdater, SubcategoryUpdater]);
+  }, [id, SubcategoryUpdater]);
 
   useEffect(() => {
-    if (id) {
-      fetchCategoryProducts(Number.parseInt(id), LastLoadedPage, 8).then(
-        (result) => {
-          setProducts(
-            Products ? [...Products, ...result.content] : result.content
-          );
-          setIsLastPage(result.last);
-        }
-      );
-    }
+    const fetchData = async () => {
+      if (id) {
+        fetchCategoryProducts(Number.parseInt(id), LastLoadedPage, 8).then(
+          (result) => {
+            setProducts(
+              Products ? [...Products, ...result.content] : result.content
+            );
+            setIsLastPage(result.last);
+          }
+        );
+      }
+    };
+    fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [LastLoadedPage]);
 

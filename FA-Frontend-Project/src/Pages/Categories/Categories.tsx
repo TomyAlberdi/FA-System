@@ -6,18 +6,33 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Category } from "@/hooks/CatalogInterfaces";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { AlertCircle } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 export const Categories = () => {
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
-  const { Categories: Data } = useCategoryContext();
+  const { fetchCategories } = useCategoryContext();
+
+  const [Categories, setCategories] = useState<Category[]>([]);
+  const [Loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      const result = await fetchCategories();
+      setCategories(result);
+      setLoading(false);
+    };
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="Categories">
       <CategoriesHeader />
       <section className="listBody md:gap-[1%]">
-        {Data?.Loading ? (
+        {Loading ? (
           Array.from({ length: 9 }, (_, i) => {
             return isDesktop ? (
               <Skeleton
@@ -28,7 +43,7 @@ export const Categories = () => {
               <Skeleton className="skeletonCard h-[100px] w-full" key={i} />
             );
           })
-        ) : Array.isArray(Data?.data) && Data?.data.length === 0 ? (
+        ) : Categories.length === 0 ? (
           <Alert variant="destructive" className="md:w-auto w-full">
             <AlertCircle className="w-5 pt-1" />
             <AlertTitle className="text-xl">Error</AlertTitle>
@@ -37,8 +52,7 @@ export const Categories = () => {
             </AlertDescription>
           </Alert>
         ) : (
-          Array.isArray(Data?.data) &&
-          (Data?.data as Category[]).map((category: Category) => {
+          Categories.map((category: Category) => {
             return isDesktop ? (
               <Button
                 asChild

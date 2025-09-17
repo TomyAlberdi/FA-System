@@ -7,6 +7,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import {
   Pagination,
   PaginationContent,
@@ -16,19 +17,17 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Skeleton } from "@/components/ui/skeleton";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import {
   CardProduct,
   FilterData,
   PaginationInfo,
 } from "@/hooks/CatalogInterfaces";
-import { AlertCircle, CirclePlus, Search } from "lucide-react";
-import { useState } from "react";
-import { ProductCard } from "@/Pages/Products/ProductCard";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { RefreshCcw } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import CreateProduct from "@/Pages/Products/CreateProduct/CreateProduct";
 import MobileFilters from "@/Pages/Products/Mobile/MobileFilters";
+import { ProductCard } from "@/Pages/Products/ProductCard";
+import { AlertCircle, CirclePlus, RefreshCcw, Search } from "lucide-react";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
 interface ProductPaginationProps {
   Products: Array<CardProduct>;
@@ -118,14 +117,24 @@ export const ProductPagination: React.FC<ProductPaginationProps> = ({
             <Search className="bigger-icon" />
           </Button>
         </div>
-        <CreateProduct TriggerIcon={CirclePlus} TriggerTitle="Nuevo Producto" />
+        <Button asChild className="text-lg w-[19.2%] max-w-[300px] min-w-[200px]">
+          <Link to={`/catalog/products/create`}>
+            <CirclePlus />
+            Nuevo Producto
+          </Link>
+        </Button>
       </section>
       <section className="listHeader flex md:hidden">
         <Button onClick={handleRefresh} className="text-lg">
           <RefreshCcw className="bigger-icon" />
         </Button>
         <div className="flex gap-5">
-          <CreateProduct TriggerTitle="" TriggerIcon={CirclePlus} />
+          <Button asChild>
+            <Link to={`/catalog/products/create`}>
+              <CirclePlus />
+              Nuevo Producto
+            </Link>
+          </Button>
           <MobileFilters
             Filter={Filter}
             setFilter={setFilter}

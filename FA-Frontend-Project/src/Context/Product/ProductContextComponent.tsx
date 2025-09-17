@@ -1,9 +1,7 @@
-import { useCategoryContext } from "@/Context/Category/UseCategoryContext";
 import {
   ProductContext,
   ProductContextType,
 } from "@/Context/Product/ProductContext";
-import { useProviderContext } from "@/Context/Provider/UseProviderContext";
 import { useSubcategoryContext } from "@/Context/Subcategory/UseSubcategoryContext";
 import {
   CompleteProduct,
@@ -26,8 +24,6 @@ const ProductContextComponent: React.FC<ProductContextComponentProps> = ({
   const { getToken } = useKindeAuth();
   const BASE_URL = import.meta.env.VITE_BASE_URL;
   const navigate = useNavigate();
-  const { fetchCategories } = useCategoryContext();
-  const { fetchProviders } = useProviderContext();
   const { fetchSubcategories } = useSubcategoryContext();
 
   const fetchProduct = async (id: number) => {
@@ -78,8 +74,6 @@ const ProductContextComponent: React.FC<ProductContextComponentProps> = ({
         );
       }
       window.alert("Producto creado con éxito.");
-      await fetchCategories();
-      await fetchProviders();
       await fetchSubcategories();
       await fetchMeasures();
       await fetchPrices();
@@ -113,8 +107,6 @@ const ProductContextComponent: React.FC<ProductContextComponentProps> = ({
       }
       window.alert("Producto actualizado con éxito.");
       setProductUpdater((prev) => prev + 1);
-      await fetchCategories();
-      await fetchProviders();
       await fetchMeasures();
       await fetchSubcategories();
       await fetchPrices();
@@ -142,8 +134,6 @@ const ProductContextComponent: React.FC<ProductContextComponentProps> = ({
           "Ocurrió un error al eliminar el producto: " + response.status
         );
       }
-      await fetchCategories();
-      await fetchProviders();
       await fetchMeasures();
       await fetchPrices();
       await fetchSubcategories();

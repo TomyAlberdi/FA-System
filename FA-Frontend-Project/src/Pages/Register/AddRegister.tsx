@@ -20,8 +20,7 @@ interface AddRegisterProps {
 }
 
 const AddRegister = ({ yearMonth }: AddRegisterProps) => {
-  const { fetchCashRegisterTypes, fetchCashRegisterTotalAmount, createRecord } =
-    useCashRegisterContext();
+  const { createRecord } = useCashRegisterContext();
   const [Open, setOpen] = useState(false);
   const [Record, setRecord] = useState<createCashRegisterRecordDTO>({
     amount: 0,
@@ -74,10 +73,6 @@ const AddRegister = ({ yearMonth }: AddRegisterProps) => {
       });
       setLongDate(new Date());
     });
-    await fetchCashRegisterTotalAmount();
-    await fetchCashRegisterTypes(
-      yearMonth ?? new Date().toISOString().slice(0, 7)
-    );
   };
 
   return (

@@ -8,7 +8,9 @@ import { Client } from "@/Pages/Clients/Client";
 import { Clients } from "@/Pages/Clients/Clients";
 import Home from "@/Pages/Home/Home";
 import { ProductPage } from "@/Pages/Products/CompleteProductPage/ProductPage";
+import CreateProduct from "@/Pages/Products/CreateProduct/CreateProduct";
 import { Products } from "@/Pages/Products/Products";
+import UpdateProduct from "@/Pages/Products/UpdateProduct/UpdateProduct";
 import { Provider } from "@/Pages/Providers/Provider";
 import { Providers } from "@/Pages/Providers/Providers";
 import CashRegister from "@/Pages/Register/CashRegister";
@@ -23,7 +25,9 @@ export const routesConfig = [
   // Catalog
   { path: "/catalog", element: <Catalog /> },
   { path: "/catalog/products", element: <Products /> },
+  { path: "/catalog/products/create", element: <CreateProduct /> },
   { path: "/catalog/products/:id", element: <ProductPage /> },
+  { path: "/catalog/products/update/:id", element: <UpdateProduct /> },
   { path: "/catalog/stock", element: <StockList /> },
   { path: "/catalog/stock/:id", element: <Stock /> },
   { path: "/catalog/providers", element: <Providers /> },

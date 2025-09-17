@@ -2,14 +2,12 @@ import {
   CreateProviderDTO,
   PaginationResponse,
   Provider,
-  ReturnData,
-  StockProduct,
+  StockProduct
 } from "@/hooks/CatalogInterfaces";
 import { createContext } from "react";
 
 export interface ProviderContextType {
-  Providers: ReturnData<Provider>;
-  fetchProviders: () => Promise<void>;
+  fetchProviders: () => Promise<Provider[]>;
   fetchProvider: (identifier: number | string) => Promise<Provider | undefined>;
   fetchProviderProducts: (
     id: number,
@@ -22,7 +20,6 @@ export interface ProviderContextType {
     dto: CreateProviderDTO
   ) => Promise<Provider | undefined>;
   deleteProvider: (id: number) => Promise<void>;
-  ProviderUpdater: number;
 }
 
 export const ProviderContext = createContext<ProviderContextType | null>(null);

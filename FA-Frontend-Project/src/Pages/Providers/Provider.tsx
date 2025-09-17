@@ -29,12 +29,8 @@ import { useNavigate, useParams } from "react-router-dom";
 
 export const Provider = () => {
   const { id } = useParams();
-  const {
-    fetchProvider,
-    fetchProviderProducts,
-    deleteProvider,
-    ProviderUpdater,
-  } = useProviderContext();
+  const { fetchProvider, fetchProviderProducts, deleteProvider } =
+    useProviderContext();
   const [Provider, setProvider] = useState<ProviderInterface | null>(null);
   const [Products, setProducts] = useState<Array<StockProduct> | null>([]);
   const [LastLoadedPage, setLastLoadedPage] = useState(0);
@@ -42,23 +38,22 @@ export const Provider = () => {
   const [Loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const loadProvider = async () => {
-    if (id) {
-      await fetchProvider(Number.parseInt(id))
-        .then((result) => {
-          if (!result) {
-            navigate(-1);
-          }
-          setProvider(result ?? null);
-        })
-        .finally(() => setLoading(false));
-    }
-  };
-
   useEffect(() => {
-    loadProvider();
+    const fetchData = async () => {
+      if (id) {
+        await fetchProvider(Number.parseInt(id))
+          .then((result) => {
+            if (!result) {
+              navigate(-1);
+            }
+            setProvider(result ?? null);
+          })
+          .finally(() => setLoading(false));
+      }
+    };
+    fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, ProviderUpdater]);
+  }, [id]);
 
   useEffect(() => {
     if (id) {

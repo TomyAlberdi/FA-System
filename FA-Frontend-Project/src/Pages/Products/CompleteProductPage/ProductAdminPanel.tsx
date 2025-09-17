@@ -4,7 +4,6 @@ import { useProductContext } from "@/Context/Product/UseProductContext";
 import { CompleteProduct } from "@/hooks/CatalogInterfaces";
 import { ProductDetail } from "@/lib/ProductDetail";
 import AddProductToBudget from "@/Pages/Budgets/AddProductToBudget";
-import CreateProduct from "@/Pages/Products/CreateProduct/CreateProduct";
 import {
   CircleX,
   ListPlus,
@@ -51,11 +50,12 @@ export const ProductPageAdminPanel = ({
 
   return (
     <div className="h-full w-1/4 p-2 hidden md:flex flex-col justify-start items-center gap-4">
-      <CreateProduct
-        ProductProp={Product}
-        TriggerTitle="Editar Producto"
-        TriggerIcon={Pencil}
-      />
+      <Button asChild className="w-10/12">
+        <Link to={`/catalog/products/update/${Product?.id}`}>
+          <Pencil />
+          Editar Producto
+        </Link>
+      </Button>
       <Button
         className="w-10/12 text-md"
         variant="destructive"

@@ -11,8 +11,7 @@ interface ExtraDataTabProps {
   setProduct: React.Dispatch<React.SetStateAction<CreateProductDTO>>;
   loading: boolean;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  createProduct: (productToCreate: CreateProductDTO) => void;
-  triggerTitle: string;
+  createProduct: (newProduct: CreateProductDTO) => void;
 }
 
 const ExtraDataTab = ({
@@ -21,7 +20,6 @@ const ExtraDataTab = ({
   loading,
   setLoading,
   createProduct,
-  triggerTitle,
 }: ExtraDataTabProps) => {
   const BASE_URL = import.meta.env.VITE_BASE_URL;
   const { getToken } = useKindeAuth();
@@ -267,9 +265,7 @@ const ExtraDataTab = ({
             onClick={onSubmit}
           >
             {loading && <Loader2 className="animate-spin" />}
-            {triggerTitle === "Nuevo Producto" || triggerTitle == ""
-              ? "Crear"
-              : "Actualizar"}
+            Guardar
             <CheckCircle2 size={16} />
           </Button>
         </div>

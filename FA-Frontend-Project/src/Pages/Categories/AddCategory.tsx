@@ -31,17 +31,18 @@ export const AddCategory: React.FC<CategoriesHeaderProps> = ({ setOpen }) => {
 
   const submitCategory = async (name: string) => {
     setLoadingRequest(true);
-    await createCategory(name).finally(() => {
+    try {
+      await createCategory(name);
+      // Delay closing slightly to avoid React Portal / dialog DOM races
+      // that can trigger "insertBefore" errors in some browsers/environments.
+      setTimeout(() => setOpen(false), 120);
+    } finally {
       setLoadingRequest(false);
-      setOpen(false);
-    });
+    }
   };
 
   return (
-    <DialogContent
-      className="md:w-full w-[90%] md:p-6 p-3 rounded-lg"
-      aria-describedby={undefined}
-    >
+    <DialogContent className="md:w-full w-[90%] md:p-6 p-3 rounded-lg">
       <DialogHeader>
         <DialogTitle className="text-xl font-bold">
           Añadir Categoría

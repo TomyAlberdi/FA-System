@@ -7,11 +7,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { CirclePlus } from "lucide-react";
-import { useState } from "react";
-import { AddProvider } from "@/Pages/Providers/AddProvider";
 import { AddCategory } from "@/Pages/Categories/AddCategory";
-import CreateProduct from "@/Pages/Products/CreateProduct/CreateProduct";
+import { AddProvider } from "@/Pages/Providers/AddProvider";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
 export const AdminPanel = () => {
   const [ProviderOpen, setProviderOpen] = useState(false);
@@ -23,15 +22,14 @@ export const AdminPanel = () => {
         <CardTitle>Atajos</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-row space-x-1 h-2/3">
-        <CreateProduct
-          TriggerTitle="Añadir Producto"
-          TriggerIcon={CirclePlus}
-        />
+        <Button asChild className="h-full text-lg w-1/3">
+          <Link to={`/catalog/products/create`}>
+            Añadir Producto
+          </Link>
+        </Button>
         <Dialog open={ProviderOpen} onOpenChange={setProviderOpen}>
           <DialogTrigger asChild>
-            <Button className="h-full text-lg w-1/3">
-              Añadir Proveedor
-            </Button>
+            <Button className="h-full text-lg w-1/3">Añadir Proveedor</Button>
           </DialogTrigger>
           <DialogContent
             className="sm:max-w-[500px] w-full p-6"
@@ -47,9 +45,7 @@ export const AdminPanel = () => {
         </Dialog>
         <Dialog open={CategoryOpen} onOpenChange={setCategoryOpen}>
           <DialogTrigger asChild>
-            <Button className="h-full text-lg w-1/3">
-              Añadir Categoría
-            </Button>
+            <Button className="h-full text-lg w-1/3">Añadir Categoría</Button>
           </DialogTrigger>
           <DialogContent
             className="sm:max-w-[500px] w-full p-6"

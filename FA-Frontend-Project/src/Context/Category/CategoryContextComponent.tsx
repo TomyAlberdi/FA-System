@@ -2,9 +2,9 @@ import {
   CategoryContext,
   CategoryContextType,
 } from "@/Context/Category/CategoryContext";
-import { Category, PartialCSP, ReturnData } from "@/hooks/CatalogInterfaces";
+import { Category, PartialCSP } from "@/hooks/CatalogInterfaces";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface CategoryContextComponentProps {
@@ -18,16 +18,11 @@ const CategoryContextComponent: React.FC<CategoryContextComponentProps> = ({
   const BASE_URL = import.meta.env.VITE_BASE_URL;
   const navigate = useNavigate();
 
-  const [Categories, setCategories] = useState<ReturnData<Category>>({
-    Loading: true,
-    data: Array<Category>(),
-  });
-
-  const fetchCategories = async () => {
+  const fetchCategories = async (): Promise<Category[]> => {
     try {
       if (!getToken) {
         console.error("getToken is undefined");
-        return;
+        return [];
       }
       const accessToken = await getToken();
       const response = await fetch(`${BASE_URL}/category`, {
@@ -37,13 +32,13 @@ const CategoryContextComponent: React.FC<CategoryContextComponentProps> = ({
       });
       if (!response.ok) {
         console.error("Error fetching data: ", response.statusText);
-        return;
+        return [];
       }
       const result: Array<Category> = await response.json();
-      setCategories({ Loading: false, data: result });
+      return result;
     } catch (error) {
       console.error("Error fetching categories: ", error);
-      setCategories({ Loading: false, data: [] });
+      return [];
     }
   };
 
@@ -103,8 +98,6 @@ const CategoryContextComponent: React.FC<CategoryContextComponentProps> = ({
     }
   };
 
-  const [CategoryUpdater, setCategoryUpdater] = useState(0);
-
   const createCategory = async (name: string) => {
     try {
       if (!getToken) {
@@ -122,7 +115,6 @@ const CategoryContextComponent: React.FC<CategoryContextComponentProps> = ({
         console.error("Error fetching Category: ", response.statusText);
         return;
       }
-      await fetchCategories();
       const result: PartialCSP = await response.json();
       return result;
     } catch (error) {
@@ -151,8 +143,6 @@ const CategoryContextComponent: React.FC<CategoryContextComponentProps> = ({
         console.error("Error fetching Category: ", response.statusText);
         return;
       }
-      setCategoryUpdater((prev) => prev + 1);
-      await fetchCategories();
     } catch (error) {
       console.error("Error fetching Category: ", error);
     }
@@ -175,35 +165,19 @@ const CategoryContextComponent: React.FC<CategoryContextComponentProps> = ({
         console.error("Error fetching Category: ", response.statusText);
         return;
       }
-      await fetchCategories();
       navigate(-1);
     } catch (error) {
       console.error("Error fetching Category: ", error);
     }
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (getToken) {
-        const accessToken = await getToken();
-        if (accessToken) {
-          fetchCategories();
-        }
-      }
-    };
-    fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getToken]);
-
   const exportData: CategoryContextType = {
-    Categories,
     fetchCategories,
     fetchCategory,
     fetchCategoryProducts,
     createCategory,
     updateCategory,
     deleteCategory,
-    CategoryUpdater,
   };
 
   return (

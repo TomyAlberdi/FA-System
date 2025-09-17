@@ -2,7 +2,6 @@ import {
   BudgetContext,
   BudgetContextType,
 } from "@/Context/Budget/BudgetContext";
-import { useCashRegisterContext } from "@/Context/CashRegister/UseCashRegisterContext";
 import {
   CompleteBudget,
   CreateBudgetDTO,
@@ -22,7 +21,6 @@ const BudgetContextComponent: React.FC<BudgetContextComponentProps> = ({
 }) => {
   const { getToken } = useKindeAuth();
   const BASE_URL = import.meta.env.VITE_BASE_URL;
-  const { fetchCashRegisterTotalAmount } = useCashRegisterContext();
   const navigate = useNavigate();
 
   const fetchBudgetsByClient = async (id: number) => {
@@ -236,8 +234,6 @@ const BudgetContextComponent: React.FC<BudgetContextComponentProps> = ({
         return;
       }
       window.alert("El estado del presupuesto ha sido actualizado con éxito.");
-      await fetchCashRegisterTotalAmount();
-      setBudgetUpdater((prev) => prev + 1);
     } catch (error) {
       console.error("Error fetching budget: ", error);
     }
@@ -262,7 +258,6 @@ const BudgetContextComponent: React.FC<BudgetContextComponentProps> = ({
         return;
       }
       window.alert("El presupuesto ha sido eliminado con éxito");
-      await fetchCashRegisterTotalAmount();
       navigate(-1);
     } catch (error) {
       console.error("Error fetching budget: ", error);

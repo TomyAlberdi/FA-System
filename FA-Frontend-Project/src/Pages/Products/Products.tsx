@@ -69,7 +69,7 @@ export const Products = () => {
     };
     fetchProducts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [CurrentPage, BASE_URL, Filter]);
+  }, [CurrentPage, Filter]);
 
   return (
     <div className="Products grid grid-cols-8 gap-4">

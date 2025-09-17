@@ -18,7 +18,7 @@ import { UpdateClient } from "./UpdateClient";
 
 export const Client = () => {
   const { id } = useParams();
-  const { fetchClient, deleteClient, ClientUpdater } = useClientContext();
+  const { fetchClient, deleteClient } = useClientContext();
   const navigate = useNavigate();
   const [Client, setClient] = useState<CompleteClient | null>(null);
   const [Loading, setLoading] = useState(true);
@@ -35,7 +35,7 @@ export const Client = () => {
         .finally(() => setLoading(false));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, ClientUpdater]);
+  }, [id]);
 
   const onDeletePres = () => {
     if (window.confirm("¿Desea eliminar el cliente?")) {

@@ -26,8 +26,20 @@ interface BasicDataTabProps {
 }
 
 const BasicDataTab = ({ Product, setProduct, loading }: BasicDataTabProps) => {
-  const { Categories } = useCategoryContext();
-  const { Providers } = useProviderContext();
+  const { fetchCategories } = useCategoryContext();
+  const { fetchProviders } = useProviderContext();
+  const [Categories, setCategories] = useState<Category[]>([]);
+  const [Providers, setProviders] = useState<Provider[]>([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await fetchCategories();
+      setCategories(result);
+      const result2 = await fetchProviders();
+      setProviders(result2);
+    };
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const { fetchSubcategoriesByCategoryId } = useSubcategoryContext();
 
   // Fetch subcategories by category id if product has category id
@@ -95,7 +107,7 @@ const BasicDataTab = ({ Product, setProduct, loading }: BasicDataTabProps) => {
         <div className="row-start-6 col-span-6">
           <Label className="text-md">Proveedor</Label>
           <Select
-            disabled={Providers?.Loading || loading}
+            disabled={!Providers || loading}
             value={Product?.providerId.toString()}
             onValueChange={(value) =>
               setProduct((prev) => ({ ...prev, providerId: Number(value) }))
@@ -105,27 +117,24 @@ const BasicDataTab = ({ Product, setProduct, loading }: BasicDataTabProps) => {
               <SelectValue placeholder="Proveedor" />
             </SelectTrigger>
             <SelectContent>
-              {Array.isArray(Providers?.data) &&
-                (Providers?.data as Provider[]).map(
-                  (provider: Provider, index: number) => {
-                    return (
-                      <SelectItem
-                        value={provider?.id ? provider.id.toString() : ""}
-                        key={index}
-                        className="cursor-pointer"
-                      >
-                        {provider.name}
-                      </SelectItem>
-                    );
-                  }
-                )}
+              {Providers.map((provider: Provider, index: number) => {
+                return (
+                  <SelectItem
+                    value={provider?.id ? provider.id.toString() : ""}
+                    key={index}
+                    className="cursor-pointer"
+                  >
+                    {provider.name}
+                  </SelectItem>
+                );
+              })}
             </SelectContent>
           </Select>
         </div>
         <div className="row-start-7 col-span-6">
           <Label className="text-md">Categoría</Label>
           <Select
-            disabled={Categories?.Loading || loading}
+            disabled={!Categories || loading}
             value={Product?.categoryId.toString()}
             onValueChange={(value) =>
               setProduct((prev) => ({ ...prev, categoryId: Number(value) }))
@@ -135,20 +144,17 @@ const BasicDataTab = ({ Product, setProduct, loading }: BasicDataTabProps) => {
               <SelectValue placeholder="Categoría" />
             </SelectTrigger>
             <SelectContent>
-              {Array.isArray(Categories?.data) &&
-                (Categories?.data as Category[]).map(
-                  (category: Category, index: number) => {
-                    return (
-                      <SelectItem
-                        value={category.id.toString()}
-                        key={index}
-                        className="cursor-pointer"
-                      >
-                        {category.name}
-                      </SelectItem>
-                    );
-                  }
-                )}
+              {Categories.map((category: Category, index: number) => {
+                return (
+                  <SelectItem
+                    value={category.id.toString()}
+                    key={index}
+                    className="cursor-pointer"
+                  >
+                    {category.name}
+                  </SelectItem>
+                );
+              })}
             </SelectContent>
           </Select>
         </div>
