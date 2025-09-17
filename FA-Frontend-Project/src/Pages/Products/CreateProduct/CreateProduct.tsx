@@ -5,9 +5,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Tabs } from "@/components/ui/tabs";
 import { useProductContext } from "@/Context/Product/UseProductContext";
 import { CompleteProduct, CreateProductDTO } from "@/hooks/CatalogInterfaces";
 import BasicDataTab from "@/Pages/Products/CreateProduct/BasicDataTab";
@@ -84,71 +82,20 @@ const CreateProduct = ({
 
   const [DialogOpen, setDialogOpen] = useState(false);
 
-  //#green Tabs & Loading Request state management
-  const [currentTab, setCurrentTab] = useState("basicData");
-  const handleNextTab = () => {
-    if (LoadingRequest) return;
-    setTimeout(() => {
-      switch (currentTab) {
-        case "basicData":
-          setCurrentTab("saleData");
-          break;
-        case "saleData":
-          setCurrentTab("extraData");
-          break;
-      }
-    }, 100);
-  };
-  const handlePreviousTab = () => {
-    if (LoadingRequest) return;
-    setTimeout(() => {
-      switch (currentTab) {
-        case "saleData":
-          setCurrentTab("basicData");
-          break;
-        case "extraData":
-          setCurrentTab("saleData");
-          break;
-      }
-    }, 100);
-  };
-  const [progress, setProgress] = useState(33);
   const [LoadingRequest, setLoadingRequest] = useState(false);
-  useEffect(() => {
-    if (LoadingRequest) {
-      setProgress(100);
-      return;
-    }
-    const timer = setTimeout(() => {
-      switch (currentTab) {
-        case "basicData":
-          setProgress(0);
-          break;
-        case "saleData":
-          setProgress(33);
-          break;
-        case "extraData":
-          setProgress(66);
-          break;
-      }
-    }, 100);
-    return () => clearTimeout(timer);
-  }, [currentTab, LoadingRequest]);
-  //#
 
-  //#blue Submit creation logic
   const submitCreateProduct = async (newProduct: CreateProductDTO) => {
     setLoadingRequest(true);
     await createProduct(newProduct).finally(() => setLoadingRequest(false));
   };
 
   const submitUpdateProduct = async (newProduct: CreateProductDTO) => {
+    if (!ProductProp?.id) return;
     setLoadingRequest(true);
     await updateProduct(ProductProp?.id ?? 0, newProduct).finally(() =>
       setLoadingRequest(false)
     );
   };
-  //#
 
   return (
     <Dialog open={DialogOpen} onOpenChange={setDialogOpen}>
@@ -173,9 +120,9 @@ const CreateProduct = ({
       <DialogContent
         aria-label="modal"
         aria-describedby={undefined}
-        className="lg:w-[70vw] xl:max-w-[1344px] w-[95vw] rounded-lg"
+        className="rounded-lg max-w-[90vw]"
       >
-        <ScrollArea className="w-full max-h-[80vh] overflow-auto flex flex-col justify-start md:px-6 px-3 md:pt-6 pt-3 pb-2">
+        <ScrollArea className="w-full max-h-[90vh] overflow-auto flex flex-col justify-start md:px-6 px-3 md:pt-6 pt-3 pb-2">
           <div className="flex md:flex-row flex-col items-center">
             <DialogTitle className="md:text-3xl text-2xl font-bold">
               {TriggerTitle === "Nuevo Producto" ||
@@ -184,44 +131,31 @@ const CreateProduct = ({
                 ? "Crear Producto"
                 : "Actualizar Producto"}
             </DialogTitle>
-            <Progress
-              value={progress}
-              max={100}
-              className="md:w-[50%] w-full md:ml-[3%] ml-0 md:my-0 my-2"
-            />
           </div>
-          <Tabs
-            className="w-full md:h-full h-auto"
-            value={currentTab}
-            onValueChange={setCurrentTab}
-          >
-            <BasicDataTab
-              onNext={handleNextTab}
-              Product={Product}
-              setProduct={setProduct}
-            />
-            <SaleDataTab
-              onPrevious={handlePreviousTab}
-              onNext={handleNextTab}
-              Product={Product}
-              setProduct={setProduct}
-            />
-            <ExtraDataTab
-              onPrevious={handlePreviousTab}
-              Product={Product}
-              setProduct={setProduct}
-              loading={LoadingRequest}
-              setLoading={setLoadingRequest}
-              createProduct={
-                TriggerTitle === "Nuevo Producto" ||
-                TriggerTitle === "Añadir Producto" ||
-                TriggerTitle == ""
-                  ? submitCreateProduct
-                  : submitUpdateProduct
-              }
-              triggerTitle={TriggerTitle}
-            />
-          </Tabs>
+          <BasicDataTab
+            Product={Product}
+            setProduct={setProduct}
+            loading={LoadingRequest}
+          />
+          <SaleDataTab
+            Product={Product}
+            setProduct={setProduct}
+            loading={LoadingRequest}
+          />
+          <ExtraDataTab
+            Product={Product}
+            setProduct={setProduct}
+            loading={LoadingRequest}
+            setLoading={setLoadingRequest}
+            createProduct={
+              TriggerTitle === "Nuevo Producto" ||
+              TriggerTitle === "Añadir Producto" ||
+              TriggerTitle == ""
+                ? submitCreateProduct
+                : submitUpdateProduct
+            }
+            triggerTitle={TriggerTitle}
+          />
         </ScrollArea>
       </DialogContent>
     </Dialog>

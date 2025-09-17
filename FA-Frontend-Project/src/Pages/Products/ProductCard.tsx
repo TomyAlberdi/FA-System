@@ -12,7 +12,6 @@ import { Link } from "react-router-dom";
 import AddProductToBudget from "../Budgets/AddProductToBudget";
 
 export const ProductCard = ({ product }: { product: CardProduct }) => {
-  //TODO: Add "add to cart" button and create new dialog component
   return (
     <Card
       className={
@@ -22,7 +21,7 @@ export const ProductCard = ({ product }: { product: CardProduct }) => {
     >
       <Tooltip>
         <TooltipTrigger asChild>
-          <CardTitle className="row-span-1 col-start-3 md:col-start-1 col-span-3 md:col-span-1 truncate overflow-hidden whitespace-nowrap pt-1 text-center">
+          <CardTitle className="row-span-1 text-xl col-start-3 md:col-start-1 col-span-3 md:col-span-1 truncate overflow-hidden whitespace-nowrap pt-1 text-center">
             {product.name}
           </CardTitle>
         </TooltipTrigger>

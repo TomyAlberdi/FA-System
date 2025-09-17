@@ -161,7 +161,7 @@ const ProductContextComponent: React.FC<ProductContextComponentProps> = ({
       }
       const accessToken = await getToken();
       const response = await fetch(
-        `${BASE_URL}/product?productId=${id}&disabled=${disabled}`,
+        `${BASE_URL}/product/${id}?disabled=${disabled}`,
         {
           method: "PATCH",
           headers: {
@@ -241,10 +241,18 @@ const ProductContextComponent: React.FC<ProductContextComponentProps> = ({
   };
 
   useEffect(() => {
-    fetchMeasures();
-    fetchPrices();
+    const fetchData = async () => {
+      if (getToken) {
+        const accessToken = await getToken();
+        if (accessToken) {
+          fetchMeasures();
+          fetchPrices();
+        }
+      }
+    };
+    fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [getToken]);
 
   const exportData: ProductContextType = {
     fetchProduct,

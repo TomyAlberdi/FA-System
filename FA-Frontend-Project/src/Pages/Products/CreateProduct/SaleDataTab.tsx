@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,7 +9,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import { TabsContent } from "@/components/ui/tabs";
 import {
   Tooltip,
   TooltipContent,
@@ -18,23 +16,17 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { CreateProductDTO } from "@/hooks/CatalogInterfaces";
-import { ChevronLeft, ChevronRight, Info } from "lucide-react";
+import { Info } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface SaleDataTabProps {
-  onPrevious: () => void;
-  onNext: () => void;
   Product: CreateProductDTO;
   setProduct: React.Dispatch<React.SetStateAction<CreateProductDTO>>;
+  loading: boolean;
 }
 
-const SaleDataTab = ({
-  onPrevious,
-  onNext,
-  Product,
-  setProduct,
-}: SaleDataTabProps) => {
-  //#indigo Calculate profit margin if product has sale unit price and sale unit cost
+const SaleDataTab = ({ Product, setProduct, loading }: SaleDataTabProps) => {
+  // Calculate profit margin if product has sale unit price and sale unit cost
   const [Rentabilidad, setRentabilidad] = useState(0);
   useEffect(() => {
     if (Product?.saleUnitPrice && Product?.saleUnitCost) {
@@ -48,9 +40,8 @@ const SaleDataTab = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  //#
 
-  //#green Calculate and set prices if product has measure unit cost and profit margin
+  // Calculate and set prices if product has measure unit cost and profit margin
   const [MeasurePrice, setMeasurePrice] = useState(0);
   const getSalePrice = (profitability: number) => {
     if (profitability === 0) {
@@ -92,9 +83,8 @@ const SaleDataTab = ({
     Product?.saleUnit,
     Product?.measureType,
   ]);
-  //#
 
-  //#orange set product measurePerSaleUnit to 1 if product saleUnit and measureType are equals
+  // Set product measurePerSaleUnit to 1 if product saleUnit and measureType are equals
   useEffect(() => {
     if (Product?.saleUnit === Product?.measureType) {
       setProduct((prev) => ({
@@ -104,38 +94,15 @@ const SaleDataTab = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [Product?.saleUnit, Product?.measureType]);
-  //#
-
-  //#blue disable next button if product lacks required data
-  const [DisableNext, setDisableNext] = useState(true);
-  useEffect(() => {
-    if (
-      Product?.saleUnit &&
-      Product?.saleUnitCost &&
-      Product?.saleUnitPrice &&
-      Product?.measurePerSaleUnit &&
-      Product?.measureType
-    ) {
-      setDisableNext(false);
-    } else {
-      setDisableNext(true);
-    }
-  }, [
-    Product?.saleUnit,
-    Product?.saleUnitCost,
-    Product?.saleUnitPrice,
-    Product?.measurePerSaleUnit,
-    Product?.measureType,
-  ]);
-  //#
 
   return (
-    <TabsContent value="saleData" className="h-full w-full">
-      <div className="h-full w-full md:grid grid-cols-6 grid-rows-6 gap-4 flex flex-col">
+    <section className="h-full w-full">
+      <div className="h-full w-full md:grid grid-cols-6 grid-rows-6 gap-4 flex flex-col px-1">
         <div className="row-start-1 col-start-1 col-span-2">
           <Label className="text-md">Unidad de venta</Label>
           <Select
             value={Product?.saleUnit}
+            disabled={loading}
             onValueChange={(value) =>
               setProduct((prev) => ({ ...prev, saleUnit: value }))
             }
@@ -168,6 +135,7 @@ const SaleDataTab = ({
           <Input
             value={Product?.measureUnitCost}
             type="number"
+            disabled={loading}
             min={0}
             onChange={(e) =>
               setProduct((prev) => ({
@@ -198,6 +166,7 @@ const SaleDataTab = ({
             min={0}
             max={200}
             step={0.1}
+            disabled={loading}
             value={[Rentabilidad]}
             onValueChange={(value) => setRentabilidad(value[0])}
           />
@@ -205,6 +174,7 @@ const SaleDataTab = ({
             className="my-4 block md:hidden"
             type="number"
             min={0}
+            disabled={loading}
             value={Rentabilidad}
             onChange={(e) => setRentabilidad(parseFloat(e.target.value))}
           />
@@ -213,6 +183,7 @@ const SaleDataTab = ({
           <Label className="text-md">Unidad de medida</Label>
           <Select
             value={Product?.measureType}
+            disabled={loading}
             onValueChange={(value) =>
               setProduct((prev) => ({ ...prev, measureType: value }))
             }
@@ -238,7 +209,7 @@ const SaleDataTab = ({
             min={0}
             value={Product?.measurePerSaleUnit}
             placeholder="Ej: 2.35"
-            disabled={Product?.measureType === Product?.saleUnit}
+            disabled={Product?.measureType === Product?.saleUnit || loading}
             onChange={(e) =>
               setProduct((prev) => ({
                 ...prev,
@@ -252,6 +223,7 @@ const SaleDataTab = ({
           <Input
             value={Product?.measures}
             placeholder="Ej: 20x20 / 10kg"
+            disabled={loading}
             onChange={(e) =>
               setProduct((prev) => ({ ...prev, measures: e.target.value }))
             }
@@ -269,6 +241,7 @@ const SaleDataTab = ({
             className="md:w-1/3 w-full my-4 hidden md:flex"
             min={0}
             max={100}
+            disabled={loading}
             step={1}
             value={[Product?.discountPercentage]}
             onValueChange={(value) =>
@@ -279,6 +252,7 @@ const SaleDataTab = ({
             className="my-4 block md:hidden"
             type="number"
             min={0}
+            disabled={loading}
             max={100}
             value={Product?.discountPercentage}
             onChange={(e) =>
@@ -362,22 +336,8 @@ const SaleDataTab = ({
             )}
           </div>
         </div>
-        <div className="row-start-6 col-span-2 col-start-3 flex flex-row justify-between items-center gap-2">
-          <Button onClick={onPrevious} className="gap-2 w-1/2">
-            <ChevronLeft size={16} />
-            Anterior
-          </Button>
-          <Button
-            onClick={onNext}
-            className="gap-2 w-1/2"
-            disabled={DisableNext}
-          >
-            Siguiente
-            <ChevronRight size={16} />
-          </Button>
-        </div>
       </div>
-    </TabsContent>
+    </section>
   );
 };
 export default SaleDataTab;

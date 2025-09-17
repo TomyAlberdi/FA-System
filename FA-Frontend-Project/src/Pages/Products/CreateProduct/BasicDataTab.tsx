@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -8,7 +7,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { TabsContent } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useCategoryContext } from "@/Context/Category/UseCategoryContext";
 import { useProviderContext } from "@/Context/Provider/UseProviderContext";
@@ -19,21 +17,20 @@ import {
   Provider,
   Subcategory,
 } from "@/hooks/CatalogInterfaces";
-import { ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface BasicDataTabProps {
-  onNext: () => void;
   Product: CreateProductDTO;
   setProduct: React.Dispatch<React.SetStateAction<CreateProductDTO>>;
+  loading: boolean;
 }
 
-const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
+const BasicDataTab = ({ Product, setProduct, loading }: BasicDataTabProps) => {
   const { Categories } = useCategoryContext();
   const { Providers } = useProviderContext();
   const { fetchSubcategoriesByCategoryId } = useSubcategoryContext();
 
-  //#green Fetch subcategories by category id if product has category id
+  // Fetch subcategories by category id if product has category id
   const [Subcategories, setSubcategories] = useState<Array<Subcategory>>([]);
   useEffect(() => {
     const selectedCategoryId = Product?.categoryId;
@@ -44,37 +41,14 @@ const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [Product?.categoryId]);
-  //#
-
-  //#blue disable next button if product lacks required data
-  const [DisableNext, setDisableNext] = useState(true);
-  useEffect(() => {
-    if (
-      Product?.name &&
-      Product?.code &&
-      Product?.providerId &&
-      Product?.categoryId &&
-      Product?.subcategoryId
-    ) {
-      setDisableNext(false);
-    } else {
-      setDisableNext(true);
-    }
-  }, [
-    Product?.name,
-    Product?.code,
-    Product?.providerId,
-    Product?.categoryId,
-    Product?.subcategoryId,
-  ]);
-  //#
 
   return (
-    <TabsContent value="basicData" className="h-full w-full">
-      <div className="h-full w-full md:grid grid-cols-6 grid-rows-9 gap-2 flex flex-col">
+    <section className="h-full w-full">
+      <div className="h-full w-full md:grid grid-cols-6 grid-rows-9 gap-2 flex flex-col px-1">
         <div className="row-start-1 col-span-4">
           <Label className="text-md">Nombre</Label>
           <Input
+            disabled={loading}
             value={Product?.name}
             onChange={(e) =>
               setProduct((prev) => ({ ...prev, name: e.target.value }))
@@ -84,6 +58,7 @@ const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
         <div className="row-start-1 col-start-5">
           <Label className="text-md">Código</Label>
           <Input
+            disabled={loading}
             value={Product?.code}
             min={0}
             type="number"
@@ -96,6 +71,7 @@ const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
           <Label className="text-md">Calidad (Opcional)</Label>
           <Input
             value={Product?.quality}
+            disabled={loading}
             onChange={(e) =>
               setProduct((prev) => ({ ...prev, quality: e.target.value }))
             }
@@ -106,6 +82,7 @@ const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
           <Label className="text-md">Descripción</Label>
           <Textarea
             value={Product?.description}
+            disabled={loading}
             className="h-[90%]"
             onChange={(e) =>
               setProduct((prev) => ({ ...prev, description: e.target.value }))
@@ -115,7 +92,7 @@ const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
         <div className="row-start-6 col-span-6">
           <Label className="text-md">Proveedor</Label>
           <Select
-            disabled={Providers?.Loading}
+            disabled={Providers?.Loading || loading}
             value={Product?.providerId.toString()}
             onValueChange={(value) =>
               setProduct((prev) => ({ ...prev, providerId: Number(value) }))
@@ -145,7 +122,7 @@ const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
         <div className="row-start-7 col-span-6">
           <Label className="text-md">Categoría</Label>
           <Select
-            disabled={Categories?.Loading}
+            disabled={Categories?.Loading || loading}
             value={Product?.categoryId.toString()}
             onValueChange={(value) =>
               setProduct((prev) => ({ ...prev, categoryId: Number(value) }))
@@ -175,7 +152,7 @@ const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
         <div className="row-start-8 col-span-6">
           <Label className="text-md">Subcategoría</Label>
           <Select
-            disabled={Subcategories?.length === 0}
+            disabled={Subcategories?.length === 0 || loading}
             value={Product?.subcategoryId.toString()}
             onValueChange={(value) =>
               setProduct((prev) => ({ ...prev, subcategoryId: Number(value) }))
@@ -199,18 +176,8 @@ const BasicDataTab = ({ onNext, Product, setProduct }: BasicDataTabProps) => {
             </SelectContent>
           </Select>
         </div>
-        <div className="row-start-9 col-span-2 col-start-3 flex flex-row justify-center items-center">
-          <Button
-            onClick={onNext}
-            className="gap-2 w-full"
-            disabled={DisableNext}
-          >
-            Siguiente
-            <ChevronRight size={16} />
-          </Button>
-        </div>
       </div>
-    </TabsContent>
+    </section>
   );
 };
 export default BasicDataTab;
