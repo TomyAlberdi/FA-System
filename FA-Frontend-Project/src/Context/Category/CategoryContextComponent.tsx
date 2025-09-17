@@ -3,7 +3,7 @@ import {
   CategoryContextType,
 } from "@/Context/Category/CategoryContext";
 import { Category, PartialCSP } from "@/hooks/CatalogInterfaces";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+// removed getToken-based auth
 import { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -14,22 +14,12 @@ interface CategoryContextComponentProps {
 const CategoryContextComponent: React.FC<CategoryContextComponentProps> = ({
   children,
 }) => {
-  const { getToken } = useKindeAuth();
   const BASE_URL = import.meta.env.VITE_BASE_URL;
   const navigate = useNavigate();
 
   const fetchCategories = async (): Promise<Category[]> => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return [];
-      }
-      const accessToken = await getToken();
-      const response = await fetch(`${BASE_URL}/category`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await fetch(`${BASE_URL}/category`);
       if (!response.ok) {
         console.error("Error fetching data: ", response.statusText);
         return [];
@@ -44,16 +34,7 @@ const CategoryContextComponent: React.FC<CategoryContextComponentProps> = ({
 
   const fetchCategory = async (identifier: number | string) => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(`${BASE_URL}/category/${identifier}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await fetch(`${BASE_URL}/category/${identifier}`);
       if (!response.ok) {
         console.error("Error fetching Category: ", response.statusText);
         return;
@@ -71,18 +52,8 @@ const CategoryContextComponent: React.FC<CategoryContextComponentProps> = ({
     size: number
   ) => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
       const response = await fetch(
-        `${BASE_URL}/category/${id}/products?page=${page}&size=${size}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
+        `${BASE_URL}/category/${id}/products?page=${page}&size=${size}`
       );
       if (!response.ok) {
         console.error("Error fetching Category: ", response.statusText);
@@ -100,16 +71,8 @@ const CategoryContextComponent: React.FC<CategoryContextComponentProps> = ({
 
   const createCategory = async (name: string) => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
       const response = await fetch(`${BASE_URL}/category/${name}`, {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
       });
       if (!response.ok) {
         console.error("Error fetching Category: ", response.statusText);
@@ -124,19 +87,11 @@ const CategoryContextComponent: React.FC<CategoryContextComponentProps> = ({
 
   const updateCategory = async (id: number, name: string) => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
       const response = await fetch(
         `${BASE_URL}/category/${id}?` +
           new URLSearchParams({ name }).toString(),
         {
           method: "PATCH",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
         }
       );
       if (!response.ok) {
@@ -150,16 +105,8 @@ const CategoryContextComponent: React.FC<CategoryContextComponentProps> = ({
 
   const deleteCategory = async (id: number) => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
       const response = await fetch(`${BASE_URL}/category/${id}`, {
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
       });
       if (!response.ok) {
         console.error("Error fetching Category: ", response.statusText);

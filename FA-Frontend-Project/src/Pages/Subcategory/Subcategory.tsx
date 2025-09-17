@@ -42,7 +42,6 @@ export const Subcategory = () => {
     updateSubcategory,
     fetchSubcategoryProducts,
     deleteSubcategory,
-    SubcategoryUpdater,
   } = useSubcategoryContext();
   const navigate = useNavigate();
   const [Loading, setLoading] = useState(true);
@@ -88,7 +87,7 @@ export const Subcategory = () => {
   useEffect(() => {
     loadSubcategory();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, SubcategoryUpdater]);
+  }, [id]);
 
   useEffect(() => {
     if (id) {

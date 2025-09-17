@@ -10,14 +10,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { StockRecordInfo } from "@/hooks/CatalogInterfaces";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+// removed getToken usage
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export const LastStockRecords = () => {
   const BASE_URL = import.meta.env.VITE_BASE_URL;
-  const { getToken } = useKindeAuth();
   const [Loading, setLoading] = useState(true);
   const [Data, setData] = useState<Array<StockRecordInfo>>([]);
   const navigate = useNavigate();
@@ -26,16 +25,7 @@ export const LastStockRecords = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        if (!getToken) {
-          console.error("getToken is undefined");
-          return;
-        }
-        const accessToken = await getToken();
-        fetch(`${BASE_URL}/stock/lastRecords`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        })
+        fetch(`${BASE_URL}/stock/lastRecords`)
           .then((response) => response.json())
           .then((data: Array<StockRecordInfo>) => {
             setData(data);

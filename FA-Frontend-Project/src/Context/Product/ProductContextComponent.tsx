@@ -2,7 +2,6 @@ import {
   ProductContext,
   ProductContextType,
 } from "@/Context/Product/ProductContext";
-import { useSubcategoryContext } from "@/Context/Subcategory/UseSubcategoryContext";
 import {
   CompleteProduct,
   CreateProductDTO,
@@ -10,7 +9,7 @@ import {
   Price,
   ReturnData,
 } from "@/hooks/CatalogInterfaces";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+// removed getToken-based auth
 import { ReactNode, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -21,23 +20,12 @@ interface ProductContextComponentProps {
 const ProductContextComponent: React.FC<ProductContextComponentProps> = ({
   children,
 }) => {
-  const { getToken } = useKindeAuth();
   const BASE_URL = import.meta.env.VITE_BASE_URL;
   const navigate = useNavigate();
-  const { fetchSubcategories } = useSubcategoryContext();
 
   const fetchProduct = async (id: number) => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(`${BASE_URL}/product/${id}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await fetch(`${BASE_URL}/product/${id}`);
       if (!response.ok) {
         console.error("Error fetching Product: ", response.statusText);
         window.alert(
@@ -54,15 +42,9 @@ const ProductContextComponent: React.FC<ProductContextComponentProps> = ({
 
   const createProduct = async (dto: CreateProductDTO) => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
       const response = await fetch(`${BASE_URL}/product`, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(dto),
@@ -74,7 +56,6 @@ const ProductContextComponent: React.FC<ProductContextComponentProps> = ({
         );
       }
       window.alert("Producto creado con éxito.");
-      await fetchSubcategories();
       await fetchMeasures();
       await fetchPrices();
     } catch (error) {
@@ -86,15 +67,9 @@ const ProductContextComponent: React.FC<ProductContextComponentProps> = ({
 
   const updateProduct = async (id: number, dto: CreateProductDTO) => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
       const response = await fetch(`${BASE_URL}/product/${id}`, {
         method: "PUT",
         headers: {
-          Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(dto),
@@ -108,7 +83,6 @@ const ProductContextComponent: React.FC<ProductContextComponentProps> = ({
       window.alert("Producto actualizado con éxito.");
       setProductUpdater((prev) => prev + 1);
       await fetchMeasures();
-      await fetchSubcategories();
       await fetchPrices();
     } catch (error) {
       console.error("Error fetching Product: ", error);
@@ -117,16 +91,8 @@ const ProductContextComponent: React.FC<ProductContextComponentProps> = ({
 
   const deleteProduct = async (id: number) => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
       const response = await fetch(`${BASE_URL}/product/${id}`, {
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
       });
       if (!response.ok) {
         console.error("Error fetching Product: ", response.statusText);
@@ -136,7 +102,6 @@ const ProductContextComponent: React.FC<ProductContextComponentProps> = ({
       }
       await fetchMeasures();
       await fetchPrices();
-      await fetchSubcategories();
       navigate(-1);
     } catch (error) {
       console.error("Error fetching Product: ", error);
@@ -145,18 +110,12 @@ const ProductContextComponent: React.FC<ProductContextComponentProps> = ({
 
   const updateProductDisabledStatus = async (id: number, disabled: boolean) => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
       const response = await fetch(
         `${BASE_URL}/product/${id}?disabled=${disabled}`,
         {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
           },
         }
       );
@@ -179,16 +138,7 @@ const ProductContextComponent: React.FC<ProductContextComponentProps> = ({
 
   const fetchMeasures = async () => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(`${BASE_URL}/filter/measures`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await fetch(`${BASE_URL}/filter/measures`);
       if (!response.ok) {
         console.error("Error fetching Measures: ", response.statusText);
         return;
@@ -208,16 +158,7 @@ const ProductContextComponent: React.FC<ProductContextComponentProps> = ({
 
   const fetchPrices = async () => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(`${BASE_URL}/filter/prices`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await fetch(`${BASE_URL}/filter/prices`);
       if (!response.ok) {
         console.error("Error fetching Prices: ", response.statusText);
         return;
@@ -232,17 +173,12 @@ const ProductContextComponent: React.FC<ProductContextComponentProps> = ({
 
   useEffect(() => {
     const fetchData = async () => {
-      if (getToken) {
-        const accessToken = await getToken();
-        if (accessToken) {
-          fetchMeasures();
-          fetchPrices();
-        }
-      }
+      fetchMeasures();
+      fetchPrices();
     };
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getToken]);
+  }, []);
 
   const exportData: ProductContextType = {
     fetchProduct,

@@ -6,7 +6,6 @@ import {
   createCashRegisterRecordDTO,
   RegisterRecord,
 } from "@/hooks/SalesInterfaces";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { ReactNode, useEffect, useState } from "react";
 
 interface CashRegisterContextComponentProps {
@@ -16,23 +15,13 @@ interface CashRegisterContextComponentProps {
 const CashRegisterContextComponent: React.FC<
   CashRegisterContextComponentProps
 > = ({ children }) => {
-  const { getToken } = useKindeAuth();
   const BASE_URL = import.meta.env.VITE_BASE_URL;
 
   const [CashRegisterTotalAmount, setCashRegisterTotalAmount] = useState(0);
   const fetchCashRegisterTotalAmount = async () => {
     const url = `${BASE_URL}/cash-register/total`;
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await fetch(url);
       if (!response.ok) {
         console.error("Error fetching cash register: ", response.statusText);
         window.alert(
@@ -51,16 +40,7 @@ const CashRegisterContextComponent: React.FC<
   const fetchCashRegisterTypes = async (yearMonth: string) => {
     const url = `${BASE_URL}/cash-register/types/${yearMonth}`;
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await fetch(url);
       if (!response.ok) {
         console.error("Error fetching cash register: ", response.statusText);
         window.alert(
@@ -81,15 +61,9 @@ const CashRegisterContextComponent: React.FC<
 
   const createRecord = async (record: createCashRegisterRecordDTO) => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
       const response = await fetch(`${BASE_URL}/cash-register`, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(record),
@@ -112,16 +86,7 @@ const CashRegisterContextComponent: React.FC<
   const getRecordsByDate = async (date: string) => {
     const url = `${BASE_URL}/cash-register/${date}`;
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await fetch(url);
       if (!response.ok) {
         console.error("Error fetching cash register: ", response.statusText);
         window.alert(
@@ -139,16 +104,8 @@ const CashRegisterContextComponent: React.FC<
   const deleteRecord = async (id: number) => {
     const url = `${BASE_URL}/cash-register/${id}`;
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
       const response = await fetch(url, {
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
       });
       if (!response.ok) {
         console.error("Error deleting record: ", response.statusText);
@@ -163,17 +120,9 @@ const CashRegisterContextComponent: React.FC<
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (getToken) {
-        const accessToken = await getToken();
-        if (accessToken) {
-          fetchCashRegisterTotalAmount();
-        }
-      }
-    };
-    fetchData();
+    fetchCashRegisterTotalAmount();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getToken]);
+  }, []);
 
   const exportData: CashRegisterContextType = {
     fetchCashRegisterTotalAmount,

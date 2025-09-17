@@ -3,11 +3,10 @@ import { ClientsFilter, PartialClient } from "@/hooks/SalesInterfaces";
 import { ClientsHeader } from "@/Pages/Clients/ClientsHeader";
 import { ClientsPagination } from "@/Pages/Clients/ClientsPagination";
 import MobileClientsHeader from "@/Pages/Clients/Mobile/MobileClientsHeader";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+// removed getToken usage
 import { useEffect, useState } from "react";
 
 export const Clients = () => {
-  const { getToken } = useKindeAuth();
   const BASE_URL = import.meta.env.VITE_BASE_URL;
   const [CurrentPage, setCurrentPage] = useState(0);
   const [PaginationInfo, setPaginationInfo] = useState<PaginationInfo>({
@@ -36,16 +35,7 @@ export const Clients = () => {
         url += `&type=${Filters.type}`;
       }
       try {
-        if (!getToken) {
-          console.error("getToken is undefined");
-          return;
-        }
-        const accessToken = await getToken();
-        const response = await fetch(url, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+        const response = await fetch(url);
         if (!response.ok) {
           console.error("Error fetching clients: ", response.status);
           window.alert("Ocurrió un error al obtener los clientes: " + response.status);

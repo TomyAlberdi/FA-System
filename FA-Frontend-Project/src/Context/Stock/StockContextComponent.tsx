@@ -1,6 +1,6 @@
 import { StockContext, StockContextType } from "@/Context/Stock/StockContext";
 import { ProductStock, StockChangeType } from "@/hooks/CatalogInterfaces";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+// removed getToken-based auth
 import { ReactNode, useState } from "react";
 
 interface StockContextComponentProps {
@@ -10,21 +10,11 @@ interface StockContextComponentProps {
 const StockContextComponent: React.FC<StockContextComponentProps> = ({
   children,
 }) => {
-  const { getToken } = useKindeAuth();
   const BASE_URL = import.meta.env.VITE_BASE_URL;
 
   const fetchStockByProduct = async (id: number) => {
-    try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(`${BASE_URL}/stock/${id}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      try {
+      const response = await fetch(`${BASE_URL}/stock/${id}`);
       if (!response.ok) {
         console.error("Error fetching Product Stock: ", response.statusText);
         window.alert("Ocurrió un error al obtener el stock del producto: " + response.status);
@@ -39,18 +29,8 @@ const StockContextComponent: React.FC<StockContextComponentProps> = ({
 
   const fetchStocks = async (keyword: string, page: number, size: number) => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
       const response = await fetch(
-        `${BASE_URL}/stock?keyword=${keyword}&page=${page}&size=${size}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
+        `${BASE_URL}/stock?keyword=${keyword}&page=${page}&size=${size}`
       );
       if (!response.ok) {
         console.error("Error fetching Product Stock: ", response.statusText);
@@ -72,11 +52,6 @@ const StockContextComponent: React.FC<StockContextComponentProps> = ({
     type: StockChangeType
   ) => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
       const response = await fetch(
         `${BASE_URL}/stock/${type}?` +
           new URLSearchParams({
@@ -86,7 +61,6 @@ const StockContextComponent: React.FC<StockContextComponentProps> = ({
         {
           method: "PATCH",
           headers: {
-            Authorization: `Bearer ${accessToken}`,
             "Content-Type": "application/json",
           },
         }

@@ -5,6 +5,7 @@ import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,6 +26,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
+@Profile("!no-auth")
 public class SecurityConfig {
 
     @Value("${kinde.jwks.url}")
@@ -50,13 +52,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
-                // disable security for testing ignore otherwise
-                .requestMatchers(HttpMethod.GET).permitAll()
-                //.anyRequest().hasAnyAuthority("ROLE_admin"))
-                .anyRequest().authenticated())
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .addFilterBefore(new JwtAuthenticationFilter(jwtVerifier()), UsernamePasswordAuthenticationFilter.class);
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()));
         return http.build();
     }
 

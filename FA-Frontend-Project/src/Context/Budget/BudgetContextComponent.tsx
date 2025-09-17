@@ -8,7 +8,7 @@ import {
   PartialBudget,
   ProductBudget,
 } from "@/hooks/SalesInterfaces";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+// removed getToken-based auth
 import { ReactNode, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -19,22 +19,12 @@ interface BudgetContextComponentProps {
 const BudgetContextComponent: React.FC<BudgetContextComponentProps> = ({
   children,
 }) => {
-  const { getToken } = useKindeAuth();
   const BASE_URL = import.meta.env.VITE_BASE_URL;
   const navigate = useNavigate();
 
   const fetchBudgetsByClient = async (id: number) => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(`${BASE_URL}/budget/client/${id}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await fetch(`${BASE_URL}/budget/client/${id}`);
       if (!response.ok) {
         console.error("Error fetching client budgets: ", response.statusText);
         window.alert("Ocurrió un error al obtener los presupuestos: " + response.status);
@@ -49,16 +39,7 @@ const BudgetContextComponent: React.FC<BudgetContextComponentProps> = ({
 
   const fetchBudget = async (id: number) => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(`${BASE_URL}/budget/${id}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await fetch(`${BASE_URL}/budget/${id}`);
       if (!response.ok) {
         console.error("Error fetching budget: ", response.statusText);
         window.alert("Ocurrió un error al obtener el presupuesto: " + response.status);
@@ -74,16 +55,7 @@ const BudgetContextComponent: React.FC<BudgetContextComponentProps> = ({
   const fetchBudgetsByDate = async (date: string) => {
     const url = `${BASE_URL}/budget/date/${date}`;
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await fetch(url);
       if (!response.ok) {
         console.error("Error fetching budgets: ", response.statusText);
         window.alert("Ocurrió un error al obtener los presupuestos: " + response.status);
@@ -99,16 +71,7 @@ const BudgetContextComponent: React.FC<BudgetContextComponentProps> = ({
   const fetchBudgetsByDateRange = async (start: string, end: string) => {
     const url = `${BASE_URL}/budget/range?start=${start}&end=${end}`;
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await fetch(url);
       if (!response.ok) {
         console.error("Error fetching budgets: ", response.statusText);
         window.alert("Ocurrió un error al obtener los presupuestos: " + response.status);
@@ -125,11 +88,6 @@ const BudgetContextComponent: React.FC<BudgetContextComponentProps> = ({
 
   const createBudget = async (dto: CreateBudgetDTO, clientId?: number) => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
       let url = `${BASE_URL}/budget`;
       let cleanDTO: CreateBudgetDTO | null = null;
       if (clientId) {
@@ -150,7 +108,6 @@ const BudgetContextComponent: React.FC<BudgetContextComponentProps> = ({
       const response = await fetch(url, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(cleanDTO),
@@ -172,11 +129,6 @@ const BudgetContextComponent: React.FC<BudgetContextComponentProps> = ({
     clientId?: number
   ) => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
       let url = `${BASE_URL}/budget?budgetId=${budgetId}`;
       if (clientId) {
         url = `${url}&clientId=${clientId}`;
@@ -184,7 +136,6 @@ const BudgetContextComponent: React.FC<BudgetContextComponentProps> = ({
       const response = await fetch(url, {
         method: "PUT",
         headers: {
-          Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(dto),
@@ -203,22 +154,13 @@ const BudgetContextComponent: React.FC<BudgetContextComponentProps> = ({
 
   const updateBudgetStatus = async (status: string, budgetId: number) => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(
-        `${BASE_URL}/budget/${budgetId}?status=${status}`,
-        {
-          method: "PATCH",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ status }),
-        }
-      );
+      const response = await fetch(`${BASE_URL}/budget/${budgetId}?status=${status}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status }),
+      });
       if (!response.ok) {
         if (response.status === 409) {
           const responseData = await response.json();
@@ -241,16 +183,8 @@ const BudgetContextComponent: React.FC<BudgetContextComponentProps> = ({
 
   const deleteBudget = async (budgetId: number) => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
       const response = await fetch(`${BASE_URL}/budget/${budgetId}`, {
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
       });
       if (!response.ok) {
         console.error("Error fetching budget: ", response.statusText);

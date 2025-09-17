@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+// removed getToken usage
 import jsPDF from "jspdf";
 import { Share2 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -11,29 +11,15 @@ const UploadAndShareBudgetDetail = ({
   budgetId: number;
   budgetDetail: jsPDF | null;
 }) => {
-  const { getToken } = useKindeAuth();
   const BASE_URL = import.meta.env.VITE_BASE_URL;
   const [pdfUrl, setpdfUrl] = useState<string | null>(null);
   const [Loading, setLoading] = useState(false);
 
   const uploadPdf = async () => {
-    if (!getToken) {
-      console.error("Token is undefined");
-      window.alert("Error: No se pudo autenticar la solicitud");
-      return;
-    }
+    // no auth token required
     setLoading(true);
     try {
-      const accessToken = await getToken();
-      const urlResponse = await fetch(
-        `${BASE_URL}/img?fileName=Budget_${budgetId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const urlResponse = await fetch(`${BASE_URL}/img?fileName=Budget_${budgetId}`);
       if (!urlResponse.ok) {
         throw new Error(
           `Error: ${urlResponse.status} ${urlResponse.statusText}`

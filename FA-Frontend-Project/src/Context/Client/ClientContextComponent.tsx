@@ -7,7 +7,6 @@ import {
   CreateClientDTO,
   PartialClient,
 } from "@/hooks/SalesInterfaces";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -18,22 +17,12 @@ interface ClientContextComponentProps {
 const ClientContextComponent: React.FC<ClientContextComponentProps> = ({
   children,
 }) => {
-  const { getToken } = useKindeAuth();
   const BASE_URL = import.meta.env.VITE_BASE_URL;
   const navigate = useNavigate();
 
   const fetchClients = async () => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return [];
-      }
-      const accessToken = await getToken();
-      const response = await fetch(`${BASE_URL}/client/list`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+        const response = await fetch(`${BASE_URL}/client/list`);
       if (!response.ok) {
         console.error("Error fetching data: ", response.statusText);
         window.alert(
@@ -51,16 +40,7 @@ const ClientContextComponent: React.FC<ClientContextComponentProps> = ({
 
   const fetchClient = async (id: number) => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(`${BASE_URL}/client/${id}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+        const response = await fetch(`${BASE_URL}/client/${id}`);
       if (!response.ok) {
         console.error("Error fetching data: ", response.statusText);
         window.alert(
@@ -77,11 +57,6 @@ const ClientContextComponent: React.FC<ClientContextComponentProps> = ({
 
   const createClient = async (dto: CreateClientDTO) => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
       const finalDTO = {
         ...dto,
         cuit_dni: dto.cuitDni,
@@ -90,7 +65,6 @@ const ClientContextComponent: React.FC<ClientContextComponentProps> = ({
       const response = await fetch(`${BASE_URL}/client`, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(finalDTO),
@@ -108,11 +82,6 @@ const ClientContextComponent: React.FC<ClientContextComponentProps> = ({
 
   const updateClient = async (id: number, dto: CreateClientDTO) => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
       const finalDTO = {
         ...dto,
         cuit_dni: dto.cuitDni,
@@ -120,7 +89,6 @@ const ClientContextComponent: React.FC<ClientContextComponentProps> = ({
       const response = await fetch(`${BASE_URL}/client/${id}`, {
         method: "PUT",
         headers: {
-          Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(finalDTO),
@@ -139,16 +107,8 @@ const ClientContextComponent: React.FC<ClientContextComponentProps> = ({
 
   const deleteClient = async (id: number) => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
       const response = await fetch(`${BASE_URL}/client/${id}`, {
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
       });
       if (!response.ok) {
         console.error("Error fetching data: ", response.statusText);

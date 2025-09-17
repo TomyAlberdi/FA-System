@@ -12,13 +12,12 @@ import {
 } from "@/components/ui/table";
 import { useBudgetContext } from "@/Context/Budget/UseBudgetContext";
 import { PartialClient } from "@/hooks/SalesInterfaces";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+// removed getToken usage
 import { Plus, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export const FloatingClientPagination = () => {
   const BASE_URL = import.meta.env.VITE_BASE_URL;
-  const { getToken } = useKindeAuth();
   const [Clients, setClients] = useState<Array<PartialClient>>([]);
   const [LastLoadedPage, setLastLoadedPage] = useState(0);
   const [IsLastPage, setIsLastPage] = useState(false);
@@ -29,17 +28,8 @@ export const FloatingClientPagination = () => {
   const fetchClients = async (keyword: string) => {
     setLoading(true);
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
       const url = `${BASE_URL}/client/search?page=${LastLoadedPage}&size=15&keyword=${keyword}`;
-      const accessToken = await getToken();
-      const response = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await fetch(url);
       if (!response.ok) {
         console.error("Error fetching clients: ", response.status);
         window.alert(`Error buscando clientes: ${response.status}`);

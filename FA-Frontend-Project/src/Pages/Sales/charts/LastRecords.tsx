@@ -1,22 +1,20 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
 } from "@/components/ui/table";
 import { RegisterRecord } from "@/hooks/SalesInterfaces";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export const LastRecords = () => {
   const BASE_URL = import.meta.env.VITE_BASE_URL;
-  const { getToken } = useKindeAuth();
   const navigate = useNavigate();
   const [Loading, setLoading] = useState(true);
   const [Data, setData] = useState<Array<RegisterRecord>>([]);
@@ -25,16 +23,7 @@ export const LastRecords = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        if (!getToken) {
-          console.error("getToken is undefined");
-          return;
-        }
-        const accessToken = await getToken();
-        fetch(`${BASE_URL}/cash-register/last`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        })
+        fetch(`${BASE_URL}/cash-register/last`)
           .then((response) => response.json())
           .then((data) => {
             setData(data);

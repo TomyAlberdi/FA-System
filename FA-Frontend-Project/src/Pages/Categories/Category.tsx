@@ -54,7 +54,7 @@ const Category = () => {
     deleteCategory,
     fetchCategoryProducts,
   } = useCategoryContext();
-  const { createSubcategory, SubcategoryUpdater } = useSubcategoryContext();
+  const { createSubcategory } = useSubcategoryContext();
   const [Category, setCategory] = useState<CategoryInterface | null>(null);
   const [Products, setProducts] = useState<Array<StockProduct> | null>([]);
   const [IsLastPage, setIsLastPage] = useState(false);
@@ -116,7 +116,7 @@ const Category = () => {
     };
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, SubcategoryUpdater]);
+  }, [id]);
 
   useEffect(() => {
     const fetchData = async () => {

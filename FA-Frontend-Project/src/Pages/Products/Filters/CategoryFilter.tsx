@@ -18,7 +18,16 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   setFilter,
   Loading,
 }) => {
-  const { Subcategories } = useSubcategoryContext();
+  const { fetchSubcategories } = useSubcategoryContext();
+  const [Subcategories, setSubcategories] = useState<Subcategory[]>([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await fetchSubcategories();
+      setSubcategories(result);
+    };
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const [Data, setData] = useState<Array<CategoryCheck> | null>([]);
 
   const handleCheckboxChange = (id: number) => {
@@ -50,16 +59,12 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   };
 
   useEffect(() => {
-    if (
-      Subcategories &&
-      Array.isArray(Subcategories.data) &&
-      Subcategories?.data.length > 0
-    ) {
+    if (Subcategories && Subcategories.length > 0) {
       if (Filter?.find((filter) => filter?.type === "subcategoryId")) {
         return;
       }
       const checkedCategories: Array<CategoryCheck> = [];
-      Subcategories.data.forEach((category: Subcategory) => {
+      Subcategories.forEach((category: Subcategory) => {
         const newItem: CategoryCheck = {
           id: category.id,
           name: category.name,

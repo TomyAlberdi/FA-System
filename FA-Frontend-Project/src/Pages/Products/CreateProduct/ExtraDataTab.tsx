@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CreateProductDTO } from "@/hooks/CatalogInterfaces";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+// removed getToken usage
 import { CheckCircle2, Loader2, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -22,7 +22,6 @@ const ExtraDataTab = ({
   createProduct,
 }: ExtraDataTabProps) => {
   const BASE_URL = import.meta.env.VITE_BASE_URL;
-  const { getToken } = useKindeAuth();
 
   // Image uploading and preview logic
   const [uploadState, setUploadState] = useState({
@@ -45,24 +44,10 @@ const ExtraDataTab = ({
   };
 
   const uploadImages = async (files: Array<File>): Promise<string[]> => {
-    if (!getToken) {
-      console.error("Token is undefined");
-      window.alert("Error: No se pudo autenticar la solicitud");
-      return [];
-    }
     setUploadState((prev) => ({ ...prev, isUploading: true }));
     try {
-      const accessToken = await getToken();
       const uploadPromises = files.map(async (file) => {
-        const urlResponse = await fetch(
-          `${BASE_URL}/img?fileName=${file.name}`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const urlResponse = await fetch(`${BASE_URL}/img?fileName=${file.name}`);
         if (!urlResponse.ok) {
           throw new Error(`Error obteniendo URL: ${urlResponse.status}`);
         }

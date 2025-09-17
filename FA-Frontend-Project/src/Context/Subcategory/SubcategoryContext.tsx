@@ -1,14 +1,12 @@
 import {
   PaginationResponse,
-  ReturnData,
   StockProduct,
-  Subcategory,
+  Subcategory
 } from "@/hooks/CatalogInterfaces";
 import { createContext } from "react";
 
 export interface SubcategoryContextType {
-  Subcategories: ReturnData<Subcategory>;
-  fetchSubcategories: () => Promise<void>;
+  fetchSubcategories: () => Promise<Subcategory[]>;
   fetchSubcategory: (
     identifier: number | string
   ) => Promise<Subcategory | undefined>;
@@ -29,7 +27,6 @@ export interface SubcategoryContextType {
     name: string
   ) => Promise<Subcategory | undefined>;
   deleteSubcategory: (id: number) => Promise<void>;
-  SubcategoryUpdater: number;
 }
 
 export const SubcategoryContext = createContext<SubcategoryContextType | null>(

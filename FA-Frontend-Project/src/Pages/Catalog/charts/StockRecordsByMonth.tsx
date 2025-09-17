@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/chart";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StockReport } from "@/hooks/CatalogInterfaces";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+// removed getToken usage
 import { useEffect, useState } from "react";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 
@@ -32,7 +32,6 @@ const chartConfig = {
 
 export const StockRecordsByMonth = () => {
   const BASE_URL = import.meta.env.VITE_BASE_URL;
-  const { getToken } = useKindeAuth();
   const [Loading, setLoading] = useState(true);
   const [ChartData, setChartData] = useState<Array<StockReport>>([]);
 
@@ -40,16 +39,7 @@ export const StockRecordsByMonth = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        if (!getToken) {
-          console.error("getToken is undefined");
-          return;
-        }
-        const accessToken = await getToken();
-        fetch(`${BASE_URL}/stock/reportStock`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        })
+        fetch(`${BASE_URL}/stock/reportStock`)
           .then((response) => response.json())
           .then((data) => setChartData(data.reverse()));
       } catch (error) {

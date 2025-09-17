@@ -1,23 +1,23 @@
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
+    Form,
+    FormControl,
+    FormDescription,
+    FormField,
+    FormItem,
+    FormLabel,
 } from "@/components/ui/form";
 import { Slider } from "@/components/ui/slider";
 import { Provider as ProviderIntefrace } from "@/hooks/CatalogInterfaces";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+// removed getToken usage
 import { CirclePercent, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -40,7 +40,7 @@ export const UpdateDiscountProvider = ({
   const [LoadingRequest, setLoadingRequest] = useState(false);
   const [Open, setOpen] = useState(false);
   const BASE_URL = import.meta.env.VITE_BASE_URL;
-  const { getToken } = useKindeAuth();
+  // removed getToken usage
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -56,12 +56,7 @@ export const UpdateDiscountProvider = ({
 
   const updateDiscount = async (data: z.infer<typeof formSchema>) => {
     setLoadingRequest(true);
-    try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
+      try {
       let url;
       if (
         provider?.productsDiscount &&
@@ -75,7 +70,6 @@ export const UpdateDiscountProvider = ({
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
         },
       });
       if (!response.ok) {

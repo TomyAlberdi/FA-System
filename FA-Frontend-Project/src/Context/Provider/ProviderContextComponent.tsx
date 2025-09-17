@@ -6,7 +6,7 @@ import {
   CreateProviderDTO,
   Provider
 } from "@/hooks/CatalogInterfaces";
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+// removed getToken-based auth
 import { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -17,22 +17,12 @@ interface ProviderContextComponentProps {
 const ProviderContextComponent: React.FC<ProviderContextComponentProps> = ({
   children,
 }) => {
-  const { getToken } = useKindeAuth();
   const BASE_URL = import.meta.env.VITE_BASE_URL;
   const navigate = useNavigate();
 
   const fetchProviders = async () => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return [];
-      }
-      const accessToken = await getToken();
-      const response = await fetch(`${BASE_URL}/provider`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await fetch(`${BASE_URL}/provider`);
       if (!response.ok) {
         console.error("Error fetching data: ", response.statusText);
         window.alert(
@@ -50,16 +40,7 @@ const ProviderContextComponent: React.FC<ProviderContextComponentProps> = ({
 
   const fetchProvider = async (identifier: number | string) => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
-      const response = await fetch(`${BASE_URL}/provider/${identifier}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await fetch(`${BASE_URL}/provider/${identifier}`);
       if (!response.ok) {
         console.error("Error fetching Provider: ", response.statusText);
         window.alert(
@@ -80,18 +61,8 @@ const ProviderContextComponent: React.FC<ProviderContextComponentProps> = ({
     size: number
   ) => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
       const response = await fetch(
-        `${BASE_URL}/provider/${id}/products?page=${page}&size=${size}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
+        `${BASE_URL}/provider/${id}/products?page=${page}&size=${size}`
       );
       if (!response.ok) {
         console.error(
@@ -112,15 +83,9 @@ const ProviderContextComponent: React.FC<ProviderContextComponentProps> = ({
 
   const createProvider = async (dto: CreateProviderDTO) => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
       const response = await fetch(`${BASE_URL}/provider`, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(dto),
@@ -141,15 +106,9 @@ const ProviderContextComponent: React.FC<ProviderContextComponentProps> = ({
 
   const updateProvider = async (id: number, dto: CreateProviderDTO) => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
       const response = await fetch(`${BASE_URL}/provider/${id}?`, {
         method: "PUT",
         headers: {
-          Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(dto),
@@ -170,16 +129,8 @@ const ProviderContextComponent: React.FC<ProviderContextComponentProps> = ({
 
   const deleteProvider = async (id: number) => {
     try {
-      if (!getToken) {
-        console.error("getToken is undefined");
-        return;
-      }
-      const accessToken = await getToken();
       const response = await fetch(`${BASE_URL}/provider/${id}`, {
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
       });
       if (!response.ok) {
         console.error("Error fetching Provider: ", response.statusText);
