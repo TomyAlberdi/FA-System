@@ -4,7 +4,7 @@ import {
 } from "@/Context/Subcategory/SubcategoryContext";
 import { Subcategory } from "@/hooks/CatalogInterfaces";
 // removed getToken-based auth
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface CategoryContextComponentProps {
@@ -90,8 +90,6 @@ const SubcategoryContextComponent: React.FC<CategoryContextComponentProps> = ({
       console.error("Error fetching subcategory products: ", error);
     }
   };
-
-  const [SubcategoryUpdater, SetSubcategoryUpdater] = useState(0);
 
   const createSubcategory = async (categoryId: number, name: string) => {
     try {
