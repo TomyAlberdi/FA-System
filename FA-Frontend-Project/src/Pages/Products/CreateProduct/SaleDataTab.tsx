@@ -96,7 +96,7 @@ const SaleDataTab = ({ Product, setProduct, loading }: SaleDataTabProps) => {
   }, [Product?.saleUnit, Product?.measureType]);
 
   return (
-    <section className="h-full w-full">
+    <section className="w-full">
       <div className="h-full w-full gap-4 flex flex-col px-1 py-4">
         <div className="flex justify-evenly items-center gap-4">
           <section className="w-1/3 flex flex-col gap-2">

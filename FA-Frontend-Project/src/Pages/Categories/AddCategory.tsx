@@ -1,4 +1,9 @@
 import { Button } from "@/components/ui/button";
+import {
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useCategoryContext } from "@/Context/Category/UseCategoryContext";
@@ -33,21 +38,35 @@ export const AddCategory: React.FC<CategoriesHeaderProps> = ({ setOpen }) => {
   };
 
   return (
-    <div className="w-full flex flex-col gap-4">
-      <section>
-        <Label>Nombre</Label>
-        <Input
-          placeholder="Nombre de la categoría"
-          onChange={(e) => setName(e.target.value)}
-          value={Name}
-        />
-      </section>
-      <div>
-        <Button onClick={onSubmit} disabled={LoadingRequest} className="w-full">
-          {LoadingRequest && <Loader2 className="animate-spin" />}
-          Guardar
-        </Button>
+    <DialogContent
+      className="md:w-full w-[90%] md:p-6 p-3 rounded-lg"
+      aria-describedby={undefined}
+    >
+      <DialogHeader>
+        <DialogTitle className="text-xl font-bold">
+          Añadir Categoría
+        </DialogTitle>
+      </DialogHeader>
+      <div className="w-full flex flex-col gap-4">
+        <section>
+          <Label>Nombre</Label>
+          <Input
+            placeholder="Nombre de la categoría"
+            onChange={(e) => setName(e.target.value)}
+            value={Name}
+          />
+        </section>
+        <div>
+          <Button
+            onClick={onSubmit}
+            disabled={LoadingRequest}
+            className="w-full"
+          >
+            {LoadingRequest && <Loader2 className="animate-spin" />}
+            Guardar
+          </Button>
+        </div>
       </div>
-    </div>
+    </DialogContent>
   );
 };

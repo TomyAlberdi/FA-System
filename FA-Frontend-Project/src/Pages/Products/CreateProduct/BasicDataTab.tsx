@@ -43,7 +43,7 @@ const BasicDataTab = ({ Product, setProduct, loading }: BasicDataTabProps) => {
   }, [Product?.categoryId]);
 
   return (
-    <section className="h-full w-full">
+    <section className="w-full">
       <div className="h-full w-full gap-2 flex flex-col px-1">
         <section className="flex gap-2">
           <div className="w-4/6">

@@ -146,7 +146,7 @@ const ExtraDataTab = ({
   }, [uploadState.previewUrls]);
 
   return (
-    <section className="h-full w-full">
+    <section className="w-full">
       <div className="h-full w-full flex flex-col px-1 gap-4">
         <section className="w-full flex gap-4">
           <div className="flex flex-col justify-start w-1/2">
