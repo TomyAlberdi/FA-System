@@ -1,14 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { TabsContent } from "@/components/ui/tabs";
 import { CreateProductDTO } from "@/hooks/CatalogInterfaces";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { CheckCircle2, ChevronLeft, Loader2, Trash2 } from "lucide-react";
+import { CheckCircle2, Loader2, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface ExtraDataTabProps {
-  onPrevious: () => void;
   Product: CreateProductDTO;
   setProduct: React.Dispatch<React.SetStateAction<CreateProductDTO>>;
   loading: boolean;
@@ -18,7 +16,6 @@ interface ExtraDataTabProps {
 }
 
 const ExtraDataTab = ({
-  onPrevious,
   Product,
   setProduct,
   loading,
@@ -29,7 +26,7 @@ const ExtraDataTab = ({
   const BASE_URL = import.meta.env.VITE_BASE_URL;
   const { getToken } = useKindeAuth();
 
-  //#green Image uploading and preview logic
+  // Image uploading and preview logic
   const [uploadState, setUploadState] = useState({
     selectedFiles: [] as File[],
     previewUrls: [] as string[],
@@ -91,9 +88,8 @@ const ExtraDataTab = ({
       setUploadState((prev) => ({ ...prev, isUploading: false }));
     }
   };
-  //#
 
-  //#orange Remove existing product images and preview upload images
+  // Remove existing product images and preview upload images
   const removeImage = (url: string) => {
     setTimeout(() => {
       setProduct((prev) => ({
@@ -114,9 +110,8 @@ const ExtraDataTab = ({
       }));
     }, 100);
   };
-  //#
 
-  //#blue kickstart product creation
+  // Kickstart product creation
   const onSubmit = async () => {
     if (loading || uploadState.isUploading) return;
     setLoading(true);
@@ -143,7 +138,6 @@ const ExtraDataTab = ({
       setLoading(false);
     }
   };
-  //#
 
   useEffect(() => {
     return () => {
@@ -152,14 +146,15 @@ const ExtraDataTab = ({
   }, [uploadState.previewUrls]);
 
   return (
-    <TabsContent value="extraData" className="h-full w-full">
-      <div className="h-full w-full md:grid grid-cols-6 grid-rows-8 gap-4 flex flex-col">
+    <section className="h-full w-full">
+      <div className="h-full w-full md:grid grid-cols-6 grid-rows-8 gap-4 flex flex-col px-1">
         <div className="row-start-1 row-end-8 col-start-1 col-end-4 flex flex-col justify-start">
           <section className="flex flex-col gap-4">
             <Label className="text-xl">Imágenes (Opcional)</Label>
             <Input
               type="file"
               multiple
+              disabled={loading}
               onChange={handleFileUpload}
               accept="image/*"
             />
@@ -202,6 +197,7 @@ const ExtraDataTab = ({
               <Label className="text-md">Color</Label>
               <Input
                 value={Product?.color}
+                disabled={loading}
                 onChange={(e) =>
                   setProduct((prev) => ({ ...prev, color: e.target.value }))
                 }
@@ -211,6 +207,7 @@ const ExtraDataTab = ({
               <Label className="text-md">Origen</Label>
               <Input
                 value={Product?.origen}
+                disabled={loading}
                 onChange={(e) =>
                   setProduct((prev) => ({ ...prev, origen: e.target.value }))
                 }
@@ -220,6 +217,7 @@ const ExtraDataTab = ({
               <Label className="text-md">Borde</Label>
               <Input
                 value={Product?.borde}
+                disabled={loading}
                 onChange={(e) =>
                   setProduct((prev) => ({ ...prev, borde: e.target.value }))
                 }
@@ -229,6 +227,7 @@ const ExtraDataTab = ({
               <Label className="text-md">Aspecto</Label>
               <Input
                 value={Product?.aspecto}
+                disabled={loading}
                 onChange={(e) =>
                   setProduct((prev) => ({ ...prev, aspecto: e.target.value }))
                 }
@@ -238,6 +237,7 @@ const ExtraDataTab = ({
               <Label className="text-md">Textura</Label>
               <Input
                 value={Product?.textura}
+                disabled={loading}
                 onChange={(e) =>
                   setProduct((prev) => ({ ...prev, textura: e.target.value }))
                 }
@@ -247,6 +247,7 @@ const ExtraDataTab = ({
               <Label className="text-md">Tránsito</Label>
               <Input
                 value={Product?.transito}
+                disabled={loading}
                 onChange={(e) =>
                   setProduct((prev) => ({ ...prev, transito: e.target.value }))
                 }
@@ -256,15 +257,7 @@ const ExtraDataTab = ({
         </div>
         <div className="row-start-8 col-span-2 col-start-3 flex flex-row justify-between items-center gap-2">
           <Button
-            onClick={onPrevious}
-            className="gap-2 w-1/2"
-            disabled={loading}
-          >
-            <ChevronLeft size={16} />
-            Anterior
-          </Button>
-          <Button
-            className="gap-2 w-1/2 bg-chart-2"
+            className="gap-2 w-full bg-chart-2"
             disabled={loading}
             onClick={onSubmit}
           >
@@ -276,7 +269,7 @@ const ExtraDataTab = ({
           </Button>
         </div>
       </div>
-    </TabsContent>
+    </section>
   );
 };
 export default ExtraDataTab;

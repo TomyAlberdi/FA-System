@@ -29,7 +29,7 @@ export const ProductMainInfo = ({
         <ChevronRight size={15} />
         <span>{Product?.subcategory}</span>
       </div>
-      <CardTitle className="md:px-4 md:pt-2 md:pb-4 px-1 md:text-6xl text-2xl font-bold">
+      <CardTitle className="md:px-4 md:pt-2 md:pb-4 px-1 md:text-4xl text-2xl font-bold">
         {Product?.name}
       </CardTitle>
       <Button variant={"ghost"} className="hidden md:flex">

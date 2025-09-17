@@ -1,8 +1,7 @@
 package com.example.febackendproject.Security;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,22 +18,24 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import java.util.Arrays;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
-    
+
     @Value("${kinde.jwks.url}")
     private String jwksUrl;
-    
+
     @Value("${kinde.issuer}")
     private String issuer;
-    
+
     @Value("${kinde.audience}")
     private String audience;
-    
+
     @Bean
     public JWTVerifier jwtVerifier() throws Exception {
         JwksService jwksService = new JwksService(jwksUrl);
@@ -44,52 +45,44 @@ public class SecurityConfig {
                 .withAudience(audience)
                 .build();
     }
-    
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                //.authorizeHttpRequests(auth -> auth
-                        // disable security for testing ignore otherwise
-                        //.requestMatchers(HttpMethod.GET).permitAll()
-                        //.anyRequest().hasAnyAuthority("ROLE_admin"))
-                        //.anyRequest().authenticated())
+                .authorizeHttpRequests(auth -> auth
+                // disable security for testing ignore otherwise
+                .requestMatchers(HttpMethod.GET).permitAll()
+                //.anyRequest().hasAnyAuthority("ROLE_admin"))
+                .anyRequest().authenticated())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .addFilterBefore(new JwtAuthenticationFilter(jwtVerifier()), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-    
+
     @Bean
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOriginPatterns(Arrays.asList(
-                "http://localhost:5173",
-                "http://192.168.*.*:5173",
-                "https://fa-admin.online"
-        ));
+        config.setAllowedOrigins(Arrays.asList("http://localhost:5173", "https://fa-admin.online", "http://192.168.0.227:5173"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Cache-Control"));
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
-    
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOriginPatterns(Arrays.asList(
-                "http://localhost:5173",
-                "http://192.168.*.*:5173",
-                "https://fa-admin.online"
-        ));
+        config.setAllowedOrigins(Arrays.asList("http://localhost:5173", "https://fa-admin.online", "http://192.168.0.227:5173"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Cache-Control"));
-        
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
     }
-    
+
 }
