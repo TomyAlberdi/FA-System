@@ -3,7 +3,6 @@ import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { useProductContext } from "@/Context/Product/UseProductContext";
 import { CompleteProduct } from "@/hooks/CatalogInterfaces";
 import { ProductDetail } from "@/lib/ProductDetail";
-import CreateProduct from "@/Pages/Products/CreateProduct/CreateProduct";
 import { CircleX, ListPlus, ListX, Menu, Package, Pencil } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -51,11 +50,12 @@ const MobileProductAdminPanel = ({ Product }: MobileProductAdminPanelProps) => {
       </DrawerTrigger>
       <DrawerContent>
         <div className="mx-auto w-full max-w-sm flex flex-col justify-center items-center py-4 gap-4">
-          <CreateProduct
-            ProductProp={Product}
-            TriggerTitle="Editar Producto"
-            TriggerIcon={Pencil}
-          />
+          <Button asChild className="w-10/12 text-md">
+            <Link to={`/catalog/products/update/${Product?.id}`}>
+              <Pencil />
+              Editar Producto
+            </Link>
+          </Button>
           <Button
             className="w-10/12 text-md"
             variant="destructive"
