@@ -72,7 +72,7 @@ public class Product {
     @Column
     private Double measurePrice;
     
-    // Sale unit data
+    // Sale data
     @NotNull
     @Column(name = "sale_unit")
     private String saleUnit;
@@ -89,6 +89,9 @@ public class Product {
     
     @Column(name = "measure_per_sale_unit")
     private Double measurePerSaleUnit;
+    
+    @Column(name = "profit_margin")
+    private Double profitMargin;
     
     // Discount data
     @NotNull

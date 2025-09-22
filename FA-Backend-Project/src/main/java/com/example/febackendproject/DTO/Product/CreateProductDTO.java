@@ -21,6 +21,7 @@ public class CreateProductDTO {
     private Double saleUnitCost;
     private Double measureUnitCost;
     private Double measurePerSaleUnit;
+    private Double profitMargin;
     private Integer discountPercentage;
     private Long providerId;
     private Long categoryId;

@@ -44,6 +44,7 @@ public class ProductMapper {
         dto.setSaleUnit(product.getSaleUnit());
         dto.setSaleUnitCost(saleUnitCost);
         dto.setSaleUnitPrice(saleUnitPrice);
+        dto.setProfitMargin(product.getProfitMargin());
         dto.setMeasurePerSaleUnit(product.getMeasurePerSaleUnit());
         dto.setDiscountPercentage(product.getDiscountPercentage());
         dto.setDiscountedPrice(product.getDiscountedPrice());
@@ -93,6 +94,7 @@ public class ProductMapper {
         product.setSaleUnitCost(dto.getSaleUnitCost().toString());
         product.setMeasureUnitCost(dto.getMeasureUnitCost().toString());
         product.setSaleUnitPrice(dto.getSaleUnitPrice().toString());
+        product.setProfitMargin(dto.getProfitMargin());
         product.setMeasurePerSaleUnit(dto.getMeasurePerSaleUnit());
         product.setDiscountPercentage(dto.getDiscountPercentage());
         product.setDiscountedPrice(discountedPrice);

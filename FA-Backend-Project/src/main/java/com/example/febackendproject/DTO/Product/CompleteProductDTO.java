@@ -30,6 +30,7 @@ public class CompleteProductDTO {
     private Double saleUnitCost;
     private Double saleUnitPrice;
     private Double measurePerSaleUnit;
+    private Double profitMargin;
     
     private Integer discountPercentage;
     private Double discountedPrice;
