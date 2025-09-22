@@ -115,6 +115,7 @@ const SaleDataTab = ({ Product, setProduct, loading }: SaleDataTabProps) => {
                   <SelectItem value="M2">M2</SelectItem>
                   <SelectItem value="ML">ML</SelectItem>
                   <SelectItem value="Unidad">Unidad</SelectItem>
+                  <SelectItem value="Bolsa">Bolsa</SelectItem>
                 </SelectContent>
               </Select>
             </div>
