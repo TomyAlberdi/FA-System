@@ -13,13 +13,15 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface StockPaginationRepository extends PagingAndSortingRepository<Stock, Long>, JpaSpecificationExecutor<Stock> {
     
-    @Query("SELECT new com.example.febackendproject.DTO.Stock.PartialStockDTO(s.id, s.productId, s.productName, s.productSaleUnit, s.quantity, s.productImage) FROM Stock s")
+    @Query("SELECT new com.example.febackendproject.DTO.Stock.PartialStockDTO(s.id, s.productId, s.productName, s.productSaleUnit, s.quantity, s.productImage) FROM Stock s" +
+            " ORDER BY s.quantity DESC")
     Page<PartialStockDTO> listStocks(Pageable pageable);
     
     @Query("SELECT new com.example.febackendproject.DTO.Stock.PartialStockDTO(s.id, s.productId, s.productName, s.productSaleUnit, s.quantity, s.productImage) " +
             "FROM Stock s " +
             "WHERE LOWER(CAST(s.productId AS string)) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
-            "OR LOWER(s.productName) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+            "OR LOWER(s.productName) LIKE LOWER(CONCAT('%', :keyword, '%'))" +
+            " ORDER BY s.quantity DESC")
     Page<PartialStockDTO> listStocksByKeyword(@Param("keyword") String keyword, Pageable pageable);
     
 }
