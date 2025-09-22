@@ -91,6 +91,7 @@ export interface CompleteProduct extends StockProduct {
   transito: string;
   saleUnitCost: number;
   measureUnitCost: number;
+  profitMargin: number;
 }
 
 export interface CreateProductDTO {
@@ -106,6 +107,7 @@ export interface CreateProductDTO {
   measureUnitCost: number;
   measurePerSaleUnit: number;
   discountPercentage: number;
+  profitMargin: number;
   providerId: number;
   categoryId: number;
   subcategoryId: number;
