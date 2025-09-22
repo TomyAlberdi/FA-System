@@ -26,58 +26,37 @@ interface SaleDataTabProps {
 }
 
 const SaleDataTab = ({ Product, setProduct, loading }: SaleDataTabProps) => {
-  // Calculate profit margin if product has sale unit price and sale unit cost
-  const [Rentabilidad, setRentabilidad] = useState(0);
-  useEffect(() => {
-    if (Product?.saleUnitPrice && Product?.saleUnitCost) {
-      const profitMargin =
-        ((Product?.saleUnitPrice - Product?.saleUnitCost) /
-          Product?.saleUnitCost) *
-        100;
-      setRentabilidad(Math.round(profitMargin * 100) / 100);
-    } else {
-      setRentabilidad(0);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   // Calculate and set prices if product has measure unit cost and profit margin
   const [MeasurePrice, setMeasurePrice] = useState(0);
-  const getSalePrice = (profitability: number) => {
-    if (profitability === 0) {
-      const measureUnitPrice = Math.round(Product?.measureUnitCost * 100) / 100;
-      setMeasurePrice(measureUnitPrice);
-      if (Product?.saleUnit === Product?.measureType) {
-        return measureUnitPrice;
-      } else {
-        return (
-          Math.round(measureUnitPrice * Product?.measurePerSaleUnit * 100) / 100
-        );
-      }
+  const getSalePrice = () => {
+    const measureCost = Product?.measureUnitCost ?? 0;
+    const perSale = Product?.measurePerSaleUnit ?? 0;
+    if (Product?.profitMargin === 0) {
+      const measureUnitPrice = Math.round(measureCost * 100) / 100;
+      const saleUnitPrice =
+        Product?.saleUnit === Product?.measureType
+          ? measureUnitPrice
+          : Math.round(measureUnitPrice * perSale * 100) / 100;
+      return { measureUnitPrice, saleUnitPrice };
     }
-    const markup = 1 + profitability / 100;
-    const measureUnitPrice =
-      Math.round(Product?.measureUnitCost * markup * 100) / 100;
-    setMeasurePrice(measureUnitPrice);
-    if (Product?.saleUnit === Product?.measureType) {
-      return measureUnitPrice;
-    } else {
-      const saleUnitCost = measureUnitPrice * Product?.measurePerSaleUnit;
-      return Math.round(saleUnitCost * 100) / 100;
-    }
+    const markup = 1 + Product?.profitMargin / 100;
+    const measureUnitPrice = Math.round(measureCost * markup * 100) / 100;
+    const saleUnitPrice =
+      Product?.saleUnit === Product?.measureType
+        ? measureUnitPrice
+        : Math.round(measureUnitPrice * perSale * 100) / 100;
+    return { measureUnitPrice, saleUnitPrice };
   };
   useEffect(() => {
+    const { measureUnitPrice, saleUnitPrice } = getSalePrice();
+    setMeasurePrice(measureUnitPrice);
     setProduct((prev) => ({
       ...prev,
-      saleUnitPrice: getSalePrice(Rentabilidad),
-      saleUnitCost:
-        Product?.measureType === Product?.saleUnit
-          ? Product?.measureUnitCost
-          : Product?.measureUnitCost * Product?.measurePerSaleUnit,
+      saleUnitPrice: saleUnitPrice,
     }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    Rentabilidad,
+    Product?.profitMargin,
     Product?.measureUnitCost,
     Product?.measurePerSaleUnit,
     Product?.saleUnit,
@@ -143,7 +122,7 @@ const SaleDataTab = ({ Product, setProduct, loading }: SaleDataTabProps) => {
           <section className="w-1/3 flex flex-col gap-2">
             <div>
               <Label className="flex items-center text-md">
-                Costo de compra
+                Costo de compra ({Product?.measureType})
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -193,7 +172,10 @@ const SaleDataTab = ({ Product, setProduct, loading }: SaleDataTabProps) => {
             <div>
               <Label className="flex items-center text-md">
                 Rentabilidad:{" "}
-                {!Number.isNaN(Rentabilidad) ? `${Rentabilidad} ` : "0 "}%
+                {!Number.isNaN(Product?.profitMargin)
+                  ? `${Product?.profitMargin} `
+                  : "0 "}
+                %
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -212,16 +194,23 @@ const SaleDataTab = ({ Product, setProduct, loading }: SaleDataTabProps) => {
                 max={200}
                 step={0.1}
                 disabled={loading}
-                value={[Rentabilidad]}
-                onValueChange={(value) => setRentabilidad(value[0])}
+                value={[Product.profitMargin]}
+                onValueChange={(value) =>
+                  setProduct((prev) => ({ ...prev, profitMargin: value[0] }))
+                }
               />
               <Input
                 className="my-4 block md:hidden"
                 type="number"
                 min={0}
                 disabled={loading}
-                value={Rentabilidad}
-                onChange={(e) => setRentabilidad(parseFloat(e.target.value))}
+                value={Product.profitMargin}
+                onChange={(e) =>
+                  setProduct((prev) => ({
+                    ...prev,
+                    profitMargin: parseFloat(e.target.value),
+                  }))
+                }
               />
             </div>
             <div>

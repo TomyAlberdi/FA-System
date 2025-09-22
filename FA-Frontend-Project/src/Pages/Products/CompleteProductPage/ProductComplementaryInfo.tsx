@@ -6,38 +6,12 @@ import {
 } from "@/components/ui/accordion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { characteristic, CompleteProduct } from "@/hooks/CatalogInterfaces";
-import { useEffect, useState } from "react";
 
 export const ProductComplementaryInfo = ({
   Product,
 }: {
   Product: CompleteProduct | null;
 }) => {
-  const getRentabilidad = (saleUnitCost: number, saleUnitPrice: number) => {
-    const profitMargin = ((saleUnitPrice - saleUnitCost) / saleUnitCost) * 100;
-    return Math.round(profitMargin * 100) / 100;
-  };
-
-  const [Rentabilidad, setRentabilidad] = useState(0);
-  useEffect(() => {
-    if (Product?.saleUnitCost && Product?.saleUnitPrice) {
-      if (Product?.discountPercentage > 0) {
-        setRentabilidad(
-          getRentabilidad(Product?.saleUnitCost, Product?.discountedPrice)
-        );
-      } else {
-        setRentabilidad(
-          getRentabilidad(Product?.saleUnitCost, Product?.saleUnitPrice)
-        );
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    Product?.saleUnitCost,
-    Product?.saleUnitPrice,
-    Product?.discountPercentage,
-  ]);
-
   return (
     <div className="md:h-full md:w-3/4 md:px-2 md:py-4 h-auto w-full px-0 py-0">
       <Accordion type="multiple" className="w-full">
@@ -199,20 +173,22 @@ export const ProductComplementaryInfo = ({
                   </CardContent>
                 </Card>
               )}
-              <Card
-                className={
-                  Rentabilidad < 0
-                    ? "bg-destructive md:w-auto w-full"
-                    : "md:w-auto w-full"
-                }
-              >
-                <CardHeader>
-                  <CardTitle className="text-center">Rentabilidad</CardTitle>
-                </CardHeader>
-                <CardContent className="text-center">
-                  <span className="text-xl">% {Rentabilidad}</span>
-                </CardContent>
-              </Card>
+              {Product?.profitMargin && Product?.profitMargin > 0 && (
+                <Card
+                  className={
+                    Product.profitMargin < 0
+                      ? "bg-destructive md:w-auto w-full"
+                      : "md:w-auto w-full"
+                  }
+                >
+                  <CardHeader>
+                    <CardTitle className="text-center">Rentabilidad</CardTitle>
+                  </CardHeader>
+                  <CardContent className="text-center">
+                    <span className="text-xl">% {Product.profitMargin}</span>
+                  </CardContent>
+                </Card>
+              )}
             </AccordionContent>
           </AccordionItem>
         ) : null}

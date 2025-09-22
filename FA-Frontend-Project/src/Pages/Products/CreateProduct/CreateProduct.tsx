@@ -19,6 +19,7 @@ const CreateProduct = () => {
     saleUnit: "Caja",
     saleUnitPrice: 0,
     saleUnitCost: 0,
+    profitMargin: 0,
     measureUnitCost: 0,
     measurePerSaleUnit: 0,
     discountPercentage: 0,

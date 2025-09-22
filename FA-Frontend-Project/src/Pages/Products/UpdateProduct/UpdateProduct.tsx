@@ -27,6 +27,7 @@ const UpdateProduct = () => {
     saleUnit: Product?.saleUnit ?? "Caja",
     saleUnitPrice: Product?.saleUnitPrice ?? 0,
     saleUnitCost: Product?.saleUnitCost ?? 0,
+    profitMargin: Product?.profitMargin ?? 0,
     measureUnitCost: Product?.measureUnitCost ?? 0,
     measurePerSaleUnit: Product?.measurePerSaleUnit ?? 0,
     discountPercentage: Product?.discountPercentage ?? 0,
