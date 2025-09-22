@@ -41,9 +41,9 @@ export const AdminPanel = () => {
         </Dialog>
         <Button
           className="h-full text-lg w-1/3"
-          onClick={() => navigate("/sales/budgets/add")}
+          onClick={() => navigate("/sales/cart")}
         >
-          Crear Presupuesto
+          Ver Carrito
         </Button>
         <AddRegister />
       </CardContent>
